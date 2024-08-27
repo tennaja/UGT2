@@ -1,0 +1,57 @@
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+
+
+.image-container::before {
+    content: '\2023'; 
+    position: absolute;
+    top: 90%;
+    left: 90%;
+    transform: translate(-50%, -50%);
+    z-index: 1; /* Place the icon above the image */
+    width: 30px;
+    height: 30px;
+    
+
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    background: url('../assets/edit-svg.svg') center/70% 70% no-repeat;
+    background-color: #ffffff;
+    color: #ffffff; /* Set text color for better contrast */
+
+}
+    
+  /* Optional: Style for the image */
+.image-container  img {
+    border-radius: 25px;;
+    
+    display: block;
+    /* max-width: 100%; */
+    width: 150px;
+    height: 150px;
+  }
+
+
+  .image-container-view-only {
+    position: relative;
+    display: inline-block;
+  }
+  .image-container-view-only  img {
+    display: block;
+    /* max-width: 100%; */
+    height: auto;
+  }
+
+
+ 
+
+
+  
+
+    /* <div class="image-container">
+          
+          <img src={defaultImg} alt="Preview_Img" id="preview_img"/>
+        </div> */

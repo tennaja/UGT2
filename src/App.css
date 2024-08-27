@@ -1,0 +1,61 @@
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+.header{
+  width: 100%;
+  background-color: blue;
+  color: #fff;
+  padding: 1%;
+  text-align: left;
+}
+
+.card-header{
+  text-align: right;
+}
+
+
+
+/* .App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+} */
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #8abc3e;
+  color: #fff;
+}
+
+
+
+.topnav a:hover {
+  /* background-color: #ddd;
+  color: black; */
+}
+
+.topnav a.active {
+  /* background-color: #04AA6D;
+  color: white; */
+}
+

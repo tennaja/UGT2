@@ -1,0 +1,19 @@
+.page-link{
+    color: #4D6A00 !important;
+
+}
+.active>.page-link, .page-link.active {
+    background-color: #FFFFFF !important;
+    color: #4D6A00 !important;
+    border-color: #4D6A00 !important;
+    z-index: 0 !important;
+}
+.page-item:not(:first-child) .page-link {
+    margin-left: 0px !important;
+}
+.pagination{
+    --bs-pagination-focus-box-shadow:none !important
+}
+
+
+/* .active>.page-link, .page-link.active */
