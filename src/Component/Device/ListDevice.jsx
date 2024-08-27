@@ -777,7 +777,7 @@ const ListDevice = (props) => {
               {/* {'left content'} */}
               <div className="flex flex-col w-full h-auto gap-3">
                 <div className="w-full h-full flex justify-start items-start mb-2">
-                  <TestConnect/>
+                  {/* <TestConnect/> */}
                   <Card
                     shadow="md"
                     radius="lg"

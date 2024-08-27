@@ -1236,6 +1236,63 @@ const UpdateDevice = () => {
                                 />
                               )}
                             />
+                            <div
+                        className="md:col-span-3 mt-4"
+                        id="registration-date-tooltip"
+                      >
+                        <Controller
+                          name="registrationDate"
+                          control={control}
+                          rules={{
+                            required: "This field is required",
+                          }}
+                          render={({ field }) => (
+                            <DatePicker
+                              {...field}
+                              id={"registrationDate"}
+                              label={"Requested Effective Registration Date"}
+                              error={errors.registrationDate}
+                              onCalDisableDate={
+                                requestedEffectiveDateDisableDateCal
+                              }
+                              isDisable={disableRequestedEffectiveDate}
+                              validate={" *"}
+                              // ... other props
+                            />
+                          )}
+                        />
+                        {disableRequestedEffectiveDate && (
+                          <Tooltip
+                            anchorSelect="#registration-date-tooltip"
+                            content="Please select the commissioning date first."
+                          />
+                        )}
+                      </div>
+                      <div className="md:col-span-3 mt-4">
+                      <Controller
+                          name="ExpectedFormofVolumeEvidence"
+                          control={control}
+                          rules={{
+                            required: "This field is required",
+                          }}
+                          render={({ field }) => (
+                            <div>
+                              <Radiobtn
+                              {...field}
+                              id={"ExpectedFormofVolumeEvidence"}
+                              value={checking} 
+                              label={"ExpectedForm of Volume Evidence"}
+                              error={errors.ExpectedFormofVolumeEvidence}
+                              validate={" *"}
+                              
+                              // ... other props
+                            />
+                            </div>
+                            
+                            
+                          )}
+                        />
+                      </div>
                           </div>
                           {/* <div className="md:col-span-3">
                             <Controller
@@ -1279,64 +1336,9 @@ const UpdateDevice = () => {
                         />
                       </div>
                       
-                      <div
-                        className="md:col-span-3"
-                        id="registration-date-tooltip"
-                      >
-                        <Controller
-                          name="registrationDate"
-                          control={control}
-                          rules={{
-                            required: "This field is required",
-                          }}
-                          render={({ field }) => (
-                            <DatePicker
-                              {...field}
-                              id={"registrationDate"}
-                              label={"Requested Effective Registration Date"}
-                              error={errors.registrationDate}
-                              onCalDisableDate={
-                                requestedEffectiveDateDisableDateCal
-                              }
-                              isDisable={disableRequestedEffectiveDate}
-                              validate={" *"}
-                              // ... other props
-                            />
-                          )}
-                        />
-                        {disableRequestedEffectiveDate && (
-                          <Tooltip
-                            anchorSelect="#registration-date-tooltip"
-                            content="Please select the commissioning date first."
-                          />
-                        )}
-                      </div>
-                      <div className="md:col-span-3"></div>
-                      <div className="md:col-span-3">
-                      <Controller
-                          name="ExpectedFormofVolumeEvidence"
-                          control={control}
-                          rules={{
-                            required: "This field is required",
-                          }}
-                          render={({ field }) => (
-                            <div>
-                              <Radiobtn
-                              {...field}
-                              id={"ExpectedFormofVolumeEvidence"}
-                              value={checking} 
-                              label={"ExpectedForm of Volume Evidence"}
-                              error={errors.ExpectedFormofVolumeEvidence}
-                              validate={" *"}
-                              
-                              // ... other props
-                            />
-                            </div>
-                            
-                            
-                          )}
-                        />
-                      </div>
+                      
+                      
+                      
                       {/* <div className="md:col-span-3">
                         <Controller
                           name="otherLabellingCode"

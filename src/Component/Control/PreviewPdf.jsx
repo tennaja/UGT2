@@ -95,7 +95,7 @@ const generatePdf = () => {
                 <th colSpan="4" className="border p-2  text-left ">1.1 SF-02: Production Facility Registration</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">complete all fields.</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>complete all fields.</em></th>
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left w-1/3">Date</td>
@@ -128,11 +128,11 @@ const generatePdf = () => {
               </tr>
               <tr>
                 <td className="border p-2 font-bold ">Submitter status
-                <p className='text-[8px] text-gray-600'>({`please confirm and, if yes,
+                <p className='text-[8px] text-gray-600'><em>({`please confirm and, if yes,
 provide evidence and
 completed SF-02C: Owner’s
 Declaration with your
-submission`})</p>
+submission`})</em></p>
                 </td>
                 <td className="border p-2 text-left break-all w-40" colSpan="2">Is the Registrant also the owner of the
                 Production Facility?</td>
@@ -206,7 +206,7 @@ submission`})</p>
                 <td className="border p-2 font-bold w-72 ">Facility name
                 <p className='text-[8px] text-gray-600'>({`including postal or zip code`})</p>
                 </td>
-                <td className="border p-2 text-left break-all " >Expression</td>
+                <td className="border p-2 text-left break-all " >{data.data.name}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Facility address</td>
@@ -214,15 +214,15 @@ submission`})</p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Country</td>
-                <td className="border p-2 text-left break-all" >Expression</td>
+                <td className="border p-2 text-left break-all" >{data.data.countryCode}</td>
               </tr>
               <tr>
                 <td className="border p-2  font-bold"><div className="flex text-left"><p>Latitude</p><p className='text-[8px] text-gray-500 ml-1'>(±n.nnnnnn)</p></div></td>
-                <td className="border p-2 text-left break-all" >Expression</td>
+                <td className="border p-2 text-left break-all" >{data.data.latitude}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold"><div className="flex text-left"><p>Longitude</p><p className='text-[8px] text-gray-500 ml-1'>(±n.nnnnnn)</p></div></td>
-                <td className="border p-2 text-left break-all" >Expression</td>
+                <td className="border p-2 text-left break-all" >{data.data.longitude}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Installed capacity</td>
@@ -232,8 +232,8 @@ submission`})</p>
 
                         <tbody>
                             <tr>
-                            <td className="border p-2 font-bold w-1/2">Capacity MW</td>
-                            <td className="border p-2 text-left break-all w-1/2">xxxx</td>
+                            <td className="border p-2 font-bold w-1/2">{data.data.capacity} MW</td>
+                            <td className="border p-2 text-left text-xs break-all w-1/2"><em>Up to 6 decimal places</em></td>
                             </tr>
                             <tr>
                             <td className="border text-center w-1/2">
@@ -273,11 +273,11 @@ submission`})</p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold w-60">Meter or Measurement ID(s)</td>
-                <td className="border p-2 text-left break-all" >Expression</td>
+                <td className="border p-2 text-left break-all" ></td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold w-64 ">Number of generating units</td>
-                <td className="border p-2 text-left break-all" >Expression</td>
+                <td className="border p-2 text-left break-all" >{data.data.generatingUnit}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Commissioning date</td>
@@ -285,17 +285,17 @@ submission`})</p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Owner of the network to which the Production Device is connected and the voltage of that connection</td>
-                <td className="border p-2 text-left break-all" >Expression</td>
+                <td className="border p-2 text-left break-all" >{data.data.deviceOwner}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">If the Production Device is not connected directly to the grid, specify the circumstances, and additional relevant meter registration numbers</td>
-                <td className="border p-2 text-left break-all" >ExpressionExpressionExpressExpressionExpressionExpressionExpressionExpressionExpressionExpressionExpressionExpressionExpressionExpressionExpressionionExpression</td>
+                <td className="border p-2 text-left break-all" ></td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Expected form of volume evidence
                 <p className='text-[8px] text-gray-600'>({`if other please specify`})</p>
                 </td>
-                <td className="border p-2 text-left break-all" >Expression</td>
+                <td className="border p-2 text-left break-all" >{data.data.isMeteringData == "True" ? "Metering data / " : null}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : null}  {data.data.isOther == "True" ? "Other / " : null} {data.data.otherDescription}</td>
               </tr>
             </tbody>
           </table>
@@ -345,7 +345,7 @@ submission`})</p>
 
                         <tbody >
                             <tr>
-                            <td className="border p-2 font-bold text-left w-44">Capacity MW</td>
+                            <td className="border p-2 font-bold text-left w-44">Code</td>
                             <td className="border p-2 font-bold text-left break-all ">Description</td>
                             </tr>
                             <tr>
@@ -488,7 +488,7 @@ submission`})</p>
                 <td className="border p-2 font-bold w-64">Name of proposed Verification Agent
                 <p className='text-[8px] text-gray-600'>({`if not the Issuer`})</p>
                 </td>
-                <td className="border p-2 text-left break-all" >ExpressionExpressionExpressionExpressionExpressionExpressionExpressionExpressionExpressionExpression</td>
+                <td className="border p-2 text-left break-all" ></td>
               </tr>
             </tbody>
           </table>
@@ -503,7 +503,7 @@ submission`})</p>
             </thead>
             <tbody>
             <tr>
-                <td className="border p-2  h-72 break-all" colSpan="4">ExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresionExpresion</td>  
+                <td className="border p-2  h-72 break-all" colSpan="4"></td>  
               </tr>
             </tbody>
           </table>
@@ -676,7 +676,7 @@ I confirm that all necessary permissions of the Production Facility Owner have b
               <td className="border p-2 font-bold"colSpan="3" >Production Group name
               <p className='text-[8px] text-gray-600'>({`same as Facility name in Production Facility Details section`})</p>
               </td>
-              <td className="border p-2 text-left break-all h-28" colSpan="7">Expression</td>
+              <td className="border p-2 text-left break-all h-28" colSpan="7"></td>
               </tr>
 
               
@@ -692,14 +692,14 @@ I confirm that all necessary permissions of the Production Facility Owner have b
                 
               </tr>
               <tr>
-                <td  className="border p-2  text-left break-all" colSpan="1">xxxxxxxxxx</td>
-                <td  className="border p-2  text-left break-all" colSpan="1">xxxx</td>
-                <td  className="border p-2  text-left break-all" colSpan="1">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</td>
-                <td  className="border p-2  text-left break-all" colSpan="1">xxxx</td>
-                <td  className="border p-2  text-left break-all" colSpan="1">xxxx</td>
-                <td  className="border p-2  text-left break-all" colSpan="1">xxxx</td>
-                <td  className="border p-2  text-left break-all" colSpan="1">xxxx</td>
-                <td  className="border p-2  text-left break-all" colSpan="1">xxxx</td>
+                <td  className="border p-2  text-left break-all h-20" colSpan="1"></td>
+                <td  className="border p-2  text-left break-all h-20" colSpan="1"></td>
+                <td  className="border p-2  text-left break-all h-20" colSpan="1"></td>
+                <td  className="border p-2  text-left break-all h-20" colSpan="1"></td>
+                <td  className="border p-2  text-left break-all h-20" colSpan="1"></td>
+                <td  className="border p-2  text-left break-all h-20" colSpan="1"></td>
+                <td  className="border p-2  text-left break-all h-20" colSpan="1"></td>
+                <td  className="border p-2  text-left break-all h-20" colSpan="1"></td>
               </tr>
             
             </tbody>

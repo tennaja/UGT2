@@ -34,7 +34,7 @@ const Input = (props) => {
           let value = null;
           if (e.target.value) {
             value = e.target.value;
-            value = value.replace(/[^A-Za-z0-9]/ig, '')
+            value = value.replace(/[^A-Za-z0-9.\d{1,2})?$]/ig, '')
           }
           onChangeInput && onChangeInput(value);
           inputProps.onChange(value);
