@@ -578,7 +578,8 @@ const InfoDevice = () => {
 
                     <div className="md:col-span-6 lg:col-span-2 text-right grid items-end">
                       <div className="flex justify-end gap-3">
-                      <PdfTablePreview data={deviceobj}/>
+                         <PdfTablePreview data={deviceobj}/>
+                      
                         {isShowManageBtn && (
                           <ManageBtn
                             actionList={[

@@ -8,7 +8,7 @@ import './page.css'
 const PdfFormPreview = (data) => {
   const dispatch = useDispatch();
   const filesf02 = useSelector((state)=> state.device.filesf02) 
-  const [dataF,setDataF] = useState()
+  const [load,setload] = useState(false)
   const [list, setList] = useState();
   useEffect((data) => {
     setList(data);
@@ -16,12 +16,12 @@ const PdfFormPreview = (data) => {
 
   const pdfContentRef = useRef(null);
   
-  useEffect(()=>{
-    generatePdf();
-    
-  },[])
+  // useEffect(()=>{
+  //   generatePdf();
+  // },[])
 
 const generatePdf = () => {
+  setload(true)
   const element = pdfContentRef.current;
 
   // Ensure the content is visible temporarily for PDF generation
@@ -68,13 +68,13 @@ const generatePdf = () => {
       if (pdfWindow) pdfWindow.focus();
       const pdfBlob = pdf.output('blob');
       
-      setDataF(pdfBlob)
       dispatch(setSF02(pdfBlob));
       console.log(filesf02)
       console.log(pdfBlob)
       // Hide the content again
       // pdf.save('document.pdf');
       element.style.display = 'none';
+      setload(false)
     })
     .catch((error) => {
       console.error('Error generating PDF:', error);
@@ -84,7 +84,9 @@ const generatePdf = () => {
       alert('An error occurred while generating the PDF. Please try again.');
     });
 };
-
+ if(load){
+  return null
+ }
   return (
     <div>
       <div id="pdf-content" ref={pdfContentRef} className="hidden">
