@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Card, Input, ScrollArea, Table, Modal } from "@mantine/core";
 import numeral from "numeral";
-import AlmostDone from "../../../assets/almostDone.png";
+import AlmostDone from "../../../assets/almostdone.png";
 import Warning from "../../../assets/warning.png";
 import ModalFail from "../../../Control/Modal/ModalFail";
 import { useLocation, useNavigate } from "react-router-dom";

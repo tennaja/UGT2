@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import AlmostDone from "../../assets/Done.png";
+import AlmostDone from "../../assets/done.png";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "@mantine/core";
 import { useDispatch } from "react-redux";
