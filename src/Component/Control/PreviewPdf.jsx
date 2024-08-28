@@ -1,16 +1,25 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import {setSF02} from "../../Redux/Device/Action"
 import html2pdf from 'html2pdf.js';
 import pdfIcon from '../assets/EV.png';
 import './page.css'
 
 const PdfFormPreview = (data) => {
-  console.log(data)
+  const dispatch = useDispatch();
+  const filesf02 = useSelector((state)=> state.device.filesf02) 
+  const [dataF,setDataF] = useState()
   const [list, setList] = useState();
   useEffect((data) => {
     setList(data);
   }, [data.data.id]); // Added dependency to avoid potential issue with useEffect
 
   const pdfContentRef = useRef(null);
+  
+  useEffect(()=>{
+    generatePdf();
+    
+  },[])
 
 const generatePdf = () => {
   const element = pdfContentRef.current;
@@ -54,22 +63,26 @@ const generatePdf = () => {
       }
 
       // Open the PDF in a new tab
-      const url = pdf.output('bloburl');
-      const pdfWindow = window.open(url, '_blank');
-      if (pdfWindow) pdfWindow.focus();
+      // const url = pdf.output('bloburl');
+      // const pdfWindow = window.open(url, '_blank');
+      // if (pdfWindow) pdfWindow.focus();
       const pdfBlob = pdf.output('blob');
+      
+      setDataF(pdfBlob)
+      dispatch(setSF02(pdfBlob));
+      console.log(filesf02)
       console.log(pdfBlob)
       // Hide the content again
-      pdf.save('document.pdf');
+      // pdf.save('document.pdf');
       element.style.display = 'none';
     })
-    .catch((error) => {
-      console.error('Error generating PDF:', error);
-      // Hide the content again if there's an error
-      element.style.display = 'none';
-      // Display an alert to the user (optional)
-      alert('An error occurred while generating the PDF. Please try again.');
-    });
+    // .catch((error) => {
+    //   console.error('Error generating PDF:', error);
+    //   // Hide the content again if there's an error
+    //   element.style.display = 'none';
+    //   // Display an alert to the user (optional)
+    //   alert('An error occurred while generating the PDF. Please try again.');
+    // });
 };
 
   return (

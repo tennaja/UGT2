@@ -4,7 +4,7 @@ function TestConnect() {
   const [fileUrl, setFileUrl] = useState(null);
 
   useEffect(() => {
-    fetch('https://ugt-thai-api.egat.co.th/DEV2/api/ugt/v1/device-management/sf02download/3')
+    fetch('https://ugt-thai-api.egat.co.th/DEV2/api/ugt/v1/device-management/sf02download/1')
       .then((response) => response.blob())  // Handle the response as a blob
       .then((blob) => {
         const url = URL.createObjectURL(blob);

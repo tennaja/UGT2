@@ -45,6 +45,10 @@ import { USER_GROUP_ID } from "../../Constants/Constants";
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import ModalVerifyDone from "../Control/Modal/ModalDoneVerrify";
 import PdfFormPreview from "../Control/PreviewPdf"
+import ModalSignStep1 from "../Control/Modal/ModalSignstep1";
+import ModalSignStep2 from "../Control/Modal/ModalSignstep2";
+import ModalSignStep3 from "../Control/Modal/ModalSignstep3";
+import ModalSubmitDone from "../Control/Modal/ModalDoneSubmit";
 const InfoDevice = () => {
   //default location on map Thailand
   const defaultLocation = [13.736717, 100.523186];
@@ -67,6 +71,7 @@ const InfoDevice = () => {
   const [modalConfirmProps, setModalConfirmProps] = useState(null);
   const [modalConfirmSendtoVerifyProps, setModalConfirmSendtoVerifyProps] = useState(null);
   const deviceobj = useSelector((state) => state.device.deviceobj);
+  const filesf02 = useSelector((state)=> state.device.filesf02) 
   const userData = useSelector((state) => state.login?.userobj);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const isOpenDoneModal = useSelector((state) => state.device.isOpenDoneModal);
@@ -80,13 +85,14 @@ const InfoDevice = () => {
     navigate(WEB_URL.DEVICE_LIST);
   };
   console.log(userData)
+  console.log(filesf02)
   console.log(deviceobj)
   const {
     setValue,
     control,
     formState: { errors },
   } = useForm();
-  
+
   const today = Date.now();
   console.log(new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(today));
   // ModelController;
@@ -249,6 +255,7 @@ const InfoDevice = () => {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      window.open(url, '_blank');
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading file:", error);
@@ -256,6 +263,34 @@ const InfoDevice = () => {
     // setIsOpenLoading(false);
     hideLoading();
   };
+
+
+  const handleClickPreviewFile = async (item) => {
+    console.log(item)
+    try {
+      // setIsOpenLoading(true);
+      showLoading();
+      const fileID = item?.evidentFileID;
+      const fileName = item?.name;
+      const requestParameter = {
+        fileID: fileID,
+        fileName: fileName,
+      };
+      const response = await FetchDownloadFile(requestParameter);
+      console.log(response)
+      const blob = new Blob([response.res.data], {
+        type: response.res.headers["content-type"],
+      });
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error("Error Preview file:", error);
+    }
+    // setIsOpenLoading(false);
+    hideLoading();
+  };
+
 
   const handleClickDeleteFile = async (id, evidentFileID, fileName) => {
     console.log("----DELETE FILE---");
@@ -277,8 +312,8 @@ const InfoDevice = () => {
     setModalConfirmProps({
       onCloseModal: handleCloseModalConfirm,
       onClickConfirmBtn: handleClickConfirmWithdraw,
-      title: "Confirm withdraw?",
-      content: "Are you sure you would like to withdraw this device?",
+      title: "Withdraw this Device?",
+      content: " Would you like to withdraw this device? Device will be permanently deleted.",
       buttonTypeColor: "danger",
     });
   };
@@ -985,6 +1020,9 @@ const InfoDevice = () => {
                                   fileName
                                 );
                               }}
+                              onPreview ={(item)=>{
+                                handleClickPreviewFile(item)
+                              }}
                             error={errors.uploadFile}
                             defaultValue={deviceobj?.fileUploads}
                             // ... other props
@@ -1050,6 +1088,10 @@ const InfoDevice = () => {
           </div>
         </div>
       </div>
+      {/* <ModalSignStep1/> */}
+      {/* <ModalSignStep2/> */}
+      {/* <ModalSignStep3/> */}
+      {/* <ModalSubmitDone/> */}
       {isOpenDoneModal && (
         <ModalVerifyDone
           List={deviceobj}

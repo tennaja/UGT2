@@ -38,6 +38,7 @@ import {
   SET_DEVICE_DASHBOARD,
   SET_DEVICE_ASSIGNED,
   SET_DEVICE_UNASSIGNED,
+  SF_02
 } from "../../Redux/ActionType";
 
 // import { json } from "react-router-dom"
@@ -65,6 +66,14 @@ export const setDeviceList = (data) => {
   };
 };
 
+export const setSF02 = (data) => {
+  console.log(data)
+  return {
+    type: SF_02,
+    filesf02: data,
+     };
+};
+
 export const setDeviceDashboard = (data) => {
   return {
     type: SET_DEVICE_DASHBOARD,
@@ -76,6 +85,7 @@ export const setDeviceDashboard = (data) => {
 };
 
 export const setDeviceAssigned = (data, totalAssigned) => {
+  console.log(data)
   return {
     type: SET_DEVICE_ASSIGNED,
     assignedList: data,

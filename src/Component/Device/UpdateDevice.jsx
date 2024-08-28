@@ -690,6 +690,32 @@ const UpdateDevice = () => {
     hideLoading();
   };
 
+  const handleClickPreviewFile = async (item) => {
+    console.log(item)
+    try {
+      // setIsOpenLoading(true);
+      showLoading();
+      const fileID = item?.evidentFileID;
+      const fileName = item?.name;
+      const requestParameter = {
+        fileID: fileID,
+        fileName: fileName,
+      };
+      const response = await FetchDownloadFile(requestParameter);
+      console.log(response)
+      const blob = new Blob([response.res.data], {
+        type: response.res.headers["content-type"],
+      });
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error("Error Preview file:", error);
+    }
+    // setIsOpenLoading(false);
+    hideLoading();
+  };
+
   const handleClickDeleteFile = async (id, evidentFileID, fileName) => {
     console.log("----DELETE FILE---");
 
@@ -1769,6 +1795,9 @@ const UpdateDevice = () => {
                                   evidentFileID,
                                   fileName
                                 );
+                              }}
+                              onPreview ={(item)=>{
+                                handleClickPreviewFile(item)
                               }}
                               validate={" *"}
                               // ... other props

@@ -33,6 +33,7 @@ const UploadFile = (props) => {
     disabled,
     error,
     onChngeInput,
+    onPreview,
     onDeleteFile,
     id,
     defaultValue = null,
@@ -209,7 +210,12 @@ console.log(props)
                   <div className="flex items-center justify-between  w-36">
 
                     
-                  <MdOutlineRemoveRedEye className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"/>
+                  <MdOutlineRemoveRedEye className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
+                  onClick={() => {
+                    onPreview &&
+                    onPreview(file?.props?.fileWithMeta?.file);
+                  }}/>
+                
                   <HiDownload className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer" onClick={() => {
                             onClickFile &&
                               onClickFile(file?.props?.fileWithMeta?.file);

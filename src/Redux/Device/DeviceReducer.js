@@ -6,7 +6,8 @@ import {SET_OPEN_FAIL_MODAL,CLEAR_MODAL,SET_DEVICE_FILTER_LIST, FAIL_REQUEST, MA
     SET_DEVICE_UNASSIGNED,
     VERIFYING_STATUS,
     RETURN_STATUS,
-    VERIFIED_STATUS
+    VERIFIED_STATUS,
+    SF_02
 } from "../ActionType"
 
 const initialstate = {
@@ -60,14 +61,22 @@ export const DeviceReducer = (state = initialstate, action) => {
                 isOpen : false,
                 // isOpenFailModal:true
             }
-        case SET_DEVICE_DASHBOARD:{
+
+            case SET_DEVICE_DASHBOARD:{
+                return {
+                    ...state,
+                    loading: false,
+                    errmessage: '',
+                    totalDevice:action?.totalDevice,
+                    totalCapacity:action?.totalCapacity,
+                    topCapacity:action?.topCapacity,
+                }
+            }
+        case SF_02:{
             return {
                 ...state,
-                loading: false,
-                errmessage: '',
-                totalDevice:action?.totalDevice,
-                totalCapacity:action?.totalCapacity,
-                topCapacity:action?.topCapacity,
+                filesf02:action?.filesf02,
+                
             }
         }
         case SET_DEVICE_ASSIGNED:{
