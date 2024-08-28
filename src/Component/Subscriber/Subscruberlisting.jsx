@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-User.svg";
+import SubscriberLOGO01 from "../assets/3-user.svg";
 import SubscriberLOGO02 from "../assets/contractenergy.svg";
 import SubscriberLOGO03 from "../assets/accumconsum.svg";
 import { useForm, Controller } from "react-hook-form";
