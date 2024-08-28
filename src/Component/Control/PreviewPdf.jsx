@@ -63,9 +63,9 @@ const generatePdf = () => {
       }
 
       // Open the PDF in a new tab
-      // const url = pdf.output('bloburl');
-      // const pdfWindow = window.open(url, '_blank');
-      // if (pdfWindow) pdfWindow.focus();
+      const url = pdf.output('bloburl');
+      const pdfWindow = window.open(url, '_blank');
+      if (pdfWindow) pdfWindow.focus();
       const pdfBlob = pdf.output('blob');
       
       setDataF(pdfBlob)
@@ -76,13 +76,13 @@ const generatePdf = () => {
       // pdf.save('document.pdf');
       element.style.display = 'none';
     })
-    // .catch((error) => {
-    //   console.error('Error generating PDF:', error);
-    //   // Hide the content again if there's an error
-    //   element.style.display = 'none';
-    //   // Display an alert to the user (optional)
-    //   alert('An error occurred while generating the PDF. Please try again.');
-    // });
+    .catch((error) => {
+      console.error('Error generating PDF:', error);
+      // Hide the content again if there's an error
+      element.style.display = 'none';
+      // Display an alert to the user (optional)
+      alert('An error occurred while generating the PDF. Please try again.');
+    });
 };
 
   return (
