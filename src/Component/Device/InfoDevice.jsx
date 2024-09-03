@@ -616,6 +616,28 @@ const InfoDevice = () => {
 
     return isReturn;
   };
+
+
+  const checkCanSeeSF02 = () => {
+    let isSeeSF02 = false;
+    const status = (deviceobj?.statusName ?? "").toLowerCase();
+
+    if (
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+    ) {
+      if (
+        status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
+        status == DEVICE_STATUS.VERIFIED.toLowerCase()
+      ) {
+        isSeeSF02 = true;
+      } else {
+        isSeeSF02 = false;
+      }
+    }
+
+    return isSeeSF02;
+  };
   const checkShowManageBtn = () => {
     if (canEdit || canSubmit || canWithdrawn) {
       return true;
@@ -645,6 +667,7 @@ const InfoDevice = () => {
   const canVerifying = checkCanVerifying();
   const canVerified = checkCanVerified()
   const canReturn = checkCanReturn();
+  const canSeeSF02 = checkCanSeeSF02();
   const isShowManageBtn = checkShowManageBtn();
 
   // console.log("canEdit", canEdit);
@@ -726,7 +749,8 @@ const InfoDevice = () => {
                       <div className="flex justify-end gap-3">
                         
                          {/* <PdfTablePreview data={deviceobj}/> */}
-                         <PreviewPdf data={sf02obj}/>
+                         {canSeeSF02 ? <PreviewPdf data={sf02obj}/> : null}
+                         
                         {isShowManageBtn && (
                           <ManageBtn
                             actionList={[
