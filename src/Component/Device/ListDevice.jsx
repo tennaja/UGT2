@@ -649,7 +649,7 @@ const ListDevice = (props) => {
 
     navigate(WEB_URL.DEVICE_ADD);
   };
-
+  console.log(userData?.userGroup?.id)
   const checkPermission = () => {
     const userGroupID = userData?.userGroup?.id;
     if (
@@ -727,7 +727,58 @@ const ListDevice = (props) => {
 
       getDeviceData(utilityID);
       setDisableUtility(true);
-    } else if (
+    } 
+    else if (
+      userGroupID == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
+    ) {
+      const utilityID = UTILITY_GROUP_ID.VER; //EGAT
+      if (userGroupID !== USER_GROUP_ID.UGT_REGISTANT_VERIFIER) {
+        setIsDeviceGroup(false);
+      }
+      const initAssignedFilterValue = {
+        ...currentAssignedFilterObj,
+        utility: [utilityID],
+      };
+      const initUnAssignedFilterValue = {
+        ...currentUnAssignedFilterObj,
+        utility: [utilityID],
+      };
+
+      setCurrentAssignedFilterObj(initAssignedFilterValue);
+      dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
+
+      setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
+      dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
+
+      getDeviceData(utilityID);
+      setDisableUtility(true);
+    }
+    else if (
+      userGroupID == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY 
+    ) {
+      const utilityID = UTILITY_GROUP_ID.SIG; //EGAT
+      if (userGroupID !== USER_GROUP_ID.UGT_REGISTANT_SIGNATORY) {
+        setIsDeviceGroup(false);
+      }
+      const initAssignedFilterValue = {
+        ...currentAssignedFilterObj,
+        utility: [utilityID],
+      };
+      const initUnAssignedFilterValue = {
+        ...currentUnAssignedFilterObj,
+        utility: [utilityID],
+      };
+
+      setCurrentAssignedFilterObj(initAssignedFilterValue);
+      dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
+
+      setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
+      dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
+
+      getDeviceData(utilityID);
+      setDisableUtility(true);
+    }
+    else if (
       userGroupID == USER_GROUP_ID.PORTFOLIO_MNG ||
       userGroupID == USER_GROUP_ID.ALL_MODULE_VIEWER
     ) {
@@ -983,7 +1034,7 @@ const ListDevice = (props) => {
               {/* {'End Right Content'} */}
               
             </div>
-            {/* {isDeviceGroup && ( */}
+            {isDeviceGroup && (
               <div className="grid col-span-4 grid-cols-12 mr-2 mt-3">
                 <div className="col-span-9"></div>
                 <div className="text-sm col-span-3">
@@ -1008,7 +1059,7 @@ const ListDevice = (props) => {
                   </div>
                 </div>
               </div>
-            {/* )} */}
+            )}
 
             {/* {Assigned Table Content} */}
             {/* <div className="w-72 h-12 flex justify-end">

@@ -932,7 +932,7 @@ const UpdateDevice = () => {
                               name="defaultAccountCode"
                               control={control}
                               rules={{
-                                required: "This field is required",
+                                // required: "This field is required",
                                 maxLength: {
                                   value: 8,
                                   message: "must be at max 8 characters",
@@ -945,7 +945,7 @@ const UpdateDevice = () => {
                                   type={"text"}
                                   label={"Default account code"}
                                   disabled={vDisabled}
-                                  error={errors.defaultAccountCode}
+                                  // error={errors.defaultAccountCode}
                                   validate={" *"}
                                   // ... other props
                                 />

@@ -6,8 +6,12 @@ function useRemarkHandler(onClickConfirmBtn) {
   const [remark, setRemark] = useState("");
 
   const handleRemarkChange = (e) => {
-    console.log(e.target.value)
-    setRemark(e.target.value);
+    let value = null;
+                if (e.target.value) {
+                  value = e.target.value;
+                  value = value.replace(/[^A-Za-z0-9.\s]/g, '')
+                }
+          setRemark(value);
   };
 
   const submitRemark = () => {

@@ -392,7 +392,7 @@ export const FetchDeviceManagementUnAssigned = (fetchParameter, callback) => {
 export const FunctionAddDevice = (data, callback) => {
   const parameterForCreate = {
     assignedUtilityId: data?.assignedUtilityCode?.id, //assignedUtilityCode.id //number
-    imagePath: "string",
+    imagePath: data?.deviceImg,
     name: data?.name, //name //string
     registrantOrganisationCode: "string", // ??
     defaultAccountCode: data?.defaultAccountCode, //defaultAccountCode //string

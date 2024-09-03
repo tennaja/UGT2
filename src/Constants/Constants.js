@@ -21,6 +21,7 @@ export const SUB_MENU_ID = {
 export const DEVICE_STATUS = {
   DRAFT: "Draft",
   SUBMITTED: "Submitted",
+  VERIFYING: "Verifying",
   VERIFIED: "Verified",
   APPROVED: "Approved",
   REJECTED: "Rejected",
@@ -39,6 +40,9 @@ export const USER_GROUP_ID = {
 
   PORTFOLIO_MNG: 7,
   ALL_MODULE_VIEWER: 8,
+
+  UGT_REGISTANT_VERIFIER : 21,
+  UGT_REGISTANT_SIGNATORY : 22
 };
 
 export const USER_GROUP_MAIN_MODULE = {
@@ -60,6 +64,8 @@ export const UTILITY_GROUP_ID = {
   EGAT: 1,
   PEA: 2,
   MEA: 3,
+  VER: 0,
+  SIG : 0
 };
 
 export const COOKIE_KEY = {

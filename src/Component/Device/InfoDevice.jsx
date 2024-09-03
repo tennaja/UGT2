@@ -489,14 +489,18 @@ const InfoDevice = () => {
     if (
       userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
       userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
-      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
     ) {
       // other role can only view
       if (
         status !== DEVICE_STATUS.SUBMITTED.toLowerCase() &&
         status !== DEVICE_STATUS.IN_PROGRESS.toLowerCase() &&
         status !== DEVICE_STATUS.WITHDRAWN.toLowerCase() &&
-        status !== DEVICE_STATUS.APPROVED.toLowerCase()
+        status !== DEVICE_STATUS.APPROVED.toLowerCase() && 
+        status !== DEVICE_STATUS.VERIFYING.toLowerCase() && 
+        status !== DEVICE_STATUS.VERIFIED.toLowerCase()
       ) {
         isEdit = true;
       }   
@@ -510,13 +514,10 @@ const InfoDevice = () => {
     const status = (deviceobj?.statusName ?? "").toLowerCase();
 
     if (
-      userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
-      userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
-      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
     ) {
       if (
-        status == DEVICE_STATUS.DRAFT.toLowerCase() ||
-        status == DEVICE_STATUS.REJECTED.toLowerCase()
+        status == DEVICE_STATUS.VERIFIED.toLowerCase()
       ) {
         isSubmit = true;
       } else {
@@ -527,6 +528,8 @@ const InfoDevice = () => {
     return isSubmit;
   };
 
+  
+
   const checkCanWithdrawn = () => {
     let isWithdraw = false;
     const status = (deviceobj?.statusName ?? "").toLowerCase();
@@ -534,11 +537,15 @@ const InfoDevice = () => {
     if (
       userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
       userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
-      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
     ) {
       if (
         status == DEVICE_STATUS.DRAFT.toLowerCase() ||
-        status == DEVICE_STATUS.REJECTED.toLowerCase()
+        status == DEVICE_STATUS.REJECTED.toLowerCase() ||
+        status == DEVICE_STATUS.VERIFYING.toLowerCase() ||
+        status == DEVICE_STATUS.VERIFIED.toLowerCase()
       ) {
         isWithdraw = true;
       } else {
@@ -548,7 +555,67 @@ const InfoDevice = () => {
 
     return isWithdraw;
   };
+  const checkCanVerifying = () => {
+    let isVerifying = false;
+    const status = (deviceobj?.statusName ?? "").toLowerCase();
 
+    if (
+      userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
+    ) {
+      if (
+        status == DEVICE_STATUS.DRAFT.toLowerCase() 
+      ) {
+        isVerifying = true;
+      } else {
+        isVerifying = false;
+      }
+    }
+
+    return isVerifying;
+  };
+  const checkCanVerified = () => {
+    let isVerified = false;
+    const status = (deviceobj?.statusName ?? "").toLowerCase();
+
+    if (
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+    ) {
+      if (
+        status == DEVICE_STATUS.VERIFYING.toLowerCase() 
+      ) {
+        isVerified = true;
+      } else {
+        isVerified = false;
+      }
+    }
+
+    return isVerified;
+  };
+
+  const checkCanReturn = () => {
+    let isReturn = false;
+    const status = (deviceobj?.statusName ?? "").toLowerCase();
+
+    if (
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+    ) {
+      if (
+        status == DEVICE_STATUS.VERIFYING.toLowerCase() ||
+        status == DEVICE_STATUS.VERIFIED.toLowerCase()
+      ) {
+        isReturn = true;
+      } else {
+        isReturn = false;
+      }
+    }
+
+    return isReturn;
+  };
   const checkShowManageBtn = () => {
     if (canEdit || canSubmit || canWithdrawn) {
       return true;
@@ -575,6 +642,9 @@ const InfoDevice = () => {
   const canEdit = checkCanEdit();
   const canSubmit = checkCanSubmit();
   const canWithdrawn = checkCanWithdrawn();
+  const canVerifying = checkCanVerifying();
+  const canVerified = checkCanVerified()
+  const canReturn = checkCanReturn();
   const isShowManageBtn = checkShowManageBtn();
 
   // console.log("canEdit", canEdit);
@@ -632,7 +702,7 @@ const InfoDevice = () => {
             >
               <div className="p-4">
                 <div className=" lg:col-span-2 ">
-                  <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
+                  <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
                     <div
                       id="top-div"
                       className="md:col-span-3  lg:col-span-4 flex items-center gap-3"
@@ -654,41 +724,57 @@ const InfoDevice = () => {
 
                     <div className="md:col-span-6 lg:col-span-2 text-right grid items-end">
                       <div className="flex justify-end gap-3">
+                        
                          {/* <PdfTablePreview data={deviceobj}/> */}
                          <PreviewPdf data={sf02obj}/>
                         {isShowManageBtn && (
                           <ManageBtn
                             actionList={[
                               {
-                                icon: <LuSend />,
+                                // icon: <LuSend />,
                                 label: "Submit",
                                 onClick: onClickSubmitBtn,
                                 disabled: !canSubmit,
+                                endSection: true,
                               },
                               {
-                                icon: <FaRegEdit />,
+                                // icon: <FaRegEdit />,
                                 label: "Edit",
                                 onClick: onClickEdit,
                                 disabled: !canEdit,
                                 endSection: true,
                               },
                               {
-                                icon: <PiHandWithdrawFill />,
+                                // icon: <PiHandWithdrawFill />,
                                 label: "Withdraw",
                                 onClick: onClickWithdrawBtn,
                                 disabled: !canWithdrawn,
+                                endSection: true,
                               },
                               {
-                                icon: <PiHandWithdrawFill />,
+                                // icon: <PiHandWithdrawFill />,
                                 label: "Return",
                                 onClick: onClickReturnBtn,
-                                disabled: !canWithdrawn,
+                                disabled: !canReturn,
+                                endSection: true,
+                              },
+                              {
+                                label : "Send to Verify",
+                                onClick : onClickSendtoVerifyBtn,
+                                disabled : !canVerifying,
+                                endSection: true,
+                              },
+                              {
+                                label : "Verify",
+                                onClick : onClickVerifiedBtn,
+                                disabled : !canVerified,
+                                
                               }
                             ]}
                           />
                         )}
                         {infoMessage() && (
-                          <div className="text-xs text-gray-500 text-right whitespace-pre">
+                          <div className="text-xs text-gray-500 ">
                             {infoMessage()}
                           </div>
                         )}
@@ -1145,20 +1231,25 @@ const InfoDevice = () => {
                 
               
              <div className="flex justify-between">
-                
-                <button onClick={onClickReturnBtn} className="w-64 mt-5 rounded h-12 px-6 text-white transition-colors duration-150 bg-red-600 rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
+             <div className="flex flex-col">
+                    {canReturn ? <button onClick={onClickReturnBtn} className="w-64 mt-5 rounded h-12 px-6 text-white transition-colors duration-150 bg-red-600 rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
                             <b></b>Return
-                    </button>
+                    </button> : null}
+                    </div>
                     <div className="flex flex-col gap-2 pb-2 mt-5">
-                    <button onClick={onclicksubmitstep1} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
+                    
+                    {canSubmit ? <button onClick={onclicksubmitstep1} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
                             <b></b>Sign & Submit
-                    </button>
-                    <button onClick={onClickSendtoVerifyBtn} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
+                    </button> : null }
+                    
+                    {canVerifying ? <button onClick={onClickSendtoVerifyBtn} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
                             <b></b>Send to Verify
-                    </button>
-                    <button onClick={onClickVerifiedBtn} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
+                    </button> : null }
+                    
+                    {canVerified ? <button onClick={onClickVerifiedBtn} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
                             <b></b> Verify
-                    </button>
+                    </button> : null}
+                    
               </div></div>
               </div>
             </Card>
