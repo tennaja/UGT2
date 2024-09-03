@@ -168,7 +168,7 @@ const handleClickConfirmVerifying = () => {
 
             <div className="flex gap-2">
               <button
-                onClick={onChangeModalDone}
+                onClick={backToHome}
                 className={`w-full bg-[#F5F4E9] hover:bg-[#4D6A00] text-[#4D6A00] hover:text-white rounded shadow-sm px-4 py-2 text-base font-semibold  sm:text-sm`}
               >
                 Back 

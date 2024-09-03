@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button, Card, LoadingOverlay, Menu } from "@mantine/core";
 import { PiHandWithdrawFill } from "react-icons/pi";
 import Skeleton from "@mui/material/Skeleton";
-import PdfTablePreview from '../Control/PreviewPdf';
+import PdfTablePreview from '../Control/TemplatePdf';
 import MySelect from "../Control/Select";
 import {
   FetchDeviceDropdrowList,
@@ -21,7 +21,8 @@ import {
   VerifiedDevice,
   clearModal,
   FetchDownloadFile,
-  FetchDeleteFile
+  FetchDeleteFile,
+  FetchSF02ByID
 } from "../../Redux/Device/Action";
 import StatusLabel from "../../Component/Control/StatusLabel";
 import LoadPage from "../Control/LoadPage";
@@ -44,11 +45,14 @@ import { end } from "@popperjs/core";
 import { USER_GROUP_ID } from "../../Constants/Constants";
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import ModalVerifyDone from "../Control/Modal/ModalDoneVerrify";
-import PdfFormPreview from "../Control/PreviewPdf"
+import PdfFormPreview from "../Control/TemplatePdf"
 import ModalSignStep1 from "../Control/Modal/ModalSignstep1";
 import ModalSignStep2 from "../Control/Modal/ModalSignstep2";
 import ModalSignStep3 from "../Control/Modal/ModalSignstep3";
 import ModalSubmitDone from "../Control/Modal/ModalDoneSubmit";
+import PreviewPdf from "../Control/Previewsf02";
+import ModalConfirmVerified from "../Control/Modal/ModalConfirmVerified";
+import ModalConfirmSubmit from "../Control/Modal/ModalConfirmSubmit";
 const InfoDevice = () => {
   //default location on map Thailand
   const defaultLocation = [13.736717, 100.523186];
@@ -63,14 +67,23 @@ const InfoDevice = () => {
   const [lon, setLon] = useState(defaultLocation[1]);
   const [status, setStatus] = useState(null);
   const [displayCountry, setDisplayCountry] = useState("");
-  const [isOpenConfirmModal, setOpenConfirmModal] = useState(false);
+ 
   const [isOpenConfirmReturnModal, setOpenConfirmReturnModal] = useState(false);
   const [modalConfirmReturnProps, setModalConfirmReturnProps] = useState(null);
+
+  const [isOpenConfirmSubmitModal, setOpenConfirmSubmitModal] = useState(false);
+  const [modalConfirmSubmitProps, setModalConfirmSubmitProps] = useState(null);
   const [isOpenConfirmVerifiedModal, setOpenConfirmVerifiedModal] = useState(false);
   const [modalConfirmVerifiedProps, setModalConfirmVerifiedProps] = useState(null);
+  const [isOpenConfirmModal, setOpenConfirmModal] = useState(false);
+  const [opensubmitstep1,setOpenSubmitstep1] =useState(false);
+  const [opensubmitstep2,setOpenSubmitstep2] =useState(false);
+  const [opensubmitstep3,setOpenSubmitstep3] =useState(false);
+  // const [test,setTest]= useState() 
+  const test = useRef(null)
   const [modalConfirmProps, setModalConfirmProps] = useState(null);
-  const [modalConfirmSendtoVerifyProps, setModalConfirmSendtoVerifyProps] = useState(null);
   const deviceobj = useSelector((state) => state.device.deviceobj);
+  const sf02obj = useSelector((state) => state.device.sf02obj);
   const filesf02 = useSelector((state)=> state.device.filesf02) 
   const userData = useSelector((state) => state.login?.userobj);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
@@ -84,9 +97,21 @@ const InfoDevice = () => {
     dispatch(clearModal());
     navigate(WEB_URL.DEVICE_LIST);
   };
+  console.log(sf02obj)
   console.log(userData)
-  console.log(filesf02)
+  console.log("Dispatching PDF File...",filesf02)
   console.log(deviceobj)
+
+  useEffect(() => {
+    // This effect will run whenever filesf02 changes
+    if (filesf02) {
+      test.current = filesf02
+      // setTest(filesf02)
+      console.log('filesf02 has changed:', test.current);
+      // Perform any side effect here, like an API call or state update
+    }
+  }, [filesf02]); 
+  // filesf02 is the dependency for this useEffect
   const {
     setValue,
     control,
@@ -120,6 +145,13 @@ const InfoDevice = () => {
 
     autoScroll();
   }, []);
+
+ useEffect(() =>{
+  dispatch(
+    FetchSF02ByID(code, (res, err) => {
+    })
+  );
+ },[]) 
 
   useEffect(() => {
     if (deviceobj) {
@@ -182,15 +214,42 @@ const InfoDevice = () => {
 
   // ------------------Submit & Withdraw Function------------------------------ //
 
+  const onclickclosesubmitstep1 =()=>{
+    setOpenSubmitstep1(false)
+  }
+  const onclickclosesubmitstep2 =()=>{
+    setOpenSubmitstep1(true)
+    setOpenSubmitstep2(false)
+  }
+  const onclickclosesubmitstep3 =()=>{
+    setOpenSubmitstep2(true)
+    setOpenSubmitstep3(false)
+  }
+  const onclicksubmitstep1 =() => {
+    setOpenSubmitstep1(true)
+  }
+  const onclicksubmitstep2 =() => {
+    setOpenSubmitstep2(true)
+    setOpenSubmitstep1(false)
+    setOpenSubmitstep3(false)
+  }
+  const onclicksubmitstep3 =() => {
+    setOpenSubmitstep3(true)
+    setOpenSubmitstep2(false)
+    setOpenSubmitstep1(false)
+  }
+
   const onClickSubmitBtn = () => {
-    setOpenConfirmModal(true);
-    setModalConfirmProps({
+    setOpenConfirmSubmitModal(true);
+    setModalConfirmSubmitProps({
       onCloseModal: handleCloseModalConfirm,
       onClickConfirmBtn: handleClickConfirmSubmit,
       title: "Are you sure?",
       content:
         "If you confirm , this device will be submitted to review by EVIDENT, you will no longer be able to modify it.",
       buttonTypeColor: "primary",
+      data : deviceobj,
+      UserSign : userData
     });
   };
 
@@ -204,9 +263,10 @@ const InfoDevice = () => {
       content:
         "Device Registration requires to be edited.Would you like to return to Device Owner?",
       buttonTypeColor: "primary",
+      
     });
   };
-
+//---------------------------------------------------------------------
   const onClickSendtoVerifyBtn = () => {
     setOpenConfirmModal(true);
     setModalConfirmProps({
@@ -220,14 +280,16 @@ const InfoDevice = () => {
   };
 
   const onClickVerifiedBtn = () => {
-    setOpenConfirmModal(true);
-    setModalConfirmProps({
+    setOpenConfirmVerifiedModal(true);
+    setModalConfirmVerifiedProps({
       onCloseModal: handleCloseModalConfirm,
       onClickConfirmBtn: handleClickConfirmVerified,
       title: "Verify this Device?",
       content:
         "Would you like to verify this device? Verified device will be sent to sign and unable to recall.",
       buttonTypeColor: "primary",
+      data : deviceobj,
+      UserSign : userData   
     });
   };
 
@@ -319,6 +381,8 @@ const InfoDevice = () => {
   };
 
   const handleCloseModalConfirm = () => {
+    setOpenConfirmSubmitModal(false)
+    setOpenConfirmVerifiedModal(false)
     setOpenConfirmModal(false);
     setOpenConfirmReturnModal(false);
   };
@@ -327,16 +391,27 @@ const InfoDevice = () => {
   const handleClickConfirmSubmit = () => {
     showLoading();
     const deviceID = deviceobj?.id;
+    const username = userData?.firstName;
+    const SignatureDateTime = Date();
+    const organisationId = "1";
+    const organisationName = "OrgName101";
+    const contactPerson = "Contact101";
+    const businessAddress = "Addr101";
+    const country = "Thai";
+    const email = userData?.email;
+    const telephone = "0999999999";
     dispatch(
-      SubmitDevice(deviceID, (error) => {
+      SubmitDevice(deviceID,username,SignatureDateTime,organisationId,
+        organisationName,contactPerson,businessAddress,country,email,telephone,test.current,
+        (error) => {
         if (error) {
-          setOpenConfirmModal(false);
+          setOpenConfirmSubmitModal(false);
         } else {
           dispatch(clearModal());
           navigate(WEB_URL.DEVICE_LIST);
         }
         hideLoading();
-        setOpenConfirmModal(false);
+        setOpenConfirmSubmitModal(false);
       })
     );
   };
@@ -371,8 +446,9 @@ const InfoDevice = () => {
   const handleClickConfirmVerified = () => {
     showLoading();
     const deviceID = deviceobj?.id;
+    console.log("FILE CURRENT-------",test.current)
     dispatch(
-      VerifiedDevice(deviceID, () => {
+      VerifiedDevice(deviceID, test.current,() => {
         hideLoading();
         // dispatch(clearModal());
       })
@@ -578,8 +654,8 @@ const InfoDevice = () => {
 
                     <div className="md:col-span-6 lg:col-span-2 text-right grid items-end">
                       <div className="flex justify-end gap-3">
-                         <PdfTablePreview data={deviceobj}/>
-                      
+                         {/* <PdfTablePreview data={deviceobj}/> */}
+                         <PreviewPdf data={sf02obj}/>
                         {isShowManageBtn && (
                           <ManageBtn
                             actionList={[
@@ -1074,7 +1150,7 @@ const InfoDevice = () => {
                             <b></b>Return
                     </button>
                     <div className="flex flex-col gap-2 pb-2 mt-5">
-                    <button onClick={onClickSubmitBtn} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
+                    <button onClick={onclicksubmitstep1} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
                             <b></b>Sign & Submit
                     </button>
                     <button onClick={onClickSendtoVerifyBtn} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
@@ -1089,18 +1165,33 @@ const InfoDevice = () => {
           </div>
         </div>
       </div>
-      {/* <ModalSignStep1/> */}
-      {/* <ModalSignStep2/> */}
-      {/* <ModalSignStep3/> */}
+      {opensubmitstep1 && <ModalSignStep1
+      onCloseModal={onclickclosesubmitstep1}
+      onClickConfirmBtn={onclicksubmitstep2}
+      />}
+      
+      {opensubmitstep2 && <ModalSignStep2
+      onCloseModal={onclickclosesubmitstep2}
+      onClickConfirmBtn={onclicksubmitstep3}
+      />}
+      
+      {opensubmitstep3 && <ModalSignStep3
+      onCloseModal={onclickclosesubmitstep3}
+      onClickConfirmBtn={onClickSubmitBtn}
+      />}
       {/* <ModalSubmitDone/> */}
       {isOpenDoneModal && (
         <ModalVerifyDone
-          List={deviceobj}
+          File={sf02obj}
           onChangeModalDone={handleClickBackToHome}
         />
       )}
       {isOpenConfirmModal && <ModalConfirm {...modalConfirmProps} />}
+      {isOpenConfirmSubmitModal && <ModalConfirmSubmit {...modalConfirmSubmitProps} />}
+      {isOpenConfirmVerifiedModal && <ModalConfirmVerified {...modalConfirmVerifiedProps} />}
       {isOpenConfirmReturnModal && <ModalReturnConfirm {...modalConfirmReturnProps} />}
+      
+      
       {isOpenFailModal && (
         <ModelFail
           onClickOk={() => {

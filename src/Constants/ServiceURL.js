@@ -1,7 +1,7 @@
 const DOMAIN_URL = process.env.SERVICE_DOMAIN;
 const DOMAIN_URL_EGAT = process.env.SERVICE_DOMAIN_EGAT;
 
-export const LOGIN_URL = `${DOMAIN_URL}/ugt/v1/authen/login`;
+export const LOGIN_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/authen/login`;
 
 export const TEST_LOGIN_EVIDENT_URL = `${DOMAIN_URL}/ugt/v1/testLoginEvident`;
 
@@ -23,7 +23,7 @@ export const UPLOAD_FILE_EVIDENT_DEVICE_URL = `${`https://ugt-thai-api.egat.co.t
 export const DOWNLOAD_FILE_EVIDENT_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/downloadfile`;
 export const DELETE_FILE_EVIDENT_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/deletefile`;
 export const FORM_MASTTER_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/form-master`;
-
+export const SF02_BY_ID_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/sf02download`;
 //Menu
 export const GET_MENU_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/menu-list`;
 export const GET_SUB_MENU_DEVICE_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/device-management/submenu-list`;

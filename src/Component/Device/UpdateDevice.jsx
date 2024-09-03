@@ -932,6 +932,7 @@ const UpdateDevice = () => {
                               name="defaultAccountCode"
                               control={control}
                               rules={{
+                                required: "This field is required",
                                 maxLength: {
                                   value: 8,
                                   message: "must be at max 8 characters",
@@ -945,6 +946,7 @@ const UpdateDevice = () => {
                                   label={"Default account code"}
                                   disabled={vDisabled}
                                   error={errors.defaultAccountCode}
+                                  validate={" *"}
                                   // ... other props
                                 />
                               )}
@@ -1701,13 +1703,13 @@ const UpdateDevice = () => {
                             required: "This field is required",
                           }}
                           render={({ field }) => (
-                            <Textarea
+                            <Input
                               {...field}
                               id={"Otherimport"}
                               type={"text"}
                               label={"Other import eletricity"}
                               validate={" *"}
-                              error={errors.note}
+                              error={errors.Otherimport}
                               // ... other props
                             />
                           )}
@@ -1721,13 +1723,13 @@ const UpdateDevice = () => {
                             required: "This field is required",
                           }}
                           render={({ field }) => (
-                            <Textarea
+                            <Input
                               {...field}
                               id={"Othercarbon"}
                               type={"text"}
                               validate={" *"}
                               label={"Other carbon offset or energy tracking scheme"}
-                              error={errors.note}
+                              error={errors.Othercarbon}
                               // ... other props
                             />
                           )}

@@ -39,7 +39,7 @@ import Multiselect from "../Control/Multiselect";
 import numeral from "numeral";
 
 import Highlighter from "react-highlight-words";
-import TestConnect from "./TestConnect";
+
 
 const itemsPerPage = 200;
 
@@ -67,6 +67,9 @@ const ListDevice = (props) => {
   const currentUGTGroup = useSelector((state) => state.menu.currentUGTGroup);
   const userData = useSelector((state) => state.login.userobj);
   const totalDevice = deviceRdc?.totalDevice;
+  const totalExpire = deviceRdc?.totalExpire;
+  const totalDeviceInactive = deviceRdc?.totalDeviceInactive;
+  const totalRegistration = deviceRdc?.totalRegistration;
   const totalCapacity = deviceRdc?.totalCapacity?.toLocaleString(undefined, {
     minimumFractionDigits: 2,
   });
@@ -94,7 +97,7 @@ const ListDevice = (props) => {
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
   );
-  console.log(userData.firstName)
+  console.log(userData)
   const columnsAssigned = [
     {
       id: "name",
@@ -747,7 +750,7 @@ const ListDevice = (props) => {
       setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
       dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
 
-      console.log("run check permission", utilityID);
+       console.log("run check permission", utilityID);
       getDeviceData();
       setDisableUtility(true);
     }
@@ -776,8 +779,7 @@ const ListDevice = (props) => {
             <div className="flex sm:flex-col lg:flex-row w-full h-auto gap-4">
               {/* {'left content'} */}
               <div className="flex flex-col w-full h-auto gap-3">
-                <div className="w-full h-full flex justify-start items-start mb-2">
-                  {/* <TestConnect/> */}
+                <div className="w-full h-full flex justify-start items-start">
                   <Card
                     shadow="md"
                     radius="lg"
@@ -828,7 +830,7 @@ const ListDevice = (props) => {
                       <div className="flex justify-between">
                         <div
                           style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[75px] h-[75px] bg-SECONDARY_BUTTON mb-2 "
+                          className="flex justify-center w-[75px] h-[75px] bg-[#3583CD] mb-2 "
                         >
                           <img
                             alt={"ig"}
@@ -868,7 +870,7 @@ const ListDevice = (props) => {
                       <div className="flex justify-between">
                         <div
                           style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[75px] h-[75px] bg-SECONDARY_BUTTON mb-2 "
+                          className="flex justify-center w-[75px] h-[75px] bg-[#FFAD33] mb-2 "
                         >
                           <img
                             alt={"ig"}
@@ -879,7 +881,7 @@ const ListDevice = (props) => {
                         </div>
                         <div>
                           <p className="text-3xl font-semibold m-0 text-end">
-                           8
+                           {totalRegistration}
                           </p>
                           <span> </span>
                           <p className="text-lg font-medium text-slate-500 text-end">
@@ -903,25 +905,25 @@ const ListDevice = (props) => {
                   <Card
                     shadow="md"
                     radius="lg"
-                    className="flex w-full h-44"
+                    className="flex w-full h-full"
                     padding="lg"
                   >
                     <div className="w-full">
                       <div className="flex justify-between">
                         <div
                           style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[50px] h-[50px] bg-SECONDARY_BUTTON  "
+                          className="flex justify-center w-[60px] h-[60px] bg-[#919290]  "
                         >
                           <img
                             alt={"ig"}
                             src={deviceLogo}
-                            width={30}
-                            height={30}
+                            width={40}
+                            height={40}
                           ></img>
                         </div>
                         <div>
                           <p className="text-3xl font-semibold m-0 text-end">
-                            5
+                            {totalDeviceInactive}
                           </p>
                           <span> </span>
                           <p className="text-lg font-medium text-slate-500 text-end">
@@ -949,18 +951,18 @@ const ListDevice = (props) => {
                       <div className="flex justify-between">
                         <div
                           style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[50px] h-[50px] bg-SECONDARY_BUTTON mb-2 "
+                          className="flex justify-center w-[60px] h-[60px] bg-[#F44336] mb-2 "
                         >
                           <img
                             alt={"ig"}
                             src={deviceLogo}
-                            width={30}
-                            height={30}
+                            width={40}
+                            height={40}
                           ></img>
                         </div>
                         <div>
                           <p className="text-3xl font-semibold m-0 text-end">
-                            3
+                            {totalExpire}
                           </p>
                           <span> </span>
                           <p className="text-lg font-medium text-slate-500 text-end">

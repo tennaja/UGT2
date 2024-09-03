@@ -13,7 +13,7 @@ import ModalConfirm from "./ModalConfirm";
 import * as WEB_URL from "../../../Constants/WebURL";
 import { SUB_MENU_ID } from "../../../Constants/Constants";
 import { setSelectedSubMenu } from "../../../Redux/Menu/Action";
-import PdfFormPreview from "../PreviewPdf"
+import PdfFormPreview from "../TemplatePdf"
 
 const ModalSubmitDone = (props) => {
   const {

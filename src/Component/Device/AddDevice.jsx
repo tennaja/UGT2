@@ -617,7 +617,7 @@ const AddDevice = () => {
                         <div className="grid grid-cols-6 gap-4">
                          
 
-                          <div className="md:col-span-6">
+                          <div className="md:col-span-3">
                             <Controller
                               name="name"
                               control={control}
@@ -677,6 +677,7 @@ const AddDevice = () => {
                               name="defaultAccountCode"
                               control={control}
                               rules={{
+                                required: "This field is required",
                                 maxLength: {
                                   value: 8,
                                   message: "must be at max 8 characters",
@@ -690,6 +691,7 @@ const AddDevice = () => {
                                   type={"text"}
                                   label={"Default account code"}
                                   error={errors.defaultAccountCode}
+                                  validate={" *"}
                                   // ... other props
                                 />
                               )}
@@ -750,7 +752,7 @@ const AddDevice = () => {
                             />
                           </div>
 
-                          <div className="md:col-span-3">
+                          {/* <div className="md:col-span-3">
                             <Controller
                               name="code"
                               control={control}
@@ -773,7 +775,7 @@ const AddDevice = () => {
                                 />
                               )}
                             />
-                          </div>
+                          </div> */}
 
                           <div className="md:col-span-3">
                             <Controller
@@ -1469,7 +1471,7 @@ const AddDevice = () => {
                               type={"text"}
                               label={"Other import eletricity"}
                               validate={" *"}
-                              error={errors.note}
+                              error={errors.Otherimport}
                               // ... other props
                             />
                           )}
@@ -1490,7 +1492,7 @@ const AddDevice = () => {
                               type={"text"}
                               validate={" *"}
                               label={"Other carbon offset or energy tracking scheme"}
-                              error={errors.note}
+                              error={errors.Othercarbon}
                               // ... other props
                             />
                           )}

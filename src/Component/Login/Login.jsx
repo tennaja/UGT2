@@ -54,6 +54,7 @@ const LoginForm = () => {
         timeout: 10000, // Set a timeout of 10 seconds
       })
       .then((res) => {
+        console.log(res?.data?.token)
         const userObj = decodeJwt(res?.data?.token);
         if (res?.status == 200 || res?.status == 202) {
           dispatch(setUserDetail(userObj));

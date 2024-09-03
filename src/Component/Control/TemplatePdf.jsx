@@ -1,91 +1,120 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import {setSF02} from "../../Redux/Device/Action"
+import {setSF02,setCount} from "../../Redux/Device/Action"
 import html2pdf from 'html2pdf.js';
 import pdfIcon from '../assets/EV.png';
 import './page.css'
 
-const PdfFormPreview = (data) => {
+const PdfFormPreview = (data,Sign) => {
+  console.log(data.data)
+  console.log(data.Sign)
   const dispatch = useDispatch();
   const filesf02 = useSelector((state)=> state.device.filesf02) 
+  const count = useSelector((state) => state.device.count)
+  console.log(count)
   const [load,setload] = useState(false)
   const [list, setList] = useState();
-  useEffect((data) => {
-    setList(data);
-  }, [data.data.id]); // Added dependency to avoid potential issue with useEffect
-
-  const pdfContentRef = useRef(null);
+  const [version, setVersion] = useState(count ?? 0);
   
-  // useEffect(()=>{
-  //   generatePdf();
-  // },[])
+  const now = new Date();
 
-const generatePdf = () => {
-  setload(true)
-  const element = pdfContentRef.current;
+  const day = String(now.getDate()).padStart(2, '0'); // Day of the month with leading zero
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Month with leading zero
+  const year = now.getFullYear();
 
-  // Ensure the content is visible temporarily for PDF generation
-  element.style.display = 'block';
-
-  html2pdf()
-    .from(element)
-    .set({
-      html2canvas: {
-        scale: 4, // Increase the scale for better image resolution
-        letterRendering: true, // Improve font rendering
-        useCORS: true // Enable CORS to handle images from other origins
-      },
-      jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait',
-        precision: 16 // Increase precision for better quality
-      }
-    })
-    .toPdf()
-    .get('pdf')
-    .then((pdf) => {
-      const totalPages = pdf.internal.getNumberOfPages();
-      for (let i = 1; i <= totalPages; i++) {
-        pdf.setPage(i);
-
-        // Adjust footer position
-        pdf.setFontSize(8);
-        pdf.text(
-          `Version: 1.3                                                               Copyright © Evident Ev Limited                                                                               Page ${i}/${totalPages}`,
-          pdf.internal.pageSize.getWidth() / 2,
-          pdf.internal.pageSize.getHeight() - 7,
-          { align: 'center' }
-        );
-
-        // Add header image to each page (optional)
-        // pdf.addImage(pdfIcon, 'PNG', 5, 5, 20, 20); // Adjust position and size as needed
-      }
-
-      // Open the PDF in a new tab
-      const url = pdf.output('bloburl');
-      const pdfWindow = window.open(url, '_blank');
-      if (pdfWindow) pdfWindow.focus();
-      const pdfBlob = pdf.output('blob');
+  console.log(version)
+  // useEffect(() => {
+  //   if(Sign){
       
-      dispatch(setSF02(pdfBlob));
-      console.log(filesf02)
-      console.log(pdfBlob)
-      // Hide the content again
-      // pdf.save('document.pdf');
-      element.style.display = 'none';
-      setload(false)
-    })
-    .catch((error) => {
-      console.error('Error generating PDF:', error);
-      // Hide the content again if there's an error
-      element.style.display = 'none';
-      // Display an alert to the user (optional)
-      alert('An error occurred while generating the PDF. Please try again.');
-    });
-};
+  //   }
+  // }, [data.data.id]); // Added dependency to avoid potential issue with useEffect
+
+  const pdfContentRef = useRef("");
+  
+  useEffect(()=>{
+    generatePdf();
+  },[])
+
+  const generatePdf = () => {
+    setload(true);
+    const element = pdfContentRef.current;
+    
+    const newVersion = (version + 1);
+    console.log("VERSION ---------------",newVersion)
+    dispatch(setCount(newVersion))
+    // Ensure the content is visible temporarily for PDF generation
+    element.style.display = 'block';
+  
+    html2pdf()
+      .from(element)
+      .set({
+        html2canvas: {
+          scale: 4, // Increase the scale for better image resolution
+          letterRendering: true, // Improve font rendering
+          useCORS: true // Enable CORS to handle images from other origins
+        },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4',
+          orientation: 'portrait',
+          precision: 16 // Increase precision for better quality
+        }
+      })
+      .toPdf()
+      .get('pdf')
+      .then((pdf) => {
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+          pdf.setPage(i);
+  
+          // Adjust footer position
+          pdf.setFontSize(8);
+          pdf.text(
+            `Version: 1.3                                                               Copyright © Evident Ev Limited                                                                               Page ${i}/${totalPages}`,
+            pdf.internal.pageSize.getWidth() / 2,
+            pdf.internal.pageSize.getHeight() - 7,
+            { align: 'center' }
+          );
+  
+        }
+  
+        // Generate PDF Blob
+        const pdfBlob = pdf.output('blob');
+        
+  // Create a File object from the Blob with a filename
+        const pdfFile = new File([pdfBlob], `SF-02v${newVersion}.pdf`, { type: 'application/pdf' });
+        console.log(pdfFile,data)
+        // Open the PDF in a new tab for preview
+        const url = URL.createObjectURL(pdfBlob);
+        const pdfWindow = window.open(url, '_blank');
+        if (pdfWindow) pdfWindow.focus();
+  
+        
+        // Dispatch the generated PDF Blob for storage
+        dispatch(setSF02(pdfFile));
+        
+        console.log('Dispatched PDF File:', pdfFile);
+        
+        
+        
+        // Update the version in state to the new version
+        // setVersion(newVersion);
+
+        // Hide the content again
+        element.style.display = 'none';
+        setload(false);
+      })
+      .catch((error) => {
+        console.error('Error generating PDF:', error);
+        // Hide the content again if there's an error
+        element.style.display = 'none';
+        setload(false);
+        // Display an alert to the user (optional)
+        alert('An error occurred while generating the PDF. Please try again.');
+      });
+  };
  if(load){
-  return null
+  return ""
  }
   return (
     <div>
@@ -114,9 +143,9 @@ const generatePdf = () => {
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left w-1/3">Date</td>
-                <td className="border p-2 text-left ">DD</td>
-                <td className="border p-2 text-left ">MM</td>
-                <td className="border p-2 text-left ">YYYY</td>
+                <td className="border p-2 text-left ">{data?.Sign == "" ? "" :day}</td>
+                <td className="border p-2 text-left ">{data?.Sign == "" ? "" :month}</td>
+                <td className="border p-2 text-left ">{data?.Sign == "" ? "" :year}</td>
               </tr>
             </thead>
             <tbody>
@@ -167,13 +196,13 @@ submission`})</em></p>
             </thead>
             <tbody>
               {[
-                ['Organisation ID/code', ],
-                ['Organisation name', 'Expression'],
-                ['Contact person', 'Expression'],
-                ['Business address', 'Expression'],
-                ['Country', 'Expression'],
-                ['e-mail', 'Expression'],
-                ['Telephone', 'Expression']
+                ['Organisation ID/code', ``],
+                ['Organisation name', ''],
+                ['Contact person', ''],
+                ['Business address', ''],
+                ['Country', ''],
+                ['e-mail', `${data?.Sign == "" ? "" : data?.Sign.email}`],
+                ['Telephone', '']
               ].map((row, index) => (
                 <tr key={index}>
                   <td className="border p-2 font-bold break-all w-1/3">{row[0]}</td>
@@ -221,7 +250,7 @@ submission`})</em></p>
                 <td className="border p-2 font-bold w-72 ">Facility name
                 <p className='text-[8px] text-gray-600'>({`including postal or zip code`})</p>
                 </td>
-                <td className="border p-2 text-left break-all " >{data.data.name}</td>
+                <td className="border p-2 text-left break-all " >{data?.data?.name}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Facility address</td>
@@ -229,15 +258,15 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Country</td>
-                <td className="border p-2 text-left break-all" >{data.data.countryCode}</td>
+                <td className="border p-2 text-left break-all" >{data?.data?.countryCode}</td>
               </tr>
               <tr>
                 <td className="border p-2  font-bold"><div className="flex text-left"><p>Latitude</p><p className='text-[8px] text-gray-500 ml-1'>(±n.nnnnnn)</p></div></td>
-                <td className="border p-2 text-left break-all" >{data.data.latitude}</td>
+                <td className="border p-2 text-left break-all" >{data?.data?.latitude}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold"><div className="flex text-left"><p>Longitude</p><p className='text-[8px] text-gray-500 ml-1'>(±n.nnnnnn)</p></div></td>
-                <td className="border p-2 text-left break-all" >{data.data.longitude}</td>
+                <td className="border p-2 text-left break-all" >{data?.data?.longitude}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Installed capacity</td>
@@ -247,7 +276,7 @@ submission`})</em></p>
 
                         <tbody>
                             <tr>
-                            <td className="border p-2 font-bold w-1/2">{data.data.capacity} MW</td>
+                            <td className="border p-2 font-bold w-1/2">{data?.data?.capacity} MW</td>
                             <td className="border p-2 text-left text-xs break-all w-1/2"><em>Up to 6 decimal places</em></td>
                             </tr>
                             <tr>
@@ -292,7 +321,7 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold w-64 ">Number of generating units</td>
-                <td className="border p-2 text-left break-all" >{data.data.generatingUnit}</td>
+                <td className="border p-2 text-left break-all" >{data?.data?.generatingUnit}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Commissioning date</td>
@@ -300,7 +329,7 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Owner of the network to which the Production Device is connected and the voltage of that connection</td>
-                <td className="border p-2 text-left break-all" >{data.data.deviceOwner}</td>
+                <td className="border p-2 text-left break-all" >{data?.data?.deviceOwner}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">If the Production Device is not connected directly to the grid, specify the circumstances, and additional relevant meter registration numbers</td>
@@ -310,7 +339,7 @@ submission`})</em></p>
                 <td className="border p-2 font-bold">Expected form of volume evidence
                 <p className='text-[8px] text-gray-600'>({`if other please specify`})</p>
                 </td>
-                <td className="border p-2 text-left break-all" >{data.data.isMeteringData == "True" ? "Metering data / " : null}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : null}  {data.data.isOther == "True" ? "Other / " : null} {data.data.otherDescription}</td>
+                <td className="border p-2 text-left break-all" >{data?.data?.isMeteringData == "True" ? "Metering data / " : ""}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data.data.isOther == "True" ? "Other / " : ""} {data.data.otherDescription}</td>
               </tr>
             </tbody>
           </table>
@@ -365,10 +394,10 @@ submission`})</em></p>
                             </tr>
                             <tr>
                             <td className="border p-2 text-left break-all ">
-                           xxxx
+                           
                             </td>
                             <td className="border p-2 text-left break-all ">
-                            xxxx
+                            
                             </td>
                             </tr>
                         </tbody>
@@ -388,10 +417,10 @@ submission`})</em></p>
                             </tr>
                             <tr>
                             <td className="border p-2 text-left break-all">
-                           xxxx
+                           
                             </td>
                             <td className="border p-2 text-left break-all">
-                            xxxx
+                            
                             </td>
                             </tr>
                         
@@ -413,25 +442,25 @@ submission`})</em></p>
             <tr>
                 <td className="border p-2 font-bold w-1/2">Is there an on-site (captive) consumer present?
                 <p className='text-[8px] text-gray-600'>({`if yes please provide details`})</p></td>
-                <td className="border p-2 text-left break-all w-full" >Expression</td>
+                <td className="border p-2 text-left break-all w-full" >{data?.data?.onSiteConsumer}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Auxiliary/standby energy sources present?
                 <p className='text-[8px] text-gray-600'>({`if yes please provide details`})</p>
                 </td>
-                <td className="border p-2 text-left break-all" colSpan="3">Expression</td>
+                <td className="border p-2 text-left break-all" colSpan="3">{data?.data?.energySource}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Please give details of how the site can import electricity by means other than through the meter(s) specified above</td>
-                <td className="border p-2 text-left break-all" colSpan="3">Expression</td>
+                <td className="border p-2 text-left break-all" colSpan="3">{data?.data?.otherImportEletricity}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Please give details (including registration id) of any carbon offset or energy tracking scheme for which the Production Facility is registered.  State ‘None’ if that is the case</td>
-                <td className="border p-2 text-left break-all" colSpan="3">Expression</td>
+                <td className="border p-2 text-left break-all" colSpan="3">{data?.data?.otherCarbonOffset}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Please identify any Labelling Scheme(s) for which the Production Facility is accredited</td>
-                <td className="border p-2 text-left break-all" colSpan="3">Expression</td>
+                <td className="border p-2 text-left break-all" colSpan="3"></td>
               </tr>
               
          
@@ -471,7 +500,7 @@ submission`})</em></p>
             
               <tr>
                 <td className="border p-2 font-bold w-1/2">Has the Production Facility ever received public (government) funding (e.g. Feed in Tariff)?</td>
-                <td className="border p-2 text-left break-all w-full" colSpan="3">Expression</td>
+                <td className="border p-2 text-left break-all w-full" colSpan="3">{data?.data?.publicFunding}</td>
               </tr>
               <tr>
                 <td className="border p-2 text-left">(if public (government) funding has been received when did/will it finish?)</td>
@@ -568,19 +597,19 @@ I acknowledge and agree that the information provided will be used by Evident fo
              
               <tr>
               <td className="border p-2 font-bold w-1/4" >Signature</td>
-              <td className="border p-2 text-left break-all" colSpan="3">Expression</td>
+              <td className="border p-2 text-left break-all" colSpan="3">{data?.Sign == "" ? "" :data?.Sign?.firstName + " " +data?.Sign?.lastName}</td>
                 
               </tr>
               <tr>
               <td className="border p-2 font-bold" >Name</td>
-              <td className="border p-2 text-left break-all" colSpan="3">Expression</td>
+              <td className="border p-2 text-left break-all" colSpan="3">{ data?.Sign == "" ? "" : data?.Sign?.firstName + " " +data?.Sign?.lastName}</td>
                 
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Date</td>
-                <td className="border p-2 text-left">DD</td>
-                <td className="border p-2 text-left">MM</td>
-                <td className="border p-2 text-left">YYYY</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" : day}</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" :month}</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" :year}</td>
               </tr>
             </tbody>
           </table>
@@ -632,19 +661,18 @@ I confirm that all necessary permissions of the Production Facility Owner have b
              
               <tr>
               <td className="border p-2 font-bold w-1/4" >Signature</td>
-              <td className="border p-2 text-left break-all" colSpan="3">Expression</td>
-                
+              <td className="border p-2 text-left break-all" colSpan="3">{data?.Sign == "" ? "" : data?.Sign?.firstName + " " +data?.Sign?.lastName}</td>
               </tr>
               <tr>
               <td className="border p-2 font-bold" ><div className="flex text-left"><p>Name</p><p className='text-[8px] text-gray-500 ml-1 mt-0'>(BLOCK   CAPITALS)</p></div></td>
-              <td className="border p-2 text-left break-all" colSpan="3">Expression</td>
+              <td className="border p-2 text-left break-all" colSpan="3">{data?.Sign == "" ? "" : data?.Sign?.firstName  + " " +data?.Sign?.lastName}</td>
                 
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Date</td>
-                <td className="border p-2 text-left">DD</td>
-                <td className="border p-2 text-left">MM</td>
-                <td className="border p-2 text-left">YYYY</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" :day}</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" :month}</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" :year}</td>
               </tr>
             </tbody>
           </table>
@@ -794,7 +822,7 @@ I confirm that all necessary permissions of the Production Facility Owner have b
           </div>
         </div>
       </div>
-      <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={generatePdf}>Generate PDF</button>
+      {/* <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={generatePdf}>Generate PDF</button> */}
     </div>
   );
 };

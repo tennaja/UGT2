@@ -7,7 +7,9 @@ import {SET_OPEN_FAIL_MODAL,CLEAR_MODAL,SET_DEVICE_FILTER_LIST, FAIL_REQUEST, MA
     VERIFYING_STATUS,
     RETURN_STATUS,
     VERIFIED_STATUS,
-    SF_02
+    SF_02,
+    DOWLOAD_SF_02,
+    COUNT
 } from "../ActionType"
 
 const initialstate = {
@@ -16,12 +18,17 @@ const initialstate = {
     // devicelist: [],
     deviceobj: {},
     totalDevice:null,
+    totalExpire:null,
+    totalDeviceInactive:null,
+    totalRegistration:null,
     totalCapacity:null,
     topCapacity:[],
     assignedList:[],
     unAssignedList:[],
     totalAssigned:null,
     totalUnAssigned:null,
+    filesf02:null,
+    count:0,
     currentAssignedFilterObj:{
         status:null,
         utility:null,
@@ -47,7 +54,11 @@ const initialstate = {
 export const DeviceReducer = (state = initialstate, action) => {
 
     switch (action.type) {
-        
+        case COUNT:
+            return {
+                ...state,
+                count : action?.count
+            }
         case MAKE_REQUEST:
             return {
                 ...state,
@@ -70,6 +81,9 @@ export const DeviceReducer = (state = initialstate, action) => {
                     totalDevice:action?.totalDevice,
                     totalCapacity:action?.totalCapacity,
                     topCapacity:action?.topCapacity,
+                    totalExpire : action?.totalExpire,
+                    totalDeviceInactive : action?.totalDeviceInactive,
+                    totalRegistration : action?.totalRegistration
                 }
             }
         case SF_02:{
@@ -149,6 +163,12 @@ export const DeviceReducer = (state = initialstate, action) => {
                 ...state,
                 loading:false,
                 deviceobj:action.payload
+            }
+
+            case DOWLOAD_SF_02:return{
+                ...state,
+                sf02obj:action.payload,
+                
             }
 
             case UPDATE_STATUS:return{

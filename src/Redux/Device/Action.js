@@ -16,6 +16,7 @@ import {
   UPLOAD_FILE_EVIDENT_DEVICE_URL,
   DELETE_FILE_EVIDENT_DEVICE_URL,
   DOWNLOAD_FILE_EVIDENT_DEVICE_URL,
+  SF02_BY_ID_URL
 } from "../../Constants/ServiceURL";
 import {
   ADD_STATUS,
@@ -38,9 +39,13 @@ import {
   SET_DEVICE_DASHBOARD,
   SET_DEVICE_ASSIGNED,
   SET_DEVICE_UNASSIGNED,
-  SF_02
+  SF_02,
+  DOWLOAD_SF_02,
+  COUNT
 } from "../../Redux/ActionType";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaCheckCircle } from "react-icons/fa";
 // import { json } from "react-router-dom"
 import { getHeaderConfig } from "../../Utils/FuncUtils";
 export const makeRequest = () => {
@@ -67,12 +72,19 @@ export const setDeviceList = (data) => {
 };
 
 export const setSF02 = (data) => {
-  console.log(data)
   return {
     type: SF_02,
     filesf02: data,
-     };
+    };
 };
+
+export const setCount = (data) => {
+  console.log("ACTION ----------- ",data)
+  return {
+    type : COUNT,
+    count : data
+};
+}
 
 export const setDeviceDashboard = (data) => {
   return {
@@ -81,6 +93,9 @@ export const setDeviceDashboard = (data) => {
     totalDevice: data?.totalAmount,
     totalCapacity: data?.totalCapacity,
     topCapacity: data?.deviceTopCapacity,
+    totalExpire : data?.totalAboutExpire,
+    totalDeviceInactive : data?.totalInActive,
+    totalRegistration : data?.totalRemaining
   };
 };
 
@@ -119,6 +134,13 @@ export const setDeviceObj = (data) => {
   };
 };
 
+export const setDownloadsf02 = (data) => {
+  return {
+    type: DOWLOAD_SF_02,
+    payload: data,
+  };
+};
+
 export const updateDevice = () => {
   return {
     type: UPDATE_STATUS,
@@ -139,6 +161,7 @@ export const verifyingDevice = () => {
 export const verifiedDevice = () => {
   return {
     type: VERIFIED_STATUS,
+    
   };
 };
 
@@ -536,6 +559,16 @@ export const WithdrawDevice = (id, callbackFunc) => {
       (response) => {
         if (response?.status == 200) {
           dispatch(deleteDevice());
+          toast.success("Withdarw Complete!", {
+            position: "top-right",
+            autoClose: 3000,
+            style: {
+              border: "1px solid #a3d744", // Green border similar to the one in your image
+              color: "#6aa84f", // Green text color
+              fontSize: "16px", // Adjust font size as needed
+              backgroundColor: "##FFFFFF", // Light green background
+            }, // 3 seconds
+          });
           callbackFunc();
         } else {
           dispatch(setOpenFailModal());
@@ -552,6 +585,7 @@ export const WithdrawDevice = (id, callbackFunc) => {
 };
 
 
+
 export const ReturnDevice = (id,re,us,callbackFunc) => {
   const deviceID = id;
   const remark = re;
@@ -566,6 +600,16 @@ export const ReturnDevice = (id,re,us,callbackFunc) => {
         console.log(response)
         if (response?.status == 200) {
           dispatch(returnDevice());
+          toast.success("Return Complete!", {
+            position: "top-right",
+            autoClose: 3000,
+            style: {
+              border: "1px solid #a3d744", // Green border similar to the one in your image
+              color: "#6aa84f", // Green text color
+              fontSize: "16px", // Adjust font size as needed
+              backgroundColor: "##FFFFFF", // Light green background
+            }, // 3 seconds
+          });
           callbackFunc();
         } else {
           dispatch(setOpenFailModal());
@@ -582,17 +626,37 @@ export const ReturnDevice = (id,re,us,callbackFunc) => {
 };
 
 
-export const SubmitDevice = (id, callbackFunc) => {
+export const SubmitDevice = (id,name,sigDate,orid,orname,cont,bu,coun,e,t,files, callbackFunc) => {
   const deviceID = id;
-  const submitDeviceURL = `${SUBMIT_DEVICE_URL}/${deviceID}`;
+  const username = name;
+  const SignatureDateTime = "2024-08-27T15:41:55";
+  const organisationId = orid;
+  const organisationName = orname;
+  const contactPerson = cont;
+  const businessAddress = bu;
+  const country = coun;
+  const email = e;
+  const telephone = t;
+  const submitDeviceURL = `${SUBMIT_DEVICE_URL}/${deviceID}?username=${username}&SignatureDateTime=${SignatureDateTime}&organisationId=${organisationId}&organisationName=${organisationName}&contactPerson=${contactPerson}&businessAddress=${businessAddress}&country=${country}&email=${email}&telephone=${telephone}`;
 
   return async (dispatch) => {
     dispatch(makeRequest());
-
-    await axios.put(submitDeviceURL, getHeaderConfig()).then(
+    const formData = new FormData();
+    formData.append('file', files);
+    await axios.put(submitDeviceURL,formData, getHeaderConfig()).then(
       (response) => {
         if (response?.status == 200) {
           dispatch(submitDevice());
+          toast.success("Submit Complete!", {
+            position: "top-right",
+            autoClose: 3000,
+            style: {
+              border: "1px solid #a3d744", // Green border similar to the one in your image
+              color: "#6aa84f", // Green text color
+              fontSize: "16px", // Adjust font size as needed
+              backgroundColor: "##FFFFFF", // Light green background
+            }, // 3 seconds
+          });
           callbackFunc();
         } else {
           dispatch(setOpenFailModal());
@@ -619,6 +683,16 @@ export const VerifingDevice = (id, callbackFunc) => {
       (response) => {
         if (response?.status == 200) {
           dispatch(verifyingDevice());
+          toast.success("Send to Verify Complete!", {
+            position: "top-right",
+            autoClose: 3000,
+            style: {
+              border: "1px solid #a3d744", // Green border similar to the one in your image
+              color: "#6aa84f", // Green text color
+              fontSize: "16px", // Adjust font size as needed
+              backgroundColor: "##FFFFFF", // Light green background
+            }, // 3 seconds
+          });
           callbackFunc();
         } else {
           dispatch(setOpenFailModal());
@@ -635,21 +709,35 @@ export const VerifingDevice = (id, callbackFunc) => {
 };
 
 
-export const VerifiedDevice = (id, callbackFunc) => {
+export const VerifiedDevice = (id,files, callbackFunc) => {
+  console.log(files)
   const deviceID = id;
+  
   const verifiedDeviceURL = `${VERRIFIED_DEVICE_URL}/${deviceID}`;
 
   return async (dispatch) => {
     dispatch(makeRequest());
-
-    await axios.put(verifiedDeviceURL, getHeaderConfig()).then(
+    const formData = new FormData();
+    formData.append('file', files);
+    await axios.put(verifiedDeviceURL,formData, getHeaderConfig()).then(
       (response) => {
         if (response?.status == 200) {
           dispatch(verifiedDevice());
+          toast.success("Verify Complete!", {
+            position: "top-right",
+            autoClose: 3000,
+            style: {
+              border: "1px solid #a3d744", // Green border similar to the one in your image
+              color: "#6aa84f", // Green text color
+              fontSize: "16px", // Adjust font size as needed
+              backgroundColor: "##FFFFFF", // Light green background
+            }, // 3 seconds
+          });
           callbackFunc();
         } else {
           dispatch(setOpenFailModal());
           dispatch(failRequest(error.message));
+          console.log("ERROR")
         }
       },
       (error) => {
@@ -674,6 +762,39 @@ export const FetchGetDeviceByID = (deviceID, callback) => {
         } else {
           // dispatch(failRequest(err.message))
           callback && callback(res, res?.statusText);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(failRequest(err.message));
+        callback && callback(null, err);
+      });
+    // }, 2000);
+  };
+};
+
+export const FetchSF02ByID = (deviceID, callback) => {
+  const devicesf02URL = `${SF02_BY_ID_URL}/${deviceID}`;
+  return async (dispatch) => {
+    await axios
+      .get(devicesf02URL, {...getHeaderConfig(),responseType: 'blob',})
+      .then((response) => {
+        const url = URL.createObjectURL(response.data);
+        if (response?.status == 200) {
+          // dispatch(setDeviceObj(res?.data?.device));\
+          console.log(url)
+          dispatch(setDownloadsf02(url));
+          callback && callback(response, null);
+        } 
+        else if (response?.status === 404) {
+          const notFoundURL = '/not-found';
+          console.log("Page not found:", notFoundURL);
+          dispatch(setDownloadsf02(notFoundURL));
+          callback && callback(response, "Page not found");
+        }
+        else {
+          // dispatch(failRequest(err.message))
+          callback && callback(response, response?.title);
         }
       })
       .catch((err) => {
