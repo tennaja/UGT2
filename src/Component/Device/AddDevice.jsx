@@ -677,7 +677,7 @@ const AddDevice = () => {
                               name="defaultAccountCode"
                               control={control}
                               rules={{
-                                required: "This field is required",
+                                // required: "This field is required",
                                 maxLength: {
                                   value: 8,
                                   message: "must be at max 8 characters",
@@ -690,7 +690,7 @@ const AddDevice = () => {
                                   placeholder={"Please fill the form in Number"}
                                   type={"text"}
                                   label={"Default account code"}
-                                  error={errors.defaultAccountCode}
+                                  // error={errors.defaultAccountCode}
                                   validate={" *"}
                                   // ... other props
                                 />
