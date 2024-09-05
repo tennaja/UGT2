@@ -101,7 +101,7 @@ const InfoDevice = () => {
   console.log(userData)
   console.log("Dispatching PDF File...",filesf02)
   console.log(deviceobj)
-
+  const base64String = deviceobj?.imagePath;
   useEffect(() => {
     // This effect will run whenever filesf02 changes
     if (filesf02) {
@@ -353,6 +353,7 @@ const InfoDevice = () => {
     hideLoading();
   };
 
+  
 
   const handleClickDeleteFile = async (id, evidentFileID, fileName) => {
     console.log("----DELETE FILE---");
@@ -823,9 +824,11 @@ const InfoDevice = () => {
                         <div className="row-span-3 col-span-12 lg:col-span-3">
                           <div className="shrink-0">
                             <h6 className="text-PRIMARY_TEXT">
-                              <b>Device Details</b>
+                              <b>Production Device Details</b>
                             </h6>
                           </div>
+                          {}
+                          <img src={base64String} alt="Preview_Img" id="preview_img" className="h-44 w-44 object-cover rounded-full flex items-center justify-center rounded-[20px] mt-4"/>
                         </div>
 
                         <div className="col-span-12 lg:col-span-9">

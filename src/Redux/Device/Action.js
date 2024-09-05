@@ -390,9 +390,10 @@ export const FetchDeviceManagementUnAssigned = (fetchParameter, callback) => {
 
 
 export const FunctionAddDevice = (data, callback) => {
+  console.log(data)
   const parameterForCreate = {
     assignedUtilityId: data?.assignedUtilityCode?.id, //assignedUtilityCode.id //number
-    imagePath: data?.deviceImg,
+    imageFile: data?.deviceImg,
     name: data?.name, //name //string
     registrantOrganisationCode: "string", // ??
     defaultAccountCode: data?.defaultAccountCode, //defaultAccountCode //string
@@ -441,7 +442,7 @@ export const FunctionAddDevice = (data, callback) => {
      
     
   };
-
+console.log(parameterForCreate)
   const createDeviceURL = CREATE_DEVICE_URL;
   return async (dispatch) => {
     dispatch(makeRequest());
@@ -473,10 +474,12 @@ export const FunctionAddDevice = (data, callback) => {
 export const FunctionEditDevice = (data, callback) => {
   const deviceID = `${data?.id}`;
   const editDeviceURL = `${EDIT_DEVICE_URL}/${deviceID}`;
-
+  
+  
   const parameterForEdit = {
+    
     assignedUtilityId: data?.assignedUtilityCode?.id, //assignedUtilityCode.id //number
-    imagePath: "string",
+    imageFile: data?.deviceImg,
     name: data?.name, //name //string
     issuerId: data?.issuerCode?.id,
     registrantOrganisationCode: "string", // ??

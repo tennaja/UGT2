@@ -136,7 +136,8 @@ const UpdateDevice = () => {
     (state) => state.device.modalFailMessage
   );
   console.log(deviceobj)
-  console.log(deviceobj?.deviceMeasurements)
+  console.log(deviceobj?.imagePath?.slice(24))
+  const base64String = deviceobj?.imagePath;
   const PublicFundingList = [
     {id :1 , Name:'No'},
     {id :2 , Name:'Feed in Tariff'}
@@ -292,6 +293,8 @@ const UpdateDevice = () => {
     setFileList(seletcedFileList);
     // --------------------------------- //
 
+
+  
     //--- Set Init DeviceTechnoList ---//
     const deviceTechnologyList = dropDrowList?.deviceTechnology;
     const newDeviceTechnologyList = deviceTechnologyList?.filter(
@@ -829,7 +832,7 @@ const UpdateDevice = () => {
                                 <UploadImg
                                   {...field}
                                   id={"deviceImg"}
-                                  defaultImg={egat}
+                                  defaultImg={base64String}
                                   error={errors.deviceImg}
                                 />
                               )}

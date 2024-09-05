@@ -142,7 +142,7 @@ const PdfFormPreview = (data,Sign) => {
                 <th colSpan="4" className="border p-2  text-left ">1.1 SF-02: Production Facility Registration</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>complete all fields.</em></th>
+              <th colSpan="4" className="border p-2  text-[8px] text-gray-600 text-left "><em>complete all fields.</em></th>
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left w-1/3">Date</td>
@@ -194,18 +194,18 @@ submission`})</em></p>
                 <th colSpan="4" className="border p-2  text-left ">1.2 Registrant Contact Details</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">complete all fields.</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>complete all fields.</em></th>
               </tr>
             </thead>
             <tbody>
               {[
-                ['Organisation ID/code', ``],
-                ['Organisation name', ''],
-                ['Contact person', ''],
-                ['Business address', ''],
-                ['Country', ''],
-                ['e-mail', `${data?.Sign == "" ? "" : data?.Sign.email}`],
-                ['Telephone', '']
+                ['Organisation ID/code', `${data?.Sign == "" ? "" : data?.Sign.organisationId == null ? "" : data?.Sign.organisationId}`],
+                ['Organisation name', `${data?.Sign == "" ? "" : data?.Sign.organisationName == null ? "" : data?.Sign.organisationName}`],
+                ['Contact person', `${data?.Sign == "" ? "" : data?.Sign.contactPerson == null ? "" : data?.Sign.contactPerson} `],
+                ['Business address', `${data?.Sign == "" ? "" : data?.Sign.businessAddress == null ? "" : data?.Sign.businessAddress}`],
+                ['Country', `${data?.Sign == "" ? "" : data?.Sign.country == null ? "" : data?.Sign.country }`],
+                ['e-mail', `${data?.Sign == "" ? "" : data?.Sign.email == null ? "" : data?.Sign.email}`],
+                ['Telephone', `${data?.Sign == "" ? "" : data?.Sign.telephone == null ? "" : data?.Sign.telephone}`]
               ].map((row, index) => (
                 <tr key={index}>
                   <td className="border p-2 font-bold break-all w-1/3">{row[0]}</td>
@@ -245,13 +245,13 @@ submission`})</em></p>
                 <th colSpan="4" className="border p-2  text-left">1.3 Production Facility Details</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">complete all fields.</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>complete all fields.</em></th>
               </tr>
             </thead>
             <tbody>
             <tr>
                 <td className="border p-2 font-bold w-72 ">Facility name
-                <p className='text-[8px] text-gray-600'>({`including postal or zip code`})</p>
+                <p className='text-[8px] text-gray-600'><em>({`including postal or zip code`})</em></p>
                 </td>
                 <td className="border p-2 text-left break-all " >{data?.data?.name}</td>
               </tr>
@@ -264,11 +264,11 @@ submission`})</em></p>
                 <td className="border p-2 text-left break-all" >{data?.data?.countryCode}</td>
               </tr>
               <tr>
-                <td className="border p-2  font-bold"><div className="flex text-left"><p>Latitude</p><p className='text-[8px] text-gray-500 ml-1'>(±n.nnnnnn)</p></div></td>
+                <td className="border p-2  font-bold"><div className="flex text-left"><p>Latitude</p><p className='text-[8px] text-gray-500 ml-1'><em>(±n.nnnnnn)</em></p></div></td>
                 <td className="border p-2 text-left break-all" >{data?.data?.latitude}</td>
               </tr>
               <tr>
-                <td className="border p-2 font-bold"><div className="flex text-left"><p>Longitude</p><p className='text-[8px] text-gray-500 ml-1'>(±n.nnnnnn)</p></div></td>
+                <td className="border p-2 font-bold"><div className="flex text-left"><p>Longitude</p><p className='text-[8px] text-gray-500 ml-1'><em>(±n.nnnnnn)</em></p></div></td>
                 <td className="border p-2 text-left break-all" >{data?.data?.longitude}</td>
               </tr>
               <tr>
@@ -320,7 +320,17 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold w-60">Meter or Measurement ID(s)</td>
-                <td className="border p-2 text-left break-all" ></td>
+                <td className="border p-2 text-left break-all" >
+                {data?.data?.deviceMeasurements?.map ((itm,index) => (
+                  <span key={index}>
+                  {itm.description}
+                  {index < data.data.deviceMeasurements.length - 1 && ", "}
+                </span>
+                )
+                 
+                
+                )}
+                </td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold w-64 ">Number of generating units</td>
@@ -340,7 +350,7 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Expected form of volume evidence
-                <p className='text-[8px] text-gray-600'>({`if other please specify`})</p>
+                <p className='text-[8px] text-gray-600'><em>({`if other please specify`})</em></p>
                 </td>
                 <td className="border p-2 text-left break-all" >{data?.data?.isMeteringData == "True" ? "Metering data / " : ""}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data.data.isOther == "True" ? "Other / " : ""} {data.data.otherDescription}</td>
               </tr>
@@ -378,14 +388,14 @@ submission`})</em></p>
                 <th colSpan="4" className="border p-2  text-left">1.4 Removal Type and Code</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">Complete all fields - please refer to SD 02: Technologies and Fuels.</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>Complete all fields - please refer to SD 02: Technologies and Fuels.</em></th>
               </tr>
             </thead>
             <tbody>
             
               <tr>
                 <td className="border p-2 font-bold w-1/4 " >Fuel
-                <p className='text-[8px] text-gray-600'>({`please list all possible fuels if Production Facility is a multifuel generator`})</p></td>
+                <p className='text-[8px] text-gray-600'><em>({`please list all possible fuels if Production Facility is a multifuel generator`})</em></p></td>
                 <td className="border text-left" >
 
                     <table className='w-full border-collapse text-xs h-24' >
@@ -411,7 +421,7 @@ submission`})</em></p>
                 <td className="border p-2 font-bold w-96" >technology</td>
                 <td className="border text-left" >
 
-                    <table className='w-full border-collapse text-xs' >
+                    <table className='w-full border-collapse text-xs h-24' >
 
                         
                             <tr>
@@ -438,18 +448,18 @@ submission`})</em></p>
                 <th colSpan="4" className="border p-2  text-left">1.5 Business Details</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">Complete all required fields.</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>Complete all required fields.</em></th>
               </tr>
             </thead>
             <tbody>
             <tr>
                 <td className="border p-2 font-bold w-1/2">Is there an on-site (captive) consumer present?
-                <p className='text-[8px] text-gray-600'>({`if yes please provide details`})</p></td>
+                <p className='text-[8px] text-gray-600'><em>({`if yes please provide details`})</em></p></td>
                 <td className="border p-2 text-left break-all w-full" >{data?.data?.onSiteConsumer}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Auxiliary/standby energy sources present?
-                <p className='text-[8px] text-gray-600'>({`if yes please provide details`})</p>
+                <p className='text-[8px] text-gray-600'><em>({`if yes please provide details`})</em></p>
                 </td>
                 <td className="border p-2 text-left break-all" colSpan="3">{data?.data?.energySource}</td>
               </tr>
@@ -507,15 +517,15 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 text-left">(if public (government) funding has been received when did/will it finish?)</td>
-                <td className="border p-2 text-left ">DD</td>
-                <td className="border p-2 text-left ">MM</td>
-                <td className="border p-2 text-left w-36">YYYY</td>
+                <td className="border p-2 text-left "></td>
+                <td className="border p-2 text-left "></td>
+                <td className="border p-2 text-left w-36"></td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Requested effective date of registration: (no earlier than 12 months prior to submitting this form)</td>
-                <td className="border p-2 text-left">DD</td>
-                <td className="border p-2 text-left">MM</td>
-                <td className="border p-2 text-left">YYYY</td>
+                <td className="border p-2 text-left"></td>
+                <td className="border p-2 text-left"></td>
+                <td className="border p-2 text-left"></td>
               </tr>
               
               
@@ -527,13 +537,13 @@ submission`})</em></p>
                 <th colSpan="4" className="border p-2  text-left">1.6 Business Details</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">complete all fields.</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>complete all fields.</em></th>
               </tr>
             </thead>
             <tbody>
             <tr>
                 <td className="border p-2 font-bold w-64">Name of proposed Verification Agent
-                <p className='text-[8px] text-gray-600'>({`if not the Issuer`})</p>
+                <p className='text-[8px] text-gray-600'><em>({`if not the Issuer`})</em></p>
                 </td>
                 <td className="border p-2 text-left break-all" ></td>
               </tr>
@@ -545,7 +555,7 @@ submission`})</em></p>
                 <th colSpan="4" className="border p-2  text-left">1.7 Business Details</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">Please use this field to provide any further information you feel   relevant to this registration</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>Please use this field to provide any further information you feel   relevant to this registration</em></th>
               </tr>
             </thead>
             <tbody>
@@ -586,15 +596,19 @@ submission`})</em></p>
                 <th colSpan="4" className="border p-2  text-left">1.8 Confirmation Signature</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">complete all fields.</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>complete all fields.</em></th>
               </tr>
             </thead>
             <tbody>
             <tr>
-              <td className="border p-2 h-96 break-all" colSpan="4">By submitting this form I confirm acceptance of Evident’s Privacy Policy, as published on 
-https://evident.global/privacy and any such policies as published by the responsible Issuer.
+              <td className="border p-2 h-96 break-all" colSpan="4">
+              <div className='flex flex-col'>
+              <p className='break-all'>By submitting this form I confirm acceptance of Evident’s Privacy Policy, as published on 
+              https://evident.global/privacy and any such policies as published by the responsible Issuer.</p>
+                
+              <p className='break-all'>I acknowledge and agree that the information provided will be used by Evident for the purpose of providing services relating to I‑REC Electricity certificates and that Evident may share this information with other organisations as may be necessary for the provision of these services.</p>
 
-I acknowledge and agree that the information provided will be used by Evident for the purpose of providing services relating to I‑REC Electricity certificates and that Evident may share this information with other organisations as may be necessary for the provision of these services.
+</div>
 </td>  
               </tr>
              
@@ -648,18 +662,21 @@ I acknowledge and agree that the information provided will be used by Evident fo
                 <th colSpan="4" className="border p-2  text-left">1.9 SF-02A: Registrant’s Declaration</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">If not submitted with SF-02: Production Facility Registration, for example if all registration data is submitted via an online form, this Registrant’s Declaration should be copied onto the Registrant’s headed paper, completed and signed by an authorised representative of the Registrant. It can be scanned and submitted electronically to the Issuer. An Issuer may accept a company stamp as an alternative to an authorised representative’s signature.  Text within [square brackets] should be replaced with the appropriate content.</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>If not submitted with SF-02: Production Facility Registration, for example if all registration data is submitted via an online form, this Registrant’s Declaration should be copied onto the Registrant’s headed paper, completed and signed by an authorised representative of the Registrant. It can be scanned and submitted electronically to the Issuer. An Issuer may accept a company stamp as an alternative to an authorised representative’s signature.  Text within [square brackets] should be replaced with the appropriate content.</em></th>
               </tr>
             </thead>
             <tbody>
             <tr>
-              <td className="border p-2 h-96 break-all" colSpan="4">On behalf of the Registrant, [insert Registrant organisation name here], I agree to be subject to the I‑REC Code for Electricity and warrant that the information contained in this application is truthful and exhaustive.
+              <td className="border p-2 h-96 break-all" colSpan="4">
+                <div className='flex flex-col'>
+                <p className='break-all'>On behalf of the Registrant, [insert Registrant organisation name here], I agree to be subject to the I‑REC Code for Electricity and warrant that the information contained in this application is truthful and exhaustive.</p>
+                <p className='break-all'>Any planned changes concerning the information given in this form will be announced in advance to the Facility Verifier (if any) and the Issuer. Any unplanned changes will be reported to the Facility Verifier (if any) and the Issuer at the first possible occasion.</p>
+                <p className='break-all'>The Production Facility Owner and the Registrant as their agent accept the possibility of unannounced control and auditing visits to their own premises and/or the premises of the Production Facility, as prescribed in the I‑REC Code for Electricity.</p>
+                <p className='break-all'>I confirm that all necessary permissions of the Production Facility Owner have been granted to the Registrant and we therefore undertake that, for the same units of electrical energy, our organisation will not receive or apply for any certificates or other instruments representing the associated renewable or carbon attributes or the calculated displacement (‘offset’) of these attributes from the electricity production. We also, to the best of our knowledge, have the right to separate renewable attributes from the associated physical electricity generation and are not required by legislation or contract to retain these attributes for any reason.</p>
 
-Any planned changes concerning the information given in this form will be announced in advance to the Facility Verifier (if any) and the Issuer. Any unplanned changes will be reported to the Facility Verifier (if any) and the Issuer at the first possible occasion.
+                </div>
+</td>  
 
-The Production Facility Owner and the Registrant as their agent accept the possibility of unannounced control and auditing visits to their own premises and/or the premises of the Production Facility, as prescribed in the I‑REC Code for Electricity.
- 
-I confirm that all necessary permissions of the Production Facility Owner have been granted to the Registrant and we therefore undertake that, for the same units of electrical energy, our organisation will not receive or apply for any certificates or other instruments representing the associated renewable or carbon attributes or the calculated displacement (‘offset’) of these attributes from the electricity production. We also, to the best of our knowledge, have the right to separate renewable attributes from the associated physical electricity generation and are not required by legislation or contract to retain these attributes for any reason.</td>  
               </tr>
              
               <tr>
@@ -667,7 +684,7 @@ I confirm that all necessary permissions of the Production Facility Owner have b
               <td className="border p-2 text-left break-all" colSpan="3">{data?.Sign == "" ? "" : data?.Sign?.firstName + " " +data?.Sign?.lastName}</td>
               </tr>
               <tr>
-              <td className="border p-2 font-bold" ><div className="flex text-left"><p>Name</p><p className='text-[8px] text-gray-500 ml-1 mt-0'>(BLOCK   CAPITALS)</p></div></td>
+              <td className="border p-2 font-bold" ><div className="flex text-left"><p>Name</p><p className='text-[8px] text-gray-500 ml-1 mt-0'><em>(BLOCK   CAPITALS)</em></p></div></td>
               <td className="border p-2 text-left break-all" colSpan="3">{data?.Sign == "" ? "" : data?.Sign?.firstName  + " " +data?.Sign?.lastName}</td>
                 
               </tr>
@@ -711,7 +728,7 @@ I confirm that all necessary permissions of the Production Facility Owner have b
                 <th colSpan="10" className="border p-2  text-left">1.10 SF-02A: Registrant’s Declaration</th>
               </tr>
               <tr>
-              <th colSpan="10" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">The information in this form must be provided in Microsoft Excel format. Note that Issuers are not required to support registration of Production Groups and that additional information may be required.
+              <th colSpan="10" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>The information in this form must be provided in Microsoft Excel format. Note that Issuers are not required to support registration of Production Groups and that additional information may be required.</em>
               Complete all fields.</th>
               </tr>
             </thead>
@@ -720,7 +737,7 @@ I confirm that all necessary permissions of the Production Facility Owner have b
              
               <tr>
               <td className="border p-2 font-bold"colSpan="3" >Production Group name
-              <p className='text-[8px] text-gray-600'>({`same as Facility name in Production Facility Details section`})</p>
+              <p className='text-[8px] text-gray-600'><em>({`same as Facility name in Production Facility Details section`})</em></p>
               </td>
               <td className="border p-2 text-left break-all h-28" colSpan="7"></td>
               </tr>
@@ -782,7 +799,7 @@ I confirm that all necessary permissions of the Production Facility Owner have b
                 <th colSpan="10" className="border p-2  text-left">1.11 SF-02C: Owner’s Declaration</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left ">The Production Facility Owner shall, if not the Registrant, be required to submit a declaration confirming that the Registrant has been assigned the rights to register the Production Facility. The following approved text should be copied onto the Production Facility Owner’s headed paper, completed and signed by an officer of the Production Facility Owner. It can be scanned and submitted electronically to the Issuer. An Issuer may accept a company stamp as an alternative to an authorised representative’s signature. Text within [square brackets] should be replaced with the appropriate content.</th>
+              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>The Production Facility Owner shall, if not the Registrant, be required to submit a declaration confirming that the Registrant has been assigned the rights to register the Production Facility. The following approved text should be copied onto the Production Facility Owner’s headed paper, completed and signed by an officer of the Production Facility Owner. It can be scanned and submitted electronically to the Issuer. An Issuer may accept a company stamp as an alternative to an authorised representative’s signature. Text within [square brackets] should be replaced with the appropriate content.</em></th>
               </tr>
             </thead>
             <tbody>
@@ -790,27 +807,23 @@ I confirm that all necessary permissions of the Production Facility Owner have b
              
             <tr>
               <td className="border p-2 h-96 break-all" colSpan="4">
-               {
-                 `To : Evident
-                 400 Springvale Road
-                 Sheffield
-                 S10 1LP
-                 United Kingdom
-                 Date: [insert date here]
-                 
-                 Declaration of Attribute Generation and Ownership
-                 
-                 Please accept this letter as granting [insert Registrant organisation name here] the exclusive right to act in respect of trading all renewable energy attributes (representing the environmental, economic , and social benefits associated with the generation of electricity) including all associated carbon attributes with [insert Production Facility name here] from [insert Effective Registration Date here] until [further notice/[insert end date here]]. The rights to these attributes are in our exclusive ownership at the time of signing.
-                 
-                 We understand that the attributes associated with renewable electricity generation are different and distinct from instruments that may be granted under an emissions reduction scheme that have been calculated as displacement (‘offset’) against a business as usual case.
-                 
-                 In granting this permission we accept that the ownership of the associated renewable and carbon attributes from the generation of electricity may be passed to [insert Registrant company name here] in the form of I REC(E)s as defined in the I REC Code for Electricity. We have received, or will receive, valuable consideration for the delivery of these attributes. We therefore undertake that, for the same units of electrical energy, our organisation will not receive or apply for any certificates or other instruments representing the associated renewable or carbon attributes or the calculated displacement (‘offset’) of these attributes from the electricity production. We also, to the best of our knowledge, have the right to separate renewable attributes from the associated physical electricity generation and are not required by legislation or contract to retain these attributes for any reason.
-                 Yours sincerely,
-                  
-                 On behalf of [insert owner name here]`
-               }</td>  
+              <div className='flex flex-col'>
+                
+              <p className='break-all'>To : Evident</p>
+              <p className='break-all'>400 Springvale Road</p>
+              <p className='break-all'>Sheffield</p>
+              <p className='break-all'>S10 1LP</p>
+              <p className='break-all'>United Kingdom</p>
+              <p className='break-all'>Date: [insert date here]</p>
+              <p className='break-all'>Declaration of Attribute Generation and Ownership</p>
+              <p className='break-all'>Please accept this letter as granting [insert Registrant organisation name here] the exclusive right to act in respect of trading all renewable energy attributes (representing the environmental, economic , and social benefits associated with the generation of electricity) including all associated carbon attributes with [insert Production Facility name here] from [insert Effective Registration Date here] until [further notice/[insert end date here]]. The rights to these attributes are in our exclusive ownership at the time of signing.</p>
+              <p className='break-all'>We understand that the attributes associated with renewable electricity generation are different and distinct from instruments that may be granted under an emissions reduction scheme that have been calculated as displacement (‘offset’) against a business as usual case.</p>
+              <p className='break-all'>In granting this permission we accept that the ownership of the associated renewable and carbon attributes from the generation of electricity may be passed to [insert Registrant company name here] in the form of I REC(E)s as defined in the I REC Code for Electricity. We have received, or will receive, valuable consideration for the delivery of these attributes. We therefore undertake that, for the same units of electrical energy, our organisation will not receive or apply for any certificates or other instruments representing the associated renewable or carbon attributes or the calculated displacement (‘offset’) of these attributes from the electricity production. We also, to the best of our knowledge, have the right to separate renewable attributes from the associated physical electricity generation and are not required by legislation or contract to retain these attributes for any reason.</p>
+              <p className='break-all'>Yours sincerely,</p>
+              <p className='break-all'>On behalf of [insert owner name here]</p>
+              </div>
+               </td>  
               </tr>
-            
             </tbody>
           </table>
 
