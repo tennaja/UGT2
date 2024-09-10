@@ -16,7 +16,8 @@ import {
   UPLOAD_FILE_EVIDENT_DEVICE_URL,
   DELETE_FILE_EVIDENT_DEVICE_URL,
   DOWNLOAD_FILE_EVIDENT_DEVICE_URL,
-  SF02_BY_ID_URL
+  SF02_BY_ID_URL,
+  SEND_EMAIL_URL,SEND_EMAIL_BY_USERGROUPID_URL
 } from "../../Constants/ServiceURL";
 import {
   ADD_STATUS,
@@ -202,6 +203,8 @@ export const setOpenFailModal = (message = null) => {
     message: message,
   };
 };
+
+
 
 export const FetchFilterList = () => {
   const deviceFilterListURL = DEVICE_FILTER_LIST_URL;
@@ -429,18 +432,19 @@ export const FunctionAddDevice = (data, callback) => {
     GeneratingUnit : data.NumberofGeneratingUnits,
     OwnerNetwork : data.OwnerofNetwork,
     OnSiteConsumer: data.Onsite?.Name,
+    onSiteConsumerDetail : data?.Onsitedetail,
     OtherImportEletricity: data.Otherimport,
     EnergySource: data.Energysources?.Name,
-    OtherCarbonOffset: data.Othercarbon,
-    PublicFunding: data.Publicfunding?.Name,
-    FundingReceive :"2023-11-09",
-    IsMeteringData : data.ExpectedFormofVolumeEvidence[0]?.Checked ? "True" : "False" ,
-    IsContractSaleInvoice : data.ExpectedFormofVolumeEvidence[1]?.Checked ? "True" : "False" ,
-    IsOther : data.ExpectedFormofVolumeEvidence[2]?.Checked ? "True" : "False" ,
-    OtherDescription : data.ExpectedFormofVolumeEvidence[2]?.otherText,
-    deviceMeasurements : data?.devicemeasure
-     
-    
+    energySourceDetail : data?.Energysourcesdetail,
+    OtherCarbonOffset: data?.Othercarbon,
+    PublicFunding: data?.Publicfunding?.Name,
+    FundingReceive : data?.FundingReceivedate,
+    IsMeteringData : data?.ExpectedFormofVolumeEvidence[0]?.Checked ? "True" : "False" ,
+    IsContractSaleInvoice : data?.ExpectedFormofVolumeEvidence[1]?.Checked ? "True" : "False" ,
+    IsOther : data?.ExpectedFormofVolumeEvidence[2]?.Checked ? "True" : "False" ,
+    OtherDescription : data?.ExpectedFormofVolumeEvidence[2]?.otherText,
+    deviceMeasurements : data?.devicemeasure,
+    userId : data?.userid
   };
 console.log(parameterForCreate)
   const createDeviceURL = CREATE_DEVICE_URL;
@@ -517,7 +521,7 @@ export const FunctionEditDevice = (data, callback) => {
     EnergySource: data.Energysources?.Name,
     OtherCarbonOffset: data.Othercarbon,
     PublicFunding: data.Publicfunding?.Name,
-    FundingReceive :"2023-11-09",
+    FundingReceive :data?.FundingReceivedate,
     IsMeteringData : data.ExpectedFormofVolumeEvidence[0]?.Checked ? "True" : "False" ,
     IsContractSaleInvoice : data.ExpectedFormofVolumeEvidence[1]?.Checked ? "True" : "False" ,
     IsOther : data.ExpectedFormofVolumeEvidence[2]?.Checked ? "True" : "False" ,
@@ -808,6 +812,91 @@ export const FetchSF02ByID = (deviceID, callback) => {
     // }, 2000);
   };
 };
+export const sendEmail = (emailBody, recipientEmail, callback) => {
+  console.log('Starting to send email...');
+
+  const emailPayload = {
+    toAddress: recipientEmail,
+    subject: '[Device Registration] Sign and Submit UGT Device Registration',
+    body: emailBody, // Ensure HTML format is sent
+  };
+
+  const sendEmailURL = SEND_EMAIL_URL; // Assuming this is defined elsewhere
+
+  return async (dispatch) => {
+    dispatch(makeRequest());
+
+    try {
+      const response = await fetch(sendEmailURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailPayload),
+      });
+
+      if (response.ok) {
+        console.log('Email successfully sent');
+        alert('Email sent successfully');
+        // dispatch(emailSentSuccess()); // If success action is defined
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to send email:', errorData);
+        dispatch(setOpenFailModal(errorData?.message || 'Email sending failed'));
+      }
+
+      callback?.(response.status);
+
+    } catch (error) {
+      console.error('Error during email sending:', error);
+      dispatch(setOpenFailModal(error?.message || 'Error occurred'));
+      callback?.(error);
+    }
+  };
+};
+
+export const sendEmailByUserGroup = (id,emailBody, callback) => {
+  console.log('Starting to send email...');
+
+  const emailPayload = {
+    subject: '[Device Registration] Sign and Submit UGT Device Registration',
+    body: emailBody, // Ensure HTML format is sent
+  };
+  const usergroupid = id;
+  const sendEmailURL = `${SEND_EMAIL_BY_USERGROUPID_URL}/${usergroupid}`; // Assuming this is defined elsewhere
+
+  return async (dispatch) => {
+    dispatch(makeRequest());
+
+    try {
+      const response = await fetch(sendEmailURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailPayload),
+      });
+
+      if (response.ok) {
+        console.log('Email successfully sent');
+        alert('Email sent successfully');
+        // dispatch(emailSentSuccess()); // If success action is defined
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to send email:', errorData);
+        dispatch(setOpenFailModal(errorData?.message || 'Email sending failed'));
+      }
+
+      callback?.(response.status);
+
+    } catch (error) {
+      console.error('Error during email sending:', error);
+      dispatch(setOpenFailModal(error?.message || 'Error occurred'));
+      callback?.(error);
+    }
+  };
+};
+
 
 export const FetchUploadFile = async (uploadParameter) => {
   const uploadFileURL = `${UPLOAD_FILE_EVIDENT_DEVICE_URL}`;

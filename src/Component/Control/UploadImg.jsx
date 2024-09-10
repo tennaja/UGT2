@@ -85,7 +85,7 @@ const UploadImg = (props) => {
         {/* <img src={defaultImg} id="preview_img" /> */}
         <div className={ `${isViewMode? 'image-container-view-only' : 'image-container'}` }>
         {/* <div className="relative inline-block	before:absolute before:top-[90%] before:left-[90%] before:origin-[-50%_-50%] before:z-1 before:w-[30px] before:h-[30px] before:rounded-[50px] before:shadow-xl"> */}
-          <img src={(defaultImg == "string" || defaultImg.trim() === "") ? egat : defaultImg} alt="Preview_Img" id="preview_img" className="h-44 w-44 object-cover rounded-full flex items-center justify-center"/>
+          <img src={defaultImg} alt="Preview_Img" id="preview_img" className="h-44 w-44 object-cover rounded-full flex items-center justify-center"/>
         </div> 
       </label>
     </>

@@ -6,6 +6,8 @@ import { PiHandWithdrawFill } from "react-icons/pi";
 import Skeleton from "@mui/material/Skeleton";
 import PdfTablePreview from '../Control/TemplatePdf';
 import MySelect from "../Control/Select";
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 import {
   FetchDeviceDropdrowList,
   FetchCountryList,
@@ -22,7 +24,9 @@ import {
   clearModal,
   FetchDownloadFile,
   FetchDeleteFile,
-  FetchSF02ByID
+  FetchSF02ByID,
+  sendEmail,
+  sendEmailByUserGroup
 } from "../../Redux/Device/Action";
 import StatusLabel from "../../Component/Control/StatusLabel";
 import LoadPage from "../Control/LoadPage";
@@ -53,6 +57,9 @@ import ModalSubmitDone from "../Control/Modal/ModalDoneSubmit";
 import PreviewPdf from "../Control/Previewsf02";
 import ModalConfirmVerified from "../Control/Modal/ModalConfirmVerified";
 import ModalConfirmSubmit from "../Control/Modal/ModalConfirmSubmit";
+
+
+
 const InfoDevice = () => {
   //default location on map Thailand
   const defaultLocation = [13.736717, 100.523186];
@@ -97,6 +104,17 @@ const InfoDevice = () => {
     dispatch(clearModal());
     navigate(WEB_URL.DEVICE_LIST);
   };
+  const Datenow = new Date();
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  };
+
   console.log(sf02obj)
   console.log(userData)
   console.log("Dispatching PDF File...",filesf02)
@@ -293,7 +311,90 @@ const InfoDevice = () => {
     });
   };
 
-  const handleClickDownloadFile = async (item) => {
+  const emailBodytoOwner = `
+  <html>
+    <body>
+      <p>Dear UGT Registrant (Verifier),</p>
+      
+      <p>
+      Device registration is
+        <b><span style="color: red;"> has been edited.</span></b>
+      </p>
+      
+      <p>Device Details:</p>
+       
+      <p>
+      <b>Name:</b> ${deviceobj?.name}
+      </p>
+      <p>
+        <b>Submission Date:</b> ${formatDate(Datenow)} 
+      </p>
+      
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`;
+  const emailBodytoVerifier = `
+  <html>
+    <body>
+      <p>Dear UGT Registrant (Verifier),</p>
+      
+      <p>
+      Device registration is
+        <b><span style="color: red;"> Send to Verify.</span></b>
+      </p>
+      
+      <p>Device Details:</p>
+       
+      <p>
+      <b>Name:</b> ${deviceobj?.name}
+      </p>
+      <p>
+        <b>Submission Date:</b> ${formatDate(Datenow)} 
+      </p>
+      
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`;
+
+  const emailBodytoSignatory = `
+  <html>
+    <body>
+      <p>Dear UGT Registrant (Signatory),</p>
+      
+      <p>
+      Device registration is
+        <b><span style="color: red;"> waiting for signature and submission.</span></b>
+      </p>
+      
+      <p><b>Device Details:</b></p>
+      
+      <p>
+      <b>Name:</b> ${deviceobj?.name}
+      </p>
+      <p>
+        <b>Submission Date:</b> ${formatDate(Datenow)} 
+      </p>
+      
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`;
+
+
+
+
+
+
+
+const handleClickDownloadFile = async (item) => {
     console.log(item)
     try {
       // setIsOpenLoading(true);
@@ -441,19 +542,31 @@ const InfoDevice = () => {
         navigate(WEB_URL.DEVICE_LIST);
       })
     );
+    dispatch (
+      sendEmailByUserGroup(21,emailBodytoVerifier,() => {
+        hideLoading();
+        // dispatch(clearModal());
+      })
+    )
   };
 
   //Call Api Verified
   const handleClickConfirmVerified = () => {
     showLoading();
     const deviceID = deviceobj?.id;
-    console.log("FILE CURRENT-------",test.current)
+    // console.log("FILE CURRENT-------",test.current)
     dispatch(
       VerifiedDevice(deviceID, test.current,() => {
         hideLoading();
         // dispatch(clearModal());
       })
-    );
+    )
+    dispatch (
+      sendEmailByUserGroup(22,emailBodytoSignatory,() => {
+        hideLoading();
+        // dispatch(clearModal());
+      })
+    )
   };
 
 
@@ -1215,6 +1328,8 @@ const InfoDevice = () => {
                               }}
                             error={errors.uploadFile}
                             defaultValue={deviceobj?.fileUploads}
+
+                            
                             // ... other props
                           />
                         )}
@@ -1275,8 +1390,9 @@ const InfoDevice = () => {
                     
                     {canVerified ? <button onClick={onClickVerifiedBtn} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
                             <b></b> Verify
-                    </button> : null}
-                    
+                    </button>
+                     : null}
+                  
               </div></div>
               </div>
             </Card>

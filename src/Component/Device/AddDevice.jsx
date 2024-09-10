@@ -15,12 +15,14 @@ import {
   FetchDistrictList,
   FetchSubDistrictList,
   FetchPostcodeList,
+  
 } from "../../Redux/Dropdrow/Action";
 
 import {
   FunctionAddDevice,
   FetchDownloadFile,
   clearModal,
+  sendEmail
 } from "../../Redux/Device/Action";
 import { useFieldArray } from "react-hook-form";
 import bin from "../assets/bin-3.svg";
@@ -47,7 +49,17 @@ const defaultLocation = { lat: 13.8118140871364, lng: 100.50564502457443 };
 
 const AddDevice = () => {
   //default location on map Thailand
-
+  const Datenow = new Date();
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  };
+  
   const {
     watch,
     reset,
@@ -57,6 +69,8 @@ const AddDevice = () => {
     control,
     formState: { errors },
   } = useForm();
+ 
+  const deviceName = watch("name");
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
     {
       control,
@@ -95,7 +109,31 @@ const AddDevice = () => {
     });
   };
  
-  
+  const emailBodytoOwner = `
+  <html>
+    <body>
+      <p>Dear UGT Registrant (Verifier),</p>
+      
+      <p>
+      Device registration is
+        <b><span style="color: red;"> has been edited.</span></b>
+      </p>
+      
+      <p>Device Details:</p>
+       
+      <p>
+      <b>Name:</b> ${deviceName}
+      </p>
+      <p>
+        <b>Submission Date:</b> ${formatDate(Datenow)} 
+      </p>
+      
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`; 
   const PublicFundingList = [
     {id :1 , Name:'No'},
     {id :2 , Name:'Feed in Tariff'}
@@ -314,7 +352,7 @@ const AddDevice = () => {
     });
 
     console.log("fileListEvident=>>>", fileListEvident);
-    const deviceData = { ...vFormData, uploadFile: fileListEvident };
+    const deviceData = { ...vFormData, uploadFile: fileListEvident ,userid : userData?.userRefId};
     console.log("deviceData=>>>", deviceData);
     dispatch(
       FunctionAddDevice(deviceData, () => {
@@ -322,6 +360,12 @@ const AddDevice = () => {
         // setIsOpenLoading(false);
       })
     );
+    dispatch (
+      sendEmail(emailBodytoOwner,userData?.email,() => {
+        hideLoading();
+        // dispatch(clearModal());
+      })
+    )
   };
 
   const handleClickBackToEdit = () => {
@@ -1426,7 +1470,32 @@ const AddDevice = () => {
                             />
                           )}
                         />
+                        {currentOnsite?.Name == "Yes" ? 
+                        
+                        <div className=" ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        <div className="w-full mt-2">
+                        <Controller
+                          name="Onsitedetail"
+                          control={control}
+                          rules={{
+                            required: "This field is required",
+                          }}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              id={"Onsitedetail"}
+                              type={"text"}
+                              placeholder={"Please fill the form in English"}
+                              error={errors.Onsitedetail}
+                              validate={" *"}
+                              
+                            />
+                          )}
+                        /> </div></div>: null}
+                        
                       </div>
+
+                      
                       <div className="md:col-span-3">
                         <Controller
                           name="Energysources"
@@ -1451,6 +1520,28 @@ const AddDevice = () => {
                             />
                           )}
                         />
+                         {currentEnergySourch?.Name == "Yes" ? 
+                        
+                        <div className=" ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        <div className="w-full mt-2">
+                        <Controller
+                          name="Energysourcesdetail"
+                          control={control}
+                          rules={{
+                            required: "This field is required",
+                          }}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              id={"Energysourcesdetail"}
+                              type={"text"}
+                              placeholder={"Please fill the form in English"}
+                              error={errors.Onsitedetail}
+                              validate={" *"}
+                              
+                            />
+                          )}
+                        /> </div></div>: null}
                       </div>
 
                     
@@ -1522,7 +1613,27 @@ const AddDevice = () => {
                             />
                           )}
                         />
+                        {currentPublicfunding?.Name == "Feed in Tariff" ? <div className=" ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        <div className="w-full mt-2">
+                        <Controller
+                          name="FundingReceivedate"
+                          control={control}
+                          rules={{
+                            required: "This field is required",
+                          }}
+                          render={({ field }) => (
+                            <DatePicker
+                              {...field}
+                              id={"FundingReceivedate"}
+                              error={errors.FundingReceivedate}
+                              validate={" *"}
+                              // ... other props
+                            />
+                          )}
+                        /></div></div> : null }
+                        
                       </div>
+                      
 {/*End other information*/}
               
 

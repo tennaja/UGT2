@@ -17,7 +17,6 @@ const PdfFormPreview = (data,Sign) => {
   const [version, setVersion] = useState(count ?? 0);
   
   const now = new Date();
-
   const day = String(now.getDate()).padStart(2, '0'); // Day of the month with leading zero
   const month = String(now.getMonth() + 1).padStart(2, '0'); // Month with leading zero
   const year = now.getFullYear();
@@ -257,7 +256,14 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Facility address</td>
-                <td className="border p-2 text-left break-all" >Expression</td>
+                <td className="border p-2 text-left break-all" >
+                <div className='flex flex-col'>
+                  <p>{data?.data?.address}</p>
+                  <p>{data?.data?.subdistrictName}</p>
+                  <p>{data?.data?.districtName}</p>
+                  <p>{data?.data?.proviceName}</p>
+                </div>
+                </td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Country</td>
@@ -407,10 +413,10 @@ submission`})</em></p>
                             </tr>
                             <tr>
                             <td className="border p-2 text-left break-all ">
-                           
+                            {data?.data?.deviceFuelCode}
                             </td>
                             <td className="border p-2 text-left break-all ">
-                            
+                            {data?.data?.deviceFuelName}
                             </td>
                             </tr>
                         </tbody>
@@ -430,10 +436,10 @@ submission`})</em></p>
                             </tr>
                             <tr>
                             <td className="border p-2 text-left break-all">
-                           
+                            {data?.data?.districtCode}
                             </td>
                             <td className="border p-2 text-left break-all">
-                            
+                            {data?.data?.deviceTechnologyName}
                             </td>
                             </tr>
                         
@@ -455,13 +461,24 @@ submission`})</em></p>
             <tr>
                 <td className="border p-2 font-bold w-1/2">Is there an on-site (captive) consumer present?
                 <p className='text-[8px] text-gray-600'><em>({`if yes please provide details`})</em></p></td>
-                <td className="border p-2 text-left break-all w-full" >{data?.data?.onSiteConsumer}</td>
+                <td className="border p-2 text-left break-all w-full" >
+                <div className='flex flex-col'>
+                  <p>{data?.data?.onSiteConsumer}</p>
+                  <p>{data?.da?.onSiteConsumerDetail}</p>
+                  </div>
+                  </td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Auxiliary/standby energy sources present?
                 <p className='text-[8px] text-gray-600'><em>({`if yes please provide details`})</em></p>
                 </td>
-                <td className="border p-2 text-left break-all" colSpan="3">{data?.data?.energySource}</td>
+                <td className="border p-2 text-left break-all" colSpan="3">
+                  
+                <div className='flex flex-col'>
+                  <p>{data?.data?.energySource}</p>
+                  <p>{data?.data?.energySourceDetail}</p>
+                  </div>
+                  </td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Please give details of how the site can import electricity by means other than through the meter(s) specified above</td>

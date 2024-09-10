@@ -24,6 +24,8 @@ export const DOWNLOAD_FILE_EVIDENT_DEVICE_URL = `${`https://ugt-thai-api.egat.co
 export const DELETE_FILE_EVIDENT_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/deletefile`;
 export const FORM_MASTTER_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/form-master`;
 export const SF02_BY_ID_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/sf02download`;
+export const SEND_EMAIL_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/email/sendemail`;
+export const SEND_EMAIL_BY_USERGROUPID_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/email/sendemailbyusergroup`;
 //Menu
 export const GET_MENU_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/menu-list`;
 export const GET_SUB_MENU_DEVICE_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/device-management/submenu-list`;

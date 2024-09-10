@@ -99,9 +99,9 @@ const UpdateDevice = () => {
   const [currentDistrict, setCurrentDistrict] = useState(null);
   const [currentSubDistrict, setCurrentSubDistrict] = useState(null);
   const [currentPostCode, setCurrentPostCode] = useState(null);
-  const [currentOnsite, setCurrentOnsite] = useState(null);
-  const [currentPublicfunding, setPublicfunding] = useState(null);
-  const [currentEnergySourch, setEnergySourch] = useState(null);
+  const [currentOnsite, setCurrentOnsite] = useState({ id: null, Name: '' });
+  const [currentPublicfunding, setPublicfunding] = useState({ id: null, Name: '' });
+  const [currentEnergySourch, setEnergySourch] = useState({ id: null, Name: '' });
   const [postCodeListForDisplay, setPostCodeListForDisplay] = useState([]);
   const [disableUtility, setDisableUtility] = useState(false);
   const [selectedCommisionDate, setSelectedCommisionDate] = useState(null);
@@ -137,6 +137,50 @@ const UpdateDevice = () => {
   );
   console.log(deviceobj)
   console.log(deviceobj?.imagePath?.slice(24))
+  useEffect(() => {
+    // Check if deviceobj.onSiteConsumer exists
+    if (deviceobj?.onSiteConsumer) {
+      const matchingOnsite = OnsiteList.find(item => item.Name === deviceobj.onSiteConsumer);
+      
+      if (matchingOnsite) {
+        // Set both Name and Id in the state
+        setCurrentOnsite({ id: matchingOnsite.id, Name: matchingOnsite.Name });
+        console.log({ id: matchingOnsite.id, Name: matchingOnsite.Name })
+      } else {
+        setCurrentOnsite({ id: null, Name: '' }); // Reset if no match
+      }
+    }
+  }, [deviceobj]); // Re-run when deviceobj changes
+  
+
+  useEffect(() => {
+    if (deviceobj?.energySource) {
+      
+      const matchingenergySource = EnergySourchList.find(item => item.Name === deviceobj.energySource);
+      if (matchingenergySource) {
+        setEnergySourch({ id: matchingenergySource.id, Name: matchingenergySource.Name });
+        console.log({ id: matchingenergySource.id, Name: matchingenergySource.Name })
+         // Set the matching Name in state
+      } else {
+        setEnergySourch({ id: null, Name: '' }); // If no match found, set to null or handle accordingly
+      }
+    }
+  },[deviceobj])
+
+  useEffect(() => {
+    if (deviceobj?.publicFunding) {
+      
+      const matchingPublicfunding= PublicFundingList.find(item => item.Name === deviceobj.publicFunding);
+      if (matchingPublicfunding) {
+        setPublicfunding({ id: matchingPublicfunding.id, Name: matchingPublicfunding.Name });
+        console.log({ id: matchingPublicfunding.id, Name: matchingPublicfunding.Name })
+         // Set the matching Name in state
+      } else {
+        setPublicfunding({ id: null, Name: '' }); // If no match found, set to null or handle accordingly
+      }
+    }
+  },[deviceobj])
+
   const base64String = deviceobj?.imagePath;
   const PublicFundingList = [
     {id :1 , Name:'No'},
@@ -146,6 +190,7 @@ const UpdateDevice = () => {
     {id :1 , Name:'Yes'},
     {id :2 , Name:'No'}
   ]
+  
   const EnergySourchList = [
     {id :1 , Name:'Yes'},
     {id :2 , Name:'No'}
@@ -156,11 +201,11 @@ const UpdateDevice = () => {
   };
   const onChangePublicFund = (value) => {
     console.log(value)
-     setCurrentOnsite(value);
+     setPublicfunding(value);
   };
   const onChangeEnergySourch = (value) => {
     console.log(value)
-     setCurrentOnsite(value);
+    setEnergySourch(value);
   };
   const onlyNumRegex = /^-?[0-9]+([.,][0-9]+)?$/;
   const onlyPositiveNum = /^[+]?\d+([.]\d+)?$/;
@@ -189,6 +234,7 @@ const UpdateDevice = () => {
 
   useEffect(() => {
     if (deviceobj && dropDrowList) {
+      
       var initValue = {
         id: deviceobj.id,
         assignedUtilityCode: initialvalueForSelectField(
@@ -216,6 +262,8 @@ const UpdateDevice = () => {
           "Name",
           deviceobj?.onSiteConsumer
         ),
+        Onsitedetail : deviceobj?.onSiteConsumerDetail,
+        Energysourcesdetail : deviceobj?.energySourceDetail,
         Publicfunding : initialvalueForSelectField(
           PublicFundingList,
           "Name",
@@ -242,7 +290,9 @@ const UpdateDevice = () => {
         ),
         latitude: deviceobj?.latitude,
         longitude: deviceobj?.longitude,
-
+        FundingReceivedate : deviceobj?.fundingReceive
+        ? format(new Date(deviceobj?.fundingReceive), "yyyy-MM-dd")
+        : "",
         commissioningDate: deviceobj?.commissioningDate
           ? format(new Date(deviceobj?.commissioningDate), "yyyy-MM-dd")
           : "", //deviceobj?.commissioningDate,
@@ -1668,6 +1718,28 @@ const UpdateDevice = () => {
                             />
                           )}
                         />
+                        {currentOnsite?.Name == "Yes" ? 
+                        
+                        <div className=" ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        <div className="w-full mt-2">
+                        <Controller
+                          name="Onsitedetail"
+                          control={control}
+                          rules={{
+                            required: "This field is required",
+                          }}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              id={"Onsitedetail"}
+                              type={"text"}
+                              placeholder={"Please fill the form in English"}
+                              error={errors.Onsitedetail}
+                              validate={" *"}
+                              
+                            />
+                          )}
+                        /> </div></div>: null}
                       </div>
                       <div className="md:col-span-3">
                         <Controller
@@ -1693,6 +1765,28 @@ const UpdateDevice = () => {
                             />
                           )}
                         />
+                        {currentEnergySourch?.Name == "Yes" ? 
+                        
+                        <div className=" ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        <div className="w-full mt-2">
+                        <Controller
+                          name="Energysourcesdetail"
+                          control={control}
+                          rules={{
+                            required: "This field is required",
+                          }}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              id={"Energysourcesdetail"}
+                              type={"text"}
+                              placeholder={"Please fill the form in English"}
+                              error={errors.Onsitedetail}
+                              validate={" *"}
+                              
+                            />
+                          )}
+                        /> </div></div>: null}
                       </div>
 
                     
@@ -1762,6 +1856,24 @@ const UpdateDevice = () => {
                             />
                           )}
                         />
+                        {currentPublicfunding?.Name == "Feed in Tariff" ? <div className=" ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        <div className="w-full mt-2">
+                        <Controller
+                          name="FundingReceivedate"
+                          control={control}
+                          rules={{
+                            required: "This field is required",
+                          }}
+                          render={({ field }) => (
+                            <DatePicker
+                              {...field}
+                              id={"FundingReceivedate"}
+                              error={errors.FundingReceivedate}
+                              validate={" *"}
+                              // ... other props
+                            />
+                          )}
+                        /></div></div> : null }
                       </div>
                       {/*Documents Information Attachments */}
                       <div className="md:col-span-6 mt-4">

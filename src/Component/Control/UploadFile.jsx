@@ -22,8 +22,8 @@ import ModalConfirm from "../Control/Modal/ModalConfirm";
 import ModelFail from "../Control/Modal/ModalFail";
 import { message } from "antd";
 
-import JSZip from "jszip";
-import { saveAs } from "file-saver";
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 const UploadFile = (props) => {
   console.log(props)
   const {
@@ -39,9 +39,10 @@ const UploadFile = (props) => {
     defaultValue = null,
     isViewMode = false,
     onClickFile,
+    onZipfile,
     ...inputProps
   } = props;
-console.log(props)
+console.log("UOLOADFILE _________________________________________ >>>>>>",props.defaultValue)
   // const [percent,setPercent] = useState(0)
   // const [status,setStatus] = useState('')
   const dispatch = useDispatch();
@@ -62,7 +63,7 @@ console.log(props)
   }) => {
     const [myFile, setMyFile] = useState(null);
     const [showModalConfirm, setShowModalConfirm] = useState(false);
-
+    console.log(previews)
     const getIcon = (name) => {
       const extension = name?.split(".").pop();
       if (extension === "jpeg" || extension === "jpg") {
@@ -131,21 +132,34 @@ console.log(props)
       //.........
     };
     
-    const fnDownLoad = () => {
+    console.log(previews?.files?.file?.File)
+    function downloadZip() {
+      const fileforzip = previews?.files?.file?.File;  // Array of files from the screenshot
       const zip = new JSZip();
-      const folder = zip.folder();
-      //Add images to folder
-      previews.forEach((files) => {
-        console.log(props?.valuefileWithMeta?.file)
-        const blob = fetch(files?.props?.fileWithMeta?.file).then((res) => res.blob());
-        folder.file(files?.props?.fileWithMeta?.file.name, blob, { binary: true });
+    
+      fileforzip.forEach(file => {
+        const { name, mimeType, base64 } = file;  // base64 needs to be part of this object
+    
+        if (base64) {
+          try {
+            const blob = base64ToBlob(base64, mimeType || "application/octet-stream");
+            zip.file(name, blob);
+          } catch (error) {
+            console.error('Error adding file to zip:', error);
+          }
+        } else {
+          console.error('No base64 data found for:', name);
+        }
       });
-  
-      //Zip folder and download folderZip
-      zip.generateAsync({ type: "blob" }).then((blob) => {
-        saveAs(blob, "ZipFiles");
+    
+      // Generate the ZIP file and trigger the download
+      zip.generateAsync({ type: 'blob' }).then(content => {
+        saveAs(content, "File.zip");
       });
-    };
+    }
+    
+    
+    
 
 
 
@@ -279,7 +293,7 @@ console.log(props)
             
           )}
           {props.value == undefined ? 
-           null : <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={fnDownLoad}>Download All Files (.zip)</div> }
+           null : <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={downloadZip}>Download All Files (.zip)</div> }
         </div>
 
         {showModalConfirm && (
