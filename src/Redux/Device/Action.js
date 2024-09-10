@@ -837,7 +837,6 @@ export const sendEmail = (emailBody, recipientEmail, callback) => {
 
       if (response.ok) {
         console.log('Email successfully sent');
-        alert('Email sent successfully');
         // dispatch(emailSentSuccess()); // If success action is defined
       } else {
         const errorData = await response.json();
@@ -879,7 +878,6 @@ export const sendEmailByUserGroup = (id,emailBody, callback) => {
 
       if (response.ok) {
         console.log('Email successfully sent');
-        alert('Email sent successfully');
         // dispatch(emailSentSuccess()); // If success action is defined
       } else {
         const errorData = await response.json();
