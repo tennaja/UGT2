@@ -10,7 +10,7 @@ import Select from "react-select";
 // ]
 
 const MySelect = (props) => {
-  console.log(props)
+  
   const {
     withNullValue = false,
     disable = false,
@@ -33,7 +33,7 @@ const MySelect = (props) => {
   const getOptionLabel = (option) => option[displayProp];
   const getOptionValue = (option) => option[valueProp];
 
-  console.log(displayProp)
+  
   const renderSelectType1 = () => {
     return (
       <>

@@ -112,10 +112,10 @@ const AddDevice = () => {
   const emailBodytoOwner = `
   <html>
     <body>
-      <p>Dear UGT Registrant (Verifier),</p>
+      <p>Dear Device Owner,</p>
       
       <p>
-      Device registration is
+      Device registration 
         <b><span style="color: red;"> has been edited.</span></b>
       </p>
       

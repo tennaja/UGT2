@@ -311,14 +311,14 @@ const InfoDevice = () => {
     });
   };
 
-  const emailBodytoOwner = `
+  const  emailBodytoOwnerWhenreturn = `
   <html>
     <body>
       <p>Dear UGT Registrant (Verifier),</p>
       
       <p>
-      Device registration is
-        <b><span style="color: red;"> has been edited.</span></b>
+      Device registration was 
+        <b><span style="color: red;"> returned for editing.</span></b>
       </p>
       
       <p>Device Details:</p>
@@ -388,6 +388,31 @@ const InfoDevice = () => {
   </html>
 `;
 
+const emailBodywhenSubmited = `
+  <html>
+    <body>
+      <p>To whom it may concern,</p>
+      
+      <p>
+      Device registration has been
+        <b><span style="color: red;"> submitted to Evident.</span></b>
+      </p>
+      
+      <p><b>Device Details:</b></p>
+      
+      <p>
+      <b>Name:</b> ${deviceobj?.name}
+      </p>
+      <p>
+        <b>Submission Date:</b> ${formatDate(Datenow)} 
+      </p>
+      
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`;
 
 
 
@@ -495,13 +520,13 @@ const handleClickDownloadFile = async (item) => {
     const deviceID = deviceobj?.id;
     const username = userData?.firstName;
     const SignatureDateTime = Date();
-    const organisationId = "1";
-    const organisationName = "OrgName101";
-    const contactPerson = "Contact101";
-    const businessAddress = "Addr101";
-    const country = "Thai";
+    const organisationId = userData?.organisationId    ;
+    const organisationName = userData?.organisationName    ;
+    const contactPerson = userData?.contactPerson    ;
+    const businessAddress = userData?.businessAddress;
+    const country = userData?.country;
     const email = userData?.email;
-    const telephone = "0999999999";
+    const telephone = userData?.telephone;
     dispatch(
       SubmitDevice(deviceID,username,SignatureDateTime,organisationId,
         organisationName,contactPerson,businessAddress,country,email,telephone,test.current,
@@ -516,6 +541,23 @@ const handleClickDownloadFile = async (item) => {
         setOpenConfirmSubmitModal(false);
       })
     );
+    dispatch(
+      sendEmail(emailBodywhenSubmited,deviceobj?.userEmail, () => {
+        
+      })
+    )
+    dispatch (
+      sendEmailByUserGroup(21,emailBodywhenSubmited,() => {
+        hideLoading();
+        // dispatch(clearModal());
+      })
+    )
+    dispatch (
+      sendEmailByUserGroup(22,emailBodywhenSubmited,() => {
+        hideLoading();
+        // dispatch(clearModal());
+      })
+    )
   };
 
   //Call Api Withdraw
@@ -529,6 +571,8 @@ const handleClickDownloadFile = async (item) => {
         navigate(WEB_URL.DEVICE_LIST);
       })
     );
+   
+    
   };
 
   //Call Api Verifying
@@ -583,6 +627,11 @@ const handleClickDownloadFile = async (item) => {
         navigate(WEB_URL.DEVICE_LIST);
       })
     );
+    dispatch(
+      sendEmail(emailBodytoOwnerWhenreturn,deviceobj?.userEmail, () => {
+
+      })
+    )
   };
   
 

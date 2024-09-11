@@ -32,6 +32,7 @@ import {
   WithdrawDevice,
   FetchDeleteFile,
   FetchDownloadFile,
+  sendEmail
 } from "../../Redux/Device/Action";
 
 import ModalConfirm from "../Control/Modal/ModalConfirm";
@@ -56,6 +57,16 @@ const UpdateDevice = () => {
     { name: "Contractsalesinvoice", Checked: "False" },
     { name: "Other", Checked: "True", otherText: "Additional details" },
   ];
+  const Datenow = new Date();
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  };
   const {
     handleSubmit,
     reset,
@@ -85,7 +96,32 @@ const UpdateDevice = () => {
       });
     }
   };
-  
+  const deviceName = watch("name");
+  const emailBodytoOwner = `
+  <html>
+    <body>
+      <p>Dear Device Owner,</p>
+      
+      <p>
+      Device registration 
+        <b><span style="color: red;"> has been edited.</span></b>
+      </p>
+      
+      <p>Device Details:</p>
+       
+      <p>
+      <b>Name:</b> ${deviceName}
+      </p>
+      <p>
+        <b>Submission Date:</b> ${formatDate(Datenow)} 
+      </p>
+      
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`; 
   const [vDeviceCode, vDeviceCodechange] = useState("");
   const [vDisabled, vDisabledchange] = useState(false);
 
@@ -631,6 +667,12 @@ const UpdateDevice = () => {
         hideLoading();
       })
     );
+    dispatch (
+      sendEmail(emailBodytoOwner,userData?.email,() => {
+        hideLoading();
+        // dispatch(clearModal());
+      })
+    )
   };
 
   const handleClickBackToEdit = () => {

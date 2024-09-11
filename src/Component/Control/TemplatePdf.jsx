@@ -17,16 +17,67 @@ const PdfFormPreview = (data,Sign) => {
   const [version, setVersion] = useState(count ?? 0);
   
   const now = new Date();
-  const day = String(now.getDate()).padStart(2, '0'); // Day of the month with leading zero
-  const month = String(now.getMonth() + 1).padStart(2, '0'); // Month with leading zero
-  const year = now.getFullYear();
+  // const day = String(now.getDate()).padStart(2, '0'); // Day of the month with leading zero
+  // const month = String(now.getMonth() + 1).padStart(2, '0'); // Month with leading zero
+  // const year = now.getFullYear();
+  
+  function parseDateStringCommission(dateString) {
+    const date = new Date(dateString);
+    
+    const daycom = date.getDate().toString().padStart(2, '0');
+    const monthcom = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+    const yearcom = date.getFullYear();
 
-  console.log(version)
-  // useEffect(() => {
-  //   if(Sign){
-      
-  //   }
-  // }, [data.data.id]); // Added dependency to avoid potential issue with useEffect
+    return { daycom, monthcom, yearcom };
+}
+
+function parseDateStringFunding(dateString) {
+  const date = new Date(dateString);
+  
+  const dayfund = date.getDate().toString().padStart(2, '0');
+  const monthfund = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+  const yearfund = date.getFullYear();
+
+  return { dayfund, monthfund, yearfund };
+}
+
+// Example usage:
+const dateStringcom = data?.data?.commissioningDate;
+const dateStringfund = data?.data?.fundingReceive;
+const { daycom, monthcom, yearcom } = parseDateStringCommission(dateStringcom);
+const { dayfund, monthfund, yearfund } = parseDateStringFunding(dateStringfund);
+
+
+
+  function getDay(date) {
+    return date.getDate().toString().padStart(2, '0');
+}
+
+// Function to get the month part
+function getMonth(date) {
+    return (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+}
+
+// Function to get the year part
+function getYear(date) {
+    return date.getFullYear();
+}
+
+  const numberString = data?.data?.capacity.toString().replace('.', '');
+
+  // Ensure the integer part has exactly 6 digits with leading zeros
+  const integerPart = numberString.slice(0, 6).padStart(6, '0');
+
+  // Ensure the fractional part has exactly 6 digits with trailing zeros
+  const fractionalPart = numberString.slice(6, 12).padEnd(6, '0');
+
+  // Combine integer and fractional parts
+  const formattedNumber = integerPart + fractionalPart;
+
+  // Split the formatted number into individual characters
+  const numberSlots = formattedNumber.split('');
+  
+  
 
   const pdfContentRef = useRef("");
   
@@ -85,9 +136,9 @@ const PdfFormPreview = (data,Sign) => {
         const pdfFile = new File([pdfBlob], `SF-02v${newVersion}.pdf`, { type: 'application/pdf' });
         console.log(pdfFile,data)
         // Open the PDF in a new tab for preview
-        // const url = URL.createObjectURL(pdfBlob);
-        // const pdfWindow = window.open(url, '_blank');
-        // if (pdfWindow) pdfWindow.focus();
+        const url = URL.createObjectURL(pdfBlob);
+        const pdfWindow = window.open(url, '_blank');
+        if (pdfWindow) pdfWindow.focus();
   
         
         // Dispatch the generated PDF Blob for storage
@@ -101,19 +152,19 @@ const PdfFormPreview = (data,Sign) => {
         // setVersion(newVersion);
 
         // Hide the content again
-        // element.style.display = 'none';
+        element.style.display = 'none';
         hideLoading();
         setload(false);
       })
-      // .catch((error) => {
-      //   console.error('Error generating PDF:', error);
-      //   // Hide the content again if there's an error
-      //   element.style.display = 'none';
-      //   setload(false);
-      //   hideLoading();
-      //   // Display an alert to the user (optional)
-      //   alert('An error occurred while generating the PDF. Please try again.');
-      // });
+      .catch((error) => {
+        console.error('Error generating PDF:', error);
+        // Hide the content again if there's an error
+        element.style.display = 'none';
+        setload(false);
+        hideLoading();
+        // Display an alert to the user (optional)
+        alert('An error occurred while generating the PDF. Please try again.');
+      });
   };
  if(load){
   return ""
@@ -145,9 +196,9 @@ const PdfFormPreview = (data,Sign) => {
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left w-1/3">Date</td>
-                <td className="border p-2 text-left ">{data?.Sign == "" ? "" :day}</td>
-                <td className="border p-2 text-left ">{data?.Sign == "" ? "" :month}</td>
-                <td className="border p-2 text-left ">{data?.Sign == "" ? "" :year}</td>
+                <td className="border p-2 text-left ">{data?.Sign == "" ? "" : getDay(now)}</td>
+                <td className="border p-2 text-left ">{data?.Sign == "" ? "" : getMonth(now)}</td>
+                <td className="border p-2 text-left ">{data?.Sign == "" ? "" : getYear(now)}</td>
               </tr>
             </thead>
             <tbody>
@@ -241,22 +292,22 @@ submission`})</em></p>
           <table className="w-full border-collapse mb-5 text-xs">
             <thead>
               <tr>
-                <th colSpan="4" className="border p-2  text-left">1.3 Production Facility Details</th>
+                <th colSpan="5" className="border p-2  text-left">1.3 Production Facility Details</th>
               </tr>
               <tr>
-              <th colSpan="4" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>complete all fields.</em></th>
+              <th colSpan="5" className="border p-2  text-[8px] font-noto-sans text-gray-600 text-left "><em>complete all fields.</em></th>
               </tr>
             </thead>
             <tbody>
             <tr>
-                <td className="border p-2 font-bold w-72 ">Facility name
+                <td className="border p-2 font-bold w-1/2" >Facility name
                 <p className='text-[8px] text-gray-600'><em>({`including postal or zip code`})</em></p>
                 </td>
-                <td className="border p-2 text-left break-all " >{data?.data?.name}</td>
+                <td className="border p-2 text-left break-all " colSpan={3}>{data?.data?.name}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Facility address</td>
-                <td className="border p-2 text-left break-all" >
+                <td className="border p-2 text-left break-all" colSpan={3}>
                 <div className='flex flex-col'>
                   <p>{data?.data?.address}</p>
                   <p>{data?.data?.subdistrictName}</p>
@@ -267,66 +318,48 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Country</td>
-                <td className="border p-2 text-left break-all" >{data?.data?.countryCode}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.countryCode}</td>
               </tr>
               <tr>
                 <td className="border p-2  font-bold"><div className="flex text-left"><p>Latitude</p><p className='text-[8px] text-gray-500 ml-1'><em>(±n.nnnnnn)</em></p></div></td>
-                <td className="border p-2 text-left break-all" >{data?.data?.latitude}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.latitude}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold"><div className="flex text-left"><p>Longitude</p><p className='text-[8px] text-gray-500 ml-1'><em>(±n.nnnnnn)</em></p></div></td>
-                <td className="border p-2 text-left break-all" >{data?.data?.longitude}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.longitude}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Installed capacity</td>
-                <td className="border text-left break-all" >
+                <td className="border text-left break-all" colSpan={3}>
 
-                    <table className='w-full text-xs'>
+                <table className='w-full text-xs'>
+  <tbody>
+    <tr>
+      <td className="border p-2 font-bold w-1/2 text-left">{data?.data?.capacity} MW</td>
+      <td className="border p-2 text-left text-xs break-all w-1/2">
+        <em>Up to 6 decimal places</em>
+      </td>
+    </tr>
 
-                        <tbody>
-                            <tr>
-                            <td className="border p-2 font-bold w-1/2">{data?.data?.capacity} MW</td>
-                            <td className="border p-2 text-left text-xs break-all w-1/2"><em>Up to 6 decimal places</em></td>
-                            </tr>
-                            <tr>
-                            <td className="border text-center w-1/2">
-                            <table className='w-full border-collapse' >
+    <tr>
+      <td colSpan={2} className="border text-center">
+        <table className='w-full border-collapse'>
+          <tr>
+          {numberSlots.map((char, index) => (
+              <td key={index} className="border p-1 text-center ">{char}</td>
+            ))}
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-                        <tbody>
-                            <tr>
-                            <td className="border p-2 text-center items-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                            </td>
-                            <td className="border text-center w-1/2">
-                            <table className='w-full border-collapse' >
-
-                        <tbody>
-                            <tr>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            <td className="border p-2 text-center w-1/6">x</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                            </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </td>
               </tr>
               <tr>
-                <td className="border p-2 font-bold w-60">Meter or Measurement ID(s)</td>
-                <td className="border p-2 text-left break-all" >
+                <td className="border p-2 font-bold ">Meter or Measurement ID(s)</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>
                 {data?.data?.deviceMeasurements?.map ((itm,index) => (
                   <span key={index}>
                   {itm.description}
@@ -339,26 +372,30 @@ submission`})</em></p>
                 </td>
               </tr>
               <tr>
-                <td className="border p-2 font-bold w-64 ">Number of generating units</td>
-                <td className="border p-2 text-left break-all" >{data?.data?.generatingUnit}</td>
+                <td className="border p-2 font-bold ">Number of generating units</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.generatingUnit}</td>
               </tr>
               <tr>
-                <td className="border p-2 font-bold">Commissioning date</td>
-                <td className="border p-2 text-left break-all" >Expression</td>
+                
+                <td className="border p-2 font-bold ">Commissioning date</td>
+      <td className="border p-2 text-left w-28" colSpan="1">{daycom}</td>
+      <td className="border p-2 text-left w-28" colSpan="1">{monthcom}</td>
+      <td className="border p-2 text-left w-28" colSpan="1">{yearcom}</td>
+                
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Owner of the network to which the Production Device is connected and the voltage of that connection</td>
-                <td className="border p-2 text-left break-all" >{data?.data?.deviceOwner}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.deviceOwner}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">If the Production Device is not connected directly to the grid, specify the circumstances, and additional relevant meter registration numbers</td>
-                <td className="border p-2 text-left break-all" ></td>
+                <td className="border p-2 text-left break-all" colSpan={3}></td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Expected form of volume evidence
                 <p className='text-[8px] text-gray-600'><em>({`if other please specify`})</em></p>
                 </td>
-                <td className="border p-2 text-left break-all" >{data?.data?.isMeteringData == "True" ? "Metering data / " : ""}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data.data.isOther == "True" ? "Other / " : ""} {data.data.otherDescription}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.isMeteringData == "True" ? "Metering data / " : ""}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data.data.isOther == "True" ? "Other / " : ""} {data.data.otherDescription}</td>
               </tr>
             </tbody>
           </table>
@@ -464,7 +501,7 @@ submission`})</em></p>
                 <td className="border p-2 text-left break-all w-full" >
                 <div className='flex flex-col'>
                   <p>{data?.data?.onSiteConsumer}</p>
-                  <p>{data?.da?.onSiteConsumerDetail}</p>
+                  <p>{data?.data?.onSiteConsumerDetail}</p>
                   </div>
                   </td>
               </tr>
@@ -534,15 +571,15 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 text-left">(if public (government) funding has been received when did/will it finish?)</td>
-                <td className="border p-2 text-left "></td>
-                <td className="border p-2 text-left "></td>
-                <td className="border p-2 text-left w-36"></td>
+                <td className="border p-2 text-left ">{dayfund}</td>
+                <td className="border p-2 text-left ">{monthfund}</td>
+                <td className="border p-2 text-left w-36">{yearfund}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Requested effective date of registration: (no earlier than 12 months prior to submitting this form)</td>
-                <td className="border p-2 text-left"></td>
-                <td className="border p-2 text-left"></td>
-                <td className="border p-2 text-left"></td>
+                <td className="border p-2 text-left "></td>
+                <td className="border p-2 text-left "></td>
+                <td className="border p-2 text-left w-36"></td>
               </tr>
               
               
@@ -641,9 +678,9 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Date</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" : day}</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" :month}</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" :year}</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getDay(now)}</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getMonth(now)}</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getYear(now)}</td>
               </tr>
             </tbody>
           </table>
@@ -707,9 +744,9 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Date</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" :day}</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" :month}</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" :year}</td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getDay(now)}   </td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getMonth(now)} </td>
+                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getYear(now)} </td>
               </tr>
             </tbody>
           </table>
