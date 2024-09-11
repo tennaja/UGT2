@@ -42,7 +42,7 @@ const UploadFile = (props) => {
     onZipfile,
     ...inputProps
   } = props;
-console.log("UOLOADFILE _________________________________________ >>>>>>",props.defaultValue)
+
   // const [percent,setPercent] = useState(0)
   // const [status,setStatus] = useState('')
   const dispatch = useDispatch();
@@ -52,7 +52,7 @@ console.log("UOLOADFILE _________________________________________ >>>>>>",props.
   const [uploaderKey, setUploaderKey] = useState(0); //for force Re-render
   const [isShowFailModal, setIsShowFailModal] = useState(false);
   const [messageFailModal, setMessageFailModal] = useState("");
-
+  console.log("UOLOADFILE _________________________________________ >>>>>>",initFile)
   const Layout = ({
     input,
     previews,
@@ -63,7 +63,7 @@ console.log("UOLOADFILE _________________________________________ >>>>>>",props.
   }) => {
     const [myFile, setMyFile] = useState(null);
     const [showModalConfirm, setShowModalConfirm] = useState(false);
-    console.log(previews)
+    console.log(initFile)
     const getIcon = (name) => {
       const extension = name?.split(".").pop();
       if (extension === "jpeg" || extension === "jpg") {
@@ -132,31 +132,76 @@ console.log("UOLOADFILE _________________________________________ >>>>>>",props.
       //.........
     };
     
-    console.log(previews?.files?.file?.File)
-    function downloadZip() {
-      const fileforzip = previews?.files?.file?.File;  // Array of files from the screenshot
+    
+
+    
+    async function downloadZip(files) {
+      if (!Array.isArray(files) || files.length === 0) {
+        console.error('No valid files found.');
+        return;
+      }
+    
       const zip = new JSZip();
+      const fileMetadata = [];
     
-      fileforzip.forEach(file => {
-        const { name, mimeType, base64 } = file;  // base64 needs to be part of this object
+      const readFileAsArrayBuffer = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = (error) => reject(new Error(`FileReader error: ${error.message}`));
+          reader.readAsArrayBuffer(file);
+        });
+      };
     
-        if (base64) {
-          try {
-            const blob = base64ToBlob(base64, mimeType || "application/octet-stream");
-            zip.file(name, blob);
-          } catch (error) {
-            console.error('Error adding file to zip:', error);
-          }
-        } else {
-          console.error('No base64 data found for:', name);
+      for (const file of files) {
+        if (!(file instanceof File)) {
+          console.error('Provided item is not a File object:', file);
+          continue;
         }
-      });
     
-      // Generate the ZIP file and trigger the download
-      zip.generateAsync({ type: 'blob' }).then(content => {
-        saveAs(content, "File.zip");
-      });
+        try {
+          const fileContent = await readFileAsArrayBuffer(file);
+          zip.file(file.name, fileContent, { binary: true });
+    
+          fileMetadata.push({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+          });
+        } catch (error) {
+          console.error(`Error processing file ${file.name}: ${error.message}`);
+        }
+      }
+    
+      zip.file('metadata.json', JSON.stringify(fileMetadata, null, 2));
+    
+      if (Object.keys(zip.files).length === 0) {
+        console.error('No valid files were added to the ZIP. Aborting download.');
+        return;
+      }
+    
+      try {
+        const content = await zip.generateAsync({ type: 'blob' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = 'files.zip'; // Default file name
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+      } catch (error) {
+        console.error('Error generating ZIP:', error.message);
+      }
     }
+    
+
+
+    
+ 
+    
+    
+
+
     
     
     
@@ -293,7 +338,7 @@ console.log("UOLOADFILE _________________________________________ >>>>>>",props.
             
           )}
           {props.value == undefined ? 
-           null : <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={downloadZip}>Download All Files (.zip)</div> }
+           null : <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={() => {downloadZip(previews.map(file => file.props.fileWithMeta.file));}}>Download All Files (.zip)</div> }
         </div>
 
         {showModalConfirm && (

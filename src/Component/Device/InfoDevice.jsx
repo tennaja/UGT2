@@ -256,7 +256,27 @@ const InfoDevice = () => {
     setOpenSubmitstep2(false)
     setOpenSubmitstep1(false)
   }
+  const getDate =(Date)=>{
+    
+    const dateToText = Date.toString()
+    const date = dateToText.split("T")[0]
+    const dateSplit = date.split("-")
+    const year = dateSplit[0]
+    const month = dateSplit[1]
+    const day = dateSplit[2]
+     
+    return day+"-"+month+"-"+year
+    
+  }
 
+  const getTime=(Date)=>{
+    
+    console.log(Date)
+    const dateToText = Date.toString()
+    const time = dateToText.split("T")[1]
+    const timeFull = time.split(".")[0]
+    return timeFull
+  }
   const onClickSubmitBtn = () => {
     setOpenConfirmSubmitModal(true);
     setModalConfirmSubmitProps({
@@ -1408,8 +1428,8 @@ const handleClickDownloadFile = async (item) => {
                  <div className="bg-gray-100 p-4 rounded-lg shadow-md mt-4 mb-4 border border-gray-500">
                  <div className="flex justify-between items-center mb-2 border-b-2 border-x-gray-50 border-y-gray-200">
                    <h2 className="font-semibold text-lg ">Remark - {item.order}</h2>
-                   <div className="text-sm text-gray-500">
-                     Date: {item.createDate}
+                   <div className="text-md text-gray-500">
+                    {"Date: "+getDate(item.createDate)+" | Time: "+getTime(item.createDate)}
                    </div>
                  </div>
                  <p className="text-gray-700 mb-4  pt-2 pb-2">{item.remark}</p>
