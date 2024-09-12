@@ -874,13 +874,14 @@ const UpdateDevice = () => {
                       </span>
                     </div>
 
-                    <div className="md:col-span-3 md:text-left lg:col-span-2 lg:text-right py-2 flex  m-0 items-center justify-self-end">
-                      <span className="text-PRIMARY_TEXT flex  m-0 items-center">
-                        <b> English Only** </b>
-                      </span>
-                      <span className="text-[#f94a4a] flex  m-0 items-center pl-4">
-                        <b> * Required Field </b>
-                      </span>
+                    <div className="md:col-span-3 md:text-left lg:col-span-2 lg:text-right py-2 flex flex-col m-0 items-center justify-self-end gap-2">
+  
+                    <span className="text-[#f94a4a] flex m-0 items-center">
+                    <b> * Required Field </b>
+                    </span>
+                    <span className="text-PRIMARY_TEXT flex m-0 items-center pl-3">
+                    <b> English Only** </b>
+                    </span>
                     </div>
                   </div>
                 </div>
@@ -1654,12 +1655,12 @@ const UpdateDevice = () => {
                           rules={{
                             required: "This field is required",
                             max: {
-                              value: 90,
-                              message: "Please enter value between -90 to 90",
+                              value: 90.000000,
+                              message: "Please enter value between -90.000000 to 90.000000",
                             },
                             min: {
-                              value: -90,
-                              message: "Please enter value between -90 to 90",
+                              value: -90.000000,
+                              message: "Please enter value between -90.000000 to 90.000000",
                             },
                             // pattern: {
                             //   value: onlyNumRegex,
@@ -1675,6 +1676,12 @@ const UpdateDevice = () => {
                               error={errors.latitude}
                               validate={" *"}
                               disabled={vDisabled}
+                              onBlur={(e) => {
+                                let value = e?.target?.value;
+                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
+                                let val = padNumber(value, 6);
+                                setValue("latitude", val);
+                              }}
                               onChangeInput={(val) => {
                                 onChangeLatLon("lat", val);
                               }}
@@ -1690,12 +1697,12 @@ const UpdateDevice = () => {
                           rules={{
                             required: "This field is required",
                             max: {
-                              value: 180,
-                              message: "Please enter value between -180 to 180",
+                              value: 180.000000,
+                              message: "Please enter value between -180.000000 to 180.000000",
                             },
                             min: {
-                              value: -180,
-                              message: "Please enter value between -180 to 180",
+                              value: -180.000000,
+                              message: "Please enter value between -180.000000 to 180.000000",
                             },
                             // pattern: {
                             //   value: onlyNumRegex,
@@ -1711,6 +1718,12 @@ const UpdateDevice = () => {
                               error={errors.longitude}
                               validate={" *"}
                               disabled={vDisabled}
+                              onBlur={(e) => {
+                                let value = e?.target?.value;
+                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
+                                let val = padNumber(value, 6);
+                                setValue("longitude", val);
+                              }}
                               onChangeInput={(val) => {
                                 onChangeLatLon("lon", val);
                               }}
@@ -1823,7 +1836,7 @@ const UpdateDevice = () => {
                               id={"Energysourcesdetail"}
                               type={"text"}
                               placeholder={"Please fill the form in English"}
-                              error={errors.Onsitedetail}
+                              error={errors.Energysourcesdetail}
                               validate={" *"}
                               
                             />
@@ -1842,7 +1855,7 @@ const UpdateDevice = () => {
                             required: "This field is required",
                           }}
                           render={({ field }) => (
-                            <Input
+                            <Textarea
                               {...field}
                               id={"Otherimport"}
                               type={"text"}
@@ -1862,7 +1875,7 @@ const UpdateDevice = () => {
                             required: "This field is required",
                           }}
                           render={({ field }) => (
-                            <Input
+                            <Textarea
                               {...field}
                               id={"Othercarbon"}
                               type={"text"}

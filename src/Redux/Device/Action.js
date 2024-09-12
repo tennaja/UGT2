@@ -438,7 +438,7 @@ export const FunctionAddDevice = (data, callback) => {
     energySourceDetail : data?.Energysourcesdetail,
     OtherCarbonOffset: data?.Othercarbon,
     PublicFunding: data?.Publicfunding?.Name,
-    FundingReceive : data?.FundingReceivedate,
+    FundingReceive : data?.FundingReceivedate? data?.FundingReceivedate : null,
     IsMeteringData : data?.ExpectedFormofVolumeEvidence[0]?.Checked ? "True" : "False" ,
     IsContractSaleInvoice : data?.ExpectedFormofVolumeEvidence[1]?.Checked ? "True" : "False" ,
     IsOther : data?.ExpectedFormofVolumeEvidence[2]?.Checked ? "True" : "False" ,
@@ -476,6 +476,7 @@ console.log(parameterForCreate)
 };
 
 export const FunctionEditDevice = (data, callback) => {
+  console.log()
   const deviceID = `${data?.id}`;
   const editDeviceURL = `${EDIT_DEVICE_URL}/${deviceID}`;
   
@@ -521,14 +522,16 @@ export const FunctionEditDevice = (data, callback) => {
     EnergySource: data.Energysources?.Name,
     OtherCarbonOffset: data.Othercarbon,
     PublicFunding: data.Publicfunding?.Name,
-    FundingReceive :data?.FundingReceivedate,
+    FundingReceive :data?.FundingReceivedate? data?.FundingReceivedate : null,
     IsMeteringData : data.ExpectedFormofVolumeEvidence[0]?.Checked ? "True" : "False" ,
     IsContractSaleInvoice : data.ExpectedFormofVolumeEvidence[1]?.Checked ? "True" : "False" ,
     IsOther : data.ExpectedFormofVolumeEvidence[2]?.Checked ? "True" : "False" ,
     OtherDescription : data.ExpectedFormofVolumeEvidence[2]?.otherText,
-    deviceMeasurements : data?.devicemeasure
+    deviceMeasurements : data?.devicemeasure,
+    onSiteConsumerDetail : data?.Onsitedetail,
+    energySourceDetail : data?.Energysourcesdetail,
   };
-
+  console.log(parameterForEdit)
   return async (dispatch) => {
     dispatch(makeRequest());
     await axios.put(editDeviceURL, parameterForEdit, getHeaderConfig()).then(

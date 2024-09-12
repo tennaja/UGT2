@@ -65,6 +65,7 @@ const ListDevice = (props) => {
   const [disableUtility, setDisableUtility] = useState(false);
   const deviceRdc = useSelector((state) => state.device);
   const currentUGTGroup = useSelector((state) => state.menu.currentUGTGroup);
+  console.log(currentUGTGroup)
   const userData = useSelector((state) => state.login.userobj);
   const totalDevice = deviceRdc?.totalDevice;
   const totalExpire = deviceRdc?.totalExpire;
@@ -783,6 +784,58 @@ const ListDevice = (props) => {
       userGroupID == USER_GROUP_ID.ALL_MODULE_VIEWER
     ) {
       const utilityID = UTILITY_GROUP_ID.ALL; //EGAT
+
+      setIsDeviceGroup(false);
+
+      const initAssignedFilterValue = {
+        ...currentAssignedFilterObj,
+        utility: [],
+      };
+      const initUnAssignedFilterValue = {
+        ...currentUnAssignedFilterObj,
+        utility: [],
+      };
+
+      setCurrentAssignedFilterObj(initAssignedFilterValue);
+      dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
+
+      setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
+      dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
+
+       console.log("run check permission", utilityID);
+      getDeviceData();
+      setDisableUtility(true);
+    }
+    else if (
+      userGroupID == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
+    ) {
+      const utilityID = UTILITY_GROUP_ID.VER; //EGAT
+
+      setIsDeviceGroup(false);
+
+      const initAssignedFilterValue = {
+        ...currentAssignedFilterObj,
+        utility: [],
+      };
+      const initUnAssignedFilterValue = {
+        ...currentUnAssignedFilterObj,
+        utility: [],
+      };
+
+      setCurrentAssignedFilterObj(initAssignedFilterValue);
+      dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
+
+      setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
+      dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
+
+       console.log("run check permission", utilityID);
+      getDeviceData();
+      setDisableUtility(true);
+    }
+    else if (
+      userGroupID == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+    ) {
+      const utilityID = UTILITY_GROUP_ID.SIG; //EGAT
 
       setIsDeviceGroup(false);
 

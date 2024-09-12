@@ -34,13 +34,13 @@ export const GET_SUB_MENU_PORTFOLIO_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfo
 export const GET_SUB_MENU_EAC_TRACKING_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/submenu-list`;
 
 //Dropdrow
-export const UGT_GROUP_LIST = `${DOMAIN_URL}/ugt/v1/ugtgroup-list`;
+export const UGT_GROUP_LIST = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/ugtgroup-list`;
 
-export const PROVINCE_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/provinces.json`;
-export const DISTRICT_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/districts.json`;
-export const SUB_DISTRICT_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/subdistricts.json`;
-export const COUNTRY_LIST_URL = `${DOMAIN_URL}/ugt/v1/countries-code/en/world.json`;
-export const POSTCODE_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/geography.json`;
+export const PROVINCE_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/geography/provinces.json`;
+export const DISTRICT_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/geography/districts.json`;
+export const SUB_DISTRICT_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/geography/subdistricts.json`;
+export const COUNTRY_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/countries-code/en/world.json`;
+export const POSTCODE_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/geography/geography.json`;
 
 // Subscriber
 export const DASHBOARD_LIST_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/dashboard`;

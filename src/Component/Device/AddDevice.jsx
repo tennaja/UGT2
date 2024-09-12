@@ -7,7 +7,7 @@ import Textarea from "../Control/Textarea";
 import MySelect from "../Control/Select";
 import { Tooltip } from "react-tooltip";
 import { Card } from "@mantine/core";
-
+import { FaInfoCircle } from 'react-icons/fa';
 import {
   FetchDeviceDropdrowList,
   FetchCountryList,
@@ -563,13 +563,14 @@ const AddDevice = () => {
                       </span>
                     </div>
 
-                    <div className="md:col-span-3 md:text-left lg:col-span-2 lg:text-right  py-2 flex  m-0 items-center justify-self-end">
-                      <span className="text-PRIMARY_TEXT flex  m-0 items-center">
-                        <b> English Only** </b>
-                      </span>
-                      <span className="text-[#f94a4a] flex  m-0 items-center pl-4">
-                        <b> * Required Field </b>
-                      </span>
+                    <div className="md:col-span-3 md:text-left lg:col-span-2 lg:text-right py-2 flex flex-col m-0 items-center justify-self-end gap-2">
+  
+                    <span className="text-[#f94a4a] flex m-0 items-center">
+                    <b> * Required Field </b>
+                    </span>
+                    <span className="text-PRIMARY_TEXT flex m-0 items-center pl-3">
+                    <b> English Only** </b>
+                    </span>
                     </div>
                   </div>
                 </div>
@@ -736,6 +737,7 @@ const AddDevice = () => {
                                   label={"Default account code"}
                                   // error={errors.defaultAccountCode}
                                   validate={" *"}
+                                  disabled={true}
                                   // ... other props
                                 />
                               )}
@@ -1056,7 +1058,7 @@ const AddDevice = () => {
                                   {...field}
                                   id={"NumberofGeneratingUnits"}
                                   placeholder={"Please fill the form in Number"}
-                                  type={"text"}
+                                  type={"number"}
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
@@ -1066,7 +1068,7 @@ const AddDevice = () => {
                             />
                             <div
                         className="md:col-span-3 mt-4"
-                        id="registration-date-tooltip"
+                        
                       >
                         <Controller
                           name="registrationDate"
@@ -1091,10 +1093,18 @@ const AddDevice = () => {
                         />  
 
                         {disableRequestedEffectiveDate && (
-                          <Tooltip
-                            anchorSelect="#registration-date-tooltip"
-                            content="Please select the commissioning date first."
-                          />
+                          
+                          <div>
+                      <span id="registration-date-tooltip" style={{ cursor: 'pointer' }}>
+        <FaInfoCircle />
+      </span>
+      
+      <Tooltip
+        anchorSelect="#registration-date-tooltip"
+        content="Please select the commissioning date first."
+      />
+    </div>
+                          
                         )}
                       </div>
                       
@@ -1362,12 +1372,12 @@ const AddDevice = () => {
                           rules={{
                             required: "This field is required",
                             max: {
-                              value: 90,
-                              message: "Please enter value between -90 to 90",
+                              value: 90.000000,
+                              message: "Please enter value between -90.000000 to 90.000000",
                             },
                             min: {
-                              value: -90,
-                              message: "Please enter value between -90 to 90",
+                              value: -90.000000,
+                              message: "Please enter value between -90.000000 to 90.000000",
                             },
                             // pattern: {
                             //   value: onlyNumRegex,
@@ -1383,6 +1393,12 @@ const AddDevice = () => {
                               placeholder={"Please fill the form in Number"}
                               error={errors.latitude}
                               validate={" *"}
+                              onBlur={(e) => {
+                                let value = e?.target?.value;
+                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
+                                let val = padNumber(value, 6);
+                                setValue("latitude", val);
+                              }}
                               onChangeInput={(val) => {
                                 onChangeLatLon("lat", val);
                               }}
@@ -1397,12 +1413,12 @@ const AddDevice = () => {
                           rules={{
                             required: "This field is required",
                             max: {
-                              value: 180,
-                              message: "Please enter value between -180 to 180",
+                              value: 180.000000,
+                              message: "Please enter value between -180.000000 to 180.000000",
                             },
                             min: {
-                              value: -180,
-                              message: "Please enter value between -180 to 180",
+                              value: -180.000000,
+                              message: "Please enter value between -180.000000 to 180.000000",
                             },
                             // pattern: {
                             //   value: onlyNumRegex,
@@ -1418,6 +1434,12 @@ const AddDevice = () => {
                               placeholder={"Please fill the form in Number"}
                               error={errors.longitude}
                               validate={" *"}
+                              onBlur={(e) => {
+                                let value = e?.target?.value;
+                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
+                                let val = padNumber(value, 6);
+                                setValue("longitude", val);
+                              }}
                               onChangeInput={(val) => {
                                 onChangeLatLon("lon", val);
                               }}
@@ -1536,7 +1558,7 @@ const AddDevice = () => {
                               id={"Energysourcesdetail"}
                               type={"text"}
                               placeholder={"Please fill the form in English"}
-                              error={errors.Onsitedetail}
+                              error={errors.Energysourcesdetail}
                               validate={" *"}
                               
                             />
@@ -1555,7 +1577,7 @@ const AddDevice = () => {
                             required: "This field is required",
                           }}
                           render={({ field }) => (
-                            <Input
+                            <Textarea
                               {...field}
                               id={"Otherimport"}
                               placeholder={"Please fill the form in English"}
@@ -1576,7 +1598,7 @@ const AddDevice = () => {
                             required: "This field is required",
                           }}
                           render={({ field }) => (
-                            <Input
+                            <Textarea
                               {...field}
                               id={"Othercarbon"}
                               placeholder={"Please fill the form in English"}
