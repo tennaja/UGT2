@@ -1,5 +1,6 @@
 import React from "react";
-
+import { FaInfoCircle } from 'react-icons/fa';
+import { Tooltip } from "react-tooltip";
 const Input = (props) => {
   const {
     register,
@@ -9,6 +10,7 @@ const Input = (props) => {
     id,
     onChangeInput,
     disabled,
+    iconsid,
     initValue = null,
     ...inputProps
   } = props;
@@ -18,12 +20,22 @@ const Input = (props) => {
   return (
     <>
       {label ? (
-        <label className="mb-1" htmlFor={id}>
-          <b>
-            {label}
-            <font className="text-[#f94a4a]">{validate}</font>
-          </b>
-        </label>
+        <label className="mb-1 flex items-center" htmlFor={id}>
+        <b className="flex items-center">
+          {label}
+          <font className="text-[#f94a4a]">{validate}</font>
+          {iconsid ? (
+            <>
+            <span id={iconsid} style={{ cursor: 'pointer', display: 'inline-flex', marginLeft: '0.5rem', color: '#98FB98' }}>
+              <FaInfoCircle />
+            </span>
+            <Tooltip
+            anchorSelect={`#${iconsid}`}
+            content="Please select the commissioning date first."
+          /></>
+          ) : null}
+        </b>
+      </label>
       ) : (
         <></>
       )}
@@ -34,7 +46,7 @@ const Input = (props) => {
           let value = null;
           if (e.target.value) {
             value = e.target.value;
-            value = value.replace(/[^A-Za-z0-9.\s-]/g, '')
+            value = value.replace(/[^A-Za-z0-9\s\-./\[\]\{\}]/g, '')
           }
           onChangeInput && onChangeInput(value);
           inputProps.onChange(value);

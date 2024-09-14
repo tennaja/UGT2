@@ -833,13 +833,15 @@ const handleClickDownloadFile = async (item) => {
     const status = (deviceobj?.statusName ?? "").toLowerCase();
 
     if (status === DEVICE_STATUS.APPROVED.toLowerCase()) {
-      message = `The device is already approved.
+      message = 
+      
+      `The device is already approved.
       To make any changes, please contact Issuer.`;
     } else if (
       status === DEVICE_STATUS.SUBMITTED.toLowerCase() ||
       status === DEVICE_STATUS.IN_PROGRESS.toLowerCase()
     ) {
-      message = "The device is now in the review process (in progress).";
+      message = "The device is now uder review (in progress).";
     }
     return message;
   };
@@ -1009,8 +1011,8 @@ const handleClickDownloadFile = async (item) => {
                               <b>Production Device Details</b>
                             </h6>
                           </div>
-                          {}
-                          <img src={base64String} alt="Preview_Img" id="preview_img" className="h-44 w-44 object-cover rounded-full flex items-center justify-center rounded-[20px] mt-4"/>
+                          {deviceobj?.imagePath == null || deviceobj?.imagePath == "string" || deviceobj?.imagePath == "" ? null : <img src={base64String} alt="Preview_Img" id="preview_img" className="h-44 w-44 object-cover rounded-full flex items-center justify-center rounded-[20px] mt-4"/>}
+                          
                         </div>
 
                         <div className="col-span-12 lg:col-span-9">

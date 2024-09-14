@@ -94,7 +94,9 @@ const Sidebar2 = ({ children }) => {
     if (
       userGroupID == USER_GROUP_ID.MEA_DEVICE_MNG ||
       userGroupID == USER_GROUP_ID.EGAT_DEVICE_MNG ||
-      userGroupID == USER_GROUP_ID.PEA_DEVICE_MNG
+      userGroupID == USER_GROUP_ID.PEA_DEVICE_MNG || 
+      userGroupID == USER_GROUP_ID.UGT_REGISTANT_VERIFIER || 
+      userGroupID == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY 
     ) {
       defaultMenu = MENU_ID.DEVICE;
       defaultSubmenu = SUB_MENU_ID.DEVICE_LIST_INFO;
@@ -208,7 +210,9 @@ const Sidebar2 = ({ children }) => {
         if (
           userData?.userGroup?.id !== USER_GROUP_ID?.EGAT_DEVICE_MNG &&
           userData?.userGroup?.id !== USER_GROUP_ID?.MEA_DEVICE_MNG &&
-          userData?.userGroup?.id !== USER_GROUP_ID?.PEA_DEVICE_MNG
+          userData?.userGroup?.id !== USER_GROUP_ID?.PEA_DEVICE_MNG &&
+          userData?.userGroup?.id !== USER_GROUP_ID?.UGT_REGISTANT_VERIFIER &&
+          userData?.userGroup?.id !== USER_GROUP_ID?.UGT_REGISTANT_SIGNATORY 
         ) {
           let data = currentSubMenuList;
           data = data.filter((item) => item.id !== 2);

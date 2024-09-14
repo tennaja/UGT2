@@ -44,7 +44,7 @@ const UploadFile = (props) => {
   } = props;
 
   // const [percent,setPercent] = useState(0)
-  // const [status,setStatus] = useState('')
+  const [status,setStatus] = useState('')
   const dispatch = useDispatch();
 
   const [newRender, setNewRender] = useState(false);
@@ -311,13 +311,37 @@ const UploadFile = (props) => {
                           {file?.props?.meta?.name}
                         </label>
                       </div>
+
+                      {status === "done" ? <div className="flex items-center justify-between  w-36">
+
+                    
+                  <MdOutlineRemoveRedEye className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
+                      onClick={() => {
+                       onPreview &&
+                      onPreview(file?.props?.fileWithMeta?.file);
+}}/>
+
+<HiDownload className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer" onClick={() => {
+          onClickFile &&
+            onClickFile(file?.props?.fileWithMeta?.file);
+        }}/>
+<FiTrash2 className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer" 
+onClick={() => {
+    handleDeleteClick(file);
+  }}/>
+</div> : null}
+{status === "done" ? null :
                       <div className="mr-8">
                         <label className="text-sm text-[#d1d5db] font-normal">
                           {parseInt(file?.props?.meta?.percent)} %{" "}
                         </label>
-                      </div>
+                      </div> }
                     </div>{" "}
-                    {file}{" "}
+                    {status === "done" ? null : 
+                    <>
+                    {file}{" "}</>
+                    }
+                    
                     <label className="text-xs text-[#d1d5db] font-medium">
                       {/* {readableBytes(file?.props?.meta?.size)} */}
                     </label>
@@ -328,9 +352,11 @@ const UploadFile = (props) => {
                       handleDeleteClick(file);
                     }}
                   >
-                    <label className="pl-2 text-xl font-medium cursor-pointer">
+                    {status === "done" ? null : <label className="pl-2 text-xl font-medium cursor-pointer">
                       x
-                    </label>
+                    </label>}
+                    
+                    
                   </button>
                 </div>
               </>
@@ -445,7 +471,7 @@ const UploadFile = (props) => {
   const handleChangeStatus = ({ meta, file, remove }, status, allFiles) => {
     // { meta ,file ,remove }, status, allFiles
     // let status = props?.meta?.status
-
+    setStatus(status)
     inputProps.onChange(allFiles);
     setNewRender(!newRender);
     console.log("status", status);

@@ -1062,6 +1062,7 @@ const AddDevice = () => {
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
+                                  iconsid = {"NumberofGeneratingUnits-tooltip"}
                                   // ... other props
                                 />
                               )}
@@ -1087,6 +1088,7 @@ const AddDevice = () => {
                               }
                               isDisable={disableRequestedEffectiveDate}
                               validate={" *"}
+                              iconsid = {"registration-date-tooltip"}
                               // ... other props
                             />
                           )}
@@ -1095,14 +1097,11 @@ const AddDevice = () => {
                         {disableRequestedEffectiveDate && (
                           
                           <div>
-                      <span id="registration-date-tooltip" style={{ cursor: 'pointer' }}>
+      <span id="registration-date-tooltip" style={{ cursor: 'pointer' }}>
         <FaInfoCircle />
       </span>
       
-      <Tooltip
-        anchorSelect="#registration-date-tooltip"
-        content="Please select the commissioning date first."
-      />
+      
     </div>
                           
                         )}

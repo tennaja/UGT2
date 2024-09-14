@@ -396,7 +396,7 @@ const ListDevice = (props) => {
 
   const getDeviceData = (utilityID = null) => {
     // console.log(utilityID, "utilityID");
-    const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "1";
+    const ugtGroupId = currentUGTGroup?.id ;
 
     const fetchParameterForDashboard = {
       findUgtGroupId: ugtGroupId,
@@ -499,6 +499,7 @@ const ListDevice = (props) => {
   const handleChangeAssignFilter = (value, filterType) => {
     console.log(value)
     const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
+    console.log(ugtGroupId)
     let fetchParameterForAssignedList = null;
     const currentFilterList = value.map((item) => {
       return item.id;
@@ -571,9 +572,10 @@ const ListDevice = (props) => {
   };
 
   const handleChangeUnAssignFilter = (value, filterType) => {
+    console.log(value)
     let fetchParameterForUnAssignedList = null;
     const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
-
+    console.log(ugtGroupId)
     const currentFilterList = value.map((item) => {
       return item.id;
     });
@@ -603,6 +605,7 @@ const ListDevice = (props) => {
         ...currentUnAssignedFilterObj,
         utility: currentFilterList,
       };
+      console.log(newCurrentUnAssignedFilter)
       setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
       dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
 
@@ -623,7 +626,7 @@ const ListDevice = (props) => {
         ...currentUnAssignedFilterObj,
         status: currentFilterList,
       };
-
+      console.log(newCurrentUnAssignedFilter)
       setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
       dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
 
@@ -640,7 +643,7 @@ const ListDevice = (props) => {
         findUgtGroupId: ugtGroupId,
       };
     }
-
+    console.log(fetchParameterForUnAssignedList)
     dispatch(FetchDeviceManagementUnAssigned(fetchParameterForUnAssignedList));
   };
 
@@ -738,11 +741,11 @@ const ListDevice = (props) => {
       }
       const initAssignedFilterValue = {
         ...currentAssignedFilterObj,
-        utility: [utilityID],
+        utility: [],
       };
       const initUnAssignedFilterValue = {
         ...currentUnAssignedFilterObj,
-        utility: [utilityID],
+        utility: [],
       };
 
       setCurrentAssignedFilterObj(initAssignedFilterValue);
@@ -751,7 +754,7 @@ const ListDevice = (props) => {
       setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
       dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
 
-      getDeviceData(utilityID);
+      getDeviceData();
       setDisableUtility(true);
     }
     else if (
@@ -763,11 +766,11 @@ const ListDevice = (props) => {
       }
       const initAssignedFilterValue = {
         ...currentAssignedFilterObj,
-        utility: [utilityID],
+        utility: [],
       };
       const initUnAssignedFilterValue = {
         ...currentUnAssignedFilterObj,
-        utility: [utilityID],
+        utility: [],
       };
 
       setCurrentAssignedFilterObj(initAssignedFilterValue);
@@ -776,7 +779,7 @@ const ListDevice = (props) => {
       setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
       dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
 
-      getDeviceData(utilityID);
+      getDeviceData();
       setDisableUtility(true);
     }
     else if (
@@ -806,58 +809,58 @@ const ListDevice = (props) => {
       getDeviceData();
       setDisableUtility(true);
     }
-    else if (
-      userGroupID == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
-    ) {
-      const utilityID = UTILITY_GROUP_ID.VER; //EGAT
+    // else if (
+    //   userGroupID == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
+    // ) {
+    //   const utilityID = UTILITY_GROUP_ID.VER; //EGAT
 
-      setIsDeviceGroup(false);
+    //   setIsDeviceGroup(false);
 
-      const initAssignedFilterValue = {
-        ...currentAssignedFilterObj,
-        utility: [],
-      };
-      const initUnAssignedFilterValue = {
-        ...currentUnAssignedFilterObj,
-        utility: [],
-      };
+    //   const initAssignedFilterValue = {
+    //     ...currentAssignedFilterObj,
+    //     utility: [],
+    //   };
+    //   const initUnAssignedFilterValue = {
+    //     ...currentUnAssignedFilterObj,
+    //     utility: [],
+    //   };
 
-      setCurrentAssignedFilterObj(initAssignedFilterValue);
-      dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
+    //   setCurrentAssignedFilterObj(initAssignedFilterValue);
+    //   dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
 
-      setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
-      dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
+    //   setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
+    //   dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
 
-       console.log("run check permission", utilityID);
-      getDeviceData();
-      setDisableUtility(true);
-    }
-    else if (
-      userGroupID == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
-    ) {
-      const utilityID = UTILITY_GROUP_ID.SIG; //EGAT
+    //    console.log("run check permission", utilityID);
+    //   getDeviceData();
+    //   setDisableUtility(true);
+    // }
+    // else if (
+    //   userGroupID == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+    // ) {
+    //   const utilityID = UTILITY_GROUP_ID.SIG; //EGAT
 
-      setIsDeviceGroup(false);
+    //   setIsDeviceGroup(false);
 
-      const initAssignedFilterValue = {
-        ...currentAssignedFilterObj,
-        utility: [],
-      };
-      const initUnAssignedFilterValue = {
-        ...currentUnAssignedFilterObj,
-        utility: [],
-      };
+    //   const initAssignedFilterValue = {
+    //     ...currentAssignedFilterObj,
+    //     utility: [],
+    //   };
+    //   const initUnAssignedFilterValue = {
+    //     ...currentUnAssignedFilterObj,
+    //     utility: [],
+    //   };
 
-      setCurrentAssignedFilterObj(initAssignedFilterValue);
-      dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
+    //   setCurrentAssignedFilterObj(initAssignedFilterValue);
+    //   dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
 
-      setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
-      dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
+    //   setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
+    //   dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
 
-       console.log("run check permission", utilityID);
-      getDeviceData();
-      setDisableUtility(true);
-    }
+    //    console.log("run check permission", utilityID);
+    //   getDeviceData();
+    //   setDisableUtility(true);
+    // }
   };
 
   const handleAssignedSearchChange = (e) => {
@@ -957,7 +960,7 @@ const ListDevice = (props) => {
                         Total Active Capacity
                       </div>
                       <div className="text-gray-500 text-xs">
-                      Track device expiry to ensure continuous operation through renewal. Registration Tracking
+                      Monitor your entire power production capacity in real-time.
                       </div>
                     </div>
                   </Card>
