@@ -792,7 +792,7 @@ const AddDevice = () => {
                                   }
                                   validate={" *"}
                                   error={errors.owner}
-                                  // ... other props
+                                  
                                 />
                               )}
                             />
@@ -1062,14 +1062,14 @@ const AddDevice = () => {
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
-                                  iconsid = {"NumberofGeneratingUnits-tooltip"}
+                                  
                                   // ... other props
                                 />
                               )}
                             />
                             <div
                         className="md:col-span-3 mt-4"
-                        
+                        id="registration-date-tooltip"
                       >
                         <Controller
                           name="registrationDate"
@@ -1088,7 +1088,8 @@ const AddDevice = () => {
                               }
                               isDisable={disableRequestedEffectiveDate}
                               validate={" *"}
-                              iconsid = {"registration-date-tooltip"}
+                              
+                              
                               // ... other props
                             />
                           )}
@@ -1096,13 +1097,21 @@ const AddDevice = () => {
 
                         {disableRequestedEffectiveDate && (
                           
-                          <div>
-      <span id="registration-date-tooltip" style={{ cursor: 'pointer' }}>
-        <FaInfoCircle />
-      </span>
+                          
       
+      <Tooltip
+            anchorSelect={"#registration-date-tooltip"}
+            content={"Please select the commissioning date first."}
+            style={{
+              backgroundColor: '#fff', // Background color
+              color: '#000',               // Text color
+              border: '2px solid #00FF00', // Border color (green)
+              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)', // Box shadow
+              borderRadius: '8px'          // Optional: rounded corners
+            }}
+          />
       
-    </div>
+    
                           
                         )}
                       </div>
@@ -1170,6 +1179,9 @@ const AddDevice = () => {
                               type={"text"}
                               label={"Owner of Network and Connection Voltage"}
                               error={errors.OwnerofNetwork}
+                              iconsid = {"OwnerofNetwork-tooltip"}
+                              messageTooltip = {"Owner of the network to which the  Production Device is connected and the  voltage of that connection"}
+                                  // ... other props
                               // ... other props
                             />
                           )}
@@ -1486,7 +1498,8 @@ const AddDevice = () => {
                               validate={" *"}
                               onChangeInput={onChangeOnsite}
                               error={errors.Onsite}
-
+                              iconsid = {"Onsite-tooltip"}
+                              messageTooltip = {"Is there an on-site (captive) consumer present?"}
                               // ... other props
                             />
                           )}
@@ -1536,7 +1549,8 @@ const AddDevice = () => {
                               error={errors.Energysources}
                               validate={" *"}
                               onChangeInput={onChangeEnergySourch}
-
+                              iconsid = {"Energysources-tooltip"}
+                              messageTooltip = {"AuxAuxiliary/Standby Energy Sources present?"}
                               // ... other props
                             />
                           )}
@@ -1584,6 +1598,8 @@ const AddDevice = () => {
                               label={"Other import eletricity"}
                               validate={" *"}
                               error={errors.Otherimport}
+                              iconsid = {"Otherimport-tooltip"}
+                              messageTooltip = {"Please give details of how the site can import electricity by means other than through the meter(s) specified above"}
                               // ... other props
                             />
                           )}
@@ -1605,6 +1621,8 @@ const AddDevice = () => {
                               validate={" *"}
                               label={"Other carbon offset or energy tracking scheme"}
                               error={errors.Othercarbon}
+                              iconsid = {"Othercarbon-tooltip"}
+                              messageTooltip = {"Please give details (including registration id) of any carbon offset or energy tracking scheme for which the Production Facility is registered.  State ‘None’ if that is the case"}
                               // ... other props
                             />
                           )}
@@ -1628,6 +1646,8 @@ const AddDevice = () => {
                               label={"Public funding"}
                               error={errors.Publicfunding}
                               validate={" *"}
+                              iconsid = {"Publicfunding-tooltip"}
+                              messageTooltip = {"Has the Production Facility ever received public (government) funding (e.g. Feed in Tariff)"}
                               onChangeInput={onChangePublicFund}
 
                               // ... other props

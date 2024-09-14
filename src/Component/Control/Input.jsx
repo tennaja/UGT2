@@ -1,5 +1,5 @@
 import React from "react";
-import { FaInfoCircle } from 'react-icons/fa';
+import { FaInfo } from 'react-icons/fa';
 import { Tooltip } from "react-tooltip";
 const Input = (props) => {
   const {
@@ -11,6 +11,7 @@ const Input = (props) => {
     onChangeInput,
     disabled,
     iconsid,
+    messageTooltip,
     initValue = null,
     ...inputProps
   } = props;
@@ -20,18 +21,28 @@ const Input = (props) => {
   return (
     <>
       {label ? (
-        <label className="mb-1 flex items-center" htmlFor={id}>
-        <b className="flex items-center">
+        <label className="mb-1 " htmlFor={id}>
+        <b >
           {label}
           <font className="text-[#f94a4a]">{validate}</font>
           {iconsid ? (
             <>
-            <span id={iconsid} style={{ cursor: 'pointer', display: 'inline-flex', marginLeft: '0.5rem', color: '#98FB98' }}>
-              <FaInfoCircle />
+            <span id={iconsid} style={{ cursor: 'pointer', display: 'inline-flex',alignItems: 'center', marginLeft: '0.5rem' ,color: '#98FB98', // Text and icon color
+    backgroundColor: '#E9F8E9', // Background color
+    padding: '0.4rem', // Padding to make space between text/icon and background
+    borderRadius: '550px' }}>
+              <FaInfo size={13} style={{color: '#87BE33'}} />
             </span>
             <Tooltip
             anchorSelect={`#${iconsid}`}
-            content="Please select the commissioning date first."
+            content={messageTooltip}
+            style={{
+              backgroundColor: '#fff', // Background color
+              color: '#000',               // Text color
+              border: '2px solid #66CC66', // Border color (green)
+              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)', // Box shadow
+              borderRadius: '8px'          // Optional: rounded corners
+            }}
           /></>
           ) : null}
         </b>
