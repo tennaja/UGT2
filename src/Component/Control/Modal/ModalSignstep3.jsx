@@ -1,8 +1,10 @@
 import { Modal } from "@mantine/core";
+import PdfTablePreview from '../TemplatePdf';
 
 const ModalSignStep3 = (props) => {
   const {
     data,
+    UserSign,
     status,
     onCloseModal,
     onClickConfirmBtn,
@@ -28,6 +30,7 @@ const ModalSignStep3 = (props) => {
   };
   return (
     <>
+    <PdfTablePreview data={data} Sign={UserSign}/>
       <Modal
         size="lg"
         opened={true}

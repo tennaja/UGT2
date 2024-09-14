@@ -815,12 +815,12 @@ export const FetchSF02ByID = (deviceID, callback) => {
     // }, 2000);
   };
 };
-export const sendEmail = (emailBody, recipientEmail, callback) => {
+export const sendEmail = (title,emailBody, recipientEmail, callback) => {
   console.log('Starting to send email...');
 
   const emailPayload = {
     toAddress: recipientEmail,
-    subject: '[Device Registration] Sign and Submit UGT Device Registration',
+    subject: title,
     body: emailBody, // Ensure HTML format is sent
   };
 
@@ -857,11 +857,11 @@ export const sendEmail = (emailBody, recipientEmail, callback) => {
   };
 };
 
-export const sendEmailByUserGroup = (id,emailBody, callback) => {
+export const sendEmailByUserGroup = (id,title,emailBody, callback) => {
   console.log('Starting to send email...');
 
   const emailPayload = {
-    subject: '[Device Registration] Sign and Submit UGT Device Registration',
+    subject: title,
     body: emailBody, // Ensure HTML format is sent
   };
   const usergroupid = id;

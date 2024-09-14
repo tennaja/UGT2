@@ -4,17 +4,22 @@ import { useState } from "react";
 // Custom Hook
 function useRemarkHandler(onClickConfirmBtn) {
   const [remark, setRemark] = useState("");
+  const [error, setError] = useState(false);
 
   const handleRemarkChange = (e) => {
     let value = null;
-                if (e.target.value) {
-                  value = e.target.value;
-                  value = value.replace(/[^A-Za-z0-9.\s]/g, '')
-                }
-          setRemark(value);
+    if (e.target.value) {
+      value = e.target.value.replace(/[^A-Za-z0-9\u0E00-\u0E7F\s\-./\[\]\{\}]/g, '');
+    }
+    setRemark(value);
+    setError(false); // Reset error when user types
   };
 
   const submitRemark = () => {
+    if (!remark || remark.trim() === "") {
+      setError(true);
+      return;
+    }
     onClickConfirmBtn(remark);
   };
 
@@ -22,6 +27,7 @@ function useRemarkHandler(onClickConfirmBtn) {
     remark,
     handleRemarkChange,
     submitRemark,
+    error,
   };
 }
 
@@ -34,7 +40,7 @@ const ModalReturnConfirm = (props) => {
     buttonTypeColor = "primary",
   } = props;
 
-  const { handleRemarkChange, submitRemark } = useRemarkHandler(onClickConfirmBtn);
+  const { handleRemarkChange, submitRemark, error } = useRemarkHandler(onClickConfirmBtn);
 
   const getButtonColor = () => {
     switch (buttonTypeColor) {
@@ -70,9 +76,11 @@ const ModalReturnConfirm = (props) => {
               <p className="text-red-500 ml-1">*</p>
             </div>
             <textarea
-              className="h-[120px] focus:ring-1 ring-inset focus:ring-[#2563eb] border-1 border-gray-300 rounded block w-full bg-transparent outline-none py-4 px-3"
+              className={`h-[120px] focus:ring-1 ring-inset focus:ring-[#2563eb] border-1 border-gray-300 rounded block w-full bg-transparent outline-none py-4 px-3 ${error ? "border-red-500" : ""
+                }`}
               onChange={handleRemarkChange}
             ></textarea>
+            {error && <p className="text-red-500 text-sm mt-1">This field is required</p>}
           </div>
         </div>
       </div>

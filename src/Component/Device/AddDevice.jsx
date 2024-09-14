@@ -44,6 +44,7 @@ import { FaChevronCircleLeft } from "react-icons/fa";
 import numeral from "numeral";
 import { hideLoading, padNumber, showLoading } from "../../Utils/Utils";
 import Radiobtn from "../Control/RadioBtn";
+import TextareaNote from "../Control/TextareaNote";
 //default location on map @EGAT
 const defaultLocation = { lat: 13.8118140871364, lng: 100.50564502457443 };
 
@@ -109,6 +110,7 @@ const AddDevice = () => {
     });
   };
  
+  const titleemail ="[Device Registration] UGT Device Registration Edited"
   const emailBodytoOwner = `
   <html>
     <body>
@@ -125,7 +127,7 @@ const AddDevice = () => {
       <b>Name:</b> ${deviceName}
       </p>
       <p>
-        <b>Submission Date:</b> ${formatDate(Datenow)} 
+        <b>Edited Date:</b> ${formatDate(Datenow)} 
       </p>
       
       <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
@@ -361,7 +363,7 @@ const AddDevice = () => {
       })
     );
     dispatch (
-      sendEmail(emailBodytoOwner,userData?.email,() => {
+      sendEmail(titleemail,emailBodytoOwner,userData?.email == null ? "" : userData?.email,() => {
         hideLoading();
         // dispatch(clearModal());
       })
@@ -485,7 +487,31 @@ const AddDevice = () => {
       return newFileList;
     });
   };
-
+  const handleClickPreviewFile = async (item) => {
+    console.log(item)
+    try {
+      // setIsOpenLoading(true);
+      showLoading();
+      const fileID = item?.evidentFileID;
+      const fileName = item?.name;
+      const requestParameter = {
+        fileID: fileID,
+        fileName: fileName,
+      };
+      const response = await FetchDownloadFile(requestParameter);
+      console.log(response)
+      const blob = new Blob([response.res.data], {
+        type: response.res.headers["content-type"],
+      });
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error("Error Preview file:", error);
+    }
+    // setIsOpenLoading(false);
+    hideLoading();
+  };
   const handleClickDownloadFile = async (item) => {
     // console.log('item',item)
     // console.log('item evidentFileID',item?.evidentFileID)
@@ -1181,7 +1207,8 @@ const AddDevice = () => {
                               error={errors.OwnerofNetwork}
                               iconsid = {"OwnerofNetwork-tooltip"}
                               messageTooltip = {"Owner of the network to which the  Production Device is connected and the  voltage of that connection"}
-                                  // ... other props
+                              validate={" *"}   
+                              // ... other props
                               // ... other props
                             />
                           )}
@@ -1708,6 +1735,9 @@ const AddDevice = () => {
                               onClickFile={(item) => {
                                 handleClickDownloadFile(item);
                               }}
+                              onPreview ={(item)=>{
+                                handleClickPreviewFile(item)
+                              }}
                               error={errors.uploadFile}
                               validate={" *"}
                               // ... other props
@@ -1721,11 +1751,10 @@ const AddDevice = () => {
                           control={control}
                           rules={{}}
                           render={({ field }) => (
-                            <Textarea
+                            <TextareaNote
                               {...field}
                               id={"note"}
                               type={"text"}
-                              placeholder={"Please fill the form in English"}
                               label={"Note"}
                               error={errors.note}
                               // ... other props

@@ -252,6 +252,7 @@ const InfoDevice = () => {
     setOpenSubmitstep3(false)
   }
   const onclicksubmitstep3 =() => {
+    
     setOpenSubmitstep3(true)
     setOpenSubmitstep2(false)
     setOpenSubmitstep1(false)
@@ -331,31 +332,7 @@ const InfoDevice = () => {
     });
   };
 
-  const  emailBodytoOwnerWhenreturn = `
-  <html>
-    <body>
-      <p>Dear UGT Registrant (Verifier),</p>
-      
-      <p>
-      Device registration was 
-        <b><span style="color: red;"> returned for editing.</span></b>
-      </p>
-      
-      <p>Device Details:</p>
-       
-      <p>
-      <b>Name:</b> ${deviceobj?.name}
-      </p>
-      <p>
-        <b>Submission Date:</b> ${formatDate(Datenow)} 
-      </p>
-      
-      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
-      
-      <p>UGT Platform</p>
-    </body>
-  </html>
-`;
+  
   const emailBodytoVerifier = `
   <html>
     <body>
@@ -375,6 +352,34 @@ const InfoDevice = () => {
         <b>Submission Date:</b> ${formatDate(Datenow)} 
       </p>
       
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`;
+
+const emailBodyWithdraw = `
+  <html>
+    <body>
+      <p>Dear UGT Registrant (Verifier),</p>
+      
+      <p>
+      Device registration has been
+        <b><span style="color: red;"> withdrawn.</span></b>
+      </p>
+      
+      <p>Device Details:</p>
+       
+      <p>
+      <b>Name:</b> ${deviceobj?.name}
+      </p>
+      <p>
+        <b>Withdrawn Date:</b> ${formatDate(Datenow)} 
+      </p>
+      <p>
+      <b>Withdrawn by:</b>  ${userData?.firstName + userData?.lastName}
+      </p>
       <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
       
       <p>UGT Platform</p>
@@ -536,6 +541,7 @@ const handleClickDownloadFile = async (item) => {
 
   //Call Api Submit
   const handleClickConfirmSubmit = () => {
+    const titleemail = "[Device Registration] UGT Device Registration Submitted" 
     showLoading();
     const deviceID = deviceobj?.id;
     const username = userData?.firstName;
@@ -562,18 +568,18 @@ const handleClickDownloadFile = async (item) => {
       })
     );
     dispatch(
-      sendEmail(emailBodywhenSubmited,deviceobj?.userEmail, () => {
+      sendEmail(titleemail,emailBodywhenSubmited,deviceobj?.userEmail, () => {
         
       })
     )
     dispatch (
-      sendEmailByUserGroup(21,emailBodywhenSubmited,() => {
+      sendEmailByUserGroup(21,titleemail,titleemail,emailBodywhenSubmited,() => {
         hideLoading();
         // dispatch(clearModal());
       })
     )
     dispatch (
-      sendEmailByUserGroup(22,emailBodywhenSubmited,() => {
+      sendEmailByUserGroup(22,titleemail,emailBodywhenSubmited,() => {
         hideLoading();
         // dispatch(clearModal());
       })
@@ -582,6 +588,7 @@ const handleClickDownloadFile = async (item) => {
 
   //Call Api Withdraw
   const handleClickConfirmWithdraw = () => {
+    const titleemail = "[Device Registration] UGT Device Registration Withdrawn"
     showLoading();
     const deviceID = deviceobj?.id;
     dispatch(
@@ -591,12 +598,17 @@ const handleClickDownloadFile = async (item) => {
         navigate(WEB_URL.DEVICE_LIST);
       })
     );
-   
+    dispatch(
+      sendEmail(titleemail,emailBodyWithdraw,deviceobj?.userEmail, () => {
+
+      })
+    )
     
   };
 
   //Call Api Verifying
   const handleClickConfirmVerifying = () => {
+    const titleemail = "[Device Registration] Verify UGT Device Registration"
     showLoading();
     const deviceID = deviceobj?.id;
     dispatch(
@@ -607,7 +619,7 @@ const handleClickDownloadFile = async (item) => {
       })
     );
     dispatch (
-      sendEmailByUserGroup(21,emailBodytoVerifier,() => {
+      sendEmailByUserGroup(21,titleemail,emailBodytoVerifier,() => {
         hideLoading();
         // dispatch(clearModal());
       })
@@ -616,6 +628,7 @@ const handleClickDownloadFile = async (item) => {
 
   //Call Api Verified
   const handleClickConfirmVerified = () => {
+    const titleemail = "[Device Registration] Sign and Submit UGT Device Registration"
     showLoading();
     const deviceID = deviceobj?.id;
     // console.log("FILE CURRENT-------",test.current)
@@ -626,7 +639,7 @@ const handleClickDownloadFile = async (item) => {
       })
     )
     dispatch (
-      sendEmailByUserGroup(22,emailBodytoSignatory,() => {
+      sendEmailByUserGroup(22,titleemail,emailBodytoSignatory,() => {
         hideLoading();
         // dispatch(clearModal());
       })
@@ -637,6 +650,35 @@ const handleClickDownloadFile = async (item) => {
   //Call Api Return
   const handleClickConfirmReturn = (rem) => {
     showLoading();
+    const titleemail = "[Device Registration] Return UGT Device Registration"
+    const  emailBodytoOwnerWhenreturn = `
+  <html>
+    <body>
+      <p>Dear UGT Registrant (Verifier),</p>
+      
+      <p>
+      Device registration was 
+        <b><span style="color: red;"> returned for editing.</span></b>
+      </p>
+      
+      <p>Device Details:</p>
+       
+      <p>
+      <b>Name:</b> ${deviceobj?.name}
+      </p>
+      <p>
+        <b>Return Date:</b> ${formatDate(Datenow)} 
+      </p>
+      <p>
+        <b>Remark:</b> ${rem} 
+      </p>
+      
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`;
     const deviceID = deviceobj?.id;
     const remark = rem;
     const username = userData.firstName +" "+userData.lastName;
@@ -648,7 +690,7 @@ const handleClickDownloadFile = async (item) => {
       })
     );
     dispatch(
-      sendEmail(emailBodytoOwnerWhenreturn,deviceobj?.userEmail, () => {
+      sendEmail(titleemail,emailBodytoOwnerWhenreturn,deviceobj?.userEmail, () => {
 
       })
     )
@@ -822,7 +864,7 @@ const handleClickDownloadFile = async (item) => {
     return isSeeSF02;
   };
   const checkShowManageBtn = () => {
-    if (canEdit || canSubmit || canWithdrawn) {
+    if (canEdit || canSubmit || canWithdrawn || canVerifying || canVerified || canReturn) {
       return true;
     } else {
       return false;
@@ -942,7 +984,7 @@ const handleClickDownloadFile = async (item) => {
                               {
                                 // icon: <LuSend />,
                                 label: "Submit",
-                                onClick: onClickSubmitBtn,
+                                onClick: onclicksubmitstep1,
                                 disabled: !canSubmit,
                                 endSection: true,
                               },
@@ -1481,8 +1523,10 @@ const handleClickDownloadFile = async (item) => {
       />}
       
       {opensubmitstep3 && <ModalSignStep3
+      data = {deviceobj}
+      UserSign = {userData}
       onCloseModal={onclickclosesubmitstep3}
-      onClickConfirmBtn={onClickSubmitBtn}
+      onClickConfirmBtn={handleClickConfirmSubmit}
       />}
       {/* <ModalSubmitDone/> */}
       {isOpenDoneModal && (

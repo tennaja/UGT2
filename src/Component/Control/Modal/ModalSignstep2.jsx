@@ -1,4 +1,5 @@
 import { Modal } from "@mantine/core";
+import { useState } from 'react';
 
 const ModalSignStep2 = (props) => {
   const {
@@ -10,7 +11,11 @@ const ModalSignStep2 = (props) => {
     content = " By proceeding this step, you confirm to sign the device registration form and automatically submit this form to Evident. Would you like to sign and submit?",
     buttonTypeColor = "primary",
   } = props;
-
+  const [isChecked, setIsChecked] = useState(false);
+  
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
   const onClickOk = () => {
     onClickConfirmBtn();
   };
@@ -57,7 +62,12 @@ const ModalSignStep2 = (props) => {
               <p className="text-sm text-gray-600 text-left indent-8">The owner of the Production Device and the Registrant as his agent accept the possibility of unannounced control and auditing visits to their own premises and/or the premises of the Production Device, as prescribed in the I-REC Code.</p>
             </div>
             <div className="flex items-center text-left mt-4">
-              <input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"></input>
+            <input
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+                type="checkbox"
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              />
               <label className="ms-2 text-sm text-gray-600">I have read and agree to the terms as described above.
               </label>
             </div>
@@ -74,6 +84,7 @@ const ModalSignStep2 = (props) => {
           <button
             onClick={onClickOk}
             className={`${getButtonColor()} w-50 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm hover:bg-[#4D6A00] `}
+            disabled={!isChecked}
           >
             Next
           </button>

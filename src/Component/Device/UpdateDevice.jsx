@@ -47,6 +47,7 @@ import { FaChevronCircleLeft } from "react-icons/fa";
 import { DEVICE_INFO } from "../../Constants/WebURL";
 import StatusLabel from "../Control/StatusLabel";
 import { hideLoading, padNumber, showLoading } from "../../Utils/Utils";
+import TextareaNote from "../Control/TextareaNote";
 
 const UpdateDevice = () => {
   //default location on map Thailand
@@ -96,32 +97,7 @@ const UpdateDevice = () => {
       });
     }
   };
-  const deviceName = watch("name");
-  const emailBodytoOwner = `
-  <html>
-    <body>
-      <p>Dear Device Owner,</p>
-      
-      <p>
-      Device registration 
-        <b><span style="color: red;"> has been edited.</span></b>
-      </p>
-      
-      <p>Device Details:</p>
-       
-      <p>
-      <b>Name:</b> ${deviceName}
-      </p>
-      <p>
-        <b>Submission Date:</b> ${formatDate(Datenow)} 
-      </p>
-      
-      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
-      
-      <p>UGT Platform</p>
-    </body>
-  </html>
-`; 
+  
   const [vDeviceCode, vDeviceCodechange] = useState("");
   const [vDisabled, vDisabledchange] = useState(false);
 
@@ -187,7 +163,35 @@ const UpdateDevice = () => {
       }
     }
   }, [deviceobj]); // Re-run when deviceobj changes
-  
+  const deviceName = watch("name");
+  const titleemail ="[Device Registration] UGT Device Registration Edited"
+  const emailBodytoOwner = `
+  <html>
+    <body>
+      <p>Dear Device Owner,</p>
+      
+      <p>
+      Device registration 
+        <b><span style="color: red;"> has been edited.</span></b>
+      </p>
+      
+      <p>Device Details:</p>
+       
+      <p>
+      <b>Name:</b> ${deviceName}
+      </p>
+      <p>
+        <b>Edited Date:</b> ${formatDate(Datenow)} 
+      </p>
+      <p>
+      <b>Edited by:</b> ${userData?.firstName + userData?.lastName}
+      </p>
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`; 
 
   useEffect(() => {
     if (deviceobj?.energySource) {
@@ -668,7 +672,8 @@ const UpdateDevice = () => {
       })
     );
     dispatch (
-      sendEmail(emailBodytoOwner,userData?.email,() => {
+      sendEmail(titleemail,emailBodytoOwner,deviceobj?.userEmail
+        ,() => {
         hideLoading();
         // dispatch(clearModal());
       })
@@ -1454,6 +1459,8 @@ const UpdateDevice = () => {
                               type={"text"}
                               label={"Owner of Network and Connection Voltage"}
                               error={errors.OwnerofNetwork}
+                              validate={" *"}
+                              
                               // ... other props
                             />
                           )}
@@ -1985,7 +1992,7 @@ const UpdateDevice = () => {
                           control={control}
                           rules={{}}
                           render={({ field }) => (
-                            <Textarea
+                            <TextareaNote
                               {...field}
                               id={"note"}
                               type={"text"}

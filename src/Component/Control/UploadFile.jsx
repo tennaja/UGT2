@@ -173,7 +173,7 @@ const UploadFile = (props) => {
         }
       }
     
-      zip.file('metadata.json', JSON.stringify(fileMetadata, null, 2));
+      
     
       if (Object.keys(zip.files).length === 0) {
         console.error('No valid files were added to the ZIP. Aborting download.');
