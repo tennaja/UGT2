@@ -972,7 +972,7 @@ const UpdateDevice = () => {
                       <div className="md:col-span-6">
                         <div className="grid grid-cols-6 gap-4">
 
-                          <div className="md:col-span-6">
+                          <div className="md:col-span-3">
                             <Controller
                               name="name"
                               control={control}
@@ -1108,7 +1108,7 @@ const UpdateDevice = () => {
                             />
                           </div>
 
-                          <div className="md:col-span-3">
+                          {/* <div className="md:col-span-3">
                             <Controller
                               name="code"
                               control={control}
@@ -1130,7 +1130,7 @@ const UpdateDevice = () => {
                                 />
                               )}
                             />
-                          </div>
+                          </div> */}
 
                           <div className="md:col-span-3">
                             <Controller
@@ -1357,7 +1357,7 @@ const UpdateDevice = () => {
                                 <Input
                                   {...field}
                                   id={"NumberofGeneratingUnits"}
-                                  type={"text"}
+                                  type={"number"}
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
