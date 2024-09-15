@@ -816,9 +816,6 @@ const handleClickDownloadFile = async (item) => {
     const status = (deviceobj?.statusName ?? "").toLowerCase();
 
     if (
-      userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
-      userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
-      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
       userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
       userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
     ) {
@@ -858,12 +855,21 @@ const handleClickDownloadFile = async (item) => {
     const status = (deviceobj?.statusName ?? "").toLowerCase();
 
     if (
-      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+    ) {
+      if (
+        status == DEVICE_STATUS.VERIFYING.toLowerCase() 
+      ) {
+        isReturn = true;
+      } else {
+        isReturn = false;
+      }
+    } else if (
       userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
     ) {
       if (
         status == DEVICE_STATUS.VERIFYING.toLowerCase() ||
-        status == DEVICE_STATUS.VERIFIED.toLowerCase()
+        status == DEVICE_STATUS.VERIFIED.toLowerCase() 
       ) {
         isReturn = true;
       } else {
@@ -885,7 +891,8 @@ const handleClickDownloadFile = async (item) => {
     ) {
       if (
         status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
-        status == DEVICE_STATUS.VERIFIED.toLowerCase() 
+        status == DEVICE_STATUS.VERIFIED.toLowerCase() ||
+        status == DEVICE_STATUS.APPROVED.toLowerCase()
         
 
       ) {
@@ -900,12 +907,28 @@ const handleClickDownloadFile = async (item) => {
   const checkShowManageBtn = () => {
     const status = (deviceobj?.statusName ?? "").toLowerCase();
     if (
-      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
       userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
       userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
       userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG 
     ) {
       if (
+        status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
+        status == DEVICE_STATUS.VERIFIED.toLowerCase() ||
+        status == DEVICE_STATUS.APPROVED.toLowerCase() ||
+        status == DEVICE_STATUS.VERIFYING.toLowerCase()  
+        
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    else if(
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER  
+    ) {
+      if (
+        status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
+        status == DEVICE_STATUS.APPROVED.toLowerCase() ||
         status == DEVICE_STATUS.VERIFIED.toLowerCase()  
       ) {
         return false;
@@ -913,28 +936,18 @@ const handleClickDownloadFile = async (item) => {
         return true;
       }
     }
-    else if (
-      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
+    else if(
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY 
     ) {
       if (
-        status == DEVICE_STATUS.VERIFYING.toLowerCase()  
+        status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
+        status == DEVICE_STATUS.APPROVED.toLowerCase() 
       ) {
-        return true;
-      } else {
         return false;
+      } else {
+        return true;
       }
     }
-    // else if(
-    //   userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER  
-    // ) {
-    //   if (
-    //     status == DEVICE_STATUS.VERIFYING.toLowerCase()  
-    //   ) {
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // }
   };
   const infoMessage = () => {
     let message = "";
@@ -949,7 +962,7 @@ const handleClickDownloadFile = async (item) => {
       status === DEVICE_STATUS.SUBMITTED.toLowerCase() ||
       status === DEVICE_STATUS.IN_PROGRESS.toLowerCase()
     ) {
-      message = "The device is now uder Preview (in progress).";
+      message = "The device is now under Preview (in progress).";
     }
     return message;
   };
@@ -982,32 +995,7 @@ const handleClickDownloadFile = async (item) => {
                 </p>
               </div>
 
-              {/*   {isEdit && (
-                <div className="flex justify-end items-center md:col-span-3">
-                  <div className="mr-2">
-                    <span className="text-[#0b0b0b] mb-11">
-                      Assign to Portfolio (Optional)
-                    </span>
-                  </div>
-                  <div className="w-2/4">
-                    <form className="w-full">
-                      <Controller
-                        name="assignPort"
-                        control={control}
-                        render={({ field }) => (
-                          <MySelect
-                            {...field}
-                            options={dropDrowList.assignedUtility}
-                            displayProp={"name"}
-                            valueProp={"abbr"}
-                            onChangeInput={(val) => setAssignPort(val)}
-                          />
-                        )}
-                      />
-                    </form>
-                  </div>
-                </div>
-              )} */}
+              
             </div>
 
             <Card
@@ -1017,99 +1005,78 @@ const handleClickDownloadFile = async (item) => {
               padding="0"
             >
               <div className="p-4">
-                <div className=" lg:col-span-2 ">
-                  <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                    <div
-                      id="top-div"
-                      className="md:col-span-3  lg:col-span-4 flex items-center gap-3"
-                    >
-                      <FaChevronCircleLeft
-                        className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
-                        size="30"
-                        onClick={() => navigate(WEB_URL.DEVICE_LIST)}
-                      />
-                      <span className="text-xl mr-14 leading-tight">
-                        <b> Device Info</b>
-                      </span>
-                      {/* <span>
-                        {StatusLabel(deviceobj?.statusName)}
-                      </span> */}
-                    </div>
+  <div className="flex items-center justify-between gap-4">
+    {/* Left Section (Chevron & Title) */}
+    <div id="top-div" className="flex items-center gap-3">
+      <FaChevronCircleLeft
+        className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
+        size="30"
+        onClick={() => navigate(WEB_URL.DEVICE_LIST)}
+      />
+      <span className="text-xl leading-tight">
+        <b>Device Info</b>
+      </span>
+    </div>
 
-                    {/* Button Section */}
+    {/* Right Section (Buttons & Info Message) */}
+    <div className="flex items-center gap-3">
+      {canSeeSF02 && <PreviewPdf data={sf02obj} />}
 
-                    <div className="md:col-span-6 lg:col-span-2 text-right grid items-end">
-                      <div className="flex justify-end gap-3">
-                        
-                         {/* <PdfTablePreview data={deviceobj}/> */}
-                         {canSeeSF02 ? <PreviewPdf data={sf02obj}/> : null}
-                         
-                        {isShowManageBtn && (
-                          <ManageBtn
-                            actionList={[
-                              {
-                                // icon: <LuSend />,
-                                label: "Sign&Submit",
-                                onClick: onclicksubmitstep1,
-                                disabled: !canSubmit,
-                                endSection: true,
-                              },
-                              {
-                                // icon: <FaRegEdit />,
-                                label: "Edit",
-                                onClick: onClickEdit,
-                                disabled: !canEdit,
-                                endSection: true,
-                              },
-                              {
-                                // icon: <PiHandWithdrawFill />,
-                                label: "Withdraw",
-                                onClick: onClickWithdrawBtn,
-                                disabled: !canWithdrawn,
-                                endSection: true,
-                              },
-                              {
-                                // icon: <PiHandWithdrawFill />,
-                                label: "Return",
-                                onClick: onClickReturnBtn,
-                                disabled: !canReturn,
-                                endSection: true,
-                              },
-                              {
-                                label : "Send to Verify",
-                                onClick : onClickSendtoVerifyBtn,
-                                disabled : !canVerifying,
-                                endSection: true,
-                              },
-                              {
-                                label : "Verify",
-                                onClick : onClickVerifiedBtn,
-                                disabled : !canVerified,
-                                
-                              },
-                              {
-                                label : "Renew",
-                                onClick : onClickRenew,
-                                
-                                
-                              }
-                            ]}
-                          />
-                        )}
-                        {infoMessage() && (
-                          <div className="text-xs text-gray-500 ">
-                            {infoMessage()}
-                          </div>
-                        )}
-                        
-                        
-                      </div>
-                    </div>
+      {isShowManageBtn && (
+        <ManageBtn
+          actionList={[
+            {
+              label: "Sign&Submit",
+              onClick: onclicksubmitstep1,
+              disabled: !canSubmit,
+              endSection: true,
+            },
+            {
+              label: "Edit",
+              onClick: onClickEdit,
+              disabled: !canEdit,
+              endSection: true,
+            },
+            {
+              label: "Withdraw",
+              onClick: onClickWithdrawBtn,
+              disabled: !canWithdrawn,
+              endSection: true,
+            },
+            {
+              label: "Return",
+              onClick: onClickReturnBtn,
+              disabled: !canReturn,
+              endSection: true,
+            },
+            {
+              label: "Send to Verify",
+              onClick: onClickSendtoVerifyBtn,
+              disabled: !canVerifying,
+              endSection: true,
+            },
+            {
+              label: "Verify",
+              onClick: onClickVerifiedBtn,
+              disabled: !canVerified,
+            },
+            {
+              label: "Renew",
+              onClick: onClickRenew,
+            },
+          ]}
+        />
+      )}
 
-                    {/* Button Section */}
-                  </div>
-                </div>
-              </div>
+      {infoMessage() && (
+        <div className="text-xs text-gray-500">
+          {infoMessage()}
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
 
               <div className="p-0 px-0 md:p-0 mb-0 border-1 align-top" />
 

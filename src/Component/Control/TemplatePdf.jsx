@@ -5,6 +5,7 @@ import html2pdf from 'html2pdf.js';
 import pdfIcon from '../assets/EV.png';
 import './page.css'
 import { hideLoading, showLoading } from "../../Utils/Utils";
+import { IoMdCheckmark } from "react-icons/io";
 const PdfFormPreview = (data,Sign) => {
   console.log(data.data)
   console.log(data.Sign)
@@ -211,12 +212,20 @@ function getYear(date) {
                         <tbody>
                             <tr>
                             <td className="border p-2 font-bold w-1/3 ">New</td>
-                            <td className="border p-2 text-left break-all "></td>
+                            <td className="border p-2 text-center break-all ">{
+                              data?.data?.isApproved === null || data?.data?.isApproved === "False" || data?.data?.isApproved ==="" ? 
+                              <IoMdCheckmark /> : ""
+                              }</td>
                             
                             </tr>
                             <tr>
                             <td className="border p-2 font-bold w-1/3  ">Change of details</td>
-                            <td className="border p-2 text-left break-all " ></td>
+                            <td className="border p-2 text-left break-all " >
+                            {
+                              data?.data?.isApproved === "True" ? 
+                              <IoMdCheckmark /> : ""
+                              }
+                            </td>
                             
                             </tr>
                         </tbody>
