@@ -86,6 +86,7 @@ const ListDevice = (props) => {
   const typeList = deviceRdc?.filterList?.findType;
   const utilityList = deviceRdc?.filterList?.findUtility;
   const statusList = deviceRdc?.filterList?.findStatus;
+  console.log(unAssignedList)
   const {
     setValue,
     control,
@@ -913,7 +914,7 @@ const ListDevice = (props) => {
                           </p>
                           <span> </span>
                           <p className="text-lg font-medium text-slate-500 text-end	">
-                            {totalDevice > 1 ? "Devices" : "Device"}
+                            {totalDevice > 1 ? "Devices" : "Devices"}
                           </p>
                         </div>
                       </div>
@@ -1503,7 +1504,7 @@ const ListDevice = (props) => {
                 </div>
                 <div className="relative overflow-x-auto  sm:rounded-lg">
                   <DataTable
-                    data={unAssignedList}
+                    data={unAssignedList?.filter(item => item.statusName !== 'Withdrawn')}
                     columns={columnsUnAssigned}
                     searchData={searchQueryUnAssigned}
                     checkbox={false}

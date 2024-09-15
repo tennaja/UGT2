@@ -17,7 +17,9 @@ import {
   DELETE_FILE_EVIDENT_DEVICE_URL,
   DOWNLOAD_FILE_EVIDENT_DEVICE_URL,
   SF02_BY_ID_URL,
-  SEND_EMAIL_URL,SEND_EMAIL_BY_USERGROUPID_URL
+  SEND_EMAIL_URL,
+  SEND_EMAIL_BY_USERGROUPID_URL,
+  RENEW_DEVICE_URL
 } from "../../Constants/ServiceURL";
 import {
   ADD_STATUS,
@@ -42,7 +44,8 @@ import {
   SET_DEVICE_UNASSIGNED,
   SF_02,
   DOWLOAD_SF_02,
-  COUNT
+  COUNT,
+  RENEW_STATUS
 } from "../../Redux/ActionType";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -147,6 +150,13 @@ export const updateDevice = () => {
     type: UPDATE_STATUS,
   };
 };
+
+export const renewDevice = () => {
+  return {
+    type: RENEW_STATUS,
+  };
+};
+
 export const submitDevice = () => {
   return {
     type: SUBMIT_STATUS,
@@ -535,6 +545,89 @@ export const FunctionEditDevice = (data, callback) => {
   return async (dispatch) => {
     dispatch(makeRequest());
     await axios.put(editDeviceURL, parameterForEdit, getHeaderConfig()).then(
+      (response) => {
+        if (response.status == 200 || response?.status == 201) {
+          dispatch(updateDevice());
+        } else {
+          dispatch(setOpenFailModal());
+          dispatch(failRequest(error.message));
+        }
+        callback && callback(response?.status);
+      },
+      (error) => {
+        console.log("error", error);
+        // dispatch(setOpenFailModal())
+        // dispatch(failRequest(error.message))
+        // callback && callback(error)
+
+        dispatch(setOpenFailModal(error?.response?.data?.detail));
+        // dispatch(failRequest(error.message))
+        callback && callback(error);
+      }
+    );
+  };
+};
+
+export const FunctionRenewDevice = (data, callback) => {
+  console.log()
+  const deviceID = `${data?.id}`;
+  const RenewDeviceURL = `${RENEW_DEVICE_URL}/${deviceID}`;
+  
+  
+  const parameterForRenew = {
+    
+    assignedUtilityId: data?.assignedUtilityCode?.id, //assignedUtilityCode.id //number
+    imageFile: data?.deviceImg,
+    name: data?.name, //name //string
+    issuerId: data?.issuerCode?.id,
+    registrantOrganisationCode: "string", // ??
+    defaultAccountCode: data?.defaultAccountCode, //defaultAccountCode //string
+    ppaNo: data?.ppaNo, //ppaNo //string
+    deviceOwner: data?.owner, //owner //string
+    deviceCode: data?.code, //code //string
+    deviceNameBySO: data?.deviceNameBySO, //deviceNameBySO //string
+    deviceFuelCode: data?.fuelCode?.code, //fuelCode.code //"string"
+    deviceTechnologyId: data?.technologyCode.id, // technologyCode.id //number
+    capacity: data?.capacity, // capacity //number
+    commissioningDate: data?.commissioningDate, //commissioningDate // YYYY-MM-DD
+    registrationDate: data?.registrationDate, //registrationDate // YYYY-MM-DD
+    otherLabellingSchemeId: data?.otherLabellingCode?.id, // otherLabellingCode.id // number
+    address: data?.address,
+    subdistrictCode: data?.subdistrictCode.subdistrictCode, //subdistrictCode.subdistrictCode // number
+    subdistrictName: data?.subdistrictCode.subdistrictNameEn, //subdistrictNameEn //string
+    districtCode: data?.districtCode.districtCode, //districtCode.districtCode //number
+    districtName: data?.districtCode.districtNameEn, //districtCode.districtNameEn //string
+    proviceCode: data?.stateCode.provinceCode, //stateCode.provinceCode //number
+    proviceName: data?.stateCode.provinceNameEn, //stateCode.provinceNameEn //string
+    countryCode: data?.countryCode?.alpha2, //countryCode //"string",
+    countryName: data?.countryCode?.name,
+    postcode: `${data?.postCode?.postalCode}`, //postalCode //string
+    latitude: data?.latitude ? parseFloat(data?.latitude) : 0, //latitude // number
+    longitude: data?.longitude ? parseFloat(data?.longitude) : 0, //longitude //number
+    fileUploads: data?.uploadFile,
+    notes: data?.note, //note//"string",
+    issuerCode: data?.issuerCode?.issuerCode, //issuerCode?.issuerCode // string
+    active: "yes", // คุณม่ำบอก ใส่ yes ไปก่อน
+    GeneratingUnit : data.NumberofGeneratingUnits,
+    OwnerNetwork : data.OwnerofNetwork,
+    OnSiteConsumer: data.Onsite?.Name,
+    OtherImportEletricity: data.Otherimport,
+    EnergySource: data.Energysources?.Name,
+    OtherCarbonOffset: data.Othercarbon,
+    PublicFunding: data.Publicfunding?.Name,
+    FundingReceive :data?.FundingReceivedate? data?.FundingReceivedate : null,
+    IsMeteringData : data.ExpectedFormofVolumeEvidence[0]?.Checked ? "True" : "False" ,
+    IsContractSaleInvoice : data.ExpectedFormofVolumeEvidence[1]?.Checked ? "True" : "False" ,
+    IsOther : data.ExpectedFormofVolumeEvidence[2]?.Checked ? "True" : "False" ,
+    OtherDescription : data.ExpectedFormofVolumeEvidence[2]?.otherText,
+    deviceMeasurements : data?.devicemeasure,
+    onSiteConsumerDetail : data?.Onsitedetail,
+    energySourceDetail : data?.Energysourcesdetail,
+  };
+  console.log(parameterForRenew)
+  return async (dispatch) => {
+    dispatch(makeRequest());
+    await axios.put(RenewDeviceURL, parameterForRenew, getHeaderConfig()).then(
       (response) => {
         if (response.status == 200 || response?.status == 201) {
           dispatch(updateDevice());

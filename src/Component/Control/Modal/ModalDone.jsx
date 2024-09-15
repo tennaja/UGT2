@@ -13,7 +13,7 @@ import ModalConfirm from "./ModalConfirm";
 import * as WEB_URL from "../../../Constants/WebURL";
 import { SUB_MENU_ID } from "../../../Constants/Constants";
 import { setSelectedSubMenu } from "../../../Redux/Menu/Action";
-
+import { hideLoading, padNumber, showLoading } from "../../../Utils/Utils";
 const ModalDone = (props) => {
   const {
     // data,
@@ -81,10 +81,12 @@ const onClickSendtoVerifyBtn = () => {
 
 //Call Api Verifying
 const handleClickConfirmVerifying = () => {
+  showLoading();
   dispatch(
     VerifingDevice(deviceID, () => {
       dispatch(clearModal());
       navigate(WEB_URL.DEVICE_LIST);
+      hideLoading();
     })
   );
 };
@@ -124,14 +126,14 @@ const handleClickConfirmVerifying = () => {
         centered
       >
         <div className="p-3 pt-4">
-          <div className="flex items-center justify-center h-20 w-20 mx-auto">
+          {/* <div className="flex items-center justify-center h-20 w-20 mx-auto">
             <img
               type="file"
               id="preview_img"
               src={AlmostDone}
               alt="Current profile photo"
             />
-          </div>
+          </div> */}
 
           <div className="mt-3 text-center sm:mt-4">
             <h6

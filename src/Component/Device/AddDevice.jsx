@@ -594,9 +594,9 @@ const AddDevice = () => {
                     <span className="text-[#f94a4a] flex m-0 items-center">
                     <b> * Required Field </b>
                     </span>
-                    <span className="text-PRIMARY_TEXT flex m-0 items-center pl-3">
+                    {/* <span className="text-PRIMARY_TEXT flex m-0 items-center pl-3">
                     <b> English Only** </b>
-                    </span>
+                    </span> */}
                     </div>
                   </div>
                 </div>
@@ -1577,7 +1577,7 @@ const AddDevice = () => {
                               validate={" *"}
                               onChangeInput={onChangeEnergySourch}
                               iconsid = {"Energysources-tooltip"}
-                              messageTooltip = {"AuxAuxiliary/Standby Energy Sources present?"}
+                              messageTooltip = {"Auxiliary/Standby Energy Sources present?"}
                               // ... other props
                             />
                           )}
@@ -1798,8 +1798,8 @@ const AddDevice = () => {
         <ModalConfirm
           onClickConfirmBtn={handleClickConfirm}
           onCloseModal={handleCloseModalConfirm}
-          title={"Are you sure?"}
-          content={"Are you sure you would like to Save this device?"}
+          title={"Save this Device?"}
+          content={"Would you like to save this device?"}
         />
       )}
 

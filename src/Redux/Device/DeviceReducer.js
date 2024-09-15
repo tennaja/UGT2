@@ -9,7 +9,7 @@ import {SET_OPEN_FAIL_MODAL,CLEAR_MODAL,SET_DEVICE_FILTER_LIST, FAIL_REQUEST, MA
     VERIFIED_STATUS,
     SF_02,
     DOWLOAD_SF_02,
-    COUNT
+    COUNT,RENEW_STATUS
 } from "../ActionType"
 
 const initialstate = {
@@ -172,6 +172,13 @@ export const DeviceReducer = (state = initialstate, action) => {
             }
 
             case UPDATE_STATUS:return{
+                ...state,
+                loading:false,
+                isOpen : true,
+                isOpenDoneModal:true
+
+            }
+            case RENEW_STATUS:return{
                 ...state,
                 loading:false,
                 isOpen : true,

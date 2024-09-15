@@ -199,7 +199,7 @@ const InfoDevice = () => {
     const address = detail?.address;
     const subdistrictName = detail?.subdistrictName;
     const districtName = detail?.districtName;
-    const proviceName = detail?.provinceName;
+    const proviceName = detail?.proviceName;
     const postcode = detail?.postcode;
     let _address = "";
 
@@ -225,9 +225,41 @@ const InfoDevice = () => {
     }
     return renderData(_address);
   };
+  const renderMeteringdata = (detail) => {
+    const address = detail?.address;
+    const subdistrictName = detail?.subdistrictName;
+    const districtName = detail?.districtName;
+    const proviceName = detail?.proviceName;
+    const postcode = detail?.postcode;
+    let _address = "";
 
+    if (
+      !address &&
+      !subdistrictName &&
+      !districtName &&
+      !proviceName &&
+      !postcode
+    ) {
+      _address = "";
+    } else {
+      _address =
+        address +
+        " , " +
+        subdistrictName +
+        " , " +
+        districtName +
+        " , " +
+        proviceName +
+        " , " +
+        postcode;
+    }
+    return renderData(_address);
+  };
   const onClickEdit = () => {
     navigate(`${WEB_URL.DEVICE_EDIT}`, { state: { code: deviceobj?.id } });
+  };
+  const onClickRenew = () => {
+    navigate(`${WEB_URL.DEVICE_RENEW}`, { state: { code: deviceobj?.id } });
   };
 
   // ------------------Submit & Withdraw Function------------------------------ //
@@ -723,9 +755,8 @@ const handleClickDownloadFile = async (item) => {
         status !== DEVICE_STATUS.SUBMITTED.toLowerCase() &&
         status !== DEVICE_STATUS.IN_PROGRESS.toLowerCase() &&
         status !== DEVICE_STATUS.WITHDRAWN.toLowerCase() &&
-        status !== DEVICE_STATUS.APPROVED.toLowerCase() && 
-        status !== DEVICE_STATUS.VERIFYING.toLowerCase() && 
-        status !== DEVICE_STATUS.VERIFIED.toLowerCase()
+        status !== DEVICE_STATUS.APPROVED.toLowerCase() 
+        
       ) {
         isEdit = true;
       }   
@@ -788,7 +819,8 @@ const handleClickDownloadFile = async (item) => {
       userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
       userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
       userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
-      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
     ) {
       if (
         status == DEVICE_STATUS.DRAFT.toLowerCase() 
@@ -853,7 +885,9 @@ const handleClickDownloadFile = async (item) => {
     ) {
       if (
         status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
-        status == DEVICE_STATUS.VERIFIED.toLowerCase()
+        status == DEVICE_STATUS.VERIFIED.toLowerCase() 
+        
+
       ) {
         isSeeSF02 = true;
       } else {
@@ -864,11 +898,43 @@ const handleClickDownloadFile = async (item) => {
     return isSeeSF02;
   };
   const checkShowManageBtn = () => {
-    if (canEdit || canSubmit || canWithdrawn || canVerifying || canVerified || canReturn) {
-      return true;
-    } else {
-      return false;
+    const status = (deviceobj?.statusName ?? "").toLowerCase();
+    if (
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG 
+    ) {
+      if (
+        status == DEVICE_STATUS.VERIFIED.toLowerCase()  
+      ) {
+        return false;
+      } else {
+        return true;
+      }
     }
+    else if (
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
+    ) {
+      if (
+        status == DEVICE_STATUS.VERIFYING.toLowerCase()  
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    // else if(
+    //   userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER  
+    // ) {
+    //   if (
+    //     status == DEVICE_STATUS.VERIFYING.toLowerCase()  
+    //   ) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // }
   };
   const infoMessage = () => {
     let message = "";
@@ -883,7 +949,7 @@ const handleClickDownloadFile = async (item) => {
       status === DEVICE_STATUS.SUBMITTED.toLowerCase() ||
       status === DEVICE_STATUS.IN_PROGRESS.toLowerCase()
     ) {
-      message = "The device is now uder review (in progress).";
+      message = "The device is now uder Preview (in progress).";
     }
     return message;
   };
@@ -983,7 +1049,7 @@ const handleClickDownloadFile = async (item) => {
                             actionList={[
                               {
                                 // icon: <LuSend />,
-                                label: "Submit",
+                                label: "Sign&Submit",
                                 onClick: onclicksubmitstep1,
                                 disabled: !canSubmit,
                                 endSection: true,
@@ -1019,6 +1085,12 @@ const handleClickDownloadFile = async (item) => {
                                 label : "Verify",
                                 onClick : onClickVerifiedBtn,
                                 disabled : !canVerified,
+                                
+                              },
+                              {
+                                label : "Renew",
+                                onClick : onClickRenew,
+                                
                                 
                               }
                             ]}
@@ -1204,9 +1276,6 @@ const handleClickDownloadFile = async (item) => {
                                 )}
                               </div>
                             </div>
-                          </div>
-
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
                             <div>
                               <label className="text-[#6B7280] text-xs ">
                                 {"Commissioning Date"}
@@ -1223,39 +1292,110 @@ const handleClickDownloadFile = async (item) => {
                                 )}
                               </div>
                             </div>
-
-                            <div>
-                              <label className="text-[#6B7280] text-xs ">
-                                {"Requested Effective Registration Date"}
-                              </label>
-
-                              <div className="font-bold">
-                                {renderData(
-                                  deviceobj?.registrationDate
-                                    ? convertDateTimeToDisplayDate(
-                                        deviceobj?.registrationDate,
-                                        "d MMMM yyyy"
-                                      )
-                                    : "-"
-                                )}
-                              </div>
-                            </div>
                           </div>
+
+                          
+                          
 
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                            <div>
+                          <div>
                               <label className="text-[#6B7280] text-xs">
-                                {"Other Labelling Scheme"}
+                                {"Meter or Measurement ID(s)"}
                               </label>
                               <div className="font-bold">
                                 {renderData(
-                                  deviceobj?.otherLabellingSchemeName
-                                    ? deviceobj?.otherLabellingSchemeName
-                                    : "-"
+                                  deviceobj?.deviceMeasurements?.map ((item) => {
+                                      return item.description
+                                  })
+                                    
                                 )}
                               </div>
+  
+                              
+                            </div>
+                            <div>
+                              <label className="text-[#6B7280] text-xs">
+                                {"Number of Generating Units"}
+                              </label>
+                              <div className="font-bold">
+                                {renderData(
+                                  deviceobj?.generatingUnit 
+                                    ? deviceobj?.generatingUnit
+                                    : null
+                                )}
+                              </div>
+  
+                              
                             </div>
                           </div>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                          <div>
+                              <label className="text-[#6B7280] text-xs">
+                                {"Owner of Network and Connection Voltage"}
+                              </label>
+                              <div className="font-bold">
+                                {renderData(
+                                  deviceobj?.ownerNetwork 
+                                    ? deviceobj?.ownerNetwork
+                                    : null
+                                )}
+                              </div>
+  
+                              
+                            </div>
+                          <div>
+                              <label className="text-[#6B7280] text-xs">
+                                {"Expected Form of Volume Evidence"}
+                              </label>
+                              <div className="font-bold">
+                                {renderData(
+                                  deviceobj?.isMeteringData === "True"
+                                    ? "Metering Data"
+                                    : null
+                                )}
+                              </div>
+                              <div className="font-bold">
+                                {renderData(
+                                  deviceobj?.isContractSaleInvoice === "True"
+                                    ? "Contract sales invoice"
+                                    : null
+                                )}
+                              </div>
+                              <div className="font-bold">
+                                {renderData(
+                                  deviceobj?.isOther === "True"
+                                    ? "Other"
+                                    :  null
+                                )} {" "}
+                                {renderData(
+                                  deviceobj?.otherDescription 
+                                    ? deviceobj?.otherDescription
+                                    : null
+                                )}
+                              </div>
+                              
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+
+<div>
+  <label className="text-[#6B7280] text-xs ">
+    {"Requested Effective Registration Date"}
+  </label>
+
+  <div className="font-bold">
+    {renderData(
+      deviceobj?.registrationDate
+        ? convertDateTimeToDisplayDate(
+            deviceobj?.registrationDate,
+            "d MMMM yyyy"
+          )
+        : "-"
+    )}
+  </div>
+</div>
+</div>
+                          
                         </div>
                       </div>
                     </div>
@@ -1308,7 +1448,7 @@ const handleClickDownloadFile = async (item) => {
                                 State/Province
                               </label>
                               <div className="break-words	font-bold	">
-                                {renderData(deviceobj?.provinceName)}
+                                {renderData(deviceobj?.proviceName)}
                               </div>
                             </div>
                             <div>
@@ -1371,7 +1511,92 @@ const handleClickDownloadFile = async (item) => {
                         </div>
                       </div>
                     </div>
+{/* Other Information */}
+<div className="md:col-span-6">
+                      <div className="grid grid-cols-12 gap-1">
+                        <div className="row-span-3 col-span-12 lg:col-span-3">
+                          <div className="shrink-0">
+                            <h6 className="text-PRIMARY_TEXT">
+                              <b>Other Information</b>
+                            </h6>
+                          </div>
+                        </div>
 
+                        <div className="col-span-12 lg:col-span-9">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                            <div>
+                              <label className="text-[#6B7280] text-xs">
+                                {"On-Site (captive) Consumer"}
+                              </label>
+                              <div className="break-words	font-bold	">
+                                {renderData(deviceobj?.onSiteConsumerDetail)}
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="text-[#6B7280] text-xs ">
+                                {"Auxiliary/Standby Energy Sources"}
+                              </label>
+
+                              <div className="break-words	font-bold	">
+                                {renderData(deviceobj?.energySourceDetail)}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                            <div>
+                              <label className="text-[#6B7280] text-xs ">
+                                {"Other Import Electricity"}
+                              </label>
+
+                              <div className="break-words	font-bold	">
+                                {renderData(
+                                  (deviceobj?.otherImportEletricity)
+                                )}
+                              </div>
+                            </div>
+                            <div>
+                              <label className="text-[#6B7280] text-xs ">
+                                {"Other Carbon Offset or Energy Tracking Scheme"}
+                              </label>
+
+                              <div className="break-words font-bold">
+                                {renderData(
+                                  deviceobj?.otherCarbonOffset)}
+                              </div>
+                            </div>
+                          </div>
+
+                          
+                          
+
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                          <div>
+                              <label className="text-[#6B7280] text-xs">
+                                {"Public Funding"}
+                              </label>
+                              <div className="font-bold">
+                                {renderData(
+                                  deviceobj?.fundingReceive
+                                  ? convertDateTimeToDisplayDate(
+                                  deviceobj?.fundingReceive,
+                                  "d MMMM yyyy"
+                                  )
+                                  : "-"
+                                  )}
+                          </div>
+  
+                              
+                            </div>
+                            
+                          </div>
+                          
+                          
+                          
+                        </div>
+                      </div>
+                    </div>
                     {/*Documents Information Attachments */}
                     <div className="md:col-span-6 ">
                       <h6 className="text-PRIMARY_TEXT">

@@ -3,7 +3,7 @@ export const DEVICE_LIST = "/device";
 export const DEVICE_ADD = "/device/add";
 export const DEVICE_EDIT = "/device/edit";
 export const DEVICE_INFO = "/device/info";
-
+export const DEVICE_RENEW = "/device/renew";
 
 export const SUBSCRIBER_LIST = "/subscriber";
 export const SUBSCRIBER_ADD = "/subscriber/add";

@@ -44,6 +44,7 @@ import Transfer from "./Component/EAC/Transfer/Transfer";
 import TransferInfo from "./Component/EAC/Transfer/TransferInfo";
 import Redemption from "./Component/EAC/Redemption/Redemption";
 import RedemptionInfo from "./Component/EAC/Redemption/RedemptionInfo";
+import RenewDevice from "./Component/Device/RenewDevice";
 
 function App() {
   return (
@@ -132,6 +133,10 @@ function App() {
                 <Route
                   path={webURL.DEVICE_EDIT}
                   element={<UpdateDevice></UpdateDevice>}
+                ></Route>
+                <Route
+                  path={webURL.DEVICE_RENEW}
+                  element={<RenewDevice></RenewDevice>}
                 ></Route>
                 <Route
                   path={webURL.DEVICE_INFO}

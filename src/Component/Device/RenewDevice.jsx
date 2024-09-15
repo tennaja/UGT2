@@ -26,7 +26,7 @@ import DatePicker from "../Control/DayPicker";
 import UploadImg from "../Control/UploadImg";
 
 import {
-  FunctionEditDevice,
+  FunctionRenewDevice,
   clearModal,
   FetchGetDeviceByID,
   WithdrawDevice,
@@ -49,7 +49,7 @@ import StatusLabel from "../Control/StatusLabel";
 import { hideLoading, padNumber, showLoading } from "../../Utils/Utils";
 import TextareaNote from "../Control/TextareaNote";
 
-const UpdateDevice = () => {
+const RenewDevice = () => {
   //default location on map Thailand
   const defaultLocation = [13.736717, 100.523186];
   const [checking, setChecking] = useState([]);
@@ -666,18 +666,18 @@ const UpdateDevice = () => {
     // console.log("deviceData=>>>",deviceData)
 
     dispatch(
-      FunctionEditDevice(deviceData, () => {
+      FunctionRenewDevice(deviceData, () => {
         // setIsOpenLoading(false);
         hideLoading();
       })
     );
-    dispatch (
-      sendEmail(titleemail,emailBodytoOwner,deviceobj?.userEmail
-        ,() => {
-        hideLoading();
-        // dispatch(clearModal());
-      })
-    )
+    // dispatch (
+    //   sendEmail(titleemail,emailBodytoOwner,deviceobj?.userEmail
+    //     ,() => {
+    //     hideLoading();
+    //     // dispatch(clearModal());
+    //   })
+    // )
   };
 
 
@@ -886,9 +886,9 @@ const UpdateDevice = () => {
                     <span className="text-[#f94a4a] flex m-0 items-center">
                     <b> * Required Field </b>
                     </span>
-                    {/* <span className="text-PRIMARY_TEXT flex m-0 items-center pl-3">
+                    <span className="text-PRIMARY_TEXT flex m-0 items-center pl-3">
                     <b> English Only** </b>
-                    </span> */}
+                    </span>
                     </div>
                   </div>
                 </div>
@@ -996,7 +996,6 @@ const UpdateDevice = () => {
                                   error={errors.name}
                                   disabled={vDisabled}
                                   validate={" *"}
-                                  
                                   // ... other props
                                 />
                               )}
@@ -1048,10 +1047,9 @@ const UpdateDevice = () => {
                                   id={"defaultAccountCode"}
                                   type={"text"}
                                   label={"Default account code"}
-                                  
+                                  disabled={vDisabled}
                                   // error={errors.defaultAccountCode}
                                   validate={" *"}
-                                  disabled={true}
                                   // ... other props
                                 />
                               )}
@@ -2023,7 +2021,7 @@ const UpdateDevice = () => {
                             </div>
                           )}
                           <button className="w-full rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]">
-                            <b>Save as draft</b>
+                            <b>Save Changes</b>
                           </button>
                         </div>
                       </div>
@@ -2040,8 +2038,8 @@ const UpdateDevice = () => {
         <ModalConfirm
           onClickConfirmBtn={handleClickConfirm}
           onCloseModal={handleCloseModalConfirm} //back button
-          title={"Save this Device?"}
-          content={"Would you like to save this device?"}
+          title={"Save changes this Device?"}
+          content={"Would you like to save changes this device?"}
         />
       )}
 
@@ -2066,4 +2064,4 @@ const UpdateDevice = () => {
   );
 };
 
-export default UpdateDevice;
+export default RenewDevice;
