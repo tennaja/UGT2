@@ -827,6 +827,9 @@ const handleClickDownloadFile = async (item) => {
     const status = (deviceobj?.statusName ?? "").toLowerCase();
 
     if (
+      userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
       userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
       userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
     ) {
@@ -1125,7 +1128,9 @@ const handleClickDownloadFile = async (item) => {
             },
             {
               label: "Renew",
-              onClick: onClickRenew,
+              onClick: !onClickRenew,
+              disabled: !canSubmit,
+              // endSection: false,
             },
           ]}
         />
