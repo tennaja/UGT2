@@ -877,7 +877,7 @@ const UpdateDevice = () => {
                         <b> Device Info</b>
                       </span>
                       <span>
-                        <StatusLabel status={deviceobj?.statusName} />
+                        <StatusLabel status={deviceobj?.statusName}/>
                       </span>
                     </div>
 
@@ -1228,6 +1228,16 @@ const UpdateDevice = () => {
                           control={control}
                           rules={{
                             required: "This field is required",
+                            max: {
+                              value: 999999.000000,
+                              message:
+                                "This value must be between 0 and 99999.999999",
+                            },
+                            min: {
+                              value: 0,
+                              message:
+                                "This value must be between 0 and 99999.999999",
+                            },
                             pattern: {
                               value: onlyPositiveNum,
                               message: "Please enter only numeric characters.",
@@ -1239,16 +1249,36 @@ const UpdateDevice = () => {
                               id={"capacity"}
                               type={"number"}
                               step="0.000001"
-                              label={"Capacity (MW)"}
+                              max={999999.000000}
+                              min={0}
+                              label={"Installed Capacity (MW)"}
                               error={errors.capacity}
                               validate={" *"}
                               disabled={vDisabled}
+                              onKeyDown={(e) => {
+                                // Prevent invalid characters like 'e', '+', '-'
+                                if (['e', 'E', '+'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               // ... other props
                               onBlur={(e) => {
-                                let value = e?.target?.value;
-                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
-                                let val = padNumber(value, 6);
-                                setValue("capacity", val);
+                                let value = parseFloat(e.target.value);
+                                // Cap the value between -90.000000 and 90.000000
+                                if (value > 999999.000000) value = 999999.000000;
+                                if (value <= 0 ) value = 0;
+                                
+                                // Optionally pad the number if needed
+                                let paddedValue = padNumber(value.toString(), 6);
+                                setValue("capacity", paddedValue);
+                              }}
+                              onChangeInput={(val) => {
+                                let numericValue = parseFloat(val);
+                                // Enforce the max and min range on change
+                                if (numericValue > 99999.000000) numericValue = 99999.000000;
+                                if (numericValue <= 0 ) numericValue = 0;
+                                let paddedValue = padNumber(numericValue.toString(), 6);
+                                setValue("capacity", paddedValue);
                               }}
                             />
                           )}
@@ -1365,6 +1395,12 @@ const UpdateDevice = () => {
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
+                                  onKeyDown={(e) => {
+                                    // Prevent invalid characters like 'e', '+', '-'
+                                    if (['e', 'E', '+'].includes(e.key)) {
+                                      e.preventDefault();
+                                    }
+                                  }}
                                   // ... other props
                                 />
                               )}
@@ -1406,7 +1442,14 @@ const UpdateDevice = () => {
                           name="ExpectedFormofVolumeEvidence"
                           control={control}
                           rules={{
-                            required: "This field is required",
+                            validate: {
+                              atLeastOneChecked: (value) => 
+                                value.some(item => item.Checked) || "Please select at least one option.",
+                              otherTextRequired: (value) => {
+                                const otherItem = value.find(item => item.name === "Other");
+                                return !(otherItem && otherItem.Checked && !otherItem.otherText.trim()) || "This field is required when 'Other' is selected.";
+                              }
+                            }
                           }}
                           render={({ field }) => (
                             <div>
@@ -1463,6 +1506,8 @@ const UpdateDevice = () => {
                               type={"text"}
                               label={"Owner of Network and Connection Voltage"}
                               error={errors.OwnerofNetwork}
+                              iconsid = {"OwnerofNetwork-tooltip"}
+                              messageTooltip = {"Owner of the network to which the  Production Device is connected and the  voltage of that connection"}
                               validate={" *"}
                               
                               // ... other props
@@ -1685,16 +1730,34 @@ const UpdateDevice = () => {
                               type={"number"}
                               label={"Latitude"}
                               error={errors.latitude}
+                              max={90.000000}
+                              min={-90.000000}
+                              step="0.000001"
                               validate={" *"}
                               disabled={vDisabled}
+                              onKeyDown={(e) => {
+                                // Prevent invalid characters like 'e', '+', '-'
+                                if (['e', 'E', '+'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               onBlur={(e) => {
-                                let value = e?.target?.value;
-                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
-                                let val = padNumber(value, 6);
-                                setValue("latitude", val);
+                                let value = parseFloat(e.target.value);
+                                // Cap the value between -90.000000 and 90.000000
+                                if (value > 90.000000) value = 90.000000;
+                                if (value < -90.000000) value = -90.000000;
+                                
+                                // Optionally pad the number if needed
+                                let paddedValue = padNumber(value.toString(), 6);
+                                setValue("latitude", paddedValue);
                               }}
                               onChangeInput={(val) => {
-                                onChangeLatLon("lat", val);
+                                let numericValue = parseFloat(val);
+                                // Enforce the max and min range on change
+                                if (numericValue > 90.000000) numericValue = 90.000000;
+                                if (numericValue < -90.000000) numericValue = -90.000000;
+                                let paddedValue = padNumber(numericValue.toString(), 6);
+                                setValue("latitude", paddedValue);
                               }}
                             />
                           )}
@@ -1727,16 +1790,35 @@ const UpdateDevice = () => {
                               type={"number"}
                               label={"Longitude"}
                               error={errors.longitude}
+                              max={180.000000}
+                              min={-180.000000}
+                              step="0.000001"
                               validate={" *"}
                               disabled={vDisabled}
+                              onKeyDown={(e) => {
+                                // Prevent invalid characters like 'e', '+', '-'
+                                if (['e', 'E', '+'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               onBlur={(e) => {
-                                let value = e?.target?.value;
-                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
-                                let val = padNumber(value, 6);
-                                setValue("longitude", val);
+                                let value = parseFloat(e.target.value);
+                                // Cap the value between -90.000000 and 90.000000
+                                if (value > 180.000000) value = 180.000000;
+                                if (value < -180.000000) value = -180.000000;
+                                
+                                // Optionally pad the number if needed
+                                let paddedValue = padNumber(value.toString(), 6);
+                                setValue("longitude", paddedValue);
                               }}
                               onChangeInput={(val) => {
-                                onChangeLatLon("lon", val);
+                                let numericValue = parseFloat(val);
+                                // Enforce the max and min range on change
+                                if (numericValue > 180.000000) numericValue = 180.000000;
+                                if (numericValue < -180.000000) numericValue = -180.000000;
+                      
+                                let paddedValue = padNumber(numericValue.toString(), 6);
+                                setValue("longitude", paddedValue);
                               }}
                             />
                           )}
@@ -1779,7 +1861,8 @@ const UpdateDevice = () => {
                               validate={" *"}
                               onChangeInput={onChangeOnsite}
                               error={errors.Onsite}
-
+                              iconsid = {"Onsite-tooltip"}
+                              messageTooltip = {"Is there an on-site (captive) consumer present?"}
                               // ... other props
                             />
                           )}
@@ -1826,7 +1909,8 @@ const UpdateDevice = () => {
                               error={errors.Energysources}
                               validate={" *"}
                               onChangeInput={onChangeEnergySourch}
-
+                              iconsid = {"Energysources-tooltip"}
+                              messageTooltip = {"Auxiliary/Standby Energy Sources present?"}
                               // ... other props
                             />
                           )}
@@ -1873,6 +1957,8 @@ const UpdateDevice = () => {
                               label={"Other import eletricity"}
                               validate={" *"}
                               error={errors.Otherimport}
+                              iconsid = {"Otherimport-tooltip"}
+                              messageTooltip = {"Please give details of how the site can import electricity by means other than through the meter(s) specified above"}
                               // ... other props
                             />
                           )}
@@ -1893,6 +1979,8 @@ const UpdateDevice = () => {
                               validate={" *"}
                               label={"Other carbon offset or energy tracking scheme"}
                               error={errors.Othercarbon}
+                              iconsid = {"Othercarbon-tooltip"}
+                              messageTooltip = {"Please give details (including registration id) of any carbon offset or energy tracking scheme for which the Production Facility is registered.  State ‘None’ if that is the case"}
                               // ... other props
                             />
                           )}
@@ -1917,7 +2005,8 @@ const UpdateDevice = () => {
                               error={errors.Publicfunding}
                               validate={" *"}
                               onChangeInput={onChangePublicFund}
-
+                              iconsid={"Publicfunding-tooltip"}
+          messageTooltip={"Has the Production Facility ever received public (government) funding (e.g. Feed in Tariff)"}
                               // ... other props
                             />
                           )}
@@ -2012,7 +2101,10 @@ const UpdateDevice = () => {
                           )}
                         />
                       </div>
-                      <div className="md:col-span-3"></div>
+                      <div className="md:col-span-2"></div>
+                      <div className="md:col-span-2"></div>
+                      <div className="md:col-span-2"></div>
+                      <div className="md:col-span-2"></div>
                       <div className="md:col-span-2"></div>
                       <div className="md:col-span-2">
                         <div>

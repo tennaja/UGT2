@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 
-const Radiobtn = (props) => {
-  const { value = [], label, error, validate, id, onChange, ...restProps } = props;
+const cleanInputText = (inputText) => {
+  const allowedPattern = /[^A-Za-z0-9\s\-.,;:!?'"@&%$#+=^*\/\\~|_()\[\]\{\}<>©®™§¶÷×±√∞≠≤≥\u00C0-\u00FF\u0152\u0153]/g;
+  return inputText.replace(allowedPattern, '');
+};
 
+const Radiobtn = ({ value = [], label, error, validate, id, onChange, ...restProps }) => {
   const [checking, setChecking] = useState(() =>
     value.length
       ? value.map((item) => ({
@@ -16,8 +19,6 @@ const Radiobtn = (props) => {
         ]
   );
 
-  const [showError, setShowError] = useState(false);
-
   const onOptionChange = useCallback((index) => {
     setChecking((prevState) =>
       prevState.map((item, i) =>
@@ -27,9 +28,10 @@ const Radiobtn = (props) => {
   }, []);
 
   const onOtherTextChange = useCallback((index, text) => {
+    const cleanedText = cleanInputText(text);
     setChecking((prevState) =>
       prevState.map((item, i) =>
-        i === index ? { ...item, otherText: text } : item
+        i === index ? { ...item, otherText: cleanedText } : item
       )
     );
   }, []);
@@ -66,22 +68,14 @@ const Radiobtn = (props) => {
     }
   }, [value]);
 
-  useEffect(() => {
-    // Check if at least one box is checked
-    const isAnyChecked = checking.some((item) => item.Checked);
-    setShowError(!isAnyChecked);
-  }, [checking]);
-
   return (
     <>
       {label && (
         <label className="mb-1" htmlFor={id}>
-          <b>{label}
-          <font className="text-[#f94a4a]">{validate}</font>
-          </b>
+          <b>{label}<font className="text-[#f94a4a]">{validate}</font></b>
         </label>
       )}
-      <form {...restProps}>
+      <div {...restProps}>
         {checking.map((item, index) => (
           <div key={index} className="flex items-center mb-4 mt-4">
             <input
@@ -90,7 +84,7 @@ const Radiobtn = (props) => {
               className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               checked={item.Checked}
               onChange={() => onOptionChange(index)}
-              {...restProps}  // Pass restProps to input element
+              {...restProps}
             />
             <label
               htmlFor={`default-checkbox-${index + 1}`}
@@ -104,15 +98,15 @@ const Radiobtn = (props) => {
                 placeholder="Specify other..."
                 value={item.otherText || ""}
                 onChange={(e) => onOtherTextChange(index, e.target.value)}
-                {...restProps}  // Pass restProps to input element
+                {...restProps}
               />
             )}
           </div>
         ))}
-      </form>
-      {(showError || error) && (
+      </div>
+      {error && (
         <p className="mt-1 mb-1 text-red-500 text-xs text-left">
-          {error?.message || "Please select at least one option."}
+          {error.message || "Please select at least one option."}
         </p>
       )}
     </>

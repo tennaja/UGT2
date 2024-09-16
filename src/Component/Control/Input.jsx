@@ -57,7 +57,7 @@ const Input = (props) => {
           let value = null;
           if (e.target.value) {
             value = e.target.value;
-            value = value.replace(/[^A-Za-z0-9\s\-./\[\]\{\}@%#,&*]/g, '')
+            value = value.replace(/[^A-Za-z0-9\s\-.,;:!?'"@&%$#+=^*\/\\~|_()\[\]\{\}<>©®™§¶÷×±√∞≠≤≥\u00C0-\u00FF\u0152\u0153]/g, '')
           }
           onChangeInput && onChangeInput(value);
           inputProps.onChange(value);

@@ -941,7 +941,7 @@ const AddDevice = () => {
                           rules={{
                             required: "This field is required",
                             max: {
-                              value: 99999.999999,
+                              value: 999999.000000,
                               message:
                                 "This value must be between 0 and 99999.999999",
                             },
@@ -961,16 +961,22 @@ const AddDevice = () => {
                               id={"capacity"}
                               type={"number"}
                               step="0.0000001"
-                              max={99999.999999}
+                              max={999999.000000}
                               min={0}
                               placeholder={"Please fill the form in Number"}
                               label={"Installed Capacity (MW)"}
                               error={errors.capacity}
                               validate={" *"}
+                              onKeyDown={(e) => {
+                                // Prevent invalid characters like 'e', '+', '-'
+                                if (['e', 'E', '+'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               onBlur={(e) => {
                                 let value = parseFloat(e.target.value);
                                 // Cap the value between -90.000000 and 90.000000
-                                if (value > 99999.999999) value = 99999.999999;
+                                if (value > 999999.000000) value = 999999.000000;
                                 if (value <= 0 ) value = 0;
                                 
                                 // Optionally pad the number if needed
@@ -980,10 +986,10 @@ const AddDevice = () => {
                               onChangeInput={(val) => {
                                 let numericValue = parseFloat(val);
                                 // Enforce the max and min range on change
-                                if (numericValue > 99999.999999) numericValue = 99999.999999;
+                                if (numericValue > 99999.000000) numericValue = 99999.000000;
                                 if (numericValue <= 0 ) numericValue = 0;
-                      
-                                setValue("capacity", numericValue);
+                                let paddedValue = padNumber(numericValue.toString(), 6);
+                                setValue("capacity", paddedValue);
                               }}
                               
                               // ... other props
@@ -1103,7 +1109,12 @@ const AddDevice = () => {
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
-                                  
+                                  onKeyDown={(e) => {
+                                    // Prevent invalid characters like 'e', '+', '-'
+                                    if (['e', 'E', '+'].includes(e.key)) {
+                                      e.preventDefault();
+                                    }
+                                  }}
                                   // ... other props
                                 />
                               )}
@@ -1162,7 +1173,14 @@ const AddDevice = () => {
                           name="ExpectedFormofVolumeEvidence"
                           control={control}
                           rules={{
-                            required: "This field is required",
+                            validate: {
+                              atLeastOneChecked: (value) => 
+                                value.some(item => item.Checked) || "Please select at least one option.",
+                              otherTextRequired: (value) => {
+                                const otherItem = value.find(item => item.name === "Other");
+                                return !(otherItem && otherItem.Checked && !otherItem.otherText.trim()) || "This field is required when 'Other' is selected.";
+                              }
+                            }
                           }}
                           render={({ field }) => (
                             <div>
@@ -1172,7 +1190,7 @@ const AddDevice = () => {
                               label={"ExpectedForm of Volume Evidence"}
                               error={errors.ExpectedFormofVolumeEvidence}
                               validate={" *"}
-
+                              
                               // ... other props
                             />
                             </div>
@@ -1449,6 +1467,12 @@ const AddDevice = () => {
                               max={90.000000}
                               min={-90.000000}
                               step="0.000001" // to ensure that small decimals can be entered
+                              onKeyDown={(e) => {
+                                // Prevent invalid characters like 'e', '+', '-'
+                                if (['e', 'E', '+'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               onBlur={(e) => {
                                 let value = parseFloat(e.target.value);
                                 // Cap the value between -90.000000 and 90.000000
@@ -1464,8 +1488,8 @@ const AddDevice = () => {
                                 // Enforce the max and min range on change
                                 if (numericValue > 90.000000) numericValue = 90.000000;
                                 if (numericValue < -90.000000) numericValue = -90.000000;
-                      
-                                onChangeLatLon("lat", numericValue);
+                                let paddedValue = padNumber(numericValue.toString(), 6);
+                                setValue("latitude", paddedValue);
                               }}
                             />
                           )}
@@ -1496,8 +1520,16 @@ const AddDevice = () => {
                               id={"longitude"}
                               type={"number"}
                               label={"Longitude"}
+                              max={180.000000}
+                              min={-180.000000}
                               placeholder={"Please fill the form in Number"}
                               error={errors.longitude}
+                              onKeyDown={(e) => {
+                                // Prevent invalid characters like 'e', '+', '-'
+                                if (['e', 'E', '+'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               validate={" *"}
                               onBlur={(e) => {
                                 let value = parseFloat(e.target.value);
@@ -1507,7 +1539,8 @@ const AddDevice = () => {
                                 
                                 // Optionally pad the number if needed
                                 let paddedValue = padNumber(value.toString(), 6);
-                                setValue("latitude", paddedValue);
+                                console.log(paddedValue)
+                                setValue("longitude", paddedValue);
                               }}
                               onChangeInput={(val) => {
                                 let numericValue = parseFloat(val);
@@ -1515,7 +1548,8 @@ const AddDevice = () => {
                                 if (numericValue > 180.000000) numericValue = 180.000000;
                                 if (numericValue < -180.000000) numericValue = -180.000000;
                       
-                                onChangeLatLon("lon", numericValue);
+                                let paddedValue = padNumber(numericValue.toString(), 6);
+                                setValue("longitude", paddedValue);
                               }}
                             />
                           )}
@@ -1802,7 +1836,10 @@ const AddDevice = () => {
                       {/*End  Documents Information Attachments */}
                       {/* Save as draft */}
                       <div className="md:col-span-2"></div>
-                      <div className="md:col-span-2">
+                      <div className="md:col-span-2"></div>
+                      <div className="md:col-span-2"></div>
+                      
+                      <div className="md:col-span-2 ">
                         <div>
                           {Object.keys(errors).length !== 0 && (
                             <div className="font-medium text-lg flex items-center justify-center border-solid bg-[#fdeeee] border-red-300 border-3   my-2 p-4 text-red-400 ">

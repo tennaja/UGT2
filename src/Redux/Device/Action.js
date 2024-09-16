@@ -430,8 +430,8 @@ export const FunctionAddDevice = (data, callback) => {
     countryCode: data?.countryCode?.alpha2, //countryCode //"string",
     countryName: data?.countryCode?.name,
     postcode: `${data?.postCode?.postalCode}`, //postalCode //string
-    latitude: data?.latitude ? parseFloat(data?.latitude) : 0, //latitude // number
-    longitude: data?.longitude ? parseFloat(data?.longitude) : 0, //longitude //number
+    latitude: data?.latitude ? data?.latitude : 0, //latitude // number
+    longitude: data?.longitude ? data?.longitude : 0, //longitude //number
     fileUploads: data?.uploadFile, //data?.uploadFile
     notes: data?.note, //note//"string",
     issuerCode: data?.issuerCode?.issuerCode, //issuerCode?.issuerCode // string
@@ -519,8 +519,8 @@ export const FunctionEditDevice = (data, callback) => {
     countryCode: data?.countryCode?.alpha2, //countryCode //"string",
     countryName: data?.countryCode?.name,
     postcode: `${data?.postCode?.postalCode}`, //postalCode //string
-    latitude: data?.latitude ? parseFloat(data?.latitude) : 0, //latitude // number
-    longitude: data?.longitude ? parseFloat(data?.longitude) : 0, //longitude //number
+    latitude: data?.latitude ? data?.latitude : 0, //latitude // number
+    longitude: data?.longitude ? data?.longitude : 0, //longitude //number
     fileUploads: data?.uploadFile,
     notes: data?.note, //note//"string",
     issuerCode: data?.issuerCode?.issuerCode, //issuerCode?.issuerCode // string
