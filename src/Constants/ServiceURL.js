@@ -94,6 +94,11 @@ export const EAC_ISSUE_REQUEST_CREATE_ISSUE_DETAIL = `${DOMAIN_URL_EGAT}/ugt/v1/
 export const EAC_ISSUE_REQUEST_DOWNLOAD_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/downloadIssueFile`;
 export const EAC_ISSUE_REQUEST_DELETE_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/deleteIssueFile`;
 
+// ScheduleSyncBack
+export const EAC_ISSUE_SYNC_ISSUE_ITEM = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/IssueItem`;
+export const EAC_ISSUE_SYNC_ISSUE_STATUS = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/IssueStatus`;
+export const EAC_ISSUE_SYNC_DEVICE_STATUS = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/DeviceStatus`;
+
 // Settlement
 export const PORTFOLIO_YEAR_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/portfolioYearList`;
 export const PORTFOLIO_MONTH_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/portfolioMonthList`;

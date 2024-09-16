@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { Button, Card, LoadingOverlay, Menu } from "@mantine/core";
 import { PiHandWithdrawFill } from "react-icons/pi";
 import Skeleton from "@mui/material/Skeleton";
 import PdfTablePreview from '../Control/TemplatePdf';
@@ -57,9 +56,19 @@ import ModalSubmitDone from "../Control/Modal/ModalDoneSubmit";
 import PreviewPdf from "../Control/Previewsf02";
 import ModalConfirmVerified from "../Control/Modal/ModalConfirmVerified";
 import ModalConfirmSubmit from "../Control/Modal/ModalConfirmSubmit";
-
-
-
+import { getHeaderConfig } from "../../Utils/FuncUtils";
+import { useDisclosure } from "@mantine/hooks";
+import {
+  Button,
+  Card,
+  LoadingOverlay,
+  Menu,
+  Divider,
+  Modal,
+  ActionIcon,
+} from "@mantine/core";
+import AlmostDone from "../assets/done.png";
+import { EAC_ISSUE_SYNC_DEVICE_STATUS } from "../../Constants/ServiceURL";
 const InfoDevice = () => {
   //default location on map Thailand
   const defaultLocation = [13.736717, 100.523186];
@@ -98,8 +107,10 @@ const InfoDevice = () => {
   const isOpenFailModal = useSelector((state) => state.device.isOpenFailModal);
   const countryList = useSelector((state) => state.dropdrow.countryList);
   const [isOpenLoading, setIsOpenLoading] = useState(false);
-  const [remarktext,setRemarktext] = useState("")
-  
+  const [isSyncing, syncHandlers] = useDisclosure();
+  const [showModalSyncSuccess, modalSyncSuccessHandlers] = useDisclosure();
+  const [showModalSyncFail, modalSyncFailHandlers] = useDisclosure();
+
   const handleClickBackToHome = () => {
     dispatch(clearModal());
     navigate(WEB_URL.DEVICE_LIST);
@@ -966,7 +977,52 @@ const handleClickDownloadFile = async (item) => {
     }
     return message;
   };
+  
+  const syncDevice = async () => {
+    try {
+      showLoading();
+      syncHandlers.open();
 
+      const params = {
+        deviceId: deviceobj?.id,
+      };
+
+      const result = await syncDeviceStatus(params);
+
+      if (result?.status == 200) {
+        dispatch(
+          FetchGetDeviceByID(code, (res, err) => {
+            setIsOpenLoading(false);
+            hideLoading();
+          })
+        );
+        hideLoading();
+        syncHandlers.close();
+        modalSyncSuccessHandlers.open();
+      } else {
+        hideLoading();
+        syncHandlers.close();
+        modalSyncFailHandlers.open();
+      }
+    } catch (error) {
+      hideLoading();
+      syncHandlers.close();
+      modalSyncFailHandlers.open();
+    }
+  };
+  async function syncDeviceStatus(params) {
+    const res = await axios.get(`${EAC_ISSUE_SYNC_DEVICE_STATUS}`, {
+      params: params,
+      ...getHeaderConfig(),
+      validateStatus: function (status) {
+        console.log(status)
+        return status >= 200 && status < 500;
+      },
+    });
+    console.log(res)
+    return res;
+    
+  }
   const canEdit = checkCanEdit();
   const canSubmit = checkCanSubmit();
   const canWithdrawn = checkCanWithdrawn();
@@ -1020,6 +1076,13 @@ const handleClickDownloadFile = async (item) => {
 
     {/* Right Section (Buttons & Info Message) */}
     <div className="flex items-center gap-3">
+    <Button
+                          loading={isSyncing}
+                          className="  text-white  hover:bg-[#4D6A00] bg-[#87BE33]"
+                          onClick={() => syncDevice()}
+                        >
+                          Sync Status
+                        </Button>
       {canSeeSF02 && <PreviewPdf data={sf02obj} />}
 
       {isShowManageBtn && (
@@ -1697,7 +1760,9 @@ const handleClickDownloadFile = async (item) => {
                             <b></b> Verify
                     </button>
                      : null}
-                  
+                  <button onClick={onClickRenew} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
+                            <b></b> Renew
+                    </button>
               </div></div>
               </div>
             </Card>
@@ -1732,7 +1797,36 @@ const handleClickDownloadFile = async (item) => {
       {isOpenConfirmVerifiedModal && <ModalConfirmVerified {...modalConfirmVerifiedProps} />}
       {isOpenConfirmReturnModal && <ModalReturnConfirm {...modalConfirmReturnProps} />}
       
-      
+      <Modal
+        opened={showModalSyncSuccess}
+        onClose={modalSyncSuccessHandlers.close}
+        withCloseButton={false}
+        centered
+        closeOnClickOutside={false}
+      >
+        <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
+          <img
+            className="w-32 object-cover rounded-full flex items-center justify-center"
+            src={AlmostDone}
+            alt="Current profile photo"
+          />
+
+          <div className="text-3xl font-bold text-center pt-2">
+            Sync Status Success
+          </div>
+          <div className="flex gap-4">
+            <Button
+              className="text-white bg-PRIMARY_BUTTON mt-12 px-10"
+              onClick={() => modalSyncSuccessHandlers.close()}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      {showModalSyncFail && (
+        <ModelFail onClickOk={modalSyncFailHandlers.close} />
+      )}
       {isOpenFailModal && (
         <ModelFail
           onClickOk={() => {
