@@ -75,9 +75,15 @@ const MySelect = (props) => {
           options={options}
           getOptionLabel={getOptionLabel}
           getOptionValue={getOptionValue}
-          isSearchable={searchable}
+          // isSearchable={searchable}
           placeholder={placeholder}
           isDisabled={disable}
+          onInputChange={(inputValue) => {
+            // Remove any non-English characters from the input value
+            const englishInput = inputValue.replace(/[^A-Za-z\s]/g, '');
+            return englishInput;
+          }}
+          
           onChange={(value) => {
             onChangeInput && onChangeInput(value);
             inputProps.onChange && inputProps.onChange(value);

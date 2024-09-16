@@ -10,8 +10,8 @@ const Radiobtn = (props) => {
           Checked: item.Checked === "True" || item.Checked === true,
         }))
       : [
-          { name: "Meteringdata", Checked: false },
-          { name: "Contractsalesinvoice", Checked: false },
+          { name: "Metering data", Checked: false },
+          { name: "Contract sales invoice", Checked: false },
           { name: "Other", Checked: false, otherText: "" },
         ]
   );
@@ -58,8 +58,8 @@ const Radiobtn = (props) => {
               otherText: item.otherText || "",
             }))
           : [
-              { name: "Meteringdata", Checked: false },
-              { name: "Contractsalesinvoice", Checked: false },
+              { name: "Metering data", Checked: false },
+              { name: "Contract sales invoice", Checked: false },
               { name: "Other", Checked: false, otherText: "" },
             ]
       );

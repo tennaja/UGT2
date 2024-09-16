@@ -145,9 +145,9 @@ const handleClickConfirmVerifying = () => {
 
             <div className="mt-4">
               <p className="text-sm text-gray-500">
-              Press 'Send to Verify' to proceed or ‘Back’ to Device 
-                <br />
-                Details
+              Press 'Send to Verify' to proceed or ‘Back’ to Device Details. 
+                
+                
               </p>
             </div>
           </div>

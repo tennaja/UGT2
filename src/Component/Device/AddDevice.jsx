@@ -961,16 +961,31 @@ const AddDevice = () => {
                               id={"capacity"}
                               type={"number"}
                               step="0.0000001"
+                              max={99999.999999}
+                              min={0}
                               placeholder={"Please fill the form in Number"}
                               label={"Installed Capacity (MW)"}
                               error={errors.capacity}
                               validate={" *"}
                               onBlur={(e) => {
-                                let value = e?.target?.value;
-                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
-                                let val = padNumber(value, 6);
-                                setValue("capacity", val);
+                                let value = parseFloat(e.target.value);
+                                // Cap the value between -90.000000 and 90.000000
+                                if (value > 99999.999999) value = 99999.999999;
+                                
+                                
+                                // Optionally pad the number if needed
+                                let paddedValue = padNumber(value.toString(), 6);
+                                setValue("capacity", paddedValue);
                               }}
+                              onChangeInput={(val) => {
+                                let numericValue = parseFloat(val);
+                                // Enforce the max and min range on change
+                                if (numericValue > 99999.999999) numericValue = 99999.999999;
+                                
+                      
+                                setValue("capacity", numericValue);
+                              }}
+                              
                               // ... other props
                             />
                           )}
@@ -1431,14 +1446,26 @@ const AddDevice = () => {
                               placeholder={"Please fill the form in Number"}
                               error={errors.latitude}
                               validate={" *"}
+                              max={90.000000}
+                              min={-90.000000}
+                              step="0.000001" // to ensure that small decimals can be entered
                               onBlur={(e) => {
-                                let value = e?.target?.value;
-                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
-                                let val = padNumber(value, 6);
-                                setValue("latitude", val);
+                                let value = parseFloat(e.target.value);
+                                // Cap the value between -90.000000 and 90.000000
+                                if (value > 90.000000) value = 90.000000;
+                                if (value < -90.000000) value = -90.000000;
+                                
+                                // Optionally pad the number if needed
+                                let paddedValue = padNumber(value.toString(), 6);
+                                setValue("latitude", paddedValue);
                               }}
                               onChangeInput={(val) => {
-                                onChangeLatLon("lat", val);
+                                let numericValue = parseFloat(val);
+                                // Enforce the max and min range on change
+                                if (numericValue > 90.000000) numericValue = 90.000000;
+                                if (numericValue < -90.000000) numericValue = -90.000000;
+                      
+                                onChangeLatLon("lat", numericValue);
                               }}
                             />
                           )}
@@ -1473,13 +1500,22 @@ const AddDevice = () => {
                               error={errors.longitude}
                               validate={" *"}
                               onBlur={(e) => {
-                                let value = e?.target?.value;
-                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
-                                let val = padNumber(value, 6);
-                                setValue("longitude", val);
+                                let value = parseFloat(e.target.value);
+                                // Cap the value between -90.000000 and 90.000000
+                                if (value > 180.000000) value = 180.000000;
+                                if (value < -180.000000) value = -180.000000;
+                                
+                                // Optionally pad the number if needed
+                                let paddedValue = padNumber(value.toString(), 6);
+                                setValue("latitude", paddedValue);
                               }}
                               onChangeInput={(val) => {
-                                onChangeLatLon("lon", val);
+                                let numericValue = parseFloat(val);
+                                // Enforce the max and min range on change
+                                if (numericValue > 180.000000) numericValue = 180.000000;
+                                if (numericValue < -180.000000) numericValue = -180.000000;
+                      
+                                onChangeLatLon("lon", numericValue);
                               }}
                             />
                           )}
@@ -1655,62 +1691,62 @@ const AddDevice = () => {
                           )}
                         />
                       </div>
-                      <div className="md:col-span-3">
-                        <Controller
-                          name="Publicfunding"
-                          control={control}
-                          defaultValue={null}
-                          rules={{
-                            required: "This field is required",
-                          }}
-                          render={({ field }) => (
-                            <MySelect
-                              {...field}
-                              id={"Publicfunding"}
-                              options={PublicFundingList}
-                              displayProp={"Name"}
-                              valueProp={"id"}
-                              label={"Public funding"}
-                              error={errors.Publicfunding}
-                              validate={" *"}
-                              iconsid = {"Publicfunding-tooltip"}
-                              messageTooltip = {"Has the Production Facility ever received public (government) funding (e.g. Feed in Tariff)"}
-                              onChangeInput={onChangePublicFund}
-
-                              // ... other props
-                            />
-                          )}
-                        />
-                        {currentPublicfunding?.Name == "Feed in Tariff" ? <div className=" ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
-                        <div className="w-full mt-2">
-                        <Controller
-                          name="FundingReceivedate"
-                          control={control}
-                          rules={{
-                            required: "This field is required",
-                          }}
-                          render={({ field }) => (
-                            <DatePicker
-                              {...field}
-                              id={"FundingReceivedate"}
-                              error={errors.FundingReceivedate}
-                              validate={" *"}
-                              // ... other props
-                            />
-                          )}
-                        /></div></div> : null }
-                        
-                      </div>
                       
-{/*End other information*/}
-              
+  <div className="col-span-1 md:col-span-3">
+    <Controller
+      name="Publicfunding"
+      control={control}
+      defaultValue={null}
+      rules={{ required: "This field is required" }}
+      render={({ field }) => (
+        <MySelect
+          {...field}
+          id={"Publicfunding"}
+          options={PublicFundingList}
+          displayProp={"Name"}
+          valueProp={"id"}
+          label={"Public funding"}
+          error={errors.Publicfunding}
+          validate={" *"}
+          iconsid={"Publicfunding-tooltip"}
+          messageTooltip={"Has the Production Facility ever received public (government) funding (e.g. Feed in Tariff)"}
+          onChangeInput={onChangePublicFund}
+        />
+      )}
+    />
+    {currentPublicfunding?.Name === "Feed in Tariff" && (
+      <div className="ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+        <div className="col">
+        <div className="w-full mt-4 bg-[#CFE5AD] h-8 flex justify-start items-center pl-2">
+          (If public (government) funding has been received, when did/will it finish?)
+        </div>
+        <div className="w-full mt-2">
+          <Controller
+            name="FundingReceivedate"
+            control={control}
+            rules={{ required: "This field is required" }}
+            render={({ field }) => (
+              <DatePicker
+                {...field}
+                id={"FundingReceivedate"}
+                error={errors.FundingReceivedate}
+                validate={" *"}
+              />
+            )}
+          />
+        </div>
+      </div></div>
+    )}
+  </div>
 
-                      {/*Documents Information Attachments */}
-                      <div className="md:col-span-6 mt-4">
-                        <h6 className="text-PRIMARY_TEXT">
-                          <b>Documents Information Attachments</b>
-                        </h6>
-                      </div>
+  {/* Documents Information Attachments */}
+  <div className="col-span-1 md:col-span-6 mt-12">
+    <h6 className="text-PRIMARY_TEXT">
+      <b>Documents Information Attachments</b>
+    </h6>
+  </div>
+
+
 
                       <div className="md:col-span-3">
                         <Controller

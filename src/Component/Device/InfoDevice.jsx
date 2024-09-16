@@ -1332,7 +1332,7 @@ const handleClickDownloadFile = async (item) => {
                               <label className="text-[#6B7280] text-xs">
                                 {"Meter or Measurement ID(s)"}
                               </label>
-                              <div className="font-bold">
+                              <div className="break-words font-bold">
                                 {renderData(
                                   deviceobj?.deviceMeasurements?.map ((item) => {
                                       return item.description
@@ -1363,7 +1363,7 @@ const handleClickDownloadFile = async (item) => {
                               <label className="text-[#6B7280] text-xs">
                                 {"Owner of Network and Connection Voltage"}
                               </label>
-                              <div className="font-bold">
+                              <div className="break-words font-bold">
                                 {renderData(
                                   deviceobj?.ownerNetwork 
                                     ? deviceobj?.ownerNetwork

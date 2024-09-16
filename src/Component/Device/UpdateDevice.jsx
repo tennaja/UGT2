@@ -1283,7 +1283,7 @@ const UpdateDevice = () => {
                             <div className="flex justify-between mt-2 ml-2 md:col-span-6">
                               <div>
                                 <strong>
-                                  Feeder Name{" "}
+                                Meter or Measurement ID (s){" "}
                                   <span className="text-red-500">*</span>
                                 </strong>
                               </div>
@@ -1922,27 +1922,31 @@ const UpdateDevice = () => {
                             />
                           )}
                         />
-                        {currentPublicfunding?.Name == "Feed in Tariff" ? <div className=" ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        {currentPublicfunding?.Name == "Feed in Tariff" ? 
+                        <div className="ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        <div className="col">
+                        <div className="w-full mt-4 bg-[#CFE5AD] h-8 flex justify-start items-center pl-2">
+                          (If public (government) funding has been received, when did/will it finish?)
+                        </div>
                         <div className="w-full mt-2">
-                        <Controller
-                          name="FundingReceivedate"
-                          control={control}
-                          rules={{
-                            required: "This field is required",
-                          }}
-                          render={({ field }) => (
-                            <DatePicker
-                              {...field}
-                              id={"FundingReceivedate"}
-                              error={errors.FundingReceivedate}
-                              validate={" *"}
-                              // ... other props
-                            />
-                          )}
-                        /></div></div> : null }
+                          <Controller
+                            name="FundingReceivedate"
+                            control={control}
+                            rules={{ required: "This field is required" }}
+                            render={({ field }) => (
+                              <DatePicker
+                                {...field}
+                                id={"FundingReceivedate"}
+                                error={errors.FundingReceivedate}
+                                validate={" *"}
+                              />
+                            )}
+                          />
+                        </div>
+                      </div></div> : null }
                       </div>
                       {/*Documents Information Attachments */}
-                      <div className="md:col-span-6 mt-4">
+                      <div className="md:col-span-6 mt-12">
                         <h6 className="text-PRIMARY_TEXT">
                           <b>Documents Information Attachments</b>
                         </h6>
