@@ -1,10 +1,8 @@
 import { Modal } from "@mantine/core";
-import PdfTablePreview from '../TemplatePdf';
 
-const ModalConfirmVerified = (props) => {
+const ModalConfirmWithdraw = (props) => {
   const {
     data,
-    UserSign,
     status,
     onCloseModal,
     onClickConfirmBtn,
@@ -30,9 +28,6 @@ const ModalConfirmVerified = (props) => {
   };
   return (
     <>
-    <PdfTablePreview 
-     data={data}
-     Sign={""}/>
       <Modal
         size="md"
         opened={true}
@@ -49,13 +44,11 @@ const ModalConfirmVerified = (props) => {
             >
               {title}
             </h6>
-            <div className="mt-4 gap-0">
+            <div className="mt-4">
               <p className="text-sm text-gray-600">
-              {`Would you like to verify this device?`}
-  <br />
-  {`Verified device will be sent to sign and unable to recall.`}
+              {`Would you like to withdraw this device?`}<br/>{`Device will be permanently deleted.`}
+               
               </p>
-              
             </div>
           </div>
         </div>
@@ -71,7 +64,7 @@ const ModalConfirmVerified = (props) => {
             onClick={onClickOk}
             className={`${getButtonColor()} w-50 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm hover:bg-[#4D6A00] `}
           >
-            Verify
+            Confirm
           </button>
         </div>
       </Modal>
@@ -79,4 +72,4 @@ const ModalConfirmVerified = (props) => {
   );
 };
 
-export default ModalConfirmVerified;
+export default ModalConfirmWithdraw;

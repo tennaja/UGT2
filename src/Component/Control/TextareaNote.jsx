@@ -38,7 +38,7 @@ const TextareaNote  = (props) => {
                     let value = null;
                     if (e.target.value) {
                       value = e.target.value;
-                      value = value.replace(/[^A-Za-z0-9\u0E00-\u0E7F\s\-./\[\]\{\}@%#,&*]/g, '')
+                      value = value.replace(/[^A-Za-z0-9\s\-.,;:!?'"@&%$#+=^*\/\\~|_()\[\]\{\}<>©®™§¶÷×±√∞≠≤≥\u00C0-\u00FF\u0152\u0153\u0E00-\u0E7F]/g, "")
                     }
                     onChangeInput && onChangeInput(value);
                     inputProps.onChange(value);

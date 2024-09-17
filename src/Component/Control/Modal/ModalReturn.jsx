@@ -68,7 +68,11 @@ const ModalReturnConfirm = (props) => {
             {title}
           </h6>
           <div className="mt-4">
-            <p className="text-sm text-gray-600">{content}</p>
+            <p className="text-sm text-gray-600">
+              {`Device Registration requires to be edited.`} 
+              <br/> 
+              {`Would you like to return to Device Owner?`}
+              </p>
           </div>
           <div className="mt-4 text-left">
             <div className="flex justify-start">

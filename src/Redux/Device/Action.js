@@ -662,7 +662,7 @@ export const WithdrawDevice = (id, callbackFunc) => {
       (response) => {
         if (response?.status == 200) {
           dispatch(deleteDevice());
-          toast.success("Withdarw Complete!", {
+          toast.success("Withdraw  Device Complete!", {
             position: "top-right",
             autoClose: 3000,
             style: {
@@ -703,7 +703,7 @@ export const ReturnDevice = (id,re,us,callbackFunc) => {
         console.log(response)
         if (response?.status == 200) {
           dispatch(returnDevice());
-          toast.success("Return Complete!", {
+          toast.success("Return  Device Complete!", {
             position: "top-right",
             autoClose: 3000,
             style: {
@@ -732,7 +732,7 @@ export const ReturnDevice = (id,re,us,callbackFunc) => {
 export const SubmitDevice = (id,name,sigDate,orid,orname,cont,bu,coun,e,t,files, callbackFunc) => {
   const deviceID = id;
   const username = name;
-  const SignatureDateTime = "2024-08-27T15:41:55";
+  const SignatureDateTime = sigDate;
   const organisationId = orid;
   const organisationName = orname;
   const contactPerson = cont;

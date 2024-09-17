@@ -81,6 +81,7 @@ const ListDevice = (props) => {
   }));
   const assignedList = deviceRdc?.assignedList;
   const unAssignedList = deviceRdc?.unAssignedList;
+  console.log(unAssignedList)
   const totalAssigned = deviceRdc?.totalAssigned;
   const totalUnAssigned = deviceRdc?.totalUnAssigned;
   const typeList = deviceRdc?.filterList?.findType;
@@ -216,10 +217,16 @@ const ListDevice = (props) => {
       id: "statusName",
       label: "Status",
       render: (row) => (
+        <>
         <StatusLabel
           status={row.statusName}
           searchQuery={searchQueryAssigned}
         />
+        {assignedList?.isApproved === "True" ? <StatusLabel
+          status="Approved"
+          searchQuery={searchQueryUnAssigned}
+        /> : null}
+        </>
       ),
     },
     {
@@ -352,10 +359,17 @@ const ListDevice = (props) => {
       label: "Status",
       // render: (row) => StatusLabel(row.statusName),
       render: (row) => (
+        <>
         <StatusLabel
           status={row.statusName}
           searchQuery={searchQueryUnAssigned}
         />
+        {unAssignedList?.isApproved === "True" ? <StatusLabel
+        status="Approved"
+        searchQuery={searchQueryUnAssigned}
+      /> : null}
+       
+        </>
       ),
     },
     {

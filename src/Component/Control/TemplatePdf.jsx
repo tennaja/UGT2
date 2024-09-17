@@ -50,7 +50,7 @@ const { dayfund, monthfund, yearfund } = parseDateStringFunding(dateStringfund);
 
 
 
-  function getDay(date) {
+function getDay(date) {
     return date.getDate().toString().padStart(2, '0');
 }
 
@@ -58,26 +58,41 @@ const { dayfund, monthfund, yearfund } = parseDateStringFunding(dateStringfund);
 function getMonth(date) {
     return (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
 }
-
+console.log(data?.data?.capacity)
 // Function to get the year part
 function getYear(date) {
     return date.getFullYear();
 }
 
-  const numberString = data?.data?.capacity.toString().replace('.', '');
 
-  // Ensure the integer part has exactly 6 digits with leading zeros
-  const integerPart = numberString.slice(0, 6).padStart(6, '0');
 
-  // Ensure the fractional part has exactly 6 digits with trailing zeros
-  const fractionalPart = numberString.slice(6, 12).padEnd(6, '0');
+
+
+const formatNumber = (value) => {
+  if (typeof value !== 'number' || isNaN(value)) {
+    return '000000000000'; // Default value if input is invalid
+  }
+  
+  // Convert number to string with exactly 6 decimal places
+  const numberString = value.toFixed(6);
+
+  // Split into integer and fractional parts
+  const [integerPart, fractionalPart] = numberString.split('.');
+
+  // Pad the integer part with leading zeros to ensure it has exactly 6 digits
+  const paddedIntegerPart = integerPart.padStart(6, '0');
+
+  // Ensure the fractional part has exactly 6 digits
+  const paddedFractionalPart = (fractionalPart || '').padEnd(6, '0');
 
   // Combine integer and fractional parts
-  const formattedNumber = integerPart + fractionalPart;
+  return paddedIntegerPart + paddedFractionalPart;
+};
+const capacity = data?.data?.capacity;
+const formattedNumber = formatNumber(capacity);
 
-  // Split the formatted number into individual characters
-  const numberSlots = formattedNumber.split('');
-  
+// Split the formatted number into individual characters for display
+const numberSlots = formattedNumber.split('');
   
 
   const pdfContentRef = useRef("");
@@ -137,9 +152,9 @@ function getYear(date) {
         const pdfFile = new File([pdfBlob], `SF-02v${newVersion}.pdf`, { type: 'application/pdf' });
         console.log(pdfFile,data)
         // Open the PDF in a new tab for preview
-        // const url = URL.createObjectURL(pdfBlob);
-        // const pdfWindow = window.open(url, '_blank');
-        // if (pdfWindow) pdfWindow.focus();
+        const url = URL.createObjectURL(pdfBlob);
+        const pdfWindow = window.open(url, '_blank');
+        if (pdfWindow) pdfWindow.focus();
   
         
         // Dispatch the generated PDF Blob for storage
@@ -153,19 +168,19 @@ function getYear(date) {
         // setVersion(newVersion);
 
         // Hide the content again
-        // element.style.display = 'none';
+        element.style.display = 'none';
         hideLoading();
         setload(false);
       })
-      // .catch((error) => {
-      //   console.error('Error generating PDF:', error);
-      //   // Hide the content again if there's an error
-      //   element.style.display = 'none';
-      //   setload(false);
-      //   hideLoading();
-      //   // Display an alert to the user (optional)
-      //   alert('An error occurred while generating the PDF. Please try again.');
-      // });
+      .catch((error) => {
+        console.error('Error generating PDF:', error);
+        // Hide the content again if there's an error
+        element.style.display = 'none';
+        setload(false);
+        hideLoading();
+        // Display an alert to the user (optional)
+        alert('An error occurred while generating the PDF. Please try again.');
+      });
   };
  if(load){
   return ""
@@ -322,6 +337,7 @@ submission`})</em></p>
                   <p>{data?.data?.subdistrictName}</p>
                   <p>{data?.data?.districtName}</p>
                   <p>{data?.data?.proviceName}</p>
+                  <p>{data?.data?.postcode}</p>
                 </div>
                 </td>
               </tr>
@@ -404,7 +420,7 @@ submission`})</em></p>
                 <td className="border p-2 font-bold">Expected form of volume evidence
                 <p className='text-[8px] text-gray-600'><em>({`if other please specify`})</em></p>
                 </td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.isMeteringData == "True" ? "Metering data / " : ""}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data.data.isOther == "True" ? "Other / " : ""} {data.data.otherDescription}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.isMeteringData == "True" ? "Metering data / " : ""}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data.data.isOther == "True" ? "Other : " : ""} {data.data.otherDescription}</td>
               </tr>
             </tbody>
           </table>

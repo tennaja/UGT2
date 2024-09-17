@@ -432,6 +432,27 @@ const AddDevice = () => {
         "id",
         utilityID
       );
+      
+      setValue("assignedUtilityCode", initValue);
+      setDisableUtility(true);
+    } else if (userGroupID == USER_GROUP_ID.UGT_REGISTANT_VERIFIER) {
+      const utilityID = UTILITY_GROUP_ID.EGAT; //EGAT
+      const initValue = initialvalueForSelectField(
+        dropDrowList?.assignedUtility,
+        "id",
+        utilityID
+      );
+      
+      setValue("assignedUtilityCode", initValue);
+      setDisableUtility(true);
+    }else if (userGroupID == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY) {
+      const utilityID = UTILITY_GROUP_ID.EGAT; //EGAT
+      const initValue = initialvalueForSelectField(
+        dropDrowList?.assignedUtility,
+        "id",
+        utilityID
+      );
+      
       setValue("assignedUtilityCode", initValue);
       setDisableUtility(true);
     } else if (userGroupID == USER_GROUP_ID.MEA_SUBSCRIBER_MNG) {

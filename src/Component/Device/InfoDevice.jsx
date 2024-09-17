@@ -69,6 +69,7 @@ import {
 } from "@mantine/core";
 import AlmostDone from "../assets/done.png";
 import { EAC_ISSUE_SYNC_DEVICE_STATUS } from "../../Constants/ServiceURL";
+import ModalConfirmWithdraw from "../Control/Modal/ModalConfirmwithdrawn";
 const InfoDevice = () => {
   //default location on map Thailand
   const defaultLocation = [13.736717, 100.523186];
@@ -86,7 +87,8 @@ const InfoDevice = () => {
  
   const [isOpenConfirmReturnModal, setOpenConfirmReturnModal] = useState(false);
   const [modalConfirmReturnProps, setModalConfirmReturnProps] = useState(null);
-
+  const [isOpenConfirmRenewModal,setOpenConfirmModalRenew] = useState(null)
+  const [modalConfirmRenewProps, setModalConfirmRenewProps] = useState(null);
   const [isOpenConfirmSubmitModal, setOpenConfirmSubmitModal] = useState(false);
   const [modalConfirmSubmitProps, setModalConfirmSubmitProps] = useState(null);
   const [isOpenConfirmVerifiedModal, setOpenConfirmVerifiedModal] = useState(false);
@@ -368,7 +370,8 @@ const InfoDevice = () => {
       onClickConfirmBtn: handleClickConfirmVerified,
       title: "Verify this Device?",
       content:
-        "Would you like to verify this device? Verified device will be sent to sign and unable to recall.",
+           `Would you like to verify this device? 
+  Verified device will be sent to sign and unable to recall.`,
       buttonTypeColor: "primary",
       data : deviceobj,
       UserSign : userData   
@@ -423,7 +426,7 @@ const emailBodyWithdraw = `
       <p>
       <b>Withdrawn by:</b>  ${userData?.firstName + userData?.lastName}
       </p>
-      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
       
       <p>UGT Platform</p>
     </body>
@@ -565,8 +568,8 @@ const handleClickDownloadFile = async (item) => {
 
 
   const onClickWithdrawBtn = () => {
-    setOpenConfirmModal(true);
-    setModalConfirmProps({
+    setOpenConfirmModalRenew(true);
+    setModalConfirmRenewProps({
       onCloseModal: handleCloseModalConfirm,
       onClickConfirmBtn: handleClickConfirmWithdraw,
       title: "Withdraw this Device?",
@@ -580,6 +583,7 @@ const handleClickDownloadFile = async (item) => {
     setOpenConfirmVerifiedModal(false)
     setOpenConfirmModal(false);
     setOpenConfirmReturnModal(false);
+    setOpenConfirmModalRenew(false)
   };
 
   //Call Api Submit
@@ -1797,6 +1801,7 @@ const handleClickDownloadFile = async (item) => {
           onChangeModalDone={handleClickBackToHome}
         />
       )}
+      {isOpenConfirmRenewModal && <ModalConfirmWithdraw {...modalConfirmRenewProps} />}
       {isOpenConfirmModal && <ModalConfirm {...modalConfirmProps} />}
       {isOpenConfirmSubmitModal && <ModalConfirmSubmit {...modalConfirmSubmitProps} />}
       {isOpenConfirmVerifiedModal && <ModalConfirmVerified {...modalConfirmVerifiedProps} />}

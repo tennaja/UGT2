@@ -348,8 +348,8 @@ const UpdateDevice = () => {
         OwnerofNetwork : deviceobj?.ownerNetwork,
         ExpectedFormofVolumeEvidence : 
         [
-          { name: "Meteringdata", Checked: deviceobj?.isMeteringData === "True" ? true : false  },
-          { name: "Contractsalesinvoice", Checked: deviceobj?.isContractSaleInvoice === "True" ? true : false  },
+          { name: "Metering data", Checked: deviceobj?.isMeteringData === "True" ? true : false  },
+          { name: "Contract sales invoice", Checked: deviceobj?.isContractSaleInvoice === "True" ? true : false  },
           { name: "Other", Checked: deviceobj?.isOther === "True" ? true : false , otherText: deviceobj?.otherDescription || "" },
         ]
       
@@ -876,9 +876,9 @@ const UpdateDevice = () => {
                       <span className="text-xl	mr-14 	leading-tight">
                         <b> Device Info</b>
                       </span>
-                      <span>
+                      {/* <span>
                         <StatusLabel status={deviceobj?.statusName}/>
-                      </span>
+                      </span> */}
                     </div>
 
                     <div className="md:col-span-3 md:text-left lg:col-span-2 lg:text-right py-2 flex flex-col m-0 items-center justify-self-end gap-2">
