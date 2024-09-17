@@ -1,32 +1,32 @@
 const DOMAIN_URL = process.env.SERVICE_DOMAIN;
 const DOMAIN_URL_EGAT = process.env.SERVICE_DOMAIN_EGAT;
 
-export const LOGIN_URL = `${DOMAIN_URL}/ugt/v1/authen/login`;
+export const LOGIN_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/authen/login`;
 
 export const TEST_LOGIN_EVIDENT_URL = `${DOMAIN_URL}/ugt/v1/testLoginEvident`;
 
 //DEVICE
 
-export const DEVICE_MANAGEMENT_DASHBOARD_URL = `${DOMAIN_URL}/ugt/v1/device-management/dashboard`;
-export const DEVICE_MANAGEMENT_ASSIGNED_URL = `${DOMAIN_URL}/ugt/v1/device-management/assigned`;
-export const DEVICE_MANAGEMENT_UN_ASSIGNED_URL = `${DOMAIN_URL}/ugt/v1/device-management/unassigned`;
-export const DEVICE_FILTER_LIST_URL = `${DOMAIN_URL}/ugt/v1/device-management/filter-list`;
-export const CREATE_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/device-management/create`;
-export const EDIT_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/device-management/edit`;
-export const SUBMIT_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/device-management/submit`;
-export const VERIFYING_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/device-management/verifying`;
-export const VERRIFIED_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/device-management/verified`;
-export const WITHDRAW_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/device-management/withdraw`;
-export const RETURN_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/device-management/return`;
-export const GET_DEVICE_BY_ID_URL = `${DOMAIN_URL}/ugt/v1/device-management`;
-export const UPLOAD_FILE_EVIDENT_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/uploadfile`;
-export const DOWNLOAD_FILE_EVIDENT_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/downloadfile`;
-export const DELETE_FILE_EVIDENT_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/deletefile`;
-export const FORM_MASTTER_URL = `${DOMAIN_URL}/ugt/v1/device-management/form-master`;
-export const SF02_BY_ID_URL = `${DOMAIN_URL}/ugt/v1/device-management/sf02download`;
-export const SEND_EMAIL_URL = `${DOMAIN_URL}/ugt/v1/email/sendemail`;
-export const SEND_EMAIL_BY_USERGROUPID_URL = `${DOMAIN_URL}/ugt/v1/email/sendemailbyusergroup`;
-export const RENEW_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/device-management/edit`;
+export const DEVICE_MANAGEMENT_DASHBOARD_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/dashboard`;
+export const DEVICE_MANAGEMENT_ASSIGNED_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/assigned`;
+export const DEVICE_MANAGEMENT_UN_ASSIGNED_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/unassigned`;
+export const DEVICE_FILTER_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/filter-list`;
+export const CREATE_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/create`;
+export const EDIT_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/edit`;
+export const SUBMIT_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/submit`;
+export const VERIFYING_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/verifying`;
+export const VERRIFIED_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/verified`;
+export const WITHDRAW_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/withdraw`;
+export const RETURN_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/return`;
+export const GET_DEVICE_BY_ID_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management`;
+export const UPLOAD_FILE_EVIDENT_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/uploadfile`;
+export const DOWNLOAD_FILE_EVIDENT_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/downloadfile`;
+export const DELETE_FILE_EVIDENT_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/deletefile`;
+export const FORM_MASTTER_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/form-master`;
+export const SF02_BY_ID_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/sf02download`;
+export const SEND_EMAIL_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/email/sendemail`;
+export const SEND_EMAIL_BY_USERGROUPID_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/email/sendemailbyusergroup`;
+export const RENEW_DEVICE_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/device-management/edit`;
 //Menu
 export const GET_MENU_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/menu-list`;
 export const GET_SUB_MENU_DEVICE_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/device-management/submenu-list`;
@@ -35,13 +35,13 @@ export const GET_SUB_MENU_PORTFOLIO_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfo
 export const GET_SUB_MENU_EAC_TRACKING_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/submenu-list`;
 
 //Dropdrow
-export const UGT_GROUP_LIST = `${DOMAIN_URL}/ugt/v1/ugtgroup-list`;
+export const UGT_GROUP_LIST = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/ugtgroup-list`;
 
-export const PROVINCE_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/provinces.json`;
-export const DISTRICT_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/districts.json`;
-export const SUB_DISTRICT_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/subdistricts.json`;
-export const COUNTRY_LIST_URL = `${DOMAIN_URL}/ugt/v1/countries-code/en/world.json`;
-export const POSTCODE_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/geography.json`;
+export const PROVINCE_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/geography/provinces.json`;
+export const DISTRICT_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/geography/districts.json`;
+export const SUB_DISTRICT_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/geography/subdistricts.json`;
+export const COUNTRY_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/countries-code/en/world.json`;
+export const POSTCODE_LIST_URL = `${`https://ugt-thai-api.egat.co.th/DEV2/api`}/ugt/v1/geography/geography.json`;
 
 // Subscriber
 export const DASHBOARD_LIST_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/dashboard`;
