@@ -60,7 +60,7 @@ const Navbar = () => {
     const ugtGroup = ugtGroups;
     setUgtGroupList(ugtGroup);
     const defaultUgtGroup = ugtGroup?.length > 0 ? ugtGroup[0] : [];
-
+    console.log(defaultUgtGroup)
     dispatch(setCurrentUgtGroup(defaultUgtGroup)); //setDefaultValue ugtgroup
     setValue("ugtGroup", defaultUgtGroup); //setDefaultValue ugtgroup
   }, [ugtGroups]);
@@ -118,6 +118,10 @@ const Navbar = () => {
     dispatch(FetchDeviceManagementAssigned(fetchParameterForAssignedList));
     dispatch(FetchDeviceManagementUnAssigned(fetchParameterForUnAssignedList));
     dispatch(setCurrentUgtGroup(selectedUgtGroup));
+    console.log(fetchParameterForDashboard)
+    console.log(fetchParameterForAssignedList)
+    console.log(fetchParameterForUnAssignedList)
+    console.log(selectedUgtGroup)
   };
   return (
     <>

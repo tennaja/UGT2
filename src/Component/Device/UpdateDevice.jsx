@@ -528,27 +528,27 @@ const UpdateDevice = () => {
   const onChangeLatLon = (type, val = null) => {
     let newLat = null;
     let newLon = null;
+  
     if (type === "lat") {
       const currentLon = watch("longitude");
       if (val) {
         newLat = parseFloat(val);
         newLon = parseFloat(currentLon);
       }
-    } else if (type == "lon") {
+    } else if (type === "lon") {
       const currentLat = watch("latitude");
       if (val) {
         newLon = parseFloat(val);
         newLat = parseFloat(currentLat);
       }
     }
-
-    const isCanSetLatLon =
-      // typeof newLat == "number" &&
-      // typeof newLon == "number" &&
-      !isNaN(newLat) && !isNaN(newLon);
+  
+    const isCanSetLatLon = !isNaN(newLat) && !isNaN(newLon);
+  
     if (isCanSetLatLon) {
-      let latValue = newLat ? parseFloat(newLat) : 0;
-      let lonValue = newLon ? parseFloat(newLon) : 0;
+      let latValue = newLat ? parseFloat(newLat.toFixed(6)) : 0;
+      let lonValue = newLon ? parseFloat(newLon.toFixed(6)) : 0;
+  
       clearTimeout(timeoutId.current);
       timeoutId.current = setTimeout(() => {
         setLocationDataList([
@@ -1757,7 +1757,7 @@ const UpdateDevice = () => {
                                 if (numericValue > 90.000000) numericValue = 90.000000;
                                 if (numericValue < -90.000000) numericValue = -90.000000;
                                 let paddedValue = padNumber(numericValue.toString(), 6);
-                                setValue("latitude", paddedValue);
+                                onChangeLatLon("lat", paddedValue);
                               }}
                             />
                           )}
@@ -1818,7 +1818,7 @@ const UpdateDevice = () => {
                                 if (numericValue < -180.000000) numericValue = -180.000000;
                       
                                 let paddedValue = padNumber(numericValue.toString(), 6);
-                                setValue("longitude", paddedValue);
+                                onChangeLatLon("lon", paddedValue);
                               }}
                             />
                           )}

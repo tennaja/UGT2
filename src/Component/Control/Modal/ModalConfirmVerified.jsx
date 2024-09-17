@@ -66,7 +66,7 @@ const ModalConfirmVerified = (props) => {
             onClick={onClickOk}
             className={`${getButtonColor()} w-50 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm hover:bg-[#4D6A00] `}
           >
-            Confirm
+            Verify
           </button>
         </div>
       </Modal>

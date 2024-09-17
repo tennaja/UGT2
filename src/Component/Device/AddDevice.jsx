@@ -225,30 +225,27 @@ const AddDevice = () => {
   const onChangeLatLon = (type, val = null) => {
     let newLat = null;
     let newLon = null;
+  
     if (type === "lat") {
       const currentLon = watch("longitude");
       if (val) {
         newLat = parseFloat(val);
         newLon = parseFloat(currentLon);
       }
-    } else if (type == "lon") {
+    } else if (type === "lon") {
       const currentLat = watch("latitude");
       if (val) {
         newLon = parseFloat(val);
         newLat = parseFloat(currentLat);
       }
     }
-
-    const isCanSetLatLon =
-      /*    typeof newLat == "number" &&
-      typeof newLon == "number" && */
-      !isNaN(newLat) && !isNaN(newLon);
-
-    // const isCanSetLatLon = true;
-
+  
+    const isCanSetLatLon = !isNaN(newLat) && !isNaN(newLon);
+  
     if (isCanSetLatLon) {
-      let latValue = newLat ? parseFloat(newLat) : 0;
-      let lonValue = newLon ? parseFloat(newLon) : 0;
+      let latValue = newLat ? parseFloat(newLat.toFixed(6)) : 0;
+      let lonValue = newLon ? parseFloat(newLon.toFixed(6)) : 0;
+  
       clearTimeout(timeoutId.current);
       timeoutId.current = setTimeout(() => {
         setLocationDataList([
@@ -262,8 +259,6 @@ const AddDevice = () => {
         } else {
           setMapZoomLevel(2);
         }
-        // setLat(newLat);
-        // setLon(newLon);
       }, 1000);
     }
   };
@@ -961,7 +956,7 @@ const AddDevice = () => {
                               id={"capacity"}
                               type={"number"}
                               step="0.0000001"
-                              max={999999.000000}
+                              max={999999.999999}
                               min={0}
                               placeholder={"Please fill the form in Number"}
                               label={"Installed Capacity (MW)"}
@@ -976,7 +971,7 @@ const AddDevice = () => {
                               onBlur={(e) => {
                                 let value = parseFloat(e.target.value);
                                 // Cap the value between -90.000000 and 90.000000
-                                if (value > 999999.000000) value = 999999.000000;
+                                if (value > 999999.999999) value = 999999.999999;
                                 if (value <= 0 ) value = 0;
                                 
                                 // Optionally pad the number if needed
@@ -986,7 +981,7 @@ const AddDevice = () => {
                               onChangeInput={(val) => {
                                 let numericValue = parseFloat(val);
                                 // Enforce the max and min range on change
-                                if (numericValue > 99999.000000) numericValue = 99999.000000;
+                                if (numericValue > 99999.999999) numericValue = 99999.999999;
                                 if (numericValue <= 0 ) numericValue = 0;
                                 let paddedValue = padNumber(numericValue.toString(), 6);
                                 setValue("capacity", paddedValue);
@@ -1489,7 +1484,7 @@ const AddDevice = () => {
                                 if (numericValue > 90.000000) numericValue = 90.000000;
                                 if (numericValue < -90.000000) numericValue = -90.000000;
                                 let paddedValue = padNumber(numericValue.toString(), 6);
-                                setValue("latitude", paddedValue);
+                                onChangeLatLon("lat", paddedValue);
                               }}
                             />
                           )}
@@ -1549,7 +1544,7 @@ const AddDevice = () => {
                                 if (numericValue < -180.000000) numericValue = -180.000000;
                       
                                 let paddedValue = padNumber(numericValue.toString(), 6);
-                                setValue("longitude", paddedValue);
+                                onChangeLatLon("lon", paddedValue);
                               }}
                             />
                           )}
