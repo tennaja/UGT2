@@ -170,7 +170,7 @@ const Navbar = () => {
               </form>
             </div>
 
-            <div className="hidden lg:flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+            <div className="sm:hidden lg:flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
               <div className="flex">
                 {/* <img
                   style={{ borderRadius: "50%" }}
