@@ -698,10 +698,10 @@ const handleClickDownloadFile = async (item) => {
   const handleClickConfirmReturn = (rem) => {
     showLoading();
     const titleemail = "[Device Registration] Return UGT Device Registration"
-    const  emailBodytoOwnerWhenreturn = `
+    const emailBodytoOwnerWhenreturn = `
   <html>
     <body>
-      <p>Dear UGT Registrant (Verifier),</p>
+      <p>Dear registration was returned for editing.</p>
       
       <p>
       Device registration was 
@@ -1341,13 +1341,12 @@ const handleClickDownloadFile = async (item) => {
                               <label className="text-[#6B7280] text-xs">
                                 {"Meter or Measurement ID(s)"}
                               </label>
-                              <div className="break-words font-bold">
-                                {renderData(
-                                  deviceobj?.deviceMeasurements?.map ((item) => {
-                                      return item.description
-                                  })
-                                    
-                                )}
+                              <div className="font-bold">
+                              {deviceobj?.deviceMeasurements?.map((item, index) => (
+                              <div key={index}>
+                              {renderData(item.description)}
+                              </div>
+                              ))}
                               </div>
   
                               

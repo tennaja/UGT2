@@ -826,16 +826,16 @@ export const VerifiedDevice = (id,files, callbackFunc) => {
       (response) => {
         if (response?.status == 200) {
           dispatch(verifiedDevice());
-          toast.success("Verify Complete!", {
-            position: "top-right",
-            autoClose: 3000,
-            style: {
-              border: "1px solid #a3d744", // Green border similar to the one in your image
-              color: "#6aa84f", // Green text color
-              fontSize: "16px", // Adjust font size as needed
-              backgroundColor: "##FFFFFF", // Light green background
-            }, // 3 seconds
-          });
+          // toast.success("Verify Complete!", {
+          //   position: "top-right",
+          //   autoClose: 3000,
+          //   style: {
+          //     border: "1px solid #a3d744", // Green border similar to the one in your image
+          //     color: "#6aa84f", // Green text color
+          //     fontSize: "16px", // Adjust font size as needed
+          //     backgroundColor: "##FFFFFF", // Light green background
+          //   }, // 3 seconds
+          // });
           callbackFunc();
         } else {
           dispatch(setOpenFailModal());

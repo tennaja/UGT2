@@ -454,7 +454,7 @@ const AddDevice = () => {
       );
       
       setValue("assignedUtilityCode", initValue);
-      setDisableUtility(true);
+      setDisableUtility(false);
     } else if (userGroupID == USER_GROUP_ID.MEA_SUBSCRIBER_MNG) {
       //Code here...
     } else if (userGroupID == USER_GROUP_ID.PEA_SUBSCRIBER_MNG) {
@@ -993,7 +993,7 @@ const AddDevice = () => {
                                 let value = parseFloat(e.target.value);
                                 // Cap the value between -90.000000 and 90.000000
                                 if (value > 999999.999999) value = 999999.999999;
-                                if (value <= 0 ) value = 0;
+                                if (value < 0 ) value = 0;
                                 
                                 // Optionally pad the number if needed
                                 let paddedValue = padNumber(value.toString(), 6);
@@ -1003,7 +1003,7 @@ const AddDevice = () => {
                                 let numericValue = parseFloat(val);
                                 // Enforce the max and min range on change
                                 if (numericValue > 99999.999999) numericValue = 99999.999999;
-                                if (numericValue <= 0 ) numericValue = 0;
+                                if (numericValue < 0 ) numericValue = 0;
                                 let paddedValue = padNumber(numericValue.toString(), 6);
                                 setValue("capacity", paddedValue);
                               }}

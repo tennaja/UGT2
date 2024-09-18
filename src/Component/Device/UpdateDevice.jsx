@@ -186,7 +186,7 @@ const UpdateDevice = () => {
       <p>
       <b>Edited by:</b> ${userData?.firstName + userData?.lastName}
       </p>
-      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      <p>Please see details via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
       
       <p>UGT Platform</p>
     </body>
