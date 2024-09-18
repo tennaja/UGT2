@@ -26,7 +26,6 @@ const ModalSignStep2 = (props) => {
         return "bg-[#87BE33]";
       case "danger":
         return "bg-[#EF4835]";
-
       default:
         return "bg-[#87BE33]";
     }
