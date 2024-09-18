@@ -1,7 +1,6 @@
 import { Modal } from "@mantine/core";
 import { useState } from 'react';
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import * as WEB_URL from "../../../Constants/WebURL";
+
 const ModalSignStep1 = (props) => {
   const {
     data,
@@ -13,7 +12,7 @@ const ModalSignStep1 = (props) => {
     buttonTypeColor = "primary",
   } = props;
   const [isChecked, setIsChecked] = useState(false);
-  const navigate = useNavigate();
+
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
   };
@@ -24,10 +23,7 @@ const ModalSignStep1 = (props) => {
     }
   };
   
-  const handleClickBackToHome = () => {
-    
-    navigate(WEB_URL.DEVICE_LIST);
-  };
+
   
 
   const getButtonColor = () => {
@@ -74,7 +70,7 @@ const ModalSignStep1 = (props) => {
         </div>
         <div className="flex justify-center gap-3 pb-2">
           <button
-            onClick={handleClickBackToHome}
+            onClick={onCloseModal}
             className="w-50 rounded shadow-sm px-4 py-2 font-normal bg-[#EFEFEF] hover:bg-[#78829D] hover:text-white"
           >
             Back

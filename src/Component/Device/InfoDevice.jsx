@@ -289,16 +289,10 @@ const InfoDevice = () => {
 
   // ------------------Submit & Withdraw Function------------------------------ //
 
-  const onclickclosesubmitstep1 =()=>{
-    setOpenSubmitstep1(false)
-  }
-  const onclickclosesubmitstep2 =()=>{
-    setOpenSubmitstep1(true)
-    setOpenSubmitstep2(false)
-  }
-  const onclickclosesubmitstep3 =()=>{
-    setOpenSubmitstep2(true)
+  const onclickclosemodalsubmit =()=>{
     setOpenSubmitstep3(false)
+    setOpenSubmitstep2(false)
+    setOpenSubmitstep1(false)
   }
   const onclicksubmitstep1 =() => {
     setOpenSubmitstep1(true)
@@ -309,7 +303,6 @@ const InfoDevice = () => {
     setOpenSubmitstep3(false)
   }
   const onclicksubmitstep3 =() => {
-    
     setOpenSubmitstep3(true)
     setOpenSubmitstep2(false)
     setOpenSubmitstep1(false)
@@ -1791,20 +1784,20 @@ const handleClickDownloadFile = async (item) => {
         </div>
       </div>
       {opensubmitstep1 && <ModalSignStep1
-      onCloseModal={onclickclosesubmitstep1}
+      onCloseModal={onclickclosemodalsubmit}
       onClickConfirmBtn={onclicksubmitstep2}
       />}
       
       {opensubmitstep2 && <ModalSignStep2
       registanName = {deviceobj?.name}
-      onCloseModal={onclickclosesubmitstep2}
+      onCloseModal={onclickclosemodalsubmit}
       onClickConfirmBtn={onclicksubmitstep3}
       />}
       
       {opensubmitstep3 && <ModalSignStep3
       data = {deviceobj}
       UserSign = {userData}
-      onCloseModal={onclickclosesubmitstep3}
+      onCloseModal={onclickclosemodalsubmit}
       onClickConfirmBtn={handleClickConfirmSubmit}
       />}
       {/* <ModalSubmitDone/> */}
