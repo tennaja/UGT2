@@ -1,6 +1,7 @@
 import { Modal } from "@mantine/core";
 import PdfTablePreview from '../TemplatePdf';
-
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import * as WEB_URL from "../../../Constants/WebURL";
 const ModalSignStep3 = (props) => {
   const {
     data,
@@ -12,11 +13,14 @@ const ModalSignStep3 = (props) => {
     content = "By submitting this form I confirm acceptance of Evident’s Privacy Policy, as published on  https://evident.global/privacy and any such policies as published by the responsible Issuer.  I acknowledge and agree that the information provided will be used by Evident for the purpose of  providing services relating to I-REC Electricity certificates and that Evident may share this information  with other organisations as may be necessary for the provision of these services.",
     buttonTypeColor = "primary",
   } = props;
-
+  const navigate = useNavigate();
   const onClickOk = () => {
     onClickConfirmBtn();
   };
-
+  const handleClickBackToHome = () => {
+    
+    navigate(WEB_URL.DEVICE_LIST);
+  };
   const getButtonColor = () => {
     switch (buttonTypeColor) {
       case "primary":
@@ -55,7 +59,7 @@ const ModalSignStep3 = (props) => {
         </div>
         <div className="flex justify-center gap-3 pb-2">
           <button
-            onClick={onCloseModal}
+            onClick={handleClickBackToHome}
             className="w-50 rounded shadow-sm px-4 py-2 font-normal bg-[#EFEFEF] hover:bg-[#78829D] hover:text-white"
           >
             Back

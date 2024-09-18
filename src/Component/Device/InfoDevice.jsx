@@ -127,6 +127,18 @@ const InfoDevice = () => {
     
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
+  
+  function formatDateforsubmit(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  }
+  
 
   console.log(sf02obj)
   console.log(userData)
@@ -592,7 +604,7 @@ const handleClickDownloadFile = async (item) => {
     showLoading();
     const deviceID = deviceobj?.id;
     const username = userData?.firstName;
-    const SignatureDateTime = Date();
+    const SignatureDateTime = formatDateforsubmit(new Date());
     const organisationId = userData?.organisationId    ;
     const organisationName = userData?.organisationName    ;
     const contactPerson = userData?.contactPerson    ;
@@ -609,28 +621,29 @@ const handleClickDownloadFile = async (item) => {
         } else {
           dispatch(clearModal());
           navigate(WEB_URL.DEVICE_LIST);
+          dispatch(
+            sendEmail(titleemail,emailBodywhenSubmited,deviceobj?.userEmail, () => {
+              
+            })
+          )
+          dispatch (
+            sendEmailByUserGroup(21,titleemail,titleemail,emailBodywhenSubmited,() => {
+              hideLoading();
+              // dispatch(clearModal());
+            })
+          )
+          dispatch (
+            sendEmailByUserGroup(22,titleemail,emailBodywhenSubmited,() => {
+              hideLoading();
+              // dispatch(clearModal());
+            })
+          )
         }
         hideLoading();
         setOpenConfirmSubmitModal(false);
       })
     );
-    dispatch(
-      sendEmail(titleemail,emailBodywhenSubmited,deviceobj?.userEmail, () => {
-        
-      })
-    )
-    dispatch (
-      sendEmailByUserGroup(21,titleemail,titleemail,emailBodywhenSubmited,() => {
-        hideLoading();
-        // dispatch(clearModal());
-      })
-    )
-    dispatch (
-      sendEmailByUserGroup(22,titleemail,emailBodywhenSubmited,() => {
-        hideLoading();
-        // dispatch(clearModal());
-      })
-    )
+    
   };
 
   //Call Api Withdraw
@@ -1783,6 +1796,7 @@ const handleClickDownloadFile = async (item) => {
       />}
       
       {opensubmitstep2 && <ModalSignStep2
+      registanName = {deviceobj?.name}
       onCloseModal={onclickclosesubmitstep2}
       onClickConfirmBtn={onclicksubmitstep3}
       />}

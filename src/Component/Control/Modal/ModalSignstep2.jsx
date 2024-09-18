@@ -1,25 +1,30 @@
 import { Modal } from "@mantine/core";
 import { useState } from 'react';
-
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import * as WEB_URL from "../../../Constants/WebURL";
 const ModalSignStep2 = (props) => {
   const {
     data,
     status,
     onCloseModal,
+    registanName,
     onClickConfirmBtn,
     title = "Legal Confirmation",
     content = " By proceeding this step, you confirm to sign the device registration form and automatically submit this form to Evident. Would you like to sign and submit?",
     buttonTypeColor = "primary",
   } = props;
   const [isChecked, setIsChecked] = useState(false);
-  
+  const navigate = useNavigate();
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
   };
   const onClickOk = () => {
     onClickConfirmBtn();
   };
-
+  const handleClickBackToHome = () => {
+    
+    navigate(WEB_URL.DEVICE_LIST);
+  };
   const getButtonColor = () => {
     switch (buttonTypeColor) {
       case "primary":
@@ -50,7 +55,7 @@ const ModalSignStep2 = (props) => {
               {title}
             </h6>
             <div className="mt-4">
-              <p className="text-sm text-gray-600 text-left indent-8">On behalf of Registrant (), I agree to be subject to the I-REC Code and warrant that the information contained in this application is truthful and exhaustive.</p>
+              <p className="text-sm text-gray-600 text-left indent-8">On behalf of Registrant &lt;{registanName}&gt;, I agree to be subject to the I-REC Code and warrant that the information contained in this application is truthful and exhaustive.</p>
             </div>
             <div className="mt-3">
               <p className="text-sm text-gray-600 text-left indent-8">Any planned changes concerning the information given in this form will be announced in advance to the I-REC Device Verifier and the Issuer</p>
@@ -75,7 +80,7 @@ const ModalSignStep2 = (props) => {
         </div>
         <div className="flex justify-center gap-3 pb-2">
           <button
-            onClick={onCloseModal}
+            onClick={handleClickBackToHome}
             className="w-50 rounded shadow-sm px-4 py-2 font-normal bg-[#EFEFEF] hover:bg-[#78829D] hover:text-white"
           >
             Back
