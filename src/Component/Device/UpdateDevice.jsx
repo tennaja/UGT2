@@ -1257,7 +1257,7 @@ const UpdateDevice = () => {
                               disabled={vDisabled}
                               onKeyDown={(e) => {
                                 // Prevent invalid characters like 'e', '+', '-'
-                                if (['e', 'E', '+'].includes(e.key)) {
+                                if (['e', 'E', '+','-'].includes(e.key)) {
                                   e.preventDefault();
                                 }
                               }}
