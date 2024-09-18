@@ -43,6 +43,8 @@ const initialstate = {
     responseDataAddDevice:null, //data ที่คืนมาจาก api กรณีบันทึกสำเร็จ
     errmessage: '',
     isOpen: null,
+    isOpenVerifiedDoneModal:false,
+    isOpenSubmitDoneModal : false,
     isOpenDoneModal:false,
     isOpenFailModal:false,
     modalFailMessage:undefined
@@ -190,6 +192,8 @@ export const DeviceReducer = (state = initialstate, action) => {
                 ...state,
                 loading:false,
                 isOpen : true,
+                isOpenSubmitDoneModal:true
+                
             }
 
             case VERIFYING_STATUS:return{
@@ -202,7 +206,7 @@ export const DeviceReducer = (state = initialstate, action) => {
                 ...state,
                 isOpen : true,
                 loading:false,
-                isOpenDoneModal:true
+                isOpenVerifiedDoneModal:true
             }
             
             case RETURN_STATUS:return{
@@ -223,7 +227,9 @@ export const DeviceReducer = (state = initialstate, action) => {
                 ...state,
                 isOpen: false,
                 isOpenDoneModal:false,
-                isOpenFailModal:false
+                isOpenFailModal:false,
+                isOpenVerifiedDoneModal:false,
+                isOpenSubmitDoneModal : false,
             }
 
         default: return state

@@ -482,6 +482,7 @@ const AddDevice = () => {
         { fileID: result?.res?.uid, evidentFileID: result?.res["@id"] },
         
       ];
+      console.log(newFileList)
       return newFileList;
       
     });

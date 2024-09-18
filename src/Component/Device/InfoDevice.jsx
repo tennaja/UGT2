@@ -106,6 +106,8 @@ const InfoDevice = () => {
   const userData = useSelector((state) => state.login?.userobj);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const isOpenDoneModal = useSelector((state) => state.device.isOpenDoneModal);
+  const isOpenVerifiedDoneModal = useSelector((state) => state.device.isOpenVerifiedDoneModal);
+  const isOpenSubmitDoneModal = useSelector((state) => state.device.isOpenSubmitDoneModal);
   const isOpenFailModal = useSelector((state) => state.device.isOpenFailModal);
   const countryList = useSelector((state) => state.dropdrow.countryList);
   const [isOpenLoading, setIsOpenLoading] = useState(false);
@@ -329,7 +331,6 @@ const InfoDevice = () => {
     return timeFull
   }
   const onClickSubmitBtn = () => {
-    setOpenConfirmSubmitModal(true);
     setModalConfirmSubmitProps({
       onCloseModal: handleCloseModalConfirm,
       onClickConfirmBtn: handleClickConfirmSubmit,
@@ -612,13 +613,17 @@ const handleClickDownloadFile = async (item) => {
         if (error) {
           setOpenConfirmSubmitModal(false);
         } else {
-          dispatch(clearModal());
-          navigate(WEB_URL.DEVICE_LIST);
+          // dispatch(clearModal());
+          // navigate(WEB_URL.DEVICE_LIST);
           dispatch(
             sendEmail(titleemail,emailBodywhenSubmited,deviceobj?.userEmail, () => {
               
             })
           )
+          dispatch(
+            FetchSF02ByID(code, (res, err) => {
+            })
+          );
           dispatch (
             sendEmailByUserGroup(21,titleemail,titleemail,emailBodywhenSubmited,() => {
               hideLoading();
@@ -669,6 +674,10 @@ const handleClickDownloadFile = async (item) => {
         hideLoading();
         dispatch(clearModal());
         navigate(WEB_URL.DEVICE_LIST);
+        // dispatch(
+        //   FetchGetDeviceByID(code, (res, err) => {
+        //   })
+        // );
       })
     );
     dispatch (
@@ -689,6 +698,10 @@ const handleClickDownloadFile = async (item) => {
       VerifiedDevice(deviceID, test.current,() => {
         hideLoading();
         // dispatch(clearModal());
+        dispatch(
+          FetchSF02ByID(code, (res, err) => {
+          })
+        );
       })
     )
     dispatch (
@@ -1189,14 +1202,22 @@ const handleClickDownloadFile = async (item) => {
                               <label className="text-[#6B7280] text-xs ">
                                 Status
                               </label>
-                              <div className="break-words	font-bold">
-                                {renderData(
+                              <div className="break-words font-bold">
+                              {renderData(
+                                <StatusLabel
+                                  status={deviceobj?.statusName}
+                                  type="xs"
+                                />
+                              )}
+                              {renderData(
+                                deviceobj?.isApproved === "True" ? (
                                   <StatusLabel
-                                    status={deviceobj?.statusName}
-                                    type="xs" 
+                                    status="Approved"
+                                    type="xs"
                                   />
-                                )}
-                              </div>
+                                ) : null
+                              )}
+</div>
                             </div>
                           </div>
 
@@ -1801,12 +1822,19 @@ const handleClickDownloadFile = async (item) => {
       onClickConfirmBtn={handleClickConfirmSubmit}
       />}
       {/* <ModalSubmitDone/> */}
-      {isOpenDoneModal && (
+      {isOpenVerifiedDoneModal && (
         <ModalVerifyDone
           File={sf02obj}
           onChangeModalDone={handleClickBackToHome}
         />
       )}
+      {isOpenSubmitDoneModal && (
+        <ModalSubmitDone
+          File={sf02obj}
+          onChangeModalDone={handleClickBackToHome}
+        />
+      )}
+      
       {isOpenConfirmRenewModal && <ModalConfirmWithdraw {...modalConfirmRenewProps} />}
       {isOpenConfirmModal && <ModalConfirm {...modalConfirmProps} />}
       {isOpenConfirmSubmitModal && <ModalConfirmSubmit {...modalConfirmSubmitProps} />}

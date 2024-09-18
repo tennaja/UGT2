@@ -44,7 +44,7 @@ const UploadFile = (props) => {
   } = props;
 
   // const [percent,setPercent] = useState(0)
-  const [status,setStatus] = useState('')
+  // const [status,setStatus] = useState('')
   const dispatch = useDispatch();
 
   const [newRender, setNewRender] = useState(false);
@@ -52,6 +52,7 @@ const UploadFile = (props) => {
   const [uploaderKey, setUploaderKey] = useState(0); //for force Re-render
   const [isShowFailModal, setIsShowFailModal] = useState(false);
   const [messageFailModal, setMessageFailModal] = useState("");
+  const [fileList, setFileList] = useState(defaultValue || []);
   console.log("UOLOADFILE _________________________________________ >>>>>>",initFile)
   const Layout = ({
     input,
@@ -131,72 +132,54 @@ const UploadFile = (props) => {
       // setShowModalFail(false);
       //.........
     };
+  
     
-    
-
-    
-    async function downloadZip(files) {
-      if (!Array.isArray(files) || files.length === 0) {
-        console.error('No valid files found.');
-        return;
+    const handleDownloadAll = () => {
+      // Log the initFile object and its size for debugging
+      console.log('initFile:', initFile);
+      if (initFile) {
+          console.log('initFile size:', initFile.size);
+      } else {
+          console.log('initFile is not set or is undefined');
       }
-    
+  
+      // Extract files to download from previews and include initFile if available
+      const filesToDownload = [
+          ...previews.map(file => file.props.fileWithMeta.file),
+          ...(initFile ? [initFile] : []) // Include initFile if it exists
+      ];
+  
+      // Ensure all files are valid before zipping
+      filesToDownload.forEach(file => {
+          if (file instanceof File || file instanceof Blob) {
+              console.log(`File to be zipped: ${file.name}, size: ${file.size}`);
+          } else {
+              console.error('Invalid file object:', file);
+          }
+      });
+  
+      downloadZip(filesToDownload);
+  };
+  
+  const downloadZip = (files) => {
       const zip = new JSZip();
-      const fileMetadata = [];
-    
-      const readFileAsArrayBuffer = (file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = (error) => reject(new Error(`FileReader error: ${error.message}`));
-          reader.readAsArrayBuffer(file);
-        });
-      };
-    
-      for (const file of files) {
-        if (!(file instanceof File)) {
-          console.error('Provided item is not a File object:', file);
-          continue;
-        }
-    
-        try {
-          const fileContent = await readFileAsArrayBuffer(file);
-          zip.file(file.name, fileContent, { binary: true });
-    
-          fileMetadata.push({
-            name: file.name,
-            size: file.size,
-            type: file.type,
-          });
-        } catch (error) {
-          console.error(`Error processing file ${file.name}: ${error.message}`);
-        }
-      }
-    
-      
-    
-      if (Object.keys(zip.files).length === 0) {
-        console.error('No valid files were added to the ZIP. Aborting download.');
-        return;
-      }
-    
-      try {
-        const content = await zip.generateAsync({ type: 'blob' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = 'files.zip'; // Default file name
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
-      } catch (error) {
-        console.error('Error generating ZIP:', error.message);
-      }
-    }
-    
+      files.forEach(file => {
+          if (file instanceof File || file instanceof Blob) {
+              // Add the file to the zip
+              zip.file(file.name, file);
+          } else {
+              console.error('Invalid file object:', file);
+          }
+      });
+  
+      zip.generateAsync({ type: 'blob' }).then(content => {
+          saveAs(content, 'files.zip');
+      }).catch(error => {
+          console.error('Error generating zip:', error);
+      });
+  };
+  
 
-
-    
  
     
     
@@ -279,10 +262,11 @@ const UploadFile = (props) => {
                             onClickFile &&
                               onClickFile(file?.props?.fileWithMeta?.file);
                           }}/>
-                  <FiTrash2 className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer" 
-                  onClick={() => {
-                      handleDeleteClick(file);
-                    }}/>
+                  <FiTrash2 className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-not-allowed" 
+                  // onClick={() => {
+                  //     handleDeleteClick(file);
+                  //   }}
+                    />
                   </div>
                   
                 </div>
@@ -311,60 +295,61 @@ const UploadFile = (props) => {
                           {file?.props?.meta?.name}
                         </label>
                       </div>
-
-                      {status === "done" ? <div className="flex items-center justify-between  w-36">
-
-                    
-                  <MdOutlineRemoveRedEye className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
+                      {!isViewMode && file?.props?.meta?.status === 'done' && (
+                      <div className="flex items-center justify-between w-36">
+                    <MdOutlineRemoveRedEye
+                      className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
                       onClick={() => {
-                       onPreview &&
-                      onPreview(file?.props?.fileWithMeta?.file);
-}}/>
-
-<HiDownload className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer" onClick={() => {
-          onClickFile &&
-            onClickFile(file?.props?.fileWithMeta?.file);
-        }}/>
-<FiTrash2 className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer" 
-onClick={() => {
-    handleDeleteClick(file);
-  }}/>
-</div> : null}
-{status === "done" ? null :
+                        onPreview && onPreview(file?.props?.fileWithMeta?.file);
+                      }}
+                    />
+                    <HiDownload
+                      className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
+                      onClick={() => {
+                        onClickFile && onClickFile(file?.props?.fileWithMeta?.file);
+                      }}
+                    />
+                    <FiTrash2
+                      className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
+                      onClick={() => {
+                        handleDeleteClick(file);
+                      }}
+                    />
+                  </div>)}
+                      {isViewMode && file?.props?.meta?.status === 'done' && (
                       <div className="mr-8">
                         <label className="text-sm text-[#d1d5db] font-normal">
                           {parseInt(file?.props?.meta?.percent)} %{" "}
                         </label>
-                      </div> }
+                      </div>)}
                     </div>{" "}
-                    {status === "done" ? null : 
-                    <>
-                    {file}{" "}</>
-                    }
+                    {file?.props?.meta?.status !== 'done' && (
+                      <div>{file}{" "}</div>
+                    
+                  )}
                     
                     <label className="text-xs text-[#d1d5db] font-medium">
                       {/* {readableBytes(file?.props?.meta?.size)} */}
                     </label>
                   </div>
+                  {isViewMode && file?.props?.meta?.status === 'done' && (
                   <button
                     type="button"
                     onClick={() => {
                       handleDeleteClick(file);
                     }}
                   >
-                    {status === "done" ? null : <label className="pl-2 text-xl font-medium cursor-pointer">
+                    <label className="pl-2 text-xl font-medium cursor-pointer">
                       x
-                    </label>}
-                    
-                    
-                  </button>
+                    </label>
+                  </button>)}
                 </div>
               </>
             )
             
           )}
           {props.value == undefined ? 
-           null : <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={() => {downloadZip(previews.map(file => file.props.fileWithMeta.file));}}>Download All Files (.zip)</div> }
+           null : <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={handleDownloadAll}>Download All Files (.zip)</div> }
         </div>
 
         {showModalConfirm && (
@@ -471,7 +456,7 @@ onClick={() => {
   const handleChangeStatus = ({ meta, file, remove }, status, allFiles) => {
     // { meta ,file ,remove }, status, allFiles
     // let status = props?.meta?.status
-    setStatus(status)
+
     inputProps.onChange(allFiles);
     setNewRender(!newRender);
     console.log("status", status);

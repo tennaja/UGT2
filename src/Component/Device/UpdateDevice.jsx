@@ -934,6 +934,10 @@ const UpdateDevice = () => {
                                   id={"deviceImg"}
                                   defaultImg={base64String}
                                   error={errors.deviceImg}
+                                  onChangeInput={(fileData) => {
+                                    // Update form state with new file data
+                                    field.onChange(fileData);
+                                  }}
                                 />
                               )}
                             />

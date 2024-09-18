@@ -13,11 +13,11 @@ import ModalConfirm from "./ModalConfirm";
 import * as WEB_URL from "../../../Constants/WebURL";
 import { SUB_MENU_ID } from "../../../Constants/Constants";
 import { setSelectedSubMenu } from "../../../Redux/Menu/Action";
-import PdfFormPreview from "../TemplatePdf"
+import PreviewPdf from "../Previewsf02";
 
 const ModalSubmitDone = (props) => {
   const {
-    List,
+    File,
     deviceID,
     status,
     onChangeModalDone,
@@ -87,7 +87,7 @@ const ModalSubmitDone = (props) => {
             </div> */}
 
             <div className="flex items-center justify-center gap-2">
-              <PdfFormPreview data={List}/>
+            <PreviewPdf data={File}/>
               <button
                 onClick={onChangeModalDone}
                 className={`w-48 bg-[#F5F4E9] hover:bg-[#4D6A00] text-[#4D6A00] hover:text-white rounded shadow-sm px-4 py-2 text-base font-semibold  sm:text-sm`}

@@ -1,28 +1,67 @@
-import React, { useState } from "react";
-import egat from "../assets/default_device.png";
+import React, { useState, useEffect } from "react";
+import egat from "../assets/default_device.png"; // Local fallback image
 import './UploadImg.css';
 
 const UploadImg = (props) => {
-  const { register, label, validate, disabled, error, id, onChangeInput, defaultValue = null, defaultImg, isViewMode = false, ...inputProps } = props;
-  const [base64, setBase64] = useState('');
+  const { onChangeInput, defaultImg, isViewMode = false, ...inputProps } = props;
+  const [base64, setBase64] = useState(''); // Store base64 of the new or initial file
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleChange = (event) => {
-    const input = event.target;
-    const file = input.files[0];
-    
-    if (file) {
-      // Check if the file type is an image
-      const validImageTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
-      
-      if (!validImageTypes.includes(file.type)) {
-        // Display an error message if the file is not an image
-        setErrorMessage("Invalid file type. Please upload an image file (png, jpg, jpeg, svg).");
+  useEffect(() => {
+    // Convert to base64 if it's not the fallback egat image
+    const convertToBase64 = (img) => {
+      if (!img) return;
+
+      // If defaultImg is the egat fallback, don't send any value, treat it as null
+      if (img === egat) {
+        inputProps.onChange && inputProps.onChange(null); // Send null when it's the fallback image
         return;
       }
 
-      // Clear any previous error messages
-      setErrorMessage('');
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Data = reader.result;
+        const fileContent = base64Data.slice(base64Data.indexOf(',') + 1);
+
+        inputProps.onChange && inputProps.onChange({
+          fileContent,
+          fileName: img.name || 'default_image',
+          fileType: img.type || 'image/png', // Assuming PNG as default
+        });
+
+        setBase64(base64Data); // Set base64 of the provided image
+      };
+
+      // If img is a URL or file-like object
+      if (typeof img === 'string') {
+        fetch(img)
+          .then(response => response.blob())
+          .then(blob => reader.readAsDataURL(blob));
+      } else {
+        reader.readAsDataURL(img); // Handle file-like objects
+      }
+    };
+
+    // Handle defaultImg or fallback to egat
+    const initialImg = defaultImg || egat;
+    convertToBase64(initialImg);
+  }, [defaultImg, inputProps]);
+
+  // Handle file input changes from user uploads
+  const handleChange = (event) => {
+    const input = event.target;
+    const file = input.files[0];
+
+    if (file) {
+      const validImageTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
+
+      if (!validImageTypes.includes(file.type)) {
+        setErrorMessage("Invalid file type. Please upload an image file (png, jpg, jpeg, svg).");
+        input.value = '';  // Reset the file input
+        return;
+      }
+
+      setErrorMessage(''); // Clear any error messages
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -31,13 +70,9 @@ const UploadImg = (props) => {
         const fileName = file.name;
         const fileType = file.type;
 
-        setBase64(fileContent);
+        setBase64(base64Data); // Update base64 state with new image data
 
-        // Update the image preview
-        const output = document.getElementById("preview_img");
-        output.src = base64Data;
-
-        // Callback to handle the base64 string, filename, and file type
+        // Call onChange handlers with the new file data
         onChangeInput && onChangeInput({ fileContent, fileName, fileType });
         inputProps.onChange && inputProps.onChange({ fileContent, fileName, fileType });
       };
@@ -45,7 +80,7 @@ const UploadImg = (props) => {
     }
   };
 
-  const imageSrc = defaultImg || egat; // Fallback to egat if defaultImg is not provided
+  const imageSrc = base64 || defaultImg || egat; // Use base64, defaultImg, or egat as image source
 
   return (
     <>

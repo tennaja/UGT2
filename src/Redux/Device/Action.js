@@ -937,14 +937,14 @@ export const sendEmail = (title,emailBody, recipientEmail, callback) => {
       } else {
         const errorData = await response.json();
         console.error('Failed to send email:', errorData);
-        dispatch(setOpenFailModal(errorData?.message || 'Email sending failed'));
+        // dispatch(setOpenFailModal(errorData?.message || 'Email sending failed'));
       }
 
       callback?.(response.status);
 
     } catch (error) {
       console.error('Error during email sending:', error);
-      dispatch(setOpenFailModal(error?.message || 'Error occurred'));
+      // dispatch(setOpenFailModal(error?.message || 'Error occurred'));
       callback?.(error);
     }
   };
@@ -978,14 +978,14 @@ export const sendEmailByUserGroup = (id,title,emailBody, callback) => {
       } else {
         const errorData = await response.json();
         console.error('Failed to send email:', errorData);
-        dispatch(setOpenFailModal(errorData?.message || 'Email sending failed'));
+        // dispatch(setOpenFailModal(errorData?.message || 'Email sending failed'));
       }
 
       callback?.(response.status);
 
     } catch (error) {
       console.error('Error during email sending:', error);
-      dispatch(setOpenFailModal(error?.message || 'Error occurred'));
+      // dispatch(setOpenFailModal(error?.message || 'Error occurred'));
       callback?.(error);
     }
   };

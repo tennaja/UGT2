@@ -42,11 +42,22 @@ function parseDateStringFunding(dateString) {
   return { dayfund, monthfund, yearfund };
 }
 
-// Example usage:
+function parseDateStringRequesteffect(dateString) {
+  const date = new Date(dateString);
+  
+  const dayrequest = date.getDate().toString().padStart(2, '0');
+  const monthrequest = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+  const yearrequest = date.getFullYear();
+
+  return { dayrequest, monthrequest, yearrequest };
+}
+
 const dateStringcom = data?.data?.commissioningDate;
 const dateStringfund = data?.data?.fundingReceive;
+const datStringRequesteffect = data?.data?.registrationDate;
 const { daycom, monthcom, yearcom } = parseDateStringCommission(dateStringcom);
 const { dayfund, monthfund, yearfund } = parseDateStringFunding(dateStringfund);
+const { dayrequest, monthrequest, yearrequest } = parseDateStringRequesteffect(datStringRequesteffect);
 
 
 
@@ -602,9 +613,9 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Requested effective date of registration: (no earlier than 12 months prior to submitting this form)</td>
-                <td className="border p-2 text-left "></td>
-                <td className="border p-2 text-left "></td>
-                <td className="border p-2 text-left w-36"></td>
+                <td className="border p-2 text-left ">{dayrequest}</td>
+                <td className="border p-2 text-left ">{monthrequest}</td>
+                <td className="border p-2 text-left w-36">{yearrequest}</td>
               </tr>
               
               
