@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import egat from "../assets/default_device.png"; // Local fallback image
 import './UploadImg.css';
-
+import ModelFail from "../Control/Modal/ModalFail";
 const UploadImg = (props) => {
   const { onChangeInput, defaultImg, isViewMode = false, ...inputProps } = props;
   const [base64, setBase64] = useState(''); // Store base64 of the new or initial file
   const [errorMessage, setErrorMessage] = useState('');
-
+  const [isShowFailModal, setIsShowFailModal] = useState(false);
+  const [messageFailModal, setMessageFailModal] = useState("");
   useEffect(() => {
     // Convert to base64 if it's not the fallback egat image
     const convertToBase64 = (img) => {
@@ -54,6 +55,12 @@ const UploadImg = (props) => {
 
     if (file) {
       const validImageTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
+      
+      if (file.size > 20971520) {
+        setErrorMessage("ขนาดไฟล์เกิน 20MB กรุณาอัพโหลดไฟล์ที่มีขนาดเล็กกว่า.");
+        // input.value = '';  // ลองลบอันนี้ออกก่อนเพื่อเช็คว่า error message ขึ้นหรือไม่
+        return;
+      }
 
       if (!validImageTypes.includes(file.type)) {
         setErrorMessage("Invalid file type. Please upload an image file (png, jpg, jpeg, svg).");
@@ -107,7 +114,19 @@ const UploadImg = (props) => {
       </label>
       
       {/* Display error message below the image */}
-      {errorMessage && <p className="error-message text-red-500 mt-2">{errorMessage}</p>}
+      {errorMessage && (
+      <p className="error-message text-red-500 mt-2">
+        {errorMessage}
+      </p>
+    )}
+      {isShowFailModal && (
+        <ModelFail
+          onClickOk={() => {
+            setIsShowFailModal(false);
+          }}
+          content={messageFailModal}
+        />
+      )}
     </>
   );
 };

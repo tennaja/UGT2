@@ -352,17 +352,26 @@ const AddDevice = () => {
     const deviceData = { ...vFormData, uploadFile: fileListEvident ,userid : userData?.userRefId};
     console.log("deviceData=>>>", deviceData);
     dispatch(
-      FunctionAddDevice(deviceData, () => {
+      FunctionAddDevice(deviceData, (status) => {
         hideLoading();
+        if (status === 200 || status === 201) {
+          dispatch(
+            sendEmail(
+              titleemail,
+              emailBodytoOwner,
+              userData?.email == null ? "" : userData?.email,
+              () => {
+                hideLoading();
+              }
+            )
+          );
+        } else {
+          console.log("Failed to add device, email not sent.");
+        }
         // setIsOpenLoading(false);
       })
     );
-    dispatch (
-      sendEmail(titleemail,emailBodytoOwner,userData?.email == null ? "" : userData?.email,() => {
-        hideLoading();
-        // dispatch(clearModal());
-      })
-    )
+    
   };
 
   const handleClickBackToEdit = () => {

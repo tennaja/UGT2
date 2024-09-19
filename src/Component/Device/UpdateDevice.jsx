@@ -666,18 +666,21 @@ const UpdateDevice = () => {
     // console.log("deviceData=>>>",deviceData)
 
     dispatch(
-      FunctionEditDevice(deviceData, () => {
+      FunctionEditDevice(deviceData, (status) => {
         // setIsOpenLoading(false);
         hideLoading();
+        if (status === 200 || status === 201) {
+          dispatch (
+            sendEmail(titleemail,emailBodytoOwner,deviceobj?.userEmail
+              ,() => {
+              hideLoading();
+              // dispatch(clearModal());
+            })
+          )
+        }
       })
     );
-    dispatch (
-      sendEmail(titleemail,emailBodytoOwner,deviceobj?.userEmail
-        ,() => {
-        hideLoading();
-        // dispatch(clearModal());
-      })
-    )
+    
   };
 
 

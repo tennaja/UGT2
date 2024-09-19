@@ -609,33 +609,36 @@ const handleClickDownloadFile = async (item) => {
     dispatch(
       SubmitDevice(deviceID,username,SignatureDateTime,organisationId,
         organisationName,contactPerson,businessAddress,country,email,telephone,test.current,
-        (error) => {
+        (error,status) => {
         if (error) {
           setOpenConfirmSubmitModal(false);
         } else {
           // dispatch(clearModal());
           // navigate(WEB_URL.DEVICE_LIST);
-          dispatch(
-            sendEmail(titleemail,emailBodywhenSubmited,deviceobj?.userEmail, () => {
-              
-            })
-          )
-          dispatch(
-            FetchSF02ByID(code, (res, err) => {
-            })
-          );
-          dispatch (
-            sendEmailByUserGroup(21,titleemail,titleemail,emailBodywhenSubmited,() => {
-              hideLoading();
-              // dispatch(clearModal());
-            })
-          )
-          dispatch (
-            sendEmailByUserGroup(22,titleemail,emailBodywhenSubmited,() => {
-              hideLoading();
-              // dispatch(clearModal());
-            })
-          )
+          if (status === 200 || status === 201) {
+            dispatch(
+              sendEmail(titleemail,emailBodywhenSubmited,deviceobj?.userEmail, () => {
+                
+              })
+            )
+            dispatch(
+              FetchSF02ByID(code, (res, err) => {
+              })
+            );
+            dispatch (
+              sendEmailByUserGroup(21,titleemail,titleemail,emailBodywhenSubmited,() => {
+                
+                // dispatch(clearModal());
+              })
+            )
+            dispatch (
+              sendEmailByUserGroup(22,titleemail,emailBodywhenSubmited,() => {
+                
+                // dispatch(clearModal());
+              })
+            )
+          }
+          
         }
         hideLoading();
         setOpenConfirmSubmitModal(false);
@@ -650,17 +653,21 @@ const handleClickDownloadFile = async (item) => {
     showLoading();
     const deviceID = deviceobj?.id;
     dispatch(
-      WithdrawDevice(deviceID, () => {
+      WithdrawDevice(deviceID, (status) => {
         hideLoading();
         dispatch(clearModal());
+        if (status === 200 || status === 201) {
+          dispatch(
+            sendEmail(titleemail,emailBodyWithdraw,deviceobj?.userEmail, () => {
+      
+            })
+          )
+        }
         navigate(WEB_URL.DEVICE_LIST);
+        
       })
     );
-    dispatch(
-      sendEmail(titleemail,emailBodyWithdraw,deviceobj?.userEmail, () => {
-
-      })
-    )
+    
     
   };
 
@@ -670,22 +677,26 @@ const handleClickDownloadFile = async (item) => {
     showLoading();
     const deviceID = deviceobj?.id;
     dispatch(
-      VerifingDevice(deviceID, () => {
+      VerifingDevice(deviceID, (status) => {
         hideLoading();
         dispatch(clearModal());
+        if (status === 200 || status === 201) {
+          dispatch (
+            sendEmailByUserGroup(21,titleemail,emailBodytoVerifier,() => {
+              hideLoading();
+              // dispatch(clearModal());
+            })
+          )
+        }
         navigate(WEB_URL.DEVICE_LIST);
+       
         // dispatch(
         //   FetchGetDeviceByID(code, (res, err) => {
         //   })
         // );
       })
     );
-    dispatch (
-      sendEmailByUserGroup(21,titleemail,emailBodytoVerifier,() => {
-        hideLoading();
-        // dispatch(clearModal());
-      })
-    )
+    
   };
 
   //Call Api Verified
@@ -695,21 +706,23 @@ const handleClickDownloadFile = async (item) => {
     const deviceID = deviceobj?.id;
     // console.log("FILE CURRENT-------",test.current)
     dispatch(
-      VerifiedDevice(deviceID, test.current,() => {
+      VerifiedDevice(deviceID, test.current,(status) => {
         hideLoading();
         // dispatch(clearModal());
         dispatch(
           FetchSF02ByID(code, (res, err) => {
           })
         );
+        if (status === 200 || status === 201) 
+          {dispatch (
+          sendEmailByUserGroup(22,titleemail,emailBodytoSignatory,() => {
+            hideLoading();
+            // dispatch(clearModal());
+          })
+        )}
       })
     )
-    dispatch (
-      sendEmailByUserGroup(22,titleemail,emailBodytoSignatory,() => {
-        hideLoading();
-        // dispatch(clearModal());
-      })
-    )
+    
   };
 
 
@@ -749,17 +762,20 @@ const handleClickDownloadFile = async (item) => {
     const remark = rem;
     const username = userData.firstName +" "+userData.lastName;
     dispatch(
-      ReturnDevice(deviceID,remark,username,() => {
+      ReturnDevice(deviceID,remark,username,(status) => {
         hideLoading();
         dispatch(clearModal());
+        if (status === 200 || status === 201) {
+          dispatch(
+            sendEmail(titleemail,emailBodytoOwnerWhenreturn,deviceobj?.userEmail, () => {
+      
+            })
+          )
+        }
         navigate(WEB_URL.DEVICE_LIST);
       })
     );
-    dispatch(
-      sendEmail(titleemail,emailBodytoOwnerWhenreturn,deviceobj?.userEmail, () => {
-
-      })
-    )
+    
   };
   
 
@@ -1209,14 +1225,13 @@ const handleClickDownloadFile = async (item) => {
                                   type="xs"
                                 />
                               )}
-                              {renderData(
-                                deviceobj?.isApproved === "True" ? (
+                              {deviceobj?.isApproved === "True" ? (
                                   <StatusLabel
                                     status="Approved"
                                     type="xs"
                                   />
-                                ) : null
-                              )}
+                                ) : null}
+                              
 </div>
                             </div>
                           </div>

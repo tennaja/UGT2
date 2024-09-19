@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 addLogoWhite;
 import { useDispatch, useSelector } from "react-redux";
-
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Card } from "@mantine/core";
 import classNames from "classnames";
@@ -39,7 +38,6 @@ import Multiselect from "../Control/Multiselect";
 import numeral from "numeral";
 
 import Highlighter from "react-highlight-words";
-
 
 const itemsPerPage = 200;
 
@@ -81,13 +79,11 @@ const ListDevice = (props) => {
   }));
   const assignedList = deviceRdc?.assignedList;
   const unAssignedList = deviceRdc?.unAssignedList;
-  console.log(unAssignedList)
   const totalAssigned = deviceRdc?.totalAssigned;
   const totalUnAssigned = deviceRdc?.totalUnAssigned;
   const typeList = deviceRdc?.filterList?.findType;
   const utilityList = deviceRdc?.filterList?.findUtility;
   const statusList = deviceRdc?.filterList?.findStatus;
-  console.log(unAssignedList)
   const {
     setValue,
     control,
@@ -100,7 +96,7 @@ const ListDevice = (props) => {
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
   );
-  console.log(userData)
+
   const columnsAssigned = [
     {
       id: "name",
@@ -217,16 +213,10 @@ const ListDevice = (props) => {
       id: "statusName",
       label: "Status",
       render: (row) => (
-        <>
         <StatusLabel
           status={row.statusName}
           searchQuery={searchQueryAssigned}
         />
-        {assignedList?.isApproved === "True" ? <StatusLabel
-          status="Approved"
-          searchQuery={searchQueryUnAssigned}
-        /> : null}
-        </>
       ),
     },
     {
@@ -247,7 +237,7 @@ const ListDevice = (props) => {
     },
     // Add more columns as needed
   ];
-  
+
   const columnsUnAssigned = [
     {
       id: "name",
@@ -359,17 +349,10 @@ const ListDevice = (props) => {
       label: "Status",
       // render: (row) => StatusLabel(row.statusName),
       render: (row) => (
-        <>
         <StatusLabel
           status={row.statusName}
           searchQuery={searchQueryUnAssigned}
         />
-        {unAssignedList?.isApproved === "True" ? <StatusLabel
-        status="Approved"
-        searchQuery={searchQueryUnAssigned}
-      /> : null}
-       
-        </>
       ),
     },
     {
@@ -411,7 +394,7 @@ const ListDevice = (props) => {
 
   const getDeviceData = (utilityID = null) => {
     // console.log(utilityID, "utilityID");
-    const ugtGroupId = currentUGTGroup?.id ;
+    const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "1";
 
     const fetchParameterForDashboard = {
       findUgtGroupId: ugtGroupId,
@@ -512,9 +495,7 @@ const ListDevice = (props) => {
   };
 
   const handleChangeAssignFilter = (value, filterType) => {
-    console.log(value)
     const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
-    console.log(ugtGroupId)
     let fetchParameterForAssignedList = null;
     const currentFilterList = value.map((item) => {
       return item.id;
@@ -587,10 +568,9 @@ const ListDevice = (props) => {
   };
 
   const handleChangeUnAssignFilter = (value, filterType) => {
-    console.log(value)
     let fetchParameterForUnAssignedList = null;
     const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
-    console.log(ugtGroupId)
+
     const currentFilterList = value.map((item) => {
       return item.id;
     });
@@ -620,7 +600,6 @@ const ListDevice = (props) => {
         ...currentUnAssignedFilterObj,
         utility: currentFilterList,
       };
-      console.log(newCurrentUnAssignedFilter)
       setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
       dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
 
@@ -641,7 +620,7 @@ const ListDevice = (props) => {
         ...currentUnAssignedFilterObj,
         status: currentFilterList,
       };
-      console.log(newCurrentUnAssignedFilter)
+
       setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
       dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
 
@@ -658,7 +637,7 @@ const ListDevice = (props) => {
         findUgtGroupId: ugtGroupId,
       };
     }
-    console.log(fetchParameterForUnAssignedList)
+
     dispatch(FetchDeviceManagementUnAssigned(fetchParameterForUnAssignedList));
   };
 
@@ -668,7 +647,7 @@ const ListDevice = (props) => {
 
     navigate(WEB_URL.DEVICE_ADD);
   };
-  console.log(userData?.userGroup?.id)
+
   const checkPermission = () => {
     const userGroupID = userData?.userGroup?.id;
     if (
@@ -746,8 +725,7 @@ const ListDevice = (props) => {
 
       getDeviceData(utilityID);
       setDisableUtility(true);
-    } 
-    else if (
+    } else if (
       userGroupID == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
     ) {
       const utilityID = UTILITY_GROUP_ID.VER; //EGAT
@@ -824,58 +802,6 @@ const ListDevice = (props) => {
       getDeviceData();
       setDisableUtility(true);
     }
-    // else if (
-    //   userGroupID == USER_GROUP_ID.UGT_REGISTANT_VERIFIER 
-    // ) {
-    //   const utilityID = UTILITY_GROUP_ID.VER; //EGAT
-
-    //   setIsDeviceGroup(false);
-
-    //   const initAssignedFilterValue = {
-    //     ...currentAssignedFilterObj,
-    //     utility: [],
-    //   };
-    //   const initUnAssignedFilterValue = {
-    //     ...currentUnAssignedFilterObj,
-    //     utility: [],
-    //   };
-
-    //   setCurrentAssignedFilterObj(initAssignedFilterValue);
-    //   dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
-
-    //   setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
-    //   dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
-
-    //    console.log("run check permission", utilityID);
-    //   getDeviceData();
-    //   setDisableUtility(true);
-    // }
-    // else if (
-    //   userGroupID == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
-    // ) {
-    //   const utilityID = UTILITY_GROUP_ID.SIG; //EGAT
-
-    //   setIsDeviceGroup(false);
-
-    //   const initAssignedFilterValue = {
-    //     ...currentAssignedFilterObj,
-    //     utility: [],
-    //   };
-    //   const initUnAssignedFilterValue = {
-    //     ...currentUnAssignedFilterObj,
-    //     utility: [],
-    //   };
-
-    //   setCurrentAssignedFilterObj(initAssignedFilterValue);
-    //   dispatch(setCurrentAssignedFilter(initAssignedFilterValue));
-
-    //   setCurrentUnAssignedFilterObj(initUnAssignedFilterValue);
-    //   dispatch(setCurrentUnAssignedFilter(initUnAssignedFilterValue));
-
-    //    console.log("run check permission", utilityID);
-    //   getDeviceData();
-    //   setDisableUtility(true);
-    // }
   };
 
   const handleAssignedSearchChange = (e) => {
@@ -897,7 +823,7 @@ const ListDevice = (props) => {
                 {currentUGTGroup?.name} / Device Management / Device Info
               </p>
             </div>
-           
+
             <div className="flex sm:flex-col lg:flex-row w-full h-auto gap-4">
               {/* {'left content'} */}
               <div className="flex flex-col w-full h-auto gap-3">
@@ -1133,14 +1059,6 @@ const ListDevice = (props) => {
             )}
 
             {/* {Assigned Table Content} */}
-            {/* <div className="w-72 h-12 flex justify-end">
-            <div
-                            type="button"
-                            // onClick={handleClickDeviceRegistration}
-                            className={`w-20 h-[40px] bg-[#87be33] rounded no-underline`}
-                          >Device Registration 
-            </div>
-            </div> */}
             <Card
               shadow="md"
               radius="lg"
@@ -1518,12 +1436,11 @@ const ListDevice = (props) => {
                 </div>
                 <div className="relative overflow-x-auto  sm:rounded-lg">
                   <DataTable
-                    data={unAssignedList?.filter(item => item.statusName !== 'Withdrawn')}
+                    data={unAssignedList}
                     columns={columnsUnAssigned}
                     searchData={searchQueryUnAssigned}
                     checkbox={false}
                   />
-                  
 
                   {/* <table className="w-full text-sm text-left text-gray-500 ">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
