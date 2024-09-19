@@ -55,13 +55,10 @@ const UploadImg = (props) => {
 
     if (file) {
       const validImageTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
-      
       if (file.size > 20971520) {
-        setErrorMessage("ขนาดไฟล์เกิน 20MB กรุณาอัพโหลดไฟล์ที่มีขนาดเล็กกว่า.");
-        // input.value = '';  // ลองลบอันนี้ออกก่อนเพื่อเช็คว่า error message ขึ้นหรือไม่
+        setErrorMessage("File size exceeds the 20MB limit. Please upload a smaller file.");
         return;
       }
-
       if (!validImageTypes.includes(file.type)) {
         setErrorMessage("Invalid file type. Please upload an image file (png, jpg, jpeg, svg).");
         input.value = '';  // Reset the file input
@@ -90,7 +87,7 @@ const UploadImg = (props) => {
   const imageSrc = base64 || defaultImg || egat; // Use base64, defaultImg, or egat as image source
 
   return (
-    <>
+    <div className="flex flex-col items-end justify-end">
       <label className={`${isViewMode ? 'none' : 'cursor-pointer'}`}>
         {!isViewMode && (
           <>
@@ -127,7 +124,7 @@ const UploadImg = (props) => {
           content={messageFailModal}
         />
       )}
-    </>
+    </div>
   );
 };
 
