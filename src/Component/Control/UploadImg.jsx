@@ -52,11 +52,13 @@ const UploadImg = (props) => {
   const handleChange = (event) => {
     const input = event.target;
     const file = input.files[0];
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
 
     if (file) {
       const validImageTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
-      if (file.size > 20971520) {
+      if (file.size > maxSizeInBytes) {
         setErrorMessage("File size exceeds the 20MB limit. Please upload a smaller file.");
+        // setIsShowFailModal(true);
         return;
       }
       if (!validImageTypes.includes(file.type)) {
