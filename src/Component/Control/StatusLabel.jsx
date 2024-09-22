@@ -67,6 +67,10 @@ const StatusLabel = ({ status, type = 'sm', searchQuery }) => {
       bg_color = STATUS_COLOR.INACTIVE.bg;
       text_color = STATUS_COLOR.INACTIVE.text;
       break;
+    case "return":
+      bg_color = STATUS_COLOR.RETURN.bg;
+      text_color = STATUS_COLOR.RETURN.text;
+      break;
     default:
       bg_color = STATUS_COLOR.DEFAULT.bg;
       text_color = STATUS_COLOR.DEFAULT.text;

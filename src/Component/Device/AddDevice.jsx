@@ -453,7 +453,7 @@ const AddDevice = () => {
       );
       
       setValue("assignedUtilityCode", initValue);
-      setDisableUtility(true);
+      setDisableUtility(false);
     }else if (userGroupID == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY) {
       const utilityID = UTILITY_GROUP_ID.EGAT; //EGAT
       const initValue = initialvalueForSelectField(
@@ -463,7 +463,7 @@ const AddDevice = () => {
       );
       
       setValue("assignedUtilityCode", initValue);
-      setDisableUtility(true);
+      setDisableUtility(false);
     } else if (userGroupID == USER_GROUP_ID.MEA_SUBSCRIBER_MNG) {
       //Code here...
     } else if (userGroupID == USER_GROUP_ID.PEA_SUBSCRIBER_MNG) {

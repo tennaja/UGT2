@@ -1629,9 +1629,8 @@ const handleClickDownloadFile = async (item) => {
                               </label>
                               <div className="break-words	font-bold	">
                                 {renderData(
-                                  deviceobj?.onSiteConsumer === "True" ? 
-                                  deviceobj?.onSiteConsumer+ " : " +
-                                  deviceobj?.onSiteConsumerDetail : deviceobj?.onSiteConsumer
+                                  deviceobj?.onSiteConsumer === "Yes" ? 
+                                  deviceobj?.onSiteConsumer+ " : " +deviceobj?.onSiteConsumerDetail : deviceobj?.onSiteConsumer
                                   )}
                               </div>
                             </div>
@@ -1643,7 +1642,7 @@ const handleClickDownloadFile = async (item) => {
 
                               <div className="break-words	font-bold	">
                                 {renderData(
-                                  deviceobj?.energySource === "True" ? 
+                                  deviceobj?.energySource === "Yes" ? 
                                   deviceobj?.energySource + " : " +deviceobj?.energySourceDetail : deviceobj?.energySource)}
                               </div>
                             </div>

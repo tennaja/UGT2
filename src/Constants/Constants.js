@@ -126,6 +126,7 @@ export const STATUS_COLOR = {
   UNAVAILABLE: { bg: "#E5EAED", text: "#7E7D83" },
   WITHDRAW: { bg: "#E5EAED", text: "#7E7D83" },
   INACTIVE: { bg: "#E5EAED", text: "#7E7D83" },
+  RETURN: {bg: "#FFFFCC", text: "#FF9900" },
   DEFAULT: { bg: "#FFF6E8", text: "#CE8420" },
 };
 
