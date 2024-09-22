@@ -2123,7 +2123,7 @@ const RenewDevice = () => {
                             </div>
                           )}
                           <button className="w-full rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]">
-                            <b>Save Device</b>
+                            <b>Save Change</b>
                           </button>
                         </div>
                       </div>
