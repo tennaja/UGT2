@@ -615,7 +615,7 @@ const handleClickDownloadFile = async (item) => {
         } else {
           // dispatch(clearModal());
           // navigate(WEB_URL.DEVICE_LIST);
-          if (status === 200 || status === 201) {
+         
             dispatch(
               sendEmail(titleemail,emailBodywhenSubmited,deviceobj?.userEmail, () => {
                 
@@ -639,7 +639,7 @@ const handleClickDownloadFile = async (item) => {
             )
           }
           
-        }
+        
         hideLoading();
         setOpenConfirmSubmitModal(false);
       })
@@ -656,13 +656,13 @@ const handleClickDownloadFile = async (item) => {
       WithdrawDevice(deviceID, (status) => {
         hideLoading();
         dispatch(clearModal());
-        if (status === 200 || status === 201) {
+        
           dispatch(
             sendEmail(titleemail,emailBodyWithdraw,deviceobj?.userEmail, () => {
       
             })
           )
-        }
+        
         navigate(WEB_URL.DEVICE_LIST);
         
       })
@@ -680,14 +680,13 @@ const handleClickDownloadFile = async (item) => {
       VerifingDevice(deviceID, (status) => {
         hideLoading();
         dispatch(clearModal());
-        if (status === 200 || status === 201) {
+        
           dispatch (
             sendEmailByUserGroup(21,titleemail,emailBodytoVerifier,() => {
               hideLoading();
               // dispatch(clearModal());
             })
           )
-        }
         navigate(WEB_URL.DEVICE_LIST);
        
         // dispatch(
@@ -709,17 +708,21 @@ const handleClickDownloadFile = async (item) => {
       VerifiedDevice(deviceID, test.current,(status) => {
         hideLoading();
         // dispatch(clearModal());
-        dispatch(
-          FetchSF02ByID(code, (res, err) => {
-          })
-        );
-        if (status === 200 || status === 201) 
-          {dispatch (
-          sendEmailByUserGroup(22,titleemail,emailBodytoSignatory,() => {
-            hideLoading();
+        
+        
+            dispatch(
+              FetchSF02ByID(code, (res, err) => {
+              })
+            );
+            dispatch (
+            sendEmailByUserGroup(22,titleemail,emailBodytoSignatory,() => {        
+            dispatch(
+              FetchSF02ByID(code, (res, err) => {
+              })
+            );
             // dispatch(clearModal());
           })
-        )}
+        )
       })
     )
     
@@ -957,6 +960,26 @@ const handleClickDownloadFile = async (item) => {
 
     return isSeeSF02;
   };
+
+  const checkCanRenew = () => {
+    let isRenew = false;
+    const status = (deviceobj?.statusName ?? "").toLowerCase();
+
+    if (
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+    ) {
+      if (
+        status == DEVICE_STATUS.APPROVED.toLowerCase()
+      ) {
+        isRenew = true;
+      } else {
+        isRenew = false;
+      }
+    }
+
+    return isRenew;
+  };
   const checkShowManageBtn = () => {
     const status = (deviceobj?.statusName ?? "").toLowerCase();
     if (
@@ -1073,7 +1096,7 @@ const handleClickDownloadFile = async (item) => {
   const canReturn = checkCanReturn();
   const canSeeSF02 = checkCanSeeSF02();
   const isShowManageBtn = checkShowManageBtn();
-
+  const canRenew = checkCanRenew();
   // console.log("canEdit", canEdit);
   // console.log("canSubmit", canSubmit);
   // console.log("canWithdrawn", canWithdrawn);
@@ -1167,8 +1190,8 @@ const handleClickDownloadFile = async (item) => {
             },
             {
               label: "Renew",
-              onClick: !onClickRenew,
-              disabled: !canSubmit,
+              onClick: onClickRenew,
+              disabled: !canRenew,
               // endSection: false,
             },
           ]}
@@ -1444,14 +1467,9 @@ const handleClickDownloadFile = async (item) => {
                               <div className="font-bold">
                                 {renderData(
                                   deviceobj?.isOther === "True"
-                                    ? "Other"
+                                    ? "Other" + " : " + deviceobj?.otherDescription
                                     :  null
-                                )} {" "}
-                                {renderData(
-                                  deviceobj?.otherDescription 
-                                    ? deviceobj?.otherDescription
-                                    : null
-                                )}
+                                )} 
                               </div>
                               
                             </div>
@@ -1609,7 +1627,11 @@ const handleClickDownloadFile = async (item) => {
                                 {"On-Site (captive) Consumer"}
                               </label>
                               <div className="break-words	font-bold	">
-                                {renderData(deviceobj?.onSiteConsumerDetail)}
+                                {renderData(
+                                  deviceobj?.onSiteConsumer === "True" ? 
+                                  deviceobj?.onSiteConsumer+ " : " +
+                                  deviceobj?.onSiteConsumerDetail : deviceobj?.onSiteConsumer
+                                  )}
                               </div>
                             </div>
 
@@ -1619,7 +1641,9 @@ const handleClickDownloadFile = async (item) => {
                               </label>
 
                               <div className="break-words	font-bold	">
-                                {renderData(deviceobj?.energySourceDetail)}
+                                {renderData(
+                                  deviceobj?.energySource === "True" ? 
+                                  deviceobj?.energySource + " : " +deviceobj?.energySourceDetail : deviceobj?.energySource)}
                               </div>
                             </div>
                           </div>
@@ -1658,11 +1682,16 @@ const handleClickDownloadFile = async (item) => {
                               </label>
                               <div className="font-bold">
                                 {renderData(
-                                  deviceobj?.fundingReceive
-                                  ? convertDateTimeToDisplayDate(
+                                  
+                                  deviceobj?.publicFunding 
+                                  ? 
+                                  
+                                  deviceobj?.publicFunding === "Feed in Tariff" ? deviceobj?.publicFunding + " : " +convertDateTimeToDisplayDate(
                                   deviceobj?.fundingReceive,
                                   "d MMMM yyyy"
-                                  )
+                                  ) : deviceobj?.publicFunding
+
+
                                   : "-"
                                   )}
                           </div>
@@ -1810,9 +1839,10 @@ const handleClickDownloadFile = async (item) => {
                             <b></b> Verify
                     </button>
                      : null}
-                  <button onClick={onClickRenew} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
+                     {canRenew ? <button onClick={onClickRenew} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
                             <b></b> Renew
-                    </button>
+                    </button> : null}
+                  
               </div></div>
               </div>
             </Card>

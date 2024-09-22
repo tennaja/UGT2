@@ -967,7 +967,7 @@ const AddDevice = () => {
                           rules={{
                             required: "This field is required",
                             max: {
-                              value: 999999.000000,
+                              value: 999999.999999,
                               message:
                                 "This value must be between 0 and 99999.999999",
                             },
@@ -1800,7 +1800,7 @@ const AddDevice = () => {
   </div>
 
   {/* Documents Information Attachments */}
-  <div className="col-span-1 md:col-span-6 mt-12">
+  <div className="col-span-1 md:col-span-6 mt-16">
     <h6 className="text-PRIMARY_TEXT">
       <b>Documents Information Attachments</b>
     </h6>

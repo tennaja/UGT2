@@ -1256,7 +1256,7 @@ const UpdateDevice = () => {
                               id={"capacity"}
                               type={"number"}
                               step="0.000001"
-                              max={999999.000000}
+                              max={999999.999999}
                               min={0}
                               label={"Installed Capacity (MW)"}
                               error={errors.capacity}
@@ -1272,7 +1272,7 @@ const UpdateDevice = () => {
                               onBlur={(e) => {
                                 let value = parseFloat(e.target.value);
                                 // Cap the value between -90.000000 and 90.000000
-                                if (value > 999999.000000) value = 999999.000000;
+                                if (value > 999999.999999) value = 999999.999999;
                                 if (value <= 0 ) value = 0;
                                 
                                 // Optionally pad the number if needed
@@ -1282,7 +1282,7 @@ const UpdateDevice = () => {
                               onChangeInput={(val) => {
                                 let numericValue = parseFloat(val);
                                 // Enforce the max and min range on change
-                                if (numericValue > 99999.000000) numericValue = 99999.000000;
+                                if (numericValue > 99999.999999) numericValue = 99999.999999;
                                 if (numericValue <= 0 ) numericValue = 0;
                                 let paddedValue = padNumber(numericValue.toString(), 6);
                                 setValue("capacity", paddedValue);
@@ -2042,7 +2042,7 @@ const UpdateDevice = () => {
                       </div></div> : null }
                       </div>
                       {/*Documents Information Attachments */}
-                      <div className="md:col-span-6 mt-12">
+                      <div className="md:col-span-6 mt-16">
                         <h6 className="text-PRIMARY_TEXT">
                           <b>Documents Information Attachments</b>
                         </h6>
@@ -2126,7 +2126,7 @@ const UpdateDevice = () => {
                             </div>
                           )}
                           <button className="w-full rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]">
-                            <b>Save as draft</b>
+                            <b>Save Device</b>
                           </button>
                         </div>
                       </div>

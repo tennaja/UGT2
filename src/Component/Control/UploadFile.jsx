@@ -11,7 +11,9 @@ import txtIcon from "../assets/txt.png";
 import pdfIcon from "../assets/pdf.png";
 import pptxIcon from "../assets/pptx.png";
 import svgIcon from "../assets/svg.png";
-
+import { HiDownload } from "react-icons/hi";
+import { FiTrash2 } from "react-icons/fi";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { jwtDecode } from "jwt-decode";
 import { FetchUploadFile } from "../../Redux/Device/Action";
@@ -20,7 +22,10 @@ import ModalConfirm from "../Control/Modal/ModalConfirm";
 import ModelFail from "../Control/Modal/ModalFail";
 import { message } from "antd";
 
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 const UploadFile = (props) => {
+  console.log(props)
   const {
     register,
     label,
@@ -28,16 +33,18 @@ const UploadFile = (props) => {
     disabled,
     error,
     onChngeInput,
+    onPreview,
     onDeleteFile,
     id,
     defaultValue = null,
     isViewMode = false,
     onClickFile,
+    onZipfile,
     ...inputProps
   } = props;
 
   // const [percent,setPercent] = useState(0)
-  // const [status,setStatus] = useState('')
+  const [status,setStatus] = useState('')
   const dispatch = useDispatch();
 
   const [newRender, setNewRender] = useState(false);
@@ -45,7 +52,7 @@ const UploadFile = (props) => {
   const [uploaderKey, setUploaderKey] = useState(0); //for force Re-render
   const [isShowFailModal, setIsShowFailModal] = useState(false);
   const [messageFailModal, setMessageFailModal] = useState("");
-
+  console.log("UOLOADFILE _________________________________________ >>>>>>",initFile)
   const Layout = ({
     input,
     previews,
@@ -56,7 +63,7 @@ const UploadFile = (props) => {
   }) => {
     const [myFile, setMyFile] = useState(null);
     const [showModalConfirm, setShowModalConfirm] = useState(false);
-
+    console.log(initFile)
     const getIcon = (name) => {
       const extension = name?.split(".").pop();
       if (extension === "jpeg" || extension === "jpg") {
@@ -89,6 +96,7 @@ const UploadFile = (props) => {
     };
 
     const handleDeleteClick = (file) => {
+      console.log(file)
       setShowModalConfirm(true);
 
       setMyFile(file);
@@ -123,6 +131,82 @@ const UploadFile = (props) => {
       // setShowModalFail(false);
       //.........
     };
+    
+    
+
+    
+    async function downloadZip(files) {
+      if (!Array.isArray(files) || files.length === 0) {
+        console.error('No valid files found.');
+        return;
+      }
+    
+      const zip = new JSZip();
+      const fileMetadata = [];
+    
+      const readFileAsArrayBuffer = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = (error) => reject(new Error(`FileReader error: ${error.message}`));
+          reader.readAsArrayBuffer(file);
+        });
+      };
+    
+      for (const file of files) {
+        if (!(file instanceof File)) {
+          console.error('Provided item is not a File object:', file);
+          continue;
+        }
+    
+        try {
+          const fileContent = await readFileAsArrayBuffer(file);
+          zip.file(file.name, fileContent, { binary: true });
+    
+          fileMetadata.push({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+          });
+        } catch (error) {
+          console.error(`Error processing file ${file.name}: ${error.message}`);
+        }
+      }
+    
+      
+    
+      if (Object.keys(zip.files).length === 0) {
+        console.error('No valid files were added to the ZIP. Aborting download.');
+        return;
+      }
+    
+      try {
+        const content = await zip.generateAsync({ type: 'blob' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = 'files.zip'; // Default file name
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+      } catch (error) {
+        console.error('Error generating ZIP:', error.message);
+      }
+    }
+    
+
+
+    
+ 
+    
+    
+
+
+    
+    
+    
+
+
 
     return (
       <div
@@ -143,7 +227,7 @@ const UploadFile = (props) => {
             }}
           >
             {files.length < maxFiles && input}
-
+    
             <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
             <label>Drop file here or click to upload</label>
             <label>
@@ -153,12 +237,13 @@ const UploadFile = (props) => {
             <label>Each file can be a maximum of 20MB</label>
           </div>
         )}
-
+    
         <div className="overflow-y-auto max-h-72">
           {previews?.map((file) =>
+          
             isViewMode ? (
               <>
-                <div className="flex items-center justify-between p-2 ">
+                <div className="flex items-center justify-between p-3 rounded border border-slate-300 mt-2">
                   <div className="mr-4">
                     <img
                       src={getIcon(file?.props?.meta?.name)}
@@ -181,11 +266,31 @@ const UploadFile = (props) => {
                       </div>
                     </div>
                   </div>
+                  <div className="flex items-center justify-between  w-36">
+    
+                    
+                  <MdOutlineRemoveRedEye className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
+                  onClick={() => {
+                    onPreview &&
+                    onPreview(file?.props?.fileWithMeta?.file);
+                  }}/>
+                
+                  <HiDownload className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer" onClick={() => {
+                            onClickFile &&
+                              onClickFile(file?.props?.fileWithMeta?.file);
+                          }}/>
+                  <FiTrash2 className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-not-allowed" 
+                  // onClick={() => {
+                  //     handleDeleteClick(file);
+                  //   }}
+                    />
+                  </div>
+                  
                 </div>
               </>
             ) : (
               <>
-                <div className="flex items-center justify-between p-2 ">
+                <div className="flex items-center justify-between p-3 rounded border border-slate-300 mt-2">
                   <div className="mr-4">
                     <img
                       src={getIcon(file?.props?.meta?.name)}
@@ -207,17 +312,44 @@ const UploadFile = (props) => {
                           {file?.props?.meta?.name}
                         </label>
                       </div>
+                      {!isViewMode && file?.props?.meta?.status === 'done' && (
+                      <div className="flex items-center justify-between w-36">
+                    <MdOutlineRemoveRedEye
+                      className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
+                      onClick={() => {
+                        onPreview && onPreview(file?.props?.fileWithMeta?.file);
+                      }}
+                    />
+                    <HiDownload
+                      className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
+                      onClick={() => {
+                        onClickFile && onClickFile(file?.props?.fileWithMeta?.file);
+                      }}
+                    />
+                    <FiTrash2
+                      className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
+                      onClick={() => {
+                        handleDeleteClick(file);
+                      }}
+                    />
+                  </div>)}
+                      {file?.props?.meta?.status !== 'done' && (
                       <div className="mr-8">
                         <label className="text-sm text-[#d1d5db] font-normal">
                           {parseInt(file?.props?.meta?.percent)} %{" "}
                         </label>
-                      </div>
+                      </div>)}
                     </div>{" "}
-                    {file}{" "}
+                    {file?.props?.meta?.status !== 'done' && (
+                      <div>{file}{" "}</div>
+                    
+                  )}
+                    
                     <label className="text-xs text-[#d1d5db] font-medium">
                       {/* {readableBytes(file?.props?.meta?.size)} */}
                     </label>
                   </div>
+                  {file?.props?.meta?.status !== 'done' && (
                   <button
                     type="button"
                     onClick={() => {
@@ -227,13 +359,16 @@ const UploadFile = (props) => {
                     <label className="pl-2 text-xl font-medium cursor-pointer">
                       x
                     </label>
-                  </button>
+                  </button>)}
                 </div>
               </>
             )
+            
           )}
+          {props.value == undefined ? 
+           null : <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={() => {downloadZip(previews.map(file => file.props.fileWithMeta.file));}}>Download All Files (.zip)</div> }
         </div>
-
+    
         {showModalConfirm && (
           <ModalConfirm
             onClickConfirmBtn={handleClickConfirmModal}
@@ -243,7 +378,7 @@ const UploadFile = (props) => {
             buttonTypeColor="danger"
           />
         )}
-
+    
         {error && error?.message && (
           <p className=" mt-1 mb-1 text-red-500 text-xs text-left ">
             {error.message}
@@ -325,10 +460,11 @@ const UploadFile = (props) => {
 
     const result = await FetchUploadFile(uploadData);
     console.log("result", result);
+    console.log(result?.res?.uid)
     if (result?.res?.uid) {
       Object.defineProperty(props?.file, "evidentFileID", {
         value: result?.res?.uid,
-      });
+            });
     }
 
     onChngeInput && onChngeInput(props?.meta?.id, result);
@@ -337,7 +473,7 @@ const UploadFile = (props) => {
   const handleChangeStatus = ({ meta, file, remove }, status, allFiles) => {
     // { meta ,file ,remove }, status, allFiles
     // let status = props?.meta?.status
-
+    setStatus(status)
     inputProps.onChange(allFiles);
     setNewRender(!newRender);
     console.log("status", status);
