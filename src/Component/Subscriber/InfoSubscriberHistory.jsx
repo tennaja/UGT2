@@ -6,8 +6,8 @@ import { useForm, Controller } from "react-hook-form";
 import { Button, Card, Menu } from "@mantine/core";
 import * as WEB_URL from "../../Constants/WebURL";
 import { USER_GROUP_ID } from "../../Constants/Constants";
-import StatusLabel from "../../Component/Control/StatusLabel";
-import { SubscriberInfo,FunctionwithDrawSubscriber,clearModal } from "../../Redux/Subscriber/Action";
+import StatusLabel from "../Control/StatusLabel";
+import { SubscriberInfo } from "../../Redux/Subscriber/Action";
 import LoadPage from "../Control/LoadPage";
 import Skeleton from "@mui/material/Skeleton";
 import {
@@ -26,6 +26,16 @@ import ManageBtn from "../Control/ManageBtn";
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import CollapsInfo from "./CollapsInfo";
 
+import jpgIcon from "../assets/jpg.png";
+import pngIcon from "../assets/png.png";
+import csvIcon from "../assets/csv.png";
+import docxIcon from "../assets/docx.png";
+import xlsIcon from "../assets/xls.png";
+import txtIcon from "../assets/txt.png";
+import pdfIcon from "../assets/pdf.png";
+import pptxIcon from "../assets/pptx.png";
+import svgIcon from "../assets/svg.png";
+
 import { RiEyeLine } from "react-icons/ri";
 import { LiaDownloadSolid } from "react-icons/lia";
 
@@ -34,16 +44,8 @@ import FileInfo from "./FileInfo";
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { MdOutlineHistory } from "react-icons/md";
-import { LuTrash2 } from "react-icons/lu";
-import ModalConfirm from "../Control/Modal/ModalConfirm";
-import ModalConfirmCheckBox from "./ModalConfirmCheckBox";
-import ModalCompleteSubscriber from "./ModalCompleteSubscriber";
-import ModalFail from "../Control/Modal/ModalFail";
-import { message } from "antd";
-import ModalConfirmWithdrawn from "./ModalConfirmWithDrawn";
-import ModalCompleteSubscriberButton from "./ModalCompleteSubscriberButton";
 
-const InfoSubscriber = () => {
+const InfoSubscriberHistory = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -53,12 +55,7 @@ const InfoSubscriber = () => {
   const details = useSelector((state) => state.subscriber.detailInfoList);
   const [sumAllocateEnergy, setSumAllocateEnergy] = useState(0);
   const [isOpenLoading, setIsOpenLoading] = useState(false);
-  const [isOpenConfirmDel,setIsOpenConfirmDel] = useState(false)
-  const isError = useSelector((state)=>state.subscriber.isOpenFailModal)
-  const errorMessage = useSelector((state)=>state.subscriber.errmessage)
-  const isOpen = useSelector((state)=>state.subscriber.isOpen)
 
-  
   const {
     setValue,
     control,
@@ -174,7 +171,7 @@ const InfoSubscriber = () => {
 
   const getTime=(Date)=>{
     
-   // console.log(Date)
+    //console.log(Date)
     const dateToText = Date.toString()
     const time = dateToText.split("T")[1]
     const timeFull = time.split(".")[0]
@@ -186,7 +183,6 @@ const InfoSubscriber = () => {
     const now = new Date();
     const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
     const zipfilename = "Download_All_"+formattedDateTime
-  
     // Add each file to the ZIP
     filesData.forEach(file => {
       const { name, binary } = file;
@@ -261,33 +257,6 @@ const InfoSubscriber = () => {
     URL.revokeObjectURL(link.href);
 }
 
-const deleteSubscriber =()=>{
-  setIsOpenConfirmDel(true);
-}
-
-const closeDeleteSubscriber=()=>{
-  setIsOpenConfirmDel(false)
-}
-
-const confirmDeleteSubscriber=()=>{
-  setIsOpenConfirmDel(false)
-  //showLoading()
-  dispatch(FunctionwithDrawSubscriber(state.id))
-  //message.success(`Withdraw Subscriber Complete!`);
-  //setIsOpenConfirmDel(false)
-}
-
-const onCLickComplete=()=>{
-  showLoading()
-  dispatch(clearModal())
-  dispatch(
-    SubscriberInfo(state?.id,state?.contract, () => {
-      setIsOpenLoading(false);
-      hideLoading();
-    })
-  );
-}
-
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
@@ -326,7 +295,7 @@ const onCLickComplete=()=>{
                       <FaChevronCircleLeft
                         className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
                         size="30"
-                        onClick={() => navigate(WEB_URL.SUBSCRIBER_LIST)}
+                        onClick={() => navigate(`${WEB_URL.SUBSCRIBER_HISTORY}`, { state: { code: state?.id ,contract: state?.contract } })}
                       />
                       <span className="text-xl	mr-14 	leading-tight">
                         <b> Subscriber Info</b>
@@ -376,8 +345,8 @@ const onCLickComplete=()=>{
                             </Menu.Item>
                           </Menu.Dropdown>
                         </Menu> */}
-                        <ManageBtn
-                          actionList={details?.subscriberDetail?.activePortfolioStatus === "Y"?[
+                        {/*<ManageBtn
+                          actionList={[
                             {
                               icon: <FaRegEdit />,
                               label: "Edit",
@@ -388,30 +357,8 @@ const onCLickComplete=()=>{
                               label: "History",
                               onClick: onClickHistory,
                             }
-                          ]: details?.subscriberDetail?.subscriberStatusId === 3?
-                          [
-                            {
-                              icon: <MdOutlineHistory />,
-                              label: "History",
-                              onClick: onClickHistory,
-                            }
-                          ]:
-                          [{
-                            icon: <FaRegEdit />,
-                            label: "Edit",
-                            onClick: onClickEdit,
-                          },
-                          {
-                            icon: <MdOutlineHistory />,
-                            label: "History",
-                            onClick: onClickHistory,
-                          },
-                            {
-                              icon: <LuTrash2 />,
-                              label: "Delete",
-                              onClick: deleteSubscriber,
-                            }]}
-                        />
+                          ]}
+                        />*/}
                       </div>
                     )}
                     {/* Button Section */}
@@ -1556,38 +1503,9 @@ const onCLickComplete=()=>{
           </div>
         </div>
       </div>
-
       {/* {isOpenLoading && <LoadPage></LoadPage>} */}
-      {isOpenConfirmDel && (
-        <ModalConfirmWithdrawn
-          onClickConfirmBtn={confirmDeleteSubscriber}
-          onCloseModal={closeDeleteSubscriber}
-          title={"Withdraw this Subscriber ?"}
-          content={"Would you like to delete this subscriber? Subscriber will be permanently deleted."}
-          buttonTypeColor={"danger"}
-          showCheckBox={false}
-          sizeModal={"md"}
-        />
-      )}
-      {/*Madal Fail Save */}
-      {isError && (
-        <ModalFail
-          onClickOk={() => {
-            dispatch(clearModal())
-          }}
-          content={errorMessage}
-        />
-      )}
-      {/*Modal Create Complete */}
-      {isOpen && (
-        <ModalCompleteSubscriberButton
-          title="Done!"
-          context="Withdraw Subscriber Complete!"
-          onclick={onCLickComplete}
-        />
-      )}
     </div>
   );
 };
 
-export default InfoSubscriber;
+export default InfoSubscriberHistory;

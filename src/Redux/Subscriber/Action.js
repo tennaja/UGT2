@@ -15,6 +15,19 @@ import {
   EDIT_SUBSCRIBER_STATUS,
   EDIT_AGGREGATE_STATUS,
   FAIL_REQUEST,
+  CLEAR_MODAL,
+  GET_SUB_DISTRICTBENE_LIST_ALL,
+  GET_DISTRICTBENE_LIST_ADD,
+  GET_POSTCODEBENE_LIST_ADD,
+  GET_PROVINCEBENE_LIST_ADD,
+  GET_SUB_DISTRICTBENE_LIST_ADD,
+  GET_DISTRICTBENE_LIST_EDIT,
+  GET_POSTCODEBENE_LIST_EDIT,
+  GET_PROVINCEBENE_LIST_EDIT,
+  GET_SUB_DISTRICTBENE_LIST_EDIT,
+  GET_HISTORY_LOG_ACTIVE,
+  GET_HISTORY_LOG_INACTIVE,
+  GTE_BINARY_FILE_HISTORY
 } from "../../Redux/ActionType";
 import {
   DASHBOARD_LIST_URL,
@@ -30,6 +43,9 @@ import {
   EDIT_SUBSCRIBER_URL,
   EDIT_AGGREGATE_URL,
   POSTCODE_LIST_URL,
+  HISTORY_URL,
+  BINARY_FILE_HISTORY_URL,
+  WITHDRAWN_SUBSCRIBER_URL
 } from "../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../Utils/FuncUtils";
 
@@ -40,6 +56,12 @@ export const optimizeParam = (param) => {
   }
   optimizeParam = optimizeParam.slice(0, -1);
   return optimizeParam;
+};
+
+export const clearModal = (data) => {
+  return {
+    type: CLEAR_MODAL,
+  };
 };
 
 export const failRequest = (err) => {
@@ -64,14 +86,23 @@ export const getSubscriberManagementdashboard = (data) => {
 export const SubscriberManagementdashboard = (param) => {
   const findUtilityId = param?.findUtilityId;
   const UgtGroupId = param?.UgtGroupId;
+  const portfolioId = param?.findPortfolioId;
   let queryStringUtilityId = "";
+  let queryStringPortifolioId = "";
   if (findUtilityId.utility?.length > 0) {
     findUtilityId.utility.forEach((element) => {
       queryStringUtilityId += `findUtilityId=${element}` + "&";
     });
     queryStringUtilityId = queryStringUtilityId.slice(0, -1);
   }
-  const URL = `${DASHBOARD_LIST_URL}/${UgtGroupId}?${queryStringUtilityId}`;
+  if (portfolioId.portfolio?.length > 0) {
+    portfolioId.portfolio.forEach((element) => {
+      queryStringPortifolioId += `findPortfolioId=${element}` + "&";
+    });
+    queryStringPortifolioId = queryStringPortifolioId.slice(0, -1);
+  }
+  const URL = `${DASHBOARD_LIST_URL}/${UgtGroupId}?${queryStringUtilityId}&${queryStringPortifolioId}`;
+  console.log("Dash Board URL :",URL)
   return async (dispatch) => {
     await axios.get(URL).then(
       (response) => {
@@ -92,6 +123,7 @@ export const getSubscriberManagementAssign = (data, totalAssigned) => {
   };
 };
 export const SubscriberManagementAssign = (fetchParameter, callback) => {
+  console.log("Fecth Param",fetchParameter)
   const defualtParam = {
     findUgtGroupId: fetchParameter.findUgtGroupId,
     PageSize: fetchParameter.PageSize,
@@ -100,9 +132,12 @@ export const SubscriberManagementAssign = (fetchParameter, callback) => {
   const filterParam = {
     findStatusId: fetchParameter.findStatusId,
     findUtilityId: fetchParameter.findUtilityId,
+    findPortfolioId: fetchParameter.findPortfolioId
   };
   let queryStringUtilityId = "";
   let queryStringStatusId = "";
+  let queryStringPortfolioId = "";
+  console.log("Filter Param",filterParam)
 
   if (filterParam?.findUtilityId?.utility?.length > 0) {
     filterParam?.findUtilityId?.utility.forEach((element) => {
@@ -116,9 +151,18 @@ export const SubscriberManagementAssign = (fetchParameter, callback) => {
     });
     queryStringStatusId = queryStringStatusId.slice(0, -1);
   }
+  if (filterParam?.findPortfolioId?.portfolio?.length > 0) {
+    console.log("portfolio come function")
+    filterParam?.findPortfolioId?.portfolio.forEach((element) => {
+      queryStringPortfolioId += `findPortfolioId=${element}` + "&";
+    });
+    
+    queryStringPortfolioId = queryStringPortfolioId.slice(0, -1);
+  }
   const URL = `${ASSIGN_LIST_URL}${optimizeParam(
     defualtParam
-  )}&${queryStringUtilityId}&${queryStringStatusId}`;
+  )}&${queryStringUtilityId}&${queryStringStatusId}&${queryStringPortfolioId}`;
+  console.log("URL",URL)
   return async (dispatch) => {
     await axios.get(URL).then(
       (response) => {
@@ -155,6 +199,7 @@ export const getSubscriberManagementUnassign = (data, totalUnAssigned) => {
   };
 };
 export const SubscriberManagementUnassign = (fetchParameter, callback) => {
+  console.log("Fecth Param",fetchParameter)
   const defualtParam = {
     findUgtGroupId: fetchParameter.findUgtGroupId,
     PageSize: fetchParameter.PageSize,
@@ -163,10 +208,12 @@ export const SubscriberManagementUnassign = (fetchParameter, callback) => {
   const filterParam = {
     findStatusId: fetchParameter.findStatusId,
     findUtilityId: fetchParameter.findUtilityId,
+    findPortfolioId: fetchParameter.findPortfolioId
   };
   let queryStringUtilityId = "";
   let queryStringStatusId = "";
-
+  let queryStringPortfolioId = "";
+  console.log("Filter Param",filterParam)
   if (filterParam?.findUtilityId?.utility?.length > 0) {
     filterParam?.findUtilityId?.utility.forEach((element) => {
       queryStringUtilityId += `findUtilityId=${element}` + "&";
@@ -179,14 +226,21 @@ export const SubscriberManagementUnassign = (fetchParameter, callback) => {
     });
     queryStringStatusId = queryStringStatusId.slice(0, -1);
   }
+  if (filterParam?.findPortfolioId?.portfolio?.length > 0) {
+    filterParam?.findPortfolioId?.portfolio.forEach((element) => {
+      queryStringPortfolioId += `findPortfolioId=${element}` + "&";
+    });
+    queryStringPortfolioId = queryStringPortfolioId.slice(0, -1);
+  }
   const URL = `${UNASSIGN_LIST_URL}${optimizeParam(
     defualtParam
-  )}&${queryStringUtilityId}&${queryStringStatusId}`;
-
+  )}&${queryStringUtilityId}&${queryStringStatusId}&${queryStringPortfolioId}`;
+  console.log("URL Unassign",URL)
   return async (dispatch) => {
     await axios.get(URL).then(
       (response) => {
         if (response?.status == 200) {
+          console.log(response)
           const totalUnAssigned = JSON.parse(
             response.headers.get("X-Pagination") ?? "{}"
           );
@@ -228,6 +282,7 @@ export const SubscriberFilterList = () => {
       .then((response) => {
         if (response?.status == 200) {
           dispatch(getSubscriberFilterList(response.data));
+          //console.log(response.data)
         } else {
           dispatch(failRequest(error.message));
         }
@@ -244,8 +299,10 @@ export const getSubscriberInfo = (data) => {
     payload: data,
   };
 };
-export const SubscriberInfo = (id, callback) => {
-  const URL = `${SUBSCRIBER_INFO_URL}/${id}`;
+export const SubscriberInfo = (id,contractId, callback) => {
+  
+  const URL = `${SUBSCRIBER_INFO_URL}/${id}&${contractId}`;
+  console.log("URL Info",URL)
   return async (dispatch) => {
     await axios
       .get(URL)
@@ -278,15 +335,19 @@ export const FunctionCreateSubscriber = (data, callback) => {
   return async (dispatch) => {
     await axios.post(URL, param).then(
       (response) => {
+        console.log("Response Create Statue",response?.status)
         if (response?.status == 200 || response?.status == 201) {
+          console.log("Create Success")
           dispatch(createSubscriber(response?.data));
         } else {
+          console.log("Create not success")
           dispatch(setOpenFailModal());
           dispatch(failRequest(error.message));
         }
         callback && callback(response?.status);
       },
       (error) => {
+        console.log("Create Error")
         dispatch(setOpenFailModal());
         dispatch(failRequest(error.message));
         callback && callback(error);
@@ -401,13 +462,14 @@ export const FunctioneditAggregateSubscriber = (data, id, callback) => {
   };
 };
 
+//District bene
+
 export const setDistrictBeneList = (data) => {
   return {
     type: GET_DISTRICTBENE_LIST,
     payload: data,
   };
 };
-
 export const FetchDistrictBeneList = (provinceCode) => {
   const districtListUrl = DISTRICT_LIST_URL;
   return async (dispatch) => {
@@ -420,7 +482,8 @@ export const FetchDistrictBeneList = (provinceCode) => {
         const districtList = res.data?.filter(
           (item) => item.provinceCode == provinceCode
         );
-        dispatch(setDistrictBeneList(districtList));
+        const districtSort = districtList.sort((a,b)=>a.id-b.id)
+        dispatch(setDistrictBeneList(districtSort));
       })
       .catch((err) => {
         dispatch(failRequest(err.message));
@@ -429,13 +492,70 @@ export const FetchDistrictBeneList = (provinceCode) => {
   };
 };
 
+export const setDistrictBeneListAdd = (data) => {
+  return {
+    type: GET_DISTRICTBENE_LIST_ADD,
+    payload: data,
+  };
+};
+export const FetchDistrictBeneListAdd = (provinceCode) => {
+  const districtListUrl = DISTRICT_LIST_URL;
+  return async (dispatch) => {
+    //dispatch(makeRequest());
+    //setTimeout(() => {
+
+    await axios
+      .get(districtListUrl, getHeaderConfig())
+      .then((res) => {
+        const districtList = res.data?.filter(
+          (item) => item.provinceCode == provinceCode
+        );
+        const districtSort = districtList.sort((a,b)=>a.id-b.id)
+        dispatch(setDistrictBeneListAdd(districtSort));
+      })
+      .catch((err) => {
+        dispatch(failRequest(err.message));
+      });
+    // }, 2000);
+  };
+};
+
+export const setDistrictBeneListEdit = (data) => {
+  return {
+    type: GET_DISTRICTBENE_LIST_EDIT,
+    payload: data,
+  };
+};
+export const FetchDistrictBeneListEdit = (provinceCode) => {
+  const districtListUrl = DISTRICT_LIST_URL;
+  return async (dispatch) => {
+    //dispatch(makeRequest());
+    //setTimeout(() => {
+
+    await axios
+      .get(districtListUrl, getHeaderConfig())
+      .then((res) => {
+        const districtList = res.data?.filter(
+          (item) => item.provinceCode == provinceCode
+        );
+        const districtSort = districtList.sort((a,b)=>a.id-b.id)
+        dispatch(setDistrictBeneListEdit(districtSort));
+      })
+      .catch((err) => {
+        dispatch(failRequest(err.message));
+      });
+    // }, 2000);
+  };
+};
+
+//Sub District Bene
+
 export const setSubDistrictBeneList = (data) => {
   return {
     type: GET_SUB_DISTRICTBENE_LIST,
     payload: data,
   };
 };
-
 export const FetchSubDistrictBeneList = (districtCode, provinceCode) => {
   const subDistrictListUrl = SUB_DISTRICT_LIST_URL;
   return async (dispatch) => {
@@ -449,7 +569,8 @@ export const FetchSubDistrictBeneList = (districtCode, provinceCode) => {
             item.provinceCode == provinceCode &&
             item.districtCode == districtCode
         );
-        dispatch(setSubDistrictBeneList(subdistrictList));
+        const subDistrictSort = subdistrictList.sort((a,b)=> a.id-b.id)
+        dispatch(setSubDistrictBeneList(subDistrictSort));
       })
       .catch((err) => {
         dispatch(failRequest(err.message));
@@ -457,6 +578,90 @@ export const FetchSubDistrictBeneList = (districtCode, provinceCode) => {
     // }, 2000);
   };
 };
+
+export const FetchSubDistrictBeneListAll = (districtCode, provinceCode) => {
+  const subDistrictListUrl = SUB_DISTRICT_LIST_URL;
+  return async (dispatch) => {
+    //dispatch(makeRequest());
+    //setTimeout(() => {
+    await axios
+      .get(subDistrictListUrl, getHeaderConfig())
+      .then((res) => {
+        const subdistrictList = res.data?.sort((a,b)=> a.id - b.id)
+        dispatch(setSubDistrictBeneListAll(subdistrictList));
+      })
+      .catch((err) => {
+        dispatch(failRequest(err.message));
+      });
+    // }, 2000);
+  };
+};
+export const setSubDistrictBeneListAll = (data) => {
+  return {
+    type: GET_SUB_DISTRICTBENE_LIST_ALL,
+    payload: data,
+  };
+};
+
+export const setSubDistrictBeneListAdd = (data) => {
+  return {
+    type: GET_SUB_DISTRICTBENE_LIST_ADD,
+    payload: data,
+  };
+};
+export const FetchSubDistrictBeneListAdd = (districtCode, provinceCode) => {
+  const subDistrictListUrl = SUB_DISTRICT_LIST_URL;
+  return async (dispatch) => {
+    //dispatch(makeRequest());
+    //setTimeout(() => {
+    await axios
+      .get(subDistrictListUrl, getHeaderConfig())
+      .then((res) => {
+        const subdistrictList = res.data?.filter(
+          (item) =>
+            item.provinceCode == provinceCode &&
+            item.districtCode == districtCode
+        );
+        const subDistrictSort = subdistrictList.sort((a,b)=> a.id-b.id)
+        dispatch(setSubDistrictBeneListAdd(subDistrictSort));
+      })
+      .catch((err) => {
+        dispatch(failRequest(err.message));
+      });
+    // }, 2000);
+  };
+};
+
+export const setSubDistrictBeneListEdit = (data) => {
+  return {
+    type: GET_SUB_DISTRICTBENE_LIST_EDIT,
+    payload: data,
+  };
+};
+export const FetchSubDistrictBeneListEdit = (districtCode, provinceCode) => {
+  const subDistrictListUrl = SUB_DISTRICT_LIST_URL;
+  return async (dispatch) => {
+    //dispatch(makeRequest());
+    //setTimeout(() => {
+    await axios
+      .get(subDistrictListUrl, getHeaderConfig())
+      .then((res) => {
+        const subdistrictList = res.data?.filter(
+          (item) =>
+            item.provinceCode == provinceCode &&
+            item.districtCode == districtCode
+        );
+        const subDistrictSort = subdistrictList.sort((a,b)=> a.id-b.id)
+        dispatch(setSubDistrictBeneListEdit(subDistrictSort));
+      })
+      .catch((err) => {
+        dispatch(failRequest(err.message));
+      });
+    // }, 2000);
+  };
+};
+
+//PostCode Bene
 
 export const setPostcodeBeneList = (data) => {
   return {
@@ -489,6 +694,70 @@ export const FetchPostcodeBeneList = (provinceCode) => {
   };
 };
 
+export const setPostcodeBeneListAdd = (data) => {
+  return {
+    type: GET_POSTCODEBENE_LIST_ADD,
+    payload: data,
+  };
+};
+export const FetchPostcodeBeneListAdd = (provinceCode) => {
+  // const postCode = `${DEVICE_MANAGEMENT_URL}/${provinceCode}/postcode`
+  // const postCodeURL = `http://10.40.76.217/dev/api/ugt/v1/geography/geography.json`;
+  const postCodeURL = `${POSTCODE_LIST_URL}`;
+
+  return async (dispatch) => {
+    //dispatch(makeRequest());
+    //setTimeout(() => {
+
+    await axios
+      .get(postCodeURL, getHeaderConfig())
+      .then((res) => {
+        const postCodeList = res?.data.map((item) => {
+          return { ...item, postCodeDisplay: item.postalCode };
+        }); //เพิ่ม key postCodeDisplay สำหรับใช้กับ control select
+
+        dispatch(setPostcodeBeneListAdd(postCodeList));
+      })
+      .catch((err) => {
+        dispatch(failRequest(err.message));
+      });
+    // }, 2000);
+  };
+};
+
+export const setPostcodeBeneListEdit = (data) => {
+  return {
+    type: GET_POSTCODEBENE_LIST_EDIT,
+    payload: data,
+  };
+};
+export const FetchPostcodeBeneListEdit = (provinceCode) => {
+  // const postCode = `${DEVICE_MANAGEMENT_URL}/${provinceCode}/postcode`
+  // const postCodeURL = `http://10.40.76.217/dev/api/ugt/v1/geography/geography.json`;
+  const postCodeURL = `${POSTCODE_LIST_URL}`;
+
+  return async (dispatch) => {
+    //dispatch(makeRequest());
+    //setTimeout(() => {
+
+    await axios
+      .get(postCodeURL, getHeaderConfig())
+      .then((res) => {
+        const postCodeList = res?.data.map((item) => {
+          return { ...item, postCodeDisplay: item.postalCode };
+        }); //เพิ่ม key postCodeDisplay สำหรับใช้กับ control select
+
+        dispatch(setPostcodeBeneListEdit(postCodeList));
+      })
+      .catch((err) => {
+        dispatch(failRequest(err.message));
+      });
+    // }, 2000);
+  };
+};
+
+//Province Bene
+
 export const setProvinceBeneList = (data) => {
   return {
     type: GET_PROVINCEBENE_LIST,
@@ -507,7 +776,9 @@ export const FetchProvinceBeneList = (countryID) => {
       await axios
         .get(provinceListUrl, getHeaderConfig())
         .then((res) => {
-          dispatch(setProvinceBeneList(res?.data));
+          const datas = res?.data
+          datas.sort((a,b)=>a.id - b.id)
+          dispatch(setProvinceBeneList(datas));
         })
         .catch((err) => {
           dispatch(failRequest(err.message));
@@ -519,4 +790,194 @@ export const FetchProvinceBeneList = (countryID) => {
       dispatch(setProvinceList([]));
     };
   }
+};
+
+export const setProvinceBeneListAdd = (data) => {
+  return {
+    type: GET_PROVINCEBENE_LIST_ADD,
+    payload: data,
+  };
+};
+export const FetchProvinceBeneListAdd = (countryID) => {
+  const thailandID = 764;
+  const provinceListUrl = PROVINCE_LIST_URL;
+  // const provinceListUrl = `${DEVICE_MANAGEMENT_URL}/${countryID}/province`
+  if (countryID == thailandID) {
+    return async (dispatch) => {
+      //dispatch(makeRequest());
+      //setTimeout(() => {
+
+      await axios
+        .get(provinceListUrl, getHeaderConfig())
+        .then((res) => {
+          const datas = res?.data
+          datas.sort((a,b)=>a.id - b.id)
+          dispatch(setProvinceBeneListAdd(datas));
+        })
+        .catch((err) => {
+          dispatch(failRequest(err.message));
+        });
+      // }, 2000);
+    };
+  } else {
+    return async (dispatch) => {
+      dispatch(setProvinceList([]));
+    };
+  }
+};
+
+export const setProvinceBeneListEdit = (data) => {
+  return {
+    type: GET_PROVINCEBENE_LIST_EDIT,
+    payload: data,
+  };
+};
+export const FetchProvinceBeneListEdit = (countryID) => {
+  const thailandID = 764;
+  const provinceListUrl = PROVINCE_LIST_URL;
+  // const provinceListUrl = `${DEVICE_MANAGEMENT_URL}/${countryID}/province`
+  if (countryID == thailandID) {
+    return async (dispatch) => {
+      //dispatch(makeRequest());
+      //setTimeout(() => {
+
+      await axios
+        .get(provinceListUrl, getHeaderConfig())
+        .then((res) => {
+          const datas = res?.data
+          datas.sort((a,b)=>a.id - b.id)
+          dispatch(setProvinceBeneListEdit(datas));
+        })
+        .catch((err) => {
+          dispatch(failRequest(err.message));
+        });
+      // }, 2000);
+    };
+  } else {
+    return async (dispatch) => {
+      dispatch(setProvinceList([]));
+    };
+  }
+};
+
+//Subscriber History Log
+export const setHistoryLogAtive=(data)=>{
+  return {
+    type: GET_HISTORY_LOG_ACTIVE,
+    payload: data,
+  };
+}
+
+export const FetchHistoryLogActive = (subscriberId)=>{
+  const URL = `${HISTORY_URL}/${subscriberId}&Y`;
+  console.log("URL Info",URL)
+  return async (dispatch) => {
+    await axios
+      .get(URL)
+      .then((response) => {
+        if (response?.status == 200) {
+          dispatch(setHistoryLogAtive(response.data));
+          //callback && callback(response, null);
+          console.log("Log Active", response);
+        } else {
+          callback && callback(response, response?.statusText);
+        }
+      })
+      .catch((error) => {
+        dispatch(failRequest(error.message));
+        callback && callback(null, error);
+      });
+  };
+}
+
+export const setHistoryLogInactive=(data)=>{
+  return {
+    type: GET_HISTORY_LOG_INACTIVE,
+    payload: data,
+  };
+}
+
+export const FetchHistoryLogInactive = (subscriberId)=>{
+  const URL = `${HISTORY_URL}/${subscriberId}&N`;
+  console.log("URL Info",URL)
+  return async (dispatch) => {
+    await axios
+      .get(URL)
+      .then((response) => {
+        if (response?.status == 200) {
+          dispatch(setHistoryLogInactive(response.data));
+          //callback && callback(response, null);
+          console.log("Log Inactive", response);
+        } else {
+          callback && callback(response, response?.statusText);
+        }
+      })
+      .catch((error) => {
+        dispatch(failRequest(error.message));
+        callback && callback(null, error);
+      });
+  };
+}
+
+export const setBinaryFileHistory = (data) =>{
+  return {
+    type: GTE_BINARY_FILE_HISTORY,
+    payload: data,
+  };
+}
+
+export const GetBinaryFileHistory = (guid,callback) =>{
+  const URL = `${BINARY_FILE_HISTORY_URL}/${guid}`;
+  console.log("URL Info",URL)
+  return async (dispatch) => {
+    await axios
+      .get(URL)
+      .then((response) => {
+        if (response?.status == 200) {
+          dispatch(setBinaryFileHistory(response.data));
+          callback && callback(response, null);
+          console.log("Binary File", response);
+        } else {
+          callback && callback(response, response?.statusText);
+        }
+      })
+      .catch((error) => {
+        dispatch(failRequest(error.message));
+        callback && callback(null, error);
+      });
+  };
+}
+
+// Withdrawn Subscriber
+export const withDrawSubscriber = (data) => {
+  return {
+    type: CREATE_SUBSCRIBER_STATUS,
+    data: data,
+  };
+};
+export const FunctionwithDrawSubscriber = (id, callback) => {
+  const subscriberID = id;
+  const URL = WITHDRAWN_SUBSCRIBER_URL+"/"+subscriberID;
+  return async (dispatch) => {
+    await axios.post(URL).then(
+      (response) => {
+        console.log("Response Create Statue",response?.status)
+        if (response?.status == 200 || response?.status == 201) {
+          console.log("Create Success")
+          dispatch(withDrawSubscriber(response?.data));
+        } else {
+          console.log("Create not success")
+          dispatch(setOpenFailModal());
+          dispatch(failRequest(error.message));
+        }
+        callback && callback(response?.status);
+      },
+      (error) => {
+        console.log("Create Error")
+        dispatch(setOpenFailModal());
+        dispatch(failRequest(error.message));
+        callback && callback(error);
+      }
+    );
+  };
 };

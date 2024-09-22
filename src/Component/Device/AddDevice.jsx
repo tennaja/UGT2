@@ -352,22 +352,22 @@ const AddDevice = () => {
     const deviceData = { ...vFormData, uploadFile: fileListEvident ,userid : userData?.userRefId};
     console.log("deviceData=>>>", deviceData);
     dispatch(
-      FunctionAddDevice(deviceData, (status) => {
+      FunctionAddDevice(deviceData, () => {
         hideLoading();
-        if (status === 200 || status === 201) {
-          dispatch(
-            sendEmail(
-              titleemail,
-              emailBodytoOwner,
-              userData?.email == null ? "" : userData?.email,
-              () => {
-                hideLoading();
-              }
-            )
-          );
-        } else {
-          console.log("Failed to add device, email not sent.");
-        }
+        // if (status === 200 || status === 201) {
+        //   dispatch(
+        //     sendEmail(
+        //       titleemail,
+        //       emailBodytoOwner,
+        //       userData?.email == null ? "" : userData?.email,
+        //       () => {
+        //         hideLoading();
+        //       }
+        //     )
+        //   );
+        // } else {
+        //   console.log("Failed to add device, email not sent.");
+        // }
         // setIsOpenLoading(false);
       })
     );
@@ -463,7 +463,7 @@ const AddDevice = () => {
       );
       
       setValue("assignedUtilityCode", initValue);
-      setDisableUtility(false);
+      setDisableUtility(true);
     } else if (userGroupID == USER_GROUP_ID.MEA_SUBSCRIBER_MNG) {
       //Code here...
     } else if (userGroupID == USER_GROUP_ID.PEA_SUBSCRIBER_MNG) {

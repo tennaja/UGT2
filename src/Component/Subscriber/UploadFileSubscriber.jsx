@@ -20,7 +20,7 @@ import ModalConfirm from "../Control/Modal/ModalConfirm";
 import ModelFail from "../Control/Modal/ModalFail";
 import { message } from "antd";
 
-const UploadFile = (props) => {
+const UploadFileSubscriber = (props) => {
   const {
     register,
     label,
@@ -32,9 +32,11 @@ const UploadFile = (props) => {
     id,
     defaultValue = null,
     isViewMode = false,
+    accept="image/*, application/pdf, .doc, .docx, .xls, .xlsx, application/msword, .txt, .csv, .pptx , .ppt",
     onClickFile,
     ...inputProps
   } = props;
+  
 
   // const [percent,setPercent] = useState(0)
   // const [status,setStatus] = useState('')
@@ -45,7 +47,6 @@ const UploadFile = (props) => {
   const [uploaderKey, setUploaderKey] = useState(0); //for force Re-render
   const [isShowFailModal, setIsShowFailModal] = useState(false);
   const [messageFailModal, setMessageFailModal] = useState("");
-
   const Layout = ({
     input,
     previews,
@@ -56,7 +57,6 @@ const UploadFile = (props) => {
   }) => {
     const [myFile, setMyFile] = useState(null);
     const [showModalConfirm, setShowModalConfirm] = useState(false);
-
     const getIcon = (name) => {
       const extension = name?.split(".").pop();
       if (extension === "jpeg" || extension === "jpg") {
@@ -90,17 +90,17 @@ const UploadFile = (props) => {
 
     const handleDeleteClick = (file) => {
       setShowModalConfirm(true);
-
+      console.log("---Delete---",file)
       setMyFile(file);
     };
 
     const handleClickConfirmModal = () => {
       myFile.props.fileWithMeta.remove();
-
+        console.log("--file in delete function",myFile)
       // ---- ------//
       let id = myFile?.props?.meta?.id;
-      let evidentFileID = myFile?.props?.fileWithMeta?.file?.evidentFileID
-        ? myFile?.props?.fileWithMeta?.file?.evidentFileID
+      let evidentFileID = myFile?.props?.fileWithMeta?.file?.name
+        ? myFile?.props?.fileWithMeta?.file?.name
         : null;
       let fileName = myFile?.props?.meta?.name;
       // console.log("file>>",myFile)
@@ -132,6 +132,7 @@ const UploadFile = (props) => {
         }`}
       >
         {!isViewMode && (
+            
           <div
             {...dropzoneProps}
             style={{
@@ -147,11 +148,13 @@ const UploadFile = (props) => {
             <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
             <label>Drop file here or click to upload</label>
             <label>
-              Acceptable formats : jpeg,jpg,png,svg,pdf,doc, .xls, .docx, .xlsx,
-              .pptx, .txt, .csv
+              {accept === "image/*, application/pdf, .doc, .docx, .xls, .xlsx, application/msword, .txt, .csv, .pptx , .ppt"? "Acceptable formats : jpeg,jpg,png,svg,pdf,doc, .xls, .docx, .xlsx, .pptx, .txt, .csv":
+              accept === "image/*"?"Acceptable formats : jpeg,jpg,png,svg":
+              accept === "application/msword"?"Acceptable formats : doc, .docx":"Acceptable formats : "+accept}
             </label>
             <label>Each file can be a maximum of 20MB</label>
           </div>
+
         )}
 
         <div className="overflow-y-auto max-h-72">
@@ -172,7 +175,7 @@ const UploadFile = (props) => {
                         <label
                           onClick={() => {
                             onClickFile &&
-                              onClickFile(file?.props?.fileWithMeta?.file);
+                              onClickFile(file?.props?.file?.binary);
                           }}
                           className="text-sm text-[#6b6b6c] font-medium cursor-pointer"
                         >
@@ -255,7 +258,11 @@ const UploadFile = (props) => {
 
   useEffect(() => {
     //-- Initial Value --//
-    if (defaultValue) {
+    if(defaultValue){
+    console.log("Default file",defaultValue)
+    setInitFile(defaultValue);
+    }
+    /*if (defaultValue) {
       console.log("defaultValue", defaultValue);
       handleForceRerender();
 
@@ -264,7 +271,7 @@ const UploadFile = (props) => {
         return {
           name: item?.name,
           type: item?.mimeType,
-          evidentFileID: item?.uid,
+          FileID: item?.uid,
         };
       });
       const newFileList = fileList.map((itm) => {
@@ -281,7 +288,7 @@ const UploadFile = (props) => {
         return file;
       });
       setInitFile([...newFileList]);
-    }
+    }*/
   }, [defaultValue]);
 
   const getType = (name) => {
@@ -311,33 +318,38 @@ const UploadFile = (props) => {
     }
   };
 
-  const getUploadParams = async (props) => {
-    console.log("----TEST UPLOAD---", props);
+ 
 
-    var uploadData = new FormData();
-    // formData?.uploadFile?.forEach((fileItem, index) => {
-    //   uploadData.append("formFileList", fileItem.file);
-    // });
-    uploadData.append("formFile", props?.file);
-    uploadData.append("name", props?.meta?.name);
-    uploadData.append("notes", "test");
-    console.log("uploadData", uploadData);
+  const getUploadParams = ({file}) => {
+    console.log("----TEST UPLOAD---", file);
+    console.log("----Props----",props)
+    console.log("---Default Value---",defaultValue)
+    
+        //var uploadData = new FormData();
+        // formData?.uploadFile?.forEach((fileItem, index) => {
+        //   uploadData.append("formFileList", fileItem.file);
+        // });
+        //uploadData.append("formFile", props?.file);
+        //uploadData.append("name", props?.meta?.name);
+        //uploadData.append("notes", "test");
+        //console.log("uploadData", uploadData);
 
-    const result = await FetchUploadFile(uploadData);
-    console.log("result", result);
-    if (result?.res?.uid) {
-      Object.defineProperty(props?.file, "evidentFileID", {
-        value: result?.res?.uid,
-      });
-    }
-
-    onChngeInput && onChngeInput(props?.meta?.id, result);
+        //const result = await FetchUploadFile(uploadData);
+        /*console.log("result", result);
+        if (result?.res?.uid) {
+        Object.defineProperty(props?.file, "evidentFileID", {
+            value: result?.res?.uid,
+        });
+        }*/
+        console.log("Go to add file")
+        onChngeInput && onChngeInput(props?.meta?.id, file);
+    
     return { url: "https://httpbin.org/post" };
+
   };
   const handleChangeStatus = ({ meta, file, remove }, status, allFiles) => {
     // { meta ,file ,remove }, status, allFiles
     // let status = props?.meta?.status
-
     inputProps.onChange(allFiles);
     setNewRender(!newRender);
     console.log("status", status);
@@ -350,6 +362,7 @@ const UploadFile = (props) => {
       // console.log("allFiles",allFiles)
       // console.log("meta", meta);
       // onDeleteFile && onDeleteFile(meta?.id)
+      
       message.success(`${meta.name} remove successfully.`);
     }
 
@@ -375,7 +388,7 @@ const UploadFile = (props) => {
       message.error("Upload file fail!");
       remove();
     }
-
+    
     // setPercent(status.percent)
     // setStatus(status)
   };
@@ -407,7 +420,7 @@ const UploadFile = (props) => {
         initialFiles={initFile}
         maxSizeBytes={20000000}
         disableRemove={true} // Add this line to disable the remove button
-        accept="image/*, application/pdf, .doc, .docx, .xls, .xlsx, application/msword, .txt, .csv, .pptx , .ppt"
+        accept={accept}
         onChangeStatus={handleChangeStatus}
         styles={{
           inputLabel: { fontSize: "0px" },
@@ -439,4 +452,4 @@ const UploadFile = (props) => {
   );
 };
 
-export default UploadFile;
+export default UploadFileSubscriber;

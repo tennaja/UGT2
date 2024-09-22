@@ -10,6 +10,7 @@ import {
   GET_PROVINCE_LIST,
   SET_DISTRICT_LIST,
   SET_SUB_DISTRICT_LIST,
+  GET_COUNTRY_LIST_ADD,
 } from "../../Redux/ActionType";
 import {
   SUB_DISTRICT_LIST_URL,
@@ -50,6 +51,13 @@ export const setProvinceList = (data) => {
 export const setCountryList = (data) => {
   return {
     type: GET_COUNTRY_LIST,
+    payload: data,
+  };
+};
+
+export const setCountryListAdd = (data) => {
+  return {
+    type: GET_COUNTRY_LIST_ADD,
     payload: data,
   };
 };
@@ -105,6 +113,25 @@ export const FetchCountryList = () => {
       .get(`${countryListURL}`, getHeaderConfig())
       .then((res) => {
         dispatch(setCountryList(res?.data));
+      })
+      .catch((err) => {
+        dispatch(failRequest(err.message));
+      });
+    // }, 2000);
+  };
+};
+
+export const FetchCountryListAdd = () => {
+  // const countryListURL =
+  //   "http://10.40.76.217/dev/api/ugt/v1/countries-code/en/world.json";
+
+  const countryListURL = `${COUNTRY_LIST_URL}`;
+  return async (dispatch) => {
+    //setTimeout(() => {
+    await axios
+      .get(`${countryListURL}`, getHeaderConfig())
+      .then((res) => {
+        dispatch(setCountryListAdd(res?.data));
       })
       .catch((err) => {
         dispatch(failRequest(err.message));

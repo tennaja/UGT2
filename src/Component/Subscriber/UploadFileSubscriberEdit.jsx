@@ -19,8 +19,11 @@ import { useDispatch } from "react-redux";
 import ModalConfirm from "../Control/Modal/ModalConfirm";
 import ModelFail from "../Control/Modal/ModalFail";
 import { message } from "antd";
+import { LuTrash2 } from "react-icons/lu";
+import { RiEyeLine } from "react-icons/ri";
+import { TfiDownload } from "react-icons/tfi";
 
-const UploadFile = (props) => {
+const UploadFileSubscriber = (props) => {
   const {
     register,
     label,
@@ -32,9 +35,11 @@ const UploadFile = (props) => {
     id,
     defaultValue = null,
     isViewMode = false,
+    accept="image/*, application/pdf, .doc, .docx, .xls, .xlsx, application/msword, .txt, .csv, .pptx , .ppt",
     onClickFile,
     ...inputProps
   } = props;
+  
 
   // const [percent,setPercent] = useState(0)
   // const [status,setStatus] = useState('')
@@ -45,7 +50,6 @@ const UploadFile = (props) => {
   const [uploaderKey, setUploaderKey] = useState(0); //for force Re-render
   const [isShowFailModal, setIsShowFailModal] = useState(false);
   const [messageFailModal, setMessageFailModal] = useState("");
-
   const Layout = ({
     input,
     previews,
@@ -56,7 +60,7 @@ const UploadFile = (props) => {
   }) => {
     const [myFile, setMyFile] = useState(null);
     const [showModalConfirm, setShowModalConfirm] = useState(false);
-
+    //console.log("Previews",previews)
     const getIcon = (name) => {
       const extension = name?.split(".").pop();
       if (extension === "jpeg" || extension === "jpg") {
@@ -90,17 +94,17 @@ const UploadFile = (props) => {
 
     const handleDeleteClick = (file) => {
       setShowModalConfirm(true);
-
+      console.log("---Delete---",file)
       setMyFile(file);
     };
 
     const handleClickConfirmModal = () => {
       myFile.props.fileWithMeta.remove();
-
+        console.log("--file in delete function",myFile)
       // ---- ------//
       let id = myFile?.props?.meta?.id;
-      let evidentFileID = myFile?.props?.fileWithMeta?.file?.evidentFileID
-        ? myFile?.props?.fileWithMeta?.file?.evidentFileID
+      let evidentFileID = myFile?.props?.fileWithMeta?.file?.name
+        ? myFile?.props?.fileWithMeta?.file?.name
         : null;
       let fileName = myFile?.props?.meta?.name;
       // console.log("file>>",myFile)
@@ -124,6 +128,69 @@ const UploadFile = (props) => {
       //.........
     };
 
+    const handlePreview =(file)=>{
+      console.log(file)
+      if(file.binary === undefined){
+        const blobResult = file instanceof Blob ? file : new Blob([file], { type: file.type });;
+        console.log("Blob Result",blobResult)
+      
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const arrayBuffer = e.target.result;
+            console.log('Binary data as ArrayBuffer:', arrayBuffer);
+            const base64Content = arrayBuffer.split(",")[1];
+            
+            const pdfWindow = window.open("");
+          console.log("PDF",pdfWindow)
+          //console.log(type)
+          if (pdfWindow) {
+            pdfWindow.document.write(
+                `<iframe width="100%" height="100%" src="data:${file.type};base64,${base64Content}" style="border:none; position:fixed; top:0; left:0; bottom:0; right:0; width:100vw; height:100vh;"></iframe>`
+            );
+            pdfWindow.document.body.style.margin = "0"; // Remove any default margin
+                  pdfWindow.document.body.style.overflow = "hidden"; // Hide any scrollbars
+        } else {
+            alert('Unable to open new tab. Please allow popups for this website.');
+        }
+            
+        };
+        reader.readAsDataURL(blobResult);
+      }
+      else{
+          const pdfWindow = window.open("");
+          console.log("PDF",pdfWindow)
+          //console.log(type)
+          if (pdfWindow) {
+            pdfWindow.document.write(
+                `<iframe width="100%" height="100%" src="data:${file.type};base64,${file.binary}" style="border:none; position:fixed; top:0; left:0; bottom:0; right:0; width:100vw; height:100vh;"></iframe>`
+            );
+            pdfWindow.document.body.style.margin = "0"; // Remove any default margin
+                  pdfWindow.document.body.style.overflow = "hidden"; // Hide any scrollbars
+        } else {
+            alert('Unable to open new tab. Please allow popups for this website.');
+        }
+      }
+    }
+
+    const handleDownloadFile=(file)=>{
+        console.log(file)
+        const base64Content = file.binary//.split(",")[1];
+        const binaryString = atob(base64Content);
+        const binaryLength = binaryString.length;
+        const bytes = new Uint8Array(binaryLength);
+
+        for (let i = 0; i < binaryLength; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+        }
+
+        const blob = new Blob([bytes], { type: file.type });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = file.name;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+
     return (
       <div
         className={` ${
@@ -132,6 +199,7 @@ const UploadFile = (props) => {
         }`}
       >
         {!isViewMode && (
+            
           <div
             {...dropzoneProps}
             style={{
@@ -147,11 +215,13 @@ const UploadFile = (props) => {
             <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
             <label>Drop file here or click to upload</label>
             <label>
-              Acceptable formats : jpeg,jpg,png,svg,pdf,doc, .xls, .docx, .xlsx,
-              .pptx, .txt, .csv
+              {accept === "image/*, application/pdf, .doc, .docx, .xls, .xlsx, application/msword, .txt, .csv, .pptx , .ppt"? "Acceptable formats : jpeg,jpg,png,svg,pdf,doc, .xls, .docx, .xlsx, .pptx, .txt, .csv":
+              accept === "image/*"?"Acceptable formats : jpeg,jpg,png,svg":
+              accept === "application/msword"?"Acceptable formats : doc, .docx":"Acceptable formats : "+accept}
             </label>
             <label>Each file can be a maximum of 20MB</label>
           </div>
+
         )}
 
         <div className="overflow-y-auto max-h-72">
@@ -172,7 +242,7 @@ const UploadFile = (props) => {
                         <label
                           onClick={() => {
                             onClickFile &&
-                              onClickFile(file?.props?.fileWithMeta?.file);
+                              onClickFile(file?.props?.file?.binary);
                           }}
                           className="text-sm text-[#6b6b6c] font-medium cursor-pointer"
                         >
@@ -218,15 +288,29 @@ const UploadFile = (props) => {
                       {/* {readableBytes(file?.props?.meta?.size)} */}
                     </label>
                   </div>
+                  {file?.props?.meta?.name?.split(".").pop() === "pdf" && <button type="button"
+                    onClick={() => {
+                      handlePreview(file?.props?.fileWithMeta?.file);
+                    }}>
+                      <RiEyeLine className="pl-2 text-xl font-medium cursor-pointer h-[30px] w-[30px]"/>
+                      </button>}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleDownloadFile(file?.props?.fileWithMeta?.file);
+                    }}
+                  >
+                    <TfiDownload className="pl-2 text-xl font-medium cursor-pointer h-[30px] w-[30px]"/>
+                    
+                  </button>
                   <button
                     type="button"
                     onClick={() => {
                       handleDeleteClick(file);
                     }}
                   >
-                    <label className="pl-2 text-xl font-medium cursor-pointer">
-                      x
-                    </label>
+                    <LuTrash2 className="pl-2 text-xl font-medium cursor-pointer h-[30px] w-[30px]"/>
+                    
                   </button>
                 </div>
               </>
@@ -255,7 +339,85 @@ const UploadFile = (props) => {
 
   useEffect(() => {
     //-- Initial Value --//
-    if (defaultValue) {
+    if(defaultValue){
+      handleForceRerender();
+
+      // const fileList = [{name:'file1.png',type:getType('file1.png')},{name:'initFile2.pdf',type:'application/pdf'}] //Mock
+      const fileList = defaultValue?.map((item) => {
+        return {
+          name: item?.name,
+          type: item?.type,
+          id: item?.id,
+          binary: item?.binary,
+          guid: item?.guid
+        };
+      });
+      //console.log("File List",fileList)
+      const newFileList = fileList.map((itm) => {
+        let file = [];
+        file = new File([""], itm.name, {
+          type: itm?.type,
+          lastModified: new Date(),
+          
+        });
+        Object.defineProperty(file, "size", { value: 1024 * 1024 + 1 });
+        Object.defineProperty(file, "id", {
+          value: itm?.id,
+        });
+        Object.defineProperty(file, "binary", {
+          value: itm?.binary,
+        });
+        Object.defineProperty(file, "guid", {
+          value: itm?.guid,
+        });
+
+        return file;
+      });
+      setInitFile([...newFileList]);
+    
+    //console.log("Default file",defaultValue)
+    //setInitFile(defaultValue);
+      /*for(let i = 0; i < defaultValue.length;i++){
+        const file = defaultValue[i]
+        const byteCharacters = atob(file.binary);
+        const byteArrays = [];
+        
+        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            const slice = byteCharacters.slice(offset, offset + 512);
+            const byteNumbers = new Array(slice.length);
+            for (let j = 0; j < slice.length; j++) {
+                byteNumbers[j] = slice.charCodeAt(j);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        try {
+          const newBlob = new Blob(byteArrays, { type: file.type });
+
+          // ตรวจสอบว่า newBlob เป็นวัตถุ Blob ที่ถูกต้อง
+          if (newBlob instanceof Blob) {
+              const url = URL.createObjectURL(newBlob);
+              console.log("This is blob")
+              console.log("file.type:", file.type);
+              
+              console.log("Test URL:", url);
+              setInitFile((prevFileList) => {
+                  let newFileList = [
+                      ...prevFileList,
+                      { guid: file.guid, name: file.name, size: newBlob.size, type: file.type, url: url,binary: file.binary },
+                  ];
+                  return newFileList;
+              });
+          } else {
+              console.error("Error: newBlob is not a valid Blob object", newBlob);
+          }
+      } catch (error) {
+          console.error("Error creating Blob or Object URL:", error);
+      }
+      }*/
+    }
+    /*if (defaultValue) {
       console.log("defaultValue", defaultValue);
       handleForceRerender();
 
@@ -264,7 +426,7 @@ const UploadFile = (props) => {
         return {
           name: item?.name,
           type: item?.mimeType,
-          evidentFileID: item?.uid,
+          FileID: item?.uid,
         };
       });
       const newFileList = fileList.map((itm) => {
@@ -281,8 +443,25 @@ const UploadFile = (props) => {
         return file;
       });
       setInitFile([...newFileList]);
-    }
+    }*/
   }, [defaultValue]);
+
+  const convertToByte =(base64)=>{
+    const byteCharacters = atob(base64);
+        const byteArrays = [];
+        
+        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            const slice = byteCharacters.slice(offset, offset + 512);
+            const byteNumbers = new Array(slice.length);
+            for (let j = 0; j < slice.length; j++) {
+                byteNumbers[j] = slice.charCodeAt(j);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+
+        return byteArrays
+  }
 
   const getType = (name) => {
     const extension = name?.split(".").pop();
@@ -311,33 +490,35 @@ const UploadFile = (props) => {
     }
   };
 
-  const getUploadParams = async (props) => {
-    console.log("----TEST UPLOAD---", props);
+  const getUploadParams = ({file}) => {
+    //console.log("----TEST UPLOAD---", file);
+    //console.log("----Props----",props)
+    //console.log("---Default Value---",defaultValue)
+        //var uploadData = new FormData();
+        // formData?.uploadFile?.forEach((fileItem, index) => {
+        //   uploadData.append("formFileList", fileItem.file);
+        // });
+        //uploadData.append("formFile", props?.file);
+        //uploadData.append("name", props?.meta?.name);
+        //uploadData.append("notes", "test");
+        //console.log("uploadData", uploadData);
 
-    var uploadData = new FormData();
-    // formData?.uploadFile?.forEach((fileItem, index) => {
-    //   uploadData.append("formFileList", fileItem.file);
-    // });
-    uploadData.append("formFile", props?.file);
-    uploadData.append("name", props?.meta?.name);
-    uploadData.append("notes", "test");
-    console.log("uploadData", uploadData);
-
-    const result = await FetchUploadFile(uploadData);
-    console.log("result", result);
-    if (result?.res?.uid) {
-      Object.defineProperty(props?.file, "evidentFileID", {
-        value: result?.res?.uid,
-      });
-    }
-
-    onChngeInput && onChngeInput(props?.meta?.id, result);
+        //const result = await FetchUploadFile(uploadData);
+        /*console.log("result", result);
+        if (result?.res?.uid) {
+        Object.defineProperty(props?.file, "evidentFileID", {
+            value: result?.res?.uid,
+        });
+        }*/
+        //console.log("Go to add file")
+        onChngeInput && onChngeInput(file?.id, file);
+    
     return { url: "https://httpbin.org/post" };
+
   };
   const handleChangeStatus = ({ meta, file, remove }, status, allFiles) => {
     // { meta ,file ,remove }, status, allFiles
     // let status = props?.meta?.status
-
     inputProps.onChange(allFiles);
     setNewRender(!newRender);
     console.log("status", status);
@@ -350,6 +531,7 @@ const UploadFile = (props) => {
       // console.log("allFiles",allFiles)
       // console.log("meta", meta);
       // onDeleteFile && onDeleteFile(meta?.id)
+      
       message.success(`${meta.name} remove successfully.`);
     }
 
@@ -375,7 +557,53 @@ const UploadFile = (props) => {
       message.error("Upload file fail!");
       remove();
     }
+    if (status === 'error') {
+      console.error('Error with file:', meta);
+      return;
+    }
+    /*if(status === "preparing"){
+      console.log('File detected:', file);
 
+      console.log('Preparing file:', meta);
+      
+      if (file) {
+        console.log('File detected:', file);
+      } else {
+        console.error('No file detected');
+        return;
+      }
+      console.log('File instance:', file instanceof Blob, file instanceof File);
+      console.log('File details:', file);
+      console.log('Type of file:', typeof file);
+      console.log('File name:', file.name);
+      console.log('File type:', file.type);
+      console.log('File size:', file.size);
+      if (file && file instanceof File) {
+        console.log('File is an instance of File');
+      } else if (file && file instanceof Blob) {
+        console.log('File is an instance of Blob');
+      } else {
+        console.log('File is neither Blob nor File');
+      }
+      // ตรวจสอบว่าไฟล์ถูกต้องและเป็นชนิดที่เราต้องการ
+      if (file instanceof Blob || file instanceof File) {
+        try {
+          const url = URL.createObjectURL(file);
+          console.log('File URL:', url); // ใช้ URL นี้ในการแสดงตัวอย่างไฟล์ หรืออื่นๆ
+          setFile(file); // ส่งไฟล์ไปยัง state ในคอมโพเนนต์หลัก
+        } catch (error) {
+          console.error("Failed to create object URL:", error);
+        }
+      } else {
+        console.error("Invalid file type or file not selected.");
+      }
+        
+
+    
+    }*/
+  
+    
+    
     // setPercent(status.percent)
     // setStatus(status)
   };
@@ -387,6 +615,8 @@ const UploadFile = (props) => {
     // Increment the key to force a re-render
     setUploaderKey((prevKey) => prevKey + 1);
   };
+
+
   return (
     <>
       {label && (
@@ -407,7 +637,7 @@ const UploadFile = (props) => {
         initialFiles={initFile}
         maxSizeBytes={20000000}
         disableRemove={true} // Add this line to disable the remove button
-        accept="image/*, application/pdf, .doc, .docx, .xls, .xlsx, application/msword, .txt, .csv, .pptx , .ppt"
+        accept={accept}
         onChangeStatus={handleChangeStatus}
         styles={{
           inputLabel: { fontSize: "0px" },
@@ -439,4 +669,4 @@ const UploadFile = (props) => {
   );
 };
 
-export default UploadFile;
+export default UploadFileSubscriber;

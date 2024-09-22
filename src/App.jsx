@@ -45,7 +45,8 @@ import TransferInfo from "./Component/EAC/Transfer/TransferInfo";
 import Redemption from "./Component/EAC/Redemption/Redemption";
 import RedemptionInfo from "./Component/EAC/Redemption/RedemptionInfo";
 import RenewDevice from "./Component/Device/RenewDevice";
-
+import HistorySubscriber from "./Component/Subscriber/HistorySubscriber";
+import InfoSubscriberHistory from "./Component/Subscriber/InfoSubscriberHistory";
 function App() {
   return (
     <Provider store={Store}>
@@ -86,6 +87,14 @@ function App() {
                 <Route
                   path={webURL.SUBSCRIBER_INFO}
                   element={<InfoSubscriber></InfoSubscriber>}
+                ></Route>
+                <Route
+                  path={webURL.SUBSCRIBER_HISTORY}
+                  element={<HistorySubscriber></HistorySubscriber>}
+                ></Route>
+                <Route
+                  path={webURL.SUBSCRIBER_HISTORY_INFO}
+                  element={<InfoSubscriberHistory></InfoSubscriberHistory>}
                 ></Route>
                 <Route
                   path={webURL.PORTFOLIO_LIST}

@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
+import Calendar from "../assets/calendars.svg"
+import User from "../assets/3 User.svg"
+import Clock from "../assets/Clock.svg"
+import Graph from "../assets/graphNew.svg"
 import SubscriberLOGO02 from "../assets/contractenergy.svg";
 import SubscriberLOGO03 from "../assets/accumconsum.svg";
 import { useForm, Controller } from "react-hook-form";
@@ -11,6 +15,7 @@ import * as WEB_URL from "../../Constants/WebURL";
 import addLogoWhite from "../assets/Add-User.svg";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Multiselect from "../Control/Multiselect";
+import MySelect from "../Control/Select"
 import { setCookie } from "../../Utils/FuncUtils";
 import {
   SUB_MENU_ID,
@@ -32,6 +37,81 @@ import { CloseButton, Input } from "@mantine/core";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Highlighter from "react-highlight-words";
 import numeral from "numeral";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import MySelectSubscriber from "./SelectSubscriber";
+
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+
+const data = {
+  labels: ["EGAT", "MEA", "PEA"],
+  datasets: [
+    {
+      data: [35, 35, 30],
+      backgroundColor: [
+        "#FFC72C",
+        "#FD812E",
+        "#B64BEB",
+        /*
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',*/
+      ],
+      borderColor: ["#FFC72C", "#FD812E", "#B64BEB"],
+      borderWidth: 1,
+      hoverOffset: 4,
+    },
+  ],
+};
+
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: false,
+      /*position: 'bottom', // Legend at the bottom
+      labels: {
+        boxWidth: 20,
+        padding: 20,
+      },*/
+    },
+    datalabels: {
+      color: "#fff",
+      formatter: (value) => {
+        return `${value}%`; // Display percentage value
+      },
+      anchor: "center",
+      align: "center",
+      font: {
+        weight: "bold",
+        size: 16,
+      },
+    },
+    tooltip: {
+      enabled: true,
+      backgroundColor: "rgba(0, 0, 0, 0.7)", // Background color of the tooltip
+      titleFont: {
+        size: 0,
+      },
+      bodyFont: {
+        size: 14,
+      },
+      callbacks: {
+        label: function (tooltipItem) {
+          // Customize the label content
+          const dataLabel = data.labels[tooltipItem.dataIndex];
+          const value = tooltipItem.raw;
+          return `${dataLabel}: ${value}%`;
+        },
+      },
+    },
+    title: {
+      display: true,
+      text: "Custom Pie Chart with Labels Inside",
+    },
+  },
+};
 
 const itemsPerPage = 200;
 
@@ -68,15 +148,235 @@ const Subscriberlisting = (props) => {
   const [isUnassignedStatusId, setIsUnassignedStatusId] = useState({
     status: null,
   });
-  const statusList = filterList?.findStatus;
+  const [isAssignedPortfolioId, setIsAssignedPortfolioId] = useState({
+    portfolio: null,
+  });
+  const [isUnassignedPortfolioId, setIsUnassignedPortfolioId] = useState({
+    portfolio: null,
+  });
+  const statusListActive = filterList?.findStatusActive;
+  const statusListInactive = filterList?.findStatusInactive;
+  const portfolioList = filterList?.findPortfolio;
   const utilityList = filterList?.findUtility;
 
   const [searchQueryAssigned, setSearchQueryAssigned] = useState("");
   const [searchQueryUnAssigned, setSearchQueryUnAssigned] = useState("");
+  const [labelPie,setLabelPie] = useState([]);
+  const [dataOnPie,setOnDataPie] = useState([]);
 
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
   );
+
+  const [dataPie,setDataPie] = useState({labels: ["EGAT", "MEA", "PEA"],
+    datasets: [
+      {
+        data: [0, 0, 0],
+        backgroundColor: [
+          "#FFC72C",
+          "#FD812E",
+          "#B64BEB",
+          /*
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',*/
+        ],
+        borderColor: ["#FFC72C", "#FD812E", "#B64BEB"],
+        borderWidth: 1,
+        hoverOffset: 4,
+      },
+    ],})
+
+  useEffect(()=>{
+    setDataPieChart();
+  },[dashboardOBJ])
+
+  const setDataPieChart =()=>{
+    const egat = dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.filter((item)=>item.utilityName === "EGAT")
+    const mea = dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.filter((item)=>item.utilityName === "MEA")
+    const pea = dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.filter((item)=>item.utilityName === "PEA")
+    const egatNum = egat?.length === 0 ? 0:egat?.[0].totalUtility
+    const meaNum = mea?.length === 0 ? 0:mea?.[0].totalUtility
+    const peaNum = pea?.length === 0 ? 0:pea?.[0].totalUtility
+    let labelname = []
+    let datanum = []
+    for(let i = 0;i < dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.length;i++){
+      labelname.push(dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].utilityName)
+        datanum.push(dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].totalUtility)
+      /*if(i === 0){
+        console.log("I",dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].utilityName)
+        setLabelPie(dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].utilityName)
+        setOnDataPie(dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].totalUtility)
+      }
+      else{
+        setLabelPie([...labelPie,dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].utilityName])
+        setOnDataPie([...dataOnPie,dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].totalUtility])
+      }*/
+    }
+    console.log("Label Name",labelname)
+    console.log("DATA",egat,meaNum,mea,pea)
+
+    const dataObj = {
+      labels: labelname,
+      datasets: [
+        {
+          data: datanum,
+          backgroundColor: [
+            "#FFC72C",
+            "#FD812E",
+            "#B64BEB",
+            /*
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)',*/
+          ],
+          borderColor: ["#FFC72C", "#FD812E", "#B64BEB"],
+          borderWidth: 1,
+          hoverOffset: 4,
+        },
+      ],
+    }
+    setDataPie(dataObj)
+    
+    /*if(egat !== 0 && meaNum !== 0 && peaNum !== 0){
+      const dataObj = {
+        labels: ["EGAT", "MEA", "PEA"],
+        datasets: [
+          {
+            data: [egatNum, meaNum, peaNum],
+            backgroundColor: [
+              "#FFC72C",
+              "#FD812E",
+              "#B64BEB",
+            ],
+            borderColor: ["#FFC72C", "#FD812E", "#B64BEB"],
+            borderWidth: 1,
+            hoverOffset: 4,
+          },
+        ],
+      }
+      setDataPie(dataObj)
+    }
+    else if(egat !== 0 && meaNum === 0 && peaNum === 0){
+      const dataObj = {
+        labels: ["EGAT"],
+        datasets: [
+          {
+            data: [egatNum],
+            backgroundColor: [
+              "#FFC72C",
+              
+              
+            ],
+            borderColor: ["#FFC72C",],
+            borderWidth: 1,
+            hoverOffset: 4,
+          },
+        ],
+      }
+      setDataPie(dataObj)
+    }
+    else if(egat === 0 && meaNum !== 0 && peaNum === 0){
+      const dataObj = {
+        labels: ["MEA"],
+        datasets: [
+          {
+            data: [meaNum],
+            backgroundColor: [
+              
+              "#FD812E",
+              
+             
+            ],
+            borderColor: ["#FD812E"],
+            borderWidth: 1,
+            hoverOffset: 4,
+          },
+        ],
+      }
+      setDataPie(dataObj)
+    }
+    else if(egat === 0 && meaNum === 0 && peaNum !== 0){
+      const dataObj = {
+        labels: ["PEA"],
+        datasets: [
+          {
+            data: [peaNum],
+            backgroundColor: [
+              
+              "#B64BEB",
+              
+             
+            ],
+            borderColor: ["#B64BEB"],
+            borderWidth: 1,
+            hoverOffset: 4,
+          },
+        ],
+      }
+      setDataPie(dataObj)
+    }
+    else if(egat !== 0 && meaNum !== 0 && peaNum === 0){
+      const dataObj = {
+        labels: ["EGAT","MEA"],
+        datasets: [
+          {
+            data: [egatNum,meaNum],
+            backgroundColor: [
+              "#FFC72C",
+              "#FD812E",
+              
+             
+            ],
+            borderColor: ["#FFC72C","#FD812E"],
+            borderWidth: 1,
+            hoverOffset: 4,
+          },
+        ],
+      }
+      setDataPie(dataObj)
+    }
+    else if(egat !== 0 && meaNum === 0 && peaNum !== 0){
+      const dataObj = {
+        labels: ["EGAT","PEA"],
+        datasets: [
+          {
+            data: [egatNum,peaNum],
+            backgroundColor: [
+              "#FFC72C",
+              "#B64BEB",
+              
+             
+            ],
+            borderColor: ["#FFC72C","#B64BEB"],
+            borderWidth: 1,
+            hoverOffset: 4,
+          },
+        ],
+      }
+      setDataPie(dataObj)
+    }
+    else if(egat === 0 && meaNum !== 0 && peaNum !== 0){
+      const dataObj = {
+        labels: ["MEA","PEA"],
+        datasets: [
+          {
+            data: [meaNum,peaNum],
+            backgroundColor: [
+              "#FD812E",
+              "#B64BEB",
+              
+              
+            ],
+            borderColor: ["#FD812E","#B64BEB"],
+            borderWidth: 1,
+            hoverOffset: 4,
+          },
+        ],
+      }
+      setDataPie(dataObj)
+    }*/
+  }
 
   const columnsAssigned = [
     {
@@ -173,12 +473,27 @@ const Subscriberlisting = (props) => {
       ),
     },
     {
+      id: "portfolioCode",
+      label: "Portfolio Code",
+      render: (row) => (
+        <span>
+          <Highlighter
+            highlightClassName="highlight"
+            highlightTag={Highlight}
+            searchWords={[searchQueryAssigned]}
+            autoEscape={true}
+            textToHighlight={row.portfoliocode}
+          />
+        </span>
+      ),
+    },
+    {
       id: "subscriberStatusId",
       label: "Status",
       render: (row) => (
         // StatusLabel(row?.subscriberStatusId == 1 ? "Inactive" : "Active"),
         <StatusLabel
-          status={row?.subscriberStatusId == 1 ? "Inactive" : "Active"}
+          status={row?.subscriberStatusId == 1 ? "Inactive" : row?.subscriberStatusId == 2 ?"Active":row?.subscriberStatusId == 3 ?"Withdrawn":"Expired"}
           searchQuery={searchQueryAssigned}
         />
       ),
@@ -189,7 +504,7 @@ const Subscriberlisting = (props) => {
       render: (row) => (
         <Link
           type="button"
-          state={{ id: row.id }}
+          state={{ id: row.id, contract:0 }}
           to={WEB_URL.SUBSCRIBER_INFO}
           className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#4D6A00] bg-[#87BE33]`}
         >
@@ -290,12 +605,27 @@ const Subscriberlisting = (props) => {
       ),
     },
     {
+      id: "portfolioCode",
+      label: "Portfolio Code",
+      render: (row) => (
+        <span>
+          <Highlighter
+            highlightClassName="highlight"
+            highlightTag={Highlight}
+            searchWords={[searchQueryAssigned]}
+            autoEscape={true}
+            textToHighlight={row.portfoliocode}
+          />
+        </span>
+      ),
+    },
+    {
       id: "subscriberStatusId",
       label: "Status",
       render: (row) => (
         // StatusLabel(row?.subscriberStatusId == 1 ? "Inactive" : "Active"),
         <StatusLabel
-          status={row?.subscriberStatusId == 1 ? "Inactive" : "Active"}
+          status={row?.subscriberStatusId == 1 ? "Inactive" : row?.subscriberStatusId == 2 ?"Active":row?.subscriberStatusId == 3 ?"Withdrawn":"Expired"}
           searchQuery={searchQueryUnAssigned}
         />
       ),
@@ -316,7 +646,7 @@ const Subscriberlisting = (props) => {
       render: (row) => (
         <Link
           type="button"
-          state={{ id: row.id }}
+          state={{ id: row.id, contract:0 }}
           to={WEB_URL.SUBSCRIBER_INFO}
           className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#4D6A00] bg-[#87BE33]`}
         >
@@ -348,6 +678,7 @@ const Subscriberlisting = (props) => {
         const paramDashboard = {
           findUtilityId: permissFindUntilyty,
           UgtGroupId: currentUGTGroup?.id,
+          findPortfolioId: isAssignedPortfolioId,
         };
         dispatch(SubscriberManagementdashboard(paramDashboard));
       } else if (
@@ -358,6 +689,7 @@ const Subscriberlisting = (props) => {
         const paramDashboard = {
           findUtilityId: permissFindUntilyty,
           UgtGroupId: currentUGTGroup?.id,
+          findPortfolioId: isAssignedPortfolioId,
         };
         dispatch(SubscriberManagementdashboard(paramDashboard));
       } else if (
@@ -368,6 +700,7 @@ const Subscriberlisting = (props) => {
         const paramDashboard = {
           findUtilityId: permissFindUntilyty,
           UgtGroupId: currentUGTGroup?.id,
+          findPortfolioId: isAssignedPortfolioId,
         };
         dispatch(SubscriberManagementdashboard(paramDashboard));
       } else if (
@@ -378,25 +711,33 @@ const Subscriberlisting = (props) => {
         const paramDashboard = {
           findUtilityId: permissFindUntilyty,
           UgtGroupId: currentUGTGroup?.id,
+          findPortfolioId: isAssignedPortfolioId,
         };
         dispatch(SubscriberManagementdashboard(paramDashboard));
       }
     }
-  }, [currentUGTGroup]);
+  }, [currentUGTGroup,isAssignedPortfolioId]);
 
   // assign table
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
+      console.log("Fetch assign")
       fetchTableAssign();
     }
-  }, [currentUGTGroup, isAssignedStatusId, userData]);
+  }, [currentUGTGroup, isAssignedStatusId, userData, isAssignedPortfolioId]);
 
   // unAssign table
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
+      console.log("Fetch Unassign")
       fetchTableUnassign();
     }
-  }, [currentUGTGroup, isUnassignedStatusId, userData]);
+  }, [
+    currentUGTGroup,
+    isUnassignedStatusId,
+    userData,
+    isAssignedPortfolioId,
+  ]);
 
   const fetchTableAssign = () => {
     if (currentUGTGroup?.id !== null) {
@@ -413,6 +754,7 @@ const Subscriberlisting = (props) => {
           findUgtGroupId: currentUGTGroup?.id,
           findUtilityId: permissFindUntilyty,
           findStatusId: isAssignedStatusId,
+          findPortfolioId: isAssignedPortfolioId,
           PageNumber: 1,
           PageSize: itemsPerPage,
         };
@@ -436,6 +778,7 @@ const Subscriberlisting = (props) => {
           findUgtGroupId: currentUGTGroup?.id,
           findUtilityId: permissFindUntilyty,
           findStatusId: isAssignedStatusId,
+          findPortfolioId: isAssignedPortfolioId,
           PageNumber: 1,
           PageSize: itemsPerPage,
         };
@@ -459,9 +802,11 @@ const Subscriberlisting = (props) => {
           findUgtGroupId: currentUGTGroup?.id,
           findUtilityId: permissFindUntilyty,
           findStatusId: isAssignedStatusId,
+          findPortfolioId: isAssignedPortfolioId,
           PageNumber: 1,
           PageSize: itemsPerPage,
         };
+        console.log("Param Filter",paramSubscriberAssign)
         dispatch(SubscriberFilterList());
         dispatch(
           SubscriberManagementAssign(paramSubscriberAssign, (res) => {
@@ -480,6 +825,7 @@ const Subscriberlisting = (props) => {
           findUgtGroupId: currentUGTGroup?.id,
           findUtilityId: permissFindUntilyty,
           findStatusId: isAssignedStatusId,
+          findPortfolioId: isAssignedPortfolioId,
           PageNumber: 1,
           PageSize: itemsPerPage,
         };
@@ -508,6 +854,7 @@ const Subscriberlisting = (props) => {
           findUgtGroupId: currentUGTGroup?.id,
           findUtilityId: permissFindUntilyty,
           findStatusId: isUnassignedStatusId,
+          findPortfolioId: isAssignedPortfolioId,
           PageNumber: 1,
           PageSize: itemsPerPage,
         };
@@ -529,6 +876,7 @@ const Subscriberlisting = (props) => {
           findUgtGroupId: currentUGTGroup?.id,
           findUtilityId: permissFindUntilyty,
           findStatusId: isUnassignedStatusId,
+          findPortfolioId: isAssignedPortfolioId,
           PageNumber: 1,
           PageSize: itemsPerPage,
         };
@@ -550,6 +898,7 @@ const Subscriberlisting = (props) => {
           findUgtGroupId: currentUGTGroup?.id,
           findUtilityId: permissFindUntilyty,
           findStatusId: isUnassignedStatusId,
+          findPortfolioId: isAssignedPortfolioId,
           PageNumber: 1,
           PageSize: itemsPerPage,
         };
@@ -571,6 +920,7 @@ const Subscriberlisting = (props) => {
           findUgtGroupId: currentUGTGroup?.id,
           findUtilityId: permissFindUntilyty,
           findStatusId: isUnassignedStatusId,
+          findPortfolioId: isAssignedPortfolioId,
           PageNumber: 1,
           PageSize: itemsPerPage,
         };
@@ -593,6 +943,23 @@ const Subscriberlisting = (props) => {
     const newCurrentFilter = { ...isAssignedUtilityId, utility: currentFilter };
     setIsAssignedUtilityId(newCurrentFilter);
   };
+  const handleChangeAssignPortfolio = (data) => {
+    console.log("Data input",data)
+    const currentFilter = data === null?null:data.id /*data.map((item) => {
+      return item.id;
+    });*/
+    console.log(currentFilter)
+    const newCurrentFilter = {
+      ...isAssignedPortfolioId,
+      portfolio: [currentFilter],
+    };
+    const newNullFilter = {
+      ...isAssignedPortfolioId,
+      portfolio: null,
+    }
+    console.log("New Data",data === null?newNullFilter:newCurrentFilter)
+    setIsAssignedPortfolioId(data === null?newNullFilter:newCurrentFilter);
+  };
   const handleChangeAssignStatus = (data) => {
     const currentFilter = data.map((item) => {
       return item.id;
@@ -609,6 +976,16 @@ const Subscriberlisting = (props) => {
       utility: currentFilter,
     };
     setIsUnassignedUtilityId(newCurrentFilter);
+  };
+  const handleChangeUnassignPortfolio = (data) => {
+    const currentFilter = data.map((item) => {
+      return item.id;
+    });
+    const newCurrentFilter = {
+      ...isUnassignedPortfolioId,
+      utility: currentFilter,
+    };
+    setIsUnassignedPortfolioId(newCurrentFilter);
   };
   const handleChangeUnassignStatus = (data) => {
     const currentFilter = data.map((item) => {
@@ -814,134 +1191,302 @@ const Subscriberlisting = (props) => {
       <div className="min-h-screen p-6 items-center justify-center">
         <div className="container max-w-screen-lg mx-auto">
           <div className="text-left flex flex-col gap-3">
-            <div>
-              <h2 className="font-semibold text-xl text-black">
+            <div className="flex justify-between">
+              <div>
+                <h2 className="font-semibold text-xl text-black">
                 Subscriber Info
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
                 {currentUGTGroup?.name} / Subscriber Management / Subscriber
                 Info
               </p>
+              </div>
+              
+              <div>
+                <div className="w-96 px-2">
+                            <Controller
+                              name="assignPortfolio"
+                              control={control}
+                              defaultValue={null}
+                              render={({ field }) => (
+                                <MySelectSubscriber
+                                  {...field}
+                                  id={"assignPortfolio"}
+                                  typeSelect={1}
+                                  options={portfolioList}
+                                  valueProp={"id"}
+                                  displayProp={"portfolioName"}
+                                  disable={false}
+                                  placeholder={"Find Portfolio"}
+                                  onChangeInput={(value) => {
+                                    handleChangeAssignPortfolio(value);
+                                  }}
+                                />
+                              )}
+                            />
+                          </div>
+              </div>
             </div>
+            
 
             <div className="flex sm:flex-col lg:flex-row justify-start items-start gap-3">
-              <Card
-                shadow="md"
-                radius="lg"
-                className="flex w-full h-full"
-                padding="lg"
-              >
-                <div className="w-full">
-                  <div className="flex justify-between">
-                    <div
-                      style={{ borderRadius: "50%" }}
-                      className={`flex justify-center w-[75px] h-[75px] mb-2 bg-PRIMARY_BUTTON`}
-                    >
-                      <img
-                        alt={"subscriber"}
-                        src={SubscriberLOGO01}
-                        width={50}
-                        height={50}
-                      ></img>
+              <div className="grid grid-flow-col grid-rows-2 gap-3 w-full">
+                <Card
+                  shadow="md"
+                  radius="lg"
+                  className="flex w-full h-full"
+                  padding="lg"
+                >
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                      <div
+                        style={{ borderRadius: "50%" }}
+                        className={`flex justify-center w-[75px] h-[75px] mb-2 bg-[#87BE3326]`}
+                      >
+                        <img
+                          alt={"subscriber"}
+                          src={User}
+                          width={50}
+                          height={50}
+                        ></img>
+                      </div>
+                      <div className="text-end">
+                        <label className="text-3xl font-semibold flex justify-end">
+                          {numeral(dashboardOBJ?.totalSucriber).format("0,0")}
+                        </label>
+                        <span> </span>
+                        <label className="text-lg font-medium text-slate-500">
+                          {dashboardOBJ?.totalSucriber > 1
+                            ? "Subscribers"
+                            : "Subscriber"}
+                        </label>
+                      </div>
                     </div>
-                    <div className="text-end">
-                      <label className="text-3xl font-semibold flex justify-end">
-                        {numeral(dashboardOBJ?.totalSucriber).format("0,0")}
-                      </label>
-                      <span> </span>
-                      <label className="text-lg font-medium text-slate-500">
-                        {dashboardOBJ?.totalSucriber > 1
-                          ? "Subscribers"
-                          : "Subscriber"}
-                      </label>
+                    <div className="font-bold mt-2">
+                      Total Subscriber
+                    </div>
+                    <div className="text-gray-500 text-xs">
+                      Keep track of all your devices at a glance.
                     </div>
                   </div>
-                  <div className="font-bold mt-2">
-                    Total Active Contracted Subscribers
-                  </div>
-                  <div className="text-gray-500 text-xs">
-                    Keep track of all your subscribers at a glance.
-                  </div>
-                </div>
-              </Card>
+                </Card>
 
-              <Card
-                shadow="md"
-                radius="lg"
-                className="flex w-full h-full"
-                padding="lg"
-              >
-                <div className="w-full">
-                  <div className="flex justify-between">
-                    <div
-                      style={{ borderRadius: "50%" }}
-                      className={`flex justify-center w-[75px] h-[75px] mb-2 bg-SUCCESS_BUTTON`}
-                    >
-                      <img
-                        alt={"ig"}
-                        src={SubscriberLOGO02}
-                        width={50}
-                        height={50}
-                      ></img>
+                <Card
+                  shadow="md"
+                  radius="lg"
+                  className="flex w-full h-full"
+                  padding="lg"
+                >
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                      <div
+                        style={{ borderRadius: "50%" }}
+                        className={`flex justify-center w-[75px] h-[75px] mb-2 bg-[#3583CD26]`}
+                      >
+                        <img
+                          alt={"ig"}
+                          src={Clock}
+                          width={50}
+                          height={50}
+                        ></img>
+                      </div>
+                      <div className="text-end">
+                        <label className="text-2xl font-semibold flex justify-end">
+                          {numeral(
+                            dashboardOBJ?.totalContractedEnergy /** 0.001*/
+                          ).format("0,0.000000")}
+                        </label>
+                        <span> </span>
+                        <label className="text-lg font-medium text-slate-500">
+                          kWh
+                        </label>
+                      </div>
                     </div>
-                    <div className="text-end">
-                      <label className="text-2xl font-semibold flex justify-end">
-                        {numeral(dashboardOBJ?.contractedEnergy * 0.001).format(
-                          "0,0.000000"
-                        )}
-                      </label>
-                      <span> </span>
-                      <label className="text-lg font-medium text-slate-500">
-                        MWh
-                      </label>
+                    <div className="font-bold  mt-2">
+                      Total Contracted Energy
+                    </div>
+                    <div className="text-gray-500 text-xs">
+                      Monitor your entire contracted energy.
                     </div>
                   </div>
-                  <div className="font-bold  mt-2">
-                    Active Contracted Energy
-                  </div>
-                  <div className="text-gray-500 text-xs">
-                    Monitor your entire power at a glance.
-                  </div>
-                </div>
-              </Card>
+                </Card>
 
-              <Card
-                shadow="md"
-                radius="lg"
-                className="flex w-full h-full"
-                padding="lg"
-              >
-                <div className="w-full">
-                  <div className="flex justify-between">
-                    <div
-                      style={{ borderRadius: "50%" }}
-                      className={`flex justify-center w-[75px] h-[75px] bg-SECONDARY_BUTTON mb-2 `}
-                    >
-                      <img
-                        alt={"ig"}
-                        src={SubscriberLOGO03}
-                        width={50}
-                        height={50}
-                      ></img>
+                <Card
+                  shadow="md"
+                  radius="lg"
+                  className="flex w-full h-full"
+                  padding="lg"
+                >
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                      <div
+                        style={{ borderRadius: "50%" }}
+                        className={`flex justify-center w-[75px] h-[75px] bg-[#33BFBF26] mb-2 `}
+                      >
+                        <img
+                          alt={"ig"}
+                          src={Calendar}
+                          width={50}
+                          height={50}
+                        ></img>
+                      </div>
+                      <div className="text-end">
+                        <label className="text-2xl font-semibold flex justify-end">
+                          {numeral(
+                            dashboardOBJ?.annualContractedEnergy /** 0.001*/
+                          ).format("0,0.000000")}
+                        </label>
+                        <label className="text-lg font-medium text-slate-500">
+                          kWh
+                        </label>
+                      </div>
                     </div>
-                    <div className="text-end">
-                      <label className="text-2xl font-semibold flex justify-end">
-                        {numeral(
-                          dashboardOBJ?.accumulateConsumption * 0.001
-                        ).format("0,0.000000")}
-                      </label>
-                      <label className="text-lg font-medium text-slate-500">
-                        MWh
-                      </label>
+                    <div className="w-60">
+                      <div className="font-bold mt-2">
+                        Annual Contracted Energy
+                      </div>
+                      <div className="text-gray-500 text-xs">
+                        Monitor your contracted energy for the current year.
+                      </div>
                     </div>
+                    
                   </div>
+                </Card>
 
-                  <div className="font-bold mt-2">Accumulated Consumption</div>
-                  <div className="text-gray-500 text-xs">
-                    Monitor your energy consumption real-time.
+                <Card
+                  shadow="md"
+                  radius="lg"
+                  className="flex w-full h-full"
+                  padding="lg"
+                >
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                      <div
+                        style={{ borderRadius: "50%" }}
+                        className={`flex justify-center w-[75px] h-[75px] bg-[#F9974126] mb-2 `}
+                      >
+                        <img
+                          alt={"ig"}
+                          src={Graph}
+                          width={50}
+                          height={50}
+                        ></img>
+                      </div>
+                      <div className="text-end">
+                        <label className="text-2xl font-semibold flex justify-end">
+                          {numeral(
+                            dashboardOBJ?.netDeliverables?.netDeliverables/* * 0.001*/
+                          ).format("0,0.00")}
+                        </label>
+                        <label className="text-lg font-medium text-slate-500">
+                          %
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="w-60">
+                      <div className="font-bold mt-2">Net Deliverables</div>
+                      <div className="text-gray-500 text-xs">
+                      Track the proportion of Total Contracted Energy delivered in real-time.
+                      </div>
+                      
+                    </div>
+                    <div></div>
+
+                    <div
+                      className={`text-gray-500 text-right text-[0.6rem] font-light mt-3`}
+                    >
+                      Last Updated on
+                    </div>
+                    <div
+                      className={`text-gray-500 text-right text-[0.8rem] font-medium`}
+                    >
+                      {dashboardOBJ?.netDeliverables?.lastUpdated}
+                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </div>
+
+              <div className={`col-start-4 row-span-2 `}>
+                <Card
+                  shadow="md"
+                  radius="lg"
+                  className="flex w-full h-full"
+                  padding="lg"
+                >
+                  <div className="w-full">
+                    <div className="flex justify-between">
+                      {/*
+                      <div
+                        style={{ borderRadius: "50%" }}
+                        className={`flex justify-center w-[75px] h-[75px] bg-SECONDARY_BUTTON mb-2 `}
+                      >
+                        <img
+                          alt={"ig"}
+                          src={SubscriberLOGO03}
+                          width={50}
+                          height={50}
+                        ></img>
+                      </div>
+                      <div className="text-end">
+                        <label className="text-2xl font-semibold flex justify-end">
+                          {numeral(
+                            dashboardOBJ?.accumulateConsumption * 0.001
+                          ).format("0,0.000000")}
+                        </label>
+                        <label className="text-lg font-medium text-slate-500">
+                          MWh
+                        </label>
+                      </div>
+                      */}
+                    </div>
+
+                    <div className="font-bold mt-2 text-xl">
+                      Utility Subscription
+                    </div>
+                    <div className="text-gray-500 text-sm font-medium">
+                      Observe the overall subscription ratio of all utilities’ subscribers.
+                    </div>
+                    <div
+                      style={{ width: "250px", height: "250px" }}
+                      className="mt-4 ml-2"
+                    >
+                      <Pie data={dataPie} options={options} />
+                    </div>
+                    <div className="flex justify-between mt-4">
+                      <div>
+                        <div className="flex ml-1">
+                          <div
+                            className={`bg-[#FFC72C] w-[15px] h-[15px] mt-1`}
+                          />
+                          <label className="ml-1">EGAT</label>
+                        </div>
+                        <div className="flex ml-1">
+                          <div
+                            className={`bg-[#FD812E] w-[15px] h-[15px] mt-1`}
+                          />
+                          <label className="ml-1">MEA</label>
+                        </div>
+                        <div className="flex ml-1">
+                          <div
+                            className={`bg-[#B64BEB] w-[15px] h-[15px] mt-1`}
+                          />
+                          <label className="ml-1">PEA</label>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className={`text-gray-500 text-right text-[0.6rem] font-light mt-[40px]`}>
+                          Last Updated on
+                        </div>
+                        <div className={`text-gray-500 text-right text-[0.8rem] font-medium`}>
+                          {dashboardOBJ?.utilitySubscription?.lastUpdated}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
             </div>
 
             {isSubscriberGroup && (
@@ -1032,6 +1577,30 @@ const Subscriberlisting = (props) => {
                           )}
                         />
                       </div> */}
+
+                      {/*<div className="col-span-2 px-2">
+                        <Controller
+                          name="assignPortfolio"
+                          control={control}
+                          defaultValue={null}
+                          render={({ field }) => (
+                            <Multiselect
+                              {...field}
+                              id={"assignPortfolio"}
+                              typeSelect={2}
+                              options={portfolioList}
+                              valueProp={"id"}
+                              displayProp={"name"}
+                              disable={false}
+                              placeholder={"Find Portfolio"}
+                              onChangeInput={(value) => {
+                                handleChangeAssignPortfolio(value);
+                              }}
+                            />
+                          )}
+                        />
+                      </div>*/}
+
                       <div className="col-span-2 px-2">
                         <Controller
                           name="assignStatus"
@@ -1042,7 +1611,7 @@ const Subscriberlisting = (props) => {
                               {...field}
                               id={"assignStatus"}
                               typeSelect={2}
-                              options={statusList}
+                              options={statusListActive}
                               valueProp={"id"}
                               displayProp={"statusName"}
                               placeholder={"Find Status"}
@@ -1132,6 +1701,30 @@ const Subscriberlisting = (props) => {
                           )}
                         />
                       </div> */}
+
+                      {/*<div className="col-span-2 px-2">
+                        <Controller
+                          name="unassignPortfolio"
+                          control={control}
+                          defaultValue={null}
+                          render={({ field }) => (
+                            <Multiselect
+                              {...field}
+                              id={"unassignPortfolio"}
+                              typeSelect={2}
+                              options={portfolioList}
+                              valueProp={"id"}
+                              displayProp={"name"}
+                              disable={false}
+                              placeholder={"Find Portfolio"}
+                              onChangeInput={(value) => {
+                                handleChangeUnassignPortfolio(value);
+                              }}
+                            />
+                          )}
+                        />
+                      </div>*/}
+
                       <div className="col-span-2 px-2">
                         <Controller
                           name="unassignStatus"
@@ -1142,7 +1735,7 @@ const Subscriberlisting = (props) => {
                               {...field}
                               id={"unassignStatus"}
                               typeSelect={2}
-                              options={statusList}
+                              options={statusListInactive}
                               valueProp={"id"}
                               displayProp={"statusName"}
                               placeholder={"Find Status"}

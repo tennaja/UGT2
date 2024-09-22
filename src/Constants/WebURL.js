@@ -9,6 +9,8 @@ export const SUBSCRIBER_LIST = "/subscriber";
 export const SUBSCRIBER_ADD = "/subscriber/add";
 export const SUBSCRIBER_EDIT = "/subscriber/edit";
 export const SUBSCRIBER_INFO = "/subscriber/info";
+export const SUBSCRIBER_HISTORY = "/subscriber/history"
+export const SUBSCRIBER_HISTORY_INFO = "/subscriber/historyInfo"
 
 export const PORTFOLIO_LIST = "/portfolio";
 export const PORTFOLIO_ADD = "/portfolio/add";

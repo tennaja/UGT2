@@ -1,4 +1,4 @@
-import { FAIL_REQUEST, MAKE_REQUEST,GET_DROPDROW_LIST,GET_POSTCODE_LIST,GET_COUNTRY_LIST,GET_PROVINCE_LIST,SET_SUB_DISTRICT_LIST,SET_DISTRICT_LIST } from "../ActionType"
+import { FAIL_REQUEST, MAKE_REQUEST,GET_DROPDROW_LIST,GET_POSTCODE_LIST,GET_COUNTRY_LIST,GET_PROVINCE_LIST,SET_SUB_DISTRICT_LIST,SET_DISTRICT_LIST,GET_COUNTRY_LIST_ADD } from "../ActionType"
 
 const initialstate = {
     loading: true,
@@ -10,7 +10,8 @@ const initialstate = {
     postcodeList:[],
     districtList:[],
     subDistrictList:[],
-    errmessage: ''
+    errmessage: '',
+    countryListAdd:[]
 }
 
 export const DropdrowReducer = (state = initialstate, action) => {
@@ -39,6 +40,12 @@ export const DropdrowReducer = (state = initialstate, action) => {
                     ...state,
                     loading: false,
                     countryList:action.payload
+
+                }
+                case GET_COUNTRY_LIST_ADD:return {
+                    ...state,
+                    loading: false,
+                    countryListAdd:action.payload
 
                 }
                 case GET_PROVINCE_LIST:return {

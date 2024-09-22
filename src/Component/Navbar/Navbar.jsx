@@ -27,6 +27,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const userObj = useSelector((state) => state?.login?.userobj);
   const ugtGroups = useSelector((state) => state?.login?.userobj?.ugtGroups);
+  console.log(ugtGroups)
   const openMenu = useSelector((state) => state?.menu.openMenu);
   const currentAssignedFilter = useSelector(
     (state) => state?.device.currentAssignedFilterObj
@@ -66,6 +67,7 @@ const Navbar = () => {
   }, [ugtGroups]);
 
   const handleChangeUGTGroup = (val) => {
+    console.log(val)
     const itemsPerPage = 5;
     const ugtGroupId = val ? val.id : "";
     // const defaultFetchParameter = {
@@ -84,6 +86,7 @@ const Navbar = () => {
         ? currentAssignedFilter?.utility
         : "",
     };
+    
     const fetchParameterForAssignedList = {
       findTypeId: currentAssignedFilter?.type
         ? currentAssignedFilter?.type
@@ -114,10 +117,11 @@ const Navbar = () => {
       findUgtGroupId: ugtGroupId,
     };
 
+    dispatch(setCurrentUgtGroup(selectedUgtGroup));
     dispatch(FetchDeviceManagementDashboard(fetchParameterForDashboard));
     dispatch(FetchDeviceManagementAssigned(fetchParameterForAssignedList));
     dispatch(FetchDeviceManagementUnAssigned(fetchParameterForUnAssignedList));
-    dispatch(setCurrentUgtGroup(selectedUgtGroup));
+    
     console.log(fetchParameterForDashboard)
     console.log(fetchParameterForAssignedList)
     console.log(fetchParameterForUnAssignedList)

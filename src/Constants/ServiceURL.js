@@ -54,6 +54,9 @@ export const CREATE_SUBSCRIBER_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management
 export const CREATE_AGGREGATE_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/aggregateCreate`;
 export const EDIT_SUBSCRIBER_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/edit`;
 export const EDIT_AGGREGATE_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/aggregateEdit`;
+export const HISTORY_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/GetSubscriberContractHistory`;
+export const BINARY_FILE_HISTORY_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/GetFileSubscribersFileUpload`;
+export const WITHDRAWN_SUBSCRIBER_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/withdrawn`;
 
 // Portfolio
 export const DASHBOARD_PORTFOLIO_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/dashboard`;
