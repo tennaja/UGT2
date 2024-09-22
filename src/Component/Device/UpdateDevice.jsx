@@ -1236,7 +1236,7 @@ const UpdateDevice = () => {
                           rules={{
                             required: "This field is required",
                             max: {
-                              value: 999999.000000,
+                              value: 999999.999999,
                               message:
                                 "This value must be between 0 and 99999.999999",
                             },

@@ -314,8 +314,8 @@ const UploadFile = (props) => {
                       </div>
                       {!isViewMode && file?.props?.meta?.status === 'done' && (
                       <div className="flex items-center justify-end gap-4 w-36">
-                        {
-            [!'doc', 'docx', 'xls', 'xlsx'].includes(file?.props?.meta?.name.split('.').pop()) && (
+                        {!
+            ['doc', 'docx', 'xls', 'xlsx'].includes(file?.props?.meta?.name.split('.').pop()) && (
                     <MdOutlineRemoveRedEye
                       className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
                       onClick={() => {
