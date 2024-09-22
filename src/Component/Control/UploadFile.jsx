@@ -266,14 +266,14 @@ const UploadFile = (props) => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between  w-36">
+                  <div className="flex items-center justify-end gap-4  w-36">
     
-                    
+                  {!['doc', 'docx', 'xls', 'xlsx'].includes(file?.props?.meta?.name.split('.').pop()) && (
                   <MdOutlineRemoveRedEye className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
                   onClick={() => {
                     onPreview &&
                     onPreview(file?.props?.fileWithMeta?.file);
-                  }}/>
+                  }}/>)}
                 
                   <HiDownload className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer" onClick={() => {
                             onClickFile &&
@@ -313,13 +313,15 @@ const UploadFile = (props) => {
                         </label>
                       </div>
                       {!isViewMode && file?.props?.meta?.status === 'done' && (
-                      <div className="flex items-center justify-between w-36">
+                      <div className="flex items-center justify-end gap-4 w-36">
+                        {
+            [!'doc', 'docx', 'xls', 'xlsx'].includes(file?.props?.meta?.name.split('.').pop()) && (
                     <MdOutlineRemoveRedEye
                       className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
                       onClick={() => {
                         onPreview && onPreview(file?.props?.fileWithMeta?.file);
                       }}
-                    />
+                    /> )}
                     <HiDownload
                       className="w-[25px] h-[25px] text-PRIMARY_BUTTON hover:text-[#bee4a2] cursor-pointer"
                       onClick={() => {
