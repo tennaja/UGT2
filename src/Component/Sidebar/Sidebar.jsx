@@ -527,7 +527,6 @@ const Sidebar2 = ({ children }) => {
                     {menu?.name ? menu?.name.toUpperCase() : "-"}
                   </p>
                 </div>
-
                 <hr className="border-1 border-solid border-slate-400 my-2" />
               </>
             );
