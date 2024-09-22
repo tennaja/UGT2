@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-User.svg";
-import SubscriberLOGO02 from "../assets/contractenergy.svg";
-import SubscriberLOGO03 from "../assets/accumconsum.svg";
+// import SubscriberLOGO01 from "../assets/3-User.svg";
+// import SubscriberLOGO02 from "../assets/contractenergy.svg";
+// import SubscriberLOGO03 from "../assets/accumconsum.svg";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import PaginatedItems from "../Control/Table/Pagination";
 import * as WEB_URL from "../../Constants/WebURL";
-import addLogoWhite from "../assets/Add-User.svg";
+// import addLogoWhite from "../assets/Add-User.svg";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Multiselect from "../Control/Multiselect";
 import MySelect from "../Control/Select"
