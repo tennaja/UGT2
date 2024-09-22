@@ -1141,13 +1141,14 @@ const handleClickDownloadFile = async (item) => {
 
     {/* Right Section (Buttons & Info Message) */}
     <div className="flex items-center gap-3">
-    <Button
+      {canRenew ? <Button
                           loading={isSyncing}
                           className="  text-white  hover:bg-[#4D6A00] bg-[#87BE33]"
                           onClick={() => syncDevice()}
                         >
                           Sync Status
-                        </Button>
+                        </Button> : null }
+    
       {canSeeSF02 && <PreviewPdf data={sf02obj} />}
 
       {isShowManageBtn && (
