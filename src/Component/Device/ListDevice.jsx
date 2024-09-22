@@ -568,78 +568,68 @@ const ListDevice = (props) => {
   };
 
   const handleChangeUnAssignFilter = (value, filterType) => {
-    let fetchParameterForUnAssignedList = null;
-    const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
+  let fetchParameterForUnAssignedList = null;
+  const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
 
-    const currentFilterList = value.map((item) => {
-      return item.id;
-    });
-    if (filterType === "TYPE") {
-      const newCurrentUnAssignedFilter = {
-        ...currentUnAssignedFilterObj,
-        type: currentFilterList,
-      };
+  const currentFilterList = value.map((item) => item.id);
+  
+  if (filterType === "TYPE") {
+    const newCurrentUnAssignedFilter = {
+      ...currentUnAssignedFilterObj,
+      type: currentFilterList,
+    };
 
-      setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
-      dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
+    setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
+    dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
 
-      fetchParameterForUnAssignedList = {
-        findTypeId: currentFilterList ? currentFilterList : [],
-        findUtilityId: currentUnAssignedFilterObj?.utility
-          ? currentUnAssignedFilterObj?.utility
-          : [],
-        findStatusId: currentUnAssignedFilterObj?.status
-          ? currentUnAssignedFilterObj?.status
-          : [],
-        pageNumber: 1,
-        pageSize: itemsPerPage,
-        findUgtGroupId: ugtGroupId,
-      };
-    } else if (filterType === "UTILITY") {
-      const newCurrentUnAssignedFilter = {
-        ...currentUnAssignedFilterObj,
-        utility: currentFilterList,
-      };
-      setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
-      dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
+    fetchParameterForUnAssignedList = {
+      findTypeId: currentFilterList.length ? currentFilterList : [],
+      findUtilityId: currentUnAssignedFilterObj?.utility || [],
+      findStatusId: currentUnAssignedFilterObj?.status || [],
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+      findUgtGroupId: ugtGroupId,
+    };
+  } else if (filterType === "UTILITY") {
+    const newCurrentUnAssignedFilter = {
+      ...currentUnAssignedFilterObj,
+      utility: currentFilterList,
+    };
+    
+    setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
+    dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
 
-      fetchParameterForUnAssignedList = {
-        findTypeId: currentUnAssignedFilterObj?.type
-          ? currentUnAssignedFilterObj?.type
-          : [],
-        findUtilityId: currentFilterList ? currentFilterList : [],
-        findStatusId: currentUnAssignedFilterObj?.status
-          ? currentUnAssignedFilterObj?.status
-          : [],
-        pageNumber: 1,
-        pageSize: itemsPerPage,
-        findUgtGroupId: ugtGroupId,
-      };
-    } else if (filterType === "STATUS") {
-      const newCurrentUnAssignedFilter = {
-        ...currentUnAssignedFilterObj,
-        status: currentFilterList,
-      };
+    fetchParameterForUnAssignedList = {
+      findTypeId: currentUnAssignedFilterObj?.type || [],
+      findUtilityId: currentFilterList.length ? currentFilterList : [],
+      findStatusId: currentUnAssignedFilterObj?.status || [],
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+      findUgtGroupId: ugtGroupId,
+    };
+  } else if (filterType === "STATUS") {
+    const newCurrentUnAssignedFilter = {
+      ...currentUnAssignedFilterObj,
+      status: currentFilterList,
+    };
 
-      setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
-      dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
+    setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
+    dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
 
-      fetchParameterForUnAssignedList = {
-        findTypeId: currentUnAssignedFilterObj?.type
-          ? currentUnAssignedFilterObj?.type
-          : [],
-        findUtilityId: currentUnAssignedFilterObj?.utility
-          ? currentUnAssignedFilterObj?.utility
-          : "",
-        findStatusId: currentFilterList ? currentFilterList : [],
-        pageNumber: 1,
-        pageSize: itemsPerPage,
-        findUgtGroupId: ugtGroupId,
-      };
-    }
+    fetchParameterForUnAssignedList = {
+      findTypeId: currentUnAssignedFilterObj?.type || [],
+      findUtilityId: currentUnAssignedFilterObj?.utility || [],
+      findStatusId: currentFilterList.length ? currentFilterList : [],
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+      findUgtGroupId: ugtGroupId,
+    };
+  }
 
-    dispatch(FetchDeviceManagementUnAssigned(fetchParameterForUnAssignedList));
-  };
+  // Dispatch the fetch action
+  dispatch(FetchDeviceManagementUnAssigned(fetchParameterForUnAssignedList));
+};
+
 
   const handleClickDeviceRegistration = () => {
     dispatch(setSelectedSubMenu(SUB_MENU_ID.DEVICE_REGISTRATION));
@@ -1436,7 +1426,7 @@ const ListDevice = (props) => {
                 </div>
                 <div className="relative overflow-x-auto  sm:rounded-lg">
                   <DataTable
-                    data={unAssignedList}
+                    data={unAssignedList.filter(item => item.statusName  !== 'Withdrawn')}
                     columns={columnsUnAssigned}
                     searchData={searchQueryUnAssigned}
                     checkbox={false}

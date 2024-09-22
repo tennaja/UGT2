@@ -876,9 +876,9 @@ const RenewDevice = () => {
                       <span className="text-xl	mr-14 	leading-tight">
                         <b> Device Info</b>
                       </span>
-                      <span>
-                        <StatusLabel status={deviceobj?.statusName} />
-                      </span>
+                      {/* <span>
+                        <StatusLabel status={deviceobj?.statusName}/>
+                      </span> */}
                     </div>
 
                     <div className="md:col-span-3 md:text-left lg:col-span-2 lg:text-right py-2 flex flex-col m-0 items-center justify-self-end gap-2">
@@ -886,9 +886,9 @@ const RenewDevice = () => {
                     <span className="text-[#f94a4a] flex m-0 items-center">
                     <b> * Required Field </b>
                     </span>
-                    <span className="text-PRIMARY_TEXT flex m-0 items-center pl-3">
+                    {/* <span className="text-PRIMARY_TEXT flex m-0 items-center pl-3">
                     <b> English Only** </b>
-                    </span>
+                    </span> */}
                     </div>
                   </div>
                 </div>
@@ -934,6 +934,10 @@ const RenewDevice = () => {
                                   id={"deviceImg"}
                                   defaultImg={base64String}
                                   error={errors.deviceImg}
+                                  onChangeInput={(fileData) => {
+                                    // Update form state with new file data
+                                    field.onChange(fileData);
+                                  }}
                                 />
                               )}
                             />
@@ -996,6 +1000,7 @@ const RenewDevice = () => {
                                   error={errors.name}
                                   disabled={vDisabled}
                                   validate={" *"}
+                                  
                                   // ... other props
                                 />
                               )}
@@ -1047,9 +1052,10 @@ const RenewDevice = () => {
                                   id={"defaultAccountCode"}
                                   type={"text"}
                                   label={"Default account code"}
-                                  disabled={vDisabled}
+                                  
                                   // error={errors.defaultAccountCode}
                                   validate={" *"}
+                                  disabled={true}
                                   // ... other props
                                 />
                               )}
@@ -1226,6 +1232,16 @@ const RenewDevice = () => {
                           control={control}
                           rules={{
                             required: "This field is required",
+                            max: {
+                              value: 999999.000000,
+                              message:
+                                "This value must be between 0 and 99999.999999",
+                            },
+                            min: {
+                              value: 0,
+                              message:
+                                "This value must be between 0 and 99999.999999",
+                            },
                             pattern: {
                               value: onlyPositiveNum,
                               message: "Please enter only numeric characters.",
@@ -1237,16 +1253,36 @@ const RenewDevice = () => {
                               id={"capacity"}
                               type={"number"}
                               step="0.000001"
-                              label={"Capacity (MW)"}
+                              max={999999.999999}
+                              min={0}
+                              label={"Installed Capacity (MW)"}
                               error={errors.capacity}
                               validate={" *"}
                               disabled={vDisabled}
+                              onKeyDown={(e) => {
+                                // Prevent invalid characters like 'e', '+', '-'
+                                if (['e', 'E', '+','-'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               // ... other props
                               onBlur={(e) => {
-                                let value = e?.target?.value;
-                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
-                                let val = padNumber(value, 6);
-                                setValue("capacity", val);
+                                let value = parseFloat(e.target.value);
+                                // Cap the value between -90.000000 and 90.000000
+                                if (value > 999999.999999) value = 999999.999999;
+                                if (value <= 0 ) value = 0;
+                                
+                                // Optionally pad the number if needed
+                                let paddedValue = padNumber(value.toString(), 6);
+                                setValue("capacity", paddedValue);
+                              }}
+                              onChangeInput={(val) => {
+                                let numericValue = parseFloat(val);
+                                // Enforce the max and min range on change
+                                if (numericValue > 99999.999999) numericValue = 99999.999999;
+                                if (numericValue <= 0 ) numericValue = 0;
+                                let paddedValue = padNumber(numericValue.toString(), 6);
+                                setValue("capacity", paddedValue);
                               }}
                             />
                           )}
@@ -1281,7 +1317,7 @@ const RenewDevice = () => {
                             <div className="flex justify-between mt-2 ml-2 md:col-span-6">
                               <div>
                                 <strong>
-                                  Feeder Name{" "}
+                                Meter or Measurement ID (s){" "}
                                   <span className="text-red-500">*</span>
                                 </strong>
                               </div>
@@ -1363,6 +1399,12 @@ const RenewDevice = () => {
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
+                                  onKeyDown={(e) => {
+                                    // Prevent invalid characters like 'e', '+', '-'
+                                    if (['e', 'E', '+'].includes(e.key)) {
+                                      e.preventDefault();
+                                    }
+                                  }}
                                   // ... other props
                                 />
                               )}
@@ -1404,7 +1446,14 @@ const RenewDevice = () => {
                           name="ExpectedFormofVolumeEvidence"
                           control={control}
                           rules={{
-                            required: "This field is required",
+                            validate: {
+                              atLeastOneChecked: (value) => 
+                                value.some(item => item.Checked) || "Please select at least one option.",
+                              otherTextRequired: (value) => {
+                                const otherItem = value.find(item => item.name === "Other");
+                                return !(otherItem && otherItem.Checked && !otherItem.otherText.trim()) || "This field is required when 'Other' is selected.";
+                              }
+                            }
                           }}
                           render={({ field }) => (
                             <div>
@@ -1461,6 +1510,8 @@ const RenewDevice = () => {
                               type={"text"}
                               label={"Owner of Network and Connection Voltage"}
                               error={errors.OwnerofNetwork}
+                              iconsid = {"OwnerofNetwork-tooltip"}
+                              messageTooltip = {"Owner of the network to which the  Production Device is connected and the  voltage of that connection"}
                               validate={" *"}
                               
                               // ... other props
@@ -1683,16 +1734,34 @@ const RenewDevice = () => {
                               type={"number"}
                               label={"Latitude"}
                               error={errors.latitude}
+                              max={90.000000}
+                              min={-90.000000}
+                              step="0.000001"
                               validate={" *"}
                               disabled={vDisabled}
+                              onKeyDown={(e) => {
+                                // Prevent invalid characters like 'e', '+', '-'
+                                if (['e', 'E', '+'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               onBlur={(e) => {
-                                let value = e?.target?.value;
-                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
-                                let val = padNumber(value, 6);
-                                setValue("latitude", val);
+                                let value = parseFloat(e.target.value);
+                                // Cap the value between -90.000000 and 90.000000
+                                if (value > 90.000000) value = 90.000000;
+                                if (value < -90.000000) value = -90.000000;
+                                
+                                // Optionally pad the number if needed
+                                let paddedValue = padNumber(value.toString(), 6);
+                                setValue("latitude", paddedValue);
                               }}
                               onChangeInput={(val) => {
-                                onChangeLatLon("lat", val);
+                                let numericValue = parseFloat(val);
+                                // Enforce the max and min range on change
+                                if (numericValue > 90.000000) numericValue = 90.000000;
+                                if (numericValue < -90.000000) numericValue = -90.000000;
+                                let paddedValue = padNumber(numericValue.toString(), 6);
+                                onChangeLatLon("lat", paddedValue);
                               }}
                             />
                           )}
@@ -1725,16 +1794,35 @@ const RenewDevice = () => {
                               type={"number"}
                               label={"Longitude"}
                               error={errors.longitude}
+                              max={180.000000}
+                              min={-180.000000}
+                              step="0.000001"
                               validate={" *"}
                               disabled={vDisabled}
+                              onKeyDown={(e) => {
+                                // Prevent invalid characters like 'e', '+', '-'
+                                if (['e', 'E', '+'].includes(e.key)) {
+                                  e.preventDefault();
+                                }
+                              }}
                               onBlur={(e) => {
-                                let value = e?.target?.value;
-                                // เรียก fucntion Pad ตัวเลขให้เป็นแค่ 6 หลัก
-                                let val = padNumber(value, 6);
-                                setValue("longitude", val);
+                                let value = parseFloat(e.target.value);
+                                // Cap the value between -90.000000 and 90.000000
+                                if (value > 180.000000) value = 180.000000;
+                                if (value < -180.000000) value = -180.000000;
+                                
+                                // Optionally pad the number if needed
+                                let paddedValue = padNumber(value.toString(), 6);
+                                setValue("longitude", paddedValue);
                               }}
                               onChangeInput={(val) => {
-                                onChangeLatLon("lon", val);
+                                let numericValue = parseFloat(val);
+                                // Enforce the max and min range on change
+                                if (numericValue > 180.000000) numericValue = 180.000000;
+                                if (numericValue < -180.000000) numericValue = -180.000000;
+                      
+                                let paddedValue = padNumber(numericValue.toString(), 6);
+                                onChangeLatLon("lon", paddedValue);
                               }}
                             />
                           )}
@@ -1777,7 +1865,8 @@ const RenewDevice = () => {
                               validate={" *"}
                               onChangeInput={onChangeOnsite}
                               error={errors.Onsite}
-
+                              iconsid = {"Onsite-tooltip"}
+                              messageTooltip = {"Is there an on-site (captive) consumer present?"}
                               // ... other props
                             />
                           )}
@@ -1824,7 +1913,8 @@ const RenewDevice = () => {
                               error={errors.Energysources}
                               validate={" *"}
                               onChangeInput={onChangeEnergySourch}
-
+                              iconsid = {"Energysources-tooltip"}
+                              messageTooltip = {"Auxiliary/Standby Energy Sources present?"}
                               // ... other props
                             />
                           )}
@@ -1871,6 +1961,8 @@ const RenewDevice = () => {
                               label={"Other import eletricity"}
                               validate={" *"}
                               error={errors.Otherimport}
+                              iconsid = {"Otherimport-tooltip"}
+                              messageTooltip = {"Please give details of how the site can import electricity by means other than through the meter(s) specified above"}
                               // ... other props
                             />
                           )}
@@ -1891,6 +1983,8 @@ const RenewDevice = () => {
                               validate={" *"}
                               label={"Other carbon offset or energy tracking scheme"}
                               error={errors.Othercarbon}
+                              iconsid = {"Othercarbon-tooltip"}
+                              messageTooltip = {"Please give details (including registration id) of any carbon offset or energy tracking scheme for which the Production Facility is registered.  State ‘None’ if that is the case"}
                               // ... other props
                             />
                           )}
@@ -1915,32 +2009,37 @@ const RenewDevice = () => {
                               error={errors.Publicfunding}
                               validate={" *"}
                               onChangeInput={onChangePublicFund}
-
+                              iconsid={"Publicfunding-tooltip"}
+          messageTooltip={"Has the Production Facility ever received public (government) funding (e.g. Feed in Tariff)"}
                               // ... other props
                             />
                           )}
                         />
-                        {currentPublicfunding?.Name == "Feed in Tariff" ? <div className=" ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        {currentPublicfunding?.Name == "Feed in Tariff" ? 
+                        <div className="ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
+                        <div className="col">
+                        <div className="w-full mt-4 bg-[#CFE5AD] h-8 flex justify-start items-center pl-2">
+                          (If public (government) funding has been received, when did/will it finish?)
+                        </div>
                         <div className="w-full mt-2">
-                        <Controller
-                          name="FundingReceivedate"
-                          control={control}
-                          rules={{
-                            required: "This field is required",
-                          }}
-                          render={({ field }) => (
-                            <DatePicker
-                              {...field}
-                              id={"FundingReceivedate"}
-                              error={errors.FundingReceivedate}
-                              validate={" *"}
-                              // ... other props
-                            />
-                          )}
-                        /></div></div> : null }
+                          <Controller
+                            name="FundingReceivedate"
+                            control={control}
+                            rules={{ required: "This field is required" }}
+                            render={({ field }) => (
+                              <DatePicker
+                                {...field}
+                                id={"FundingReceivedate"}
+                                error={errors.FundingReceivedate}
+                                validate={" *"}
+                              />
+                            )}
+                          />
+                        </div>
+                      </div></div> : null }
                       </div>
                       {/*Documents Information Attachments */}
-                      <div className="md:col-span-6 mt-4">
+                      <div className="md:col-span-6 mt-16">
                         <h6 className="text-PRIMARY_TEXT">
                           <b>Documents Information Attachments</b>
                         </h6>
@@ -2006,7 +2105,10 @@ const RenewDevice = () => {
                           )}
                         />
                       </div>
-                      <div className="md:col-span-3"></div>
+                      <div className="md:col-span-2"></div>
+                      <div className="md:col-span-2"></div>
+                      <div className="md:col-span-2"></div>
+                      <div className="md:col-span-2"></div>
                       <div className="md:col-span-2"></div>
                       <div className="md:col-span-2">
                         <div>
@@ -2021,7 +2123,7 @@ const RenewDevice = () => {
                             </div>
                           )}
                           <button className="w-full rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]">
-                            <b>Save Changes</b>
+                            <b>Save Device</b>
                           </button>
                         </div>
                       </div>
