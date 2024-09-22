@@ -669,7 +669,7 @@ const UpdateDevice = () => {
       FunctionEditDevice(deviceData, (status) => {
         // setIsOpenLoading(false);
         hideLoading();
-        if (status === 200 || status === 201) {
+        
           dispatch (
             sendEmail(titleemail,emailBodytoOwner,deviceobj?.userEmail
               ,() => {
@@ -677,7 +677,7 @@ const UpdateDevice = () => {
               // dispatch(clearModal());
             })
           )
-        }
+        
       })
     );
     
