@@ -92,7 +92,8 @@ const ListDevice = (props) => {
   const typeList = deviceRdc?.filterList?.findType;
   const utilityList = deviceRdc?.filterList?.findUtility;
   const statusList = deviceRdc?.filterList?.findStatus;
-  console.log(userData)
+  // unAssignedList.map((itm) => {console.log(itm)})
+  console.log(unAssignedList)
   const {
     setValue,
     control,
@@ -358,10 +359,21 @@ const ListDevice = (props) => {
       label: "Status",
       // render: (row) => StatusLabel(row.statusName),
       render: (row) => (
+       <>
         <StatusLabel
           status={row.statusName}
           searchQuery={searchQueryUnAssigned}
         />
+      
+      {row.isApproved === "True" && (
+          <StatusLabel
+            key={row.id} // Assuming each item has a unique id
+            status="Approved"
+            
+          />
+        )}
+
+        </>
       ),
     },
     {

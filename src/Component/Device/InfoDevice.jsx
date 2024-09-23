@@ -964,23 +964,33 @@ const handleClickDownloadFile = async (item) => {
   const checkCanRenew = () => {
     let isRenew = false;
     const status = (deviceobj?.statusName ?? "").toLowerCase();
-
-    if (
-      userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
-      userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
-      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG 
-    ) {
+    const registrationDate = deviceobj?.registrationDate ? new Date(deviceobj.registrationDate) : null;
+    
+    if (registrationDate) {
+      const expirationDate = new Date(registrationDate);
+      expirationDate.setFullYear(expirationDate.getFullYear() + 5); // Add 5 years to the registration date
+  
+      const now = new Date();
+      const showButtonDate = new Date(expirationDate);
+      showButtonDate.setDate(expirationDate.getDate() - 180); // Calculate 180 days before the expiration date
+  
       if (
-        status == DEVICE_STATUS.APPROVED.toLowerCase()
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG
       ) {
-        isRenew = true;
-      } else {
-        isRenew = false;
+        if (
+          status == DEVICE_STATUS.APPROVED.toLowerCase() &&
+          now >= showButtonDate // Check if current date is within 180 days before expiration
+        ) {
+          isRenew = true;
+        }
       }
     }
-
+  
     return isRenew;
   };
+  
   const checkShowManageBtn = () => {
     const status = (deviceobj?.statusName ?? "").toLowerCase();
     if (
