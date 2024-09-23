@@ -1548,6 +1548,7 @@ const AddDevice = () => {
                               label={"Longitude"}
                               max={180.000000}
                               min={-180.000000}
+                              step="0.000001"
                               placeholder={"Please fill the form in Number"}
                               error={errors.longitude}
                               onKeyDown={(e) => {
