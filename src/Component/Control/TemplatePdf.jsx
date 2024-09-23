@@ -509,7 +509,7 @@ submission`})</em></p>
                             </tr>
                             <tr>
                             <td className="border p-2 text-left break-all">
-                            {data?.data?.districtCode}
+                            {data?.data?.deviceTechnologyCode}
                             </td>
                             <td className="border p-2 text-left break-all">
                             {data?.data?.deviceTechnologyName}
