@@ -966,8 +966,9 @@ const handleClickDownloadFile = async (item) => {
     const status = (deviceobj?.statusName ?? "").toLowerCase();
 
     if (
-      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
-      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+      userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG 
     ) {
       if (
         status == DEVICE_STATUS.APPROVED.toLowerCase()
@@ -990,7 +991,6 @@ const handleClickDownloadFile = async (item) => {
       if (
         status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
         status == DEVICE_STATUS.VERIFIED.toLowerCase() ||
-        status == DEVICE_STATUS.APPROVED.toLowerCase() ||
         status == DEVICE_STATUS.VERIFYING.toLowerCase()  
         
       ) {
@@ -1188,9 +1188,10 @@ const handleClickDownloadFile = async (item) => {
               label: "Verify",
               onClick: onClickVerifiedBtn,
               disabled: !canVerified,
+              endSection: true,
             },
             {
-              label: "Renew",
+              label: "Change Detail / Renew",
               onClick: onClickRenew,
               disabled: !canRenew,
               // endSection: false,
@@ -1839,9 +1840,9 @@ const handleClickDownloadFile = async (item) => {
                             <b></b> Verify
                     </button>
                      : null}
-                     {canRenew ? <button onClick={onClickRenew} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
+                     {/* {canRenew ? <button onClick={onClickRenew} className="w-64 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-indigo-[#4ed813d1]" >
                             <b></b> Renew
-                    </button> : null}
+                    </button> : null} */}
                   
               </div></div>
               </div>

@@ -92,6 +92,7 @@ const ListDevice = (props) => {
   const typeList = deviceRdc?.filterList?.findType;
   const utilityList = deviceRdc?.filterList?.findUtility;
   const statusList = deviceRdc?.filterList?.findStatus;
+  console.log(userData)
   const {
     setValue,
     control,

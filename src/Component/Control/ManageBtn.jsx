@@ -5,7 +5,7 @@ const ManageBtn = ({ actionList }) => {
   return (
     <Menu
       offset={5}
-      width={180}
+      width={200}
       shadow="md"
       position="bottom-end"
       withArrow
