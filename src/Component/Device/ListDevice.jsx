@@ -369,7 +369,7 @@ const ListDevice = (props) => {
           <StatusLabel
             key={row.id} // Assuming each item has a unique id
             status="Approved"
-            
+            searchQuery={searchQueryUnAssigned}
           />
         )}
 
