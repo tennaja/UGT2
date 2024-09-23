@@ -1,5 +1,5 @@
 import { Modal } from "@mantine/core";
-import WarningImg from "../../assets/warning.png";
+import WarningImg from "../../assets/Danger.svg";
 const ModalConfirmWithdraw = (props) => {
   const {
     data,
