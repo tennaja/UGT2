@@ -1440,7 +1440,7 @@ const ListDevice = (props) => {
                               {...field}
                               id={"unAssignStatus"}
                               typeSelect={2}
-                              options={statusList}
+                              options={statusList? statusList.filter(status => status.statusName !== "Renewed") : []}
                               valueProp={"id"}
                               displayProp={"statusName"}
                               placeholder={"Find Status"}
