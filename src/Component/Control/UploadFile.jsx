@@ -144,12 +144,13 @@ const UploadFile = (props) => {
       const zip = new JSZip();
       const fileMetadata = [];
     
-      const readFileAsArrayBuffer = (file) => {
+      // Convert file to Base64 string
+      const readFileAsBase64 = (file) => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
+          reader.onloadend = () => resolve(reader.result.split(',')[1]); // Get Base64 part after 'data:*/*;base64,'
           reader.onerror = (error) => reject(new Error(`FileReader error: ${error.message}`));
-          reader.readAsArrayBuffer(file);
+          reader.readAsDataURL(file); // This will read the file as Base64 encoded data URL
         });
       };
     
@@ -160,8 +161,8 @@ const UploadFile = (props) => {
         }
     
         try {
-          const fileContent = await readFileAsArrayBuffer(file);
-          zip.file(file.name, fileContent, { binary: true });
+          const fileContentBase64 = await readFileAsBase64(file); // Read file as Base64
+          zip.file(file.name, fileContentBase64, { base64: true }); // Add the file to the zip with base64 flag
     
           fileMetadata.push({
             name: file.name,
@@ -173,8 +174,6 @@ const UploadFile = (props) => {
         }
       }
     
-      
-    
       if (Object.keys(zip.files).length === 0) {
         console.error('No valid files were added to the ZIP. Aborting download.');
         return;
@@ -182,6 +181,17 @@ const UploadFile = (props) => {
     
       try {
         const content = await zip.generateAsync({ type: 'blob' });
+    
+        // Get the size of the ZIP file in bytes
+        const zipSize = content.size; // Size of the generated ZIP file in bytes
+        console.log(`Size of ZIP file: ${zipSize} bytes`);
+    
+        // Convert size to kilobytes or megabytes for easier reading
+        const sizeInKB = (zipSize / 1024).toFixed(2); // KB
+        const sizeInMB = (zipSize / (1024 * 1024)).toFixed(2); // MB
+        console.log(`Size of ZIP file: ${sizeInKB} KB (${sizeInMB} MB)`);
+    
+        // Trigger the download
         const link = document.createElement('a');
         link.href = URL.createObjectURL(content);
         link.download = 'files.zip'; // Default file name
@@ -193,6 +203,7 @@ const UploadFile = (props) => {
         console.error('Error generating ZIP:', error.message);
       }
     }
+    
     
 
 

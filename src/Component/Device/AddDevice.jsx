@@ -608,7 +608,7 @@ const AddDevice = () => {
                       <FaChevronCircleLeft
                         className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
                         size="30"
-                        onClick={() => navigate(WEB_URL.DEVICE_LIST)}
+                        onClick={() => (navigate(WEB_URL.DEVICE_LIST)) }
                       />
                       <span className="text-xl	mr-14 	leading-tight">
                         <b> Device Info</b>

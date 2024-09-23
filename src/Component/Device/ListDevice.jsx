@@ -18,6 +18,14 @@ import egat from "../assets/egat.jpg";
 
 import addLogoWhite from "../assets/add-white.svg";
 import deviceLogo from "../assets/device.svg";
+import AboutToExpire from "../assets/AboutToExpire.svg";
+import ActiveDevice from "../assets/ActiveDevice.svg";
+import InactiveDevice from "../assets/InactiveDevice.svg";
+import ActiveCapcity from "../assets/ActiveCapcity.svg";
+import RegistrationTracking from "../assets/RegistrationTracking.svg";
+
+
+
 import LoadPage from "../Control/LoadPage";
 // import MySelect from "../Control/Select";
 import DataTable from "../Control/Table/DataTable";
@@ -838,12 +846,12 @@ const ListDevice = (props) => {
                       <div className="flex justify-between">
                         <div
                           style={{ borderRadius: "50%" }}
-                          className={`flex justify-center w-[75px] h-[75px] bg-PRIMARY_BUTTON mb-2 `}
+                          className={`flex justify-center w-[75px] h-[75px] bg-[#87BE3326] mb-2 `}
                         >
                           {/* <CgCircleci className="text-green-500 w-[50px] h-[50px] mb-2"></CgCircleci> */}
                           <img
                             alt={"ig"}
-                            src={deviceLogo}
+                            src={ActiveDevice}
                             width={50}
                             height={50}
                           ></img>
@@ -878,11 +886,11 @@ const ListDevice = (props) => {
                       <div className="flex justify-between">
                         <div
                           style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[75px] h-[75px] bg-[#3583CD] mb-2 "
+                          className="flex justify-center w-[75px] h-[75px] bg-[#3583CD26] mb-2 "
                         >
                           <img
                             alt={"ig"}
-                            src={deviceLogo}
+                            src={ActiveCapcity}
                             width={50}
                             height={50}
                           ></img>
@@ -918,11 +926,11 @@ const ListDevice = (props) => {
                       <div className="flex justify-between">
                         <div
                           style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[75px] h-[75px] bg-[#FFAD33] mb-2 "
+                          className="flex justify-center w-[75px] h-[75px] bg-[#F9974126] mb-2 "
                         >
                           <img
                             alt={"ig"}
-                            src={deviceLogo}
+                            src={RegistrationTracking}
                             width={50}
                             height={50}
                           ></img>
@@ -960,11 +968,11 @@ const ListDevice = (props) => {
                       <div className="flex justify-between">
                         <div
                           style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[60px] h-[60px] bg-[#919290]  "
+                          className="flex justify-center w-[60px] h-[60px] bg-[#f1f1f1]  "
                         >
                           <img
                             alt={"ig"}
-                            src={deviceLogo}
+                            src={InactiveDevice}
                             width={40}
                             height={40}
                           ></img>
@@ -999,11 +1007,11 @@ const ListDevice = (props) => {
                       <div className="flex justify-between">
                         <div
                           style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[60px] h-[60px] bg-[#F44336] mb-2 "
+                          className="flex justify-center w-[60px] h-[60px] bg-[#ffe1e0] mb-2 "
                         >
                           <img
                             alt={"ig"}
-                            src={deviceLogo}
+                            src={AboutToExpire}
                             width={40}
                             height={40}
                           ></img>

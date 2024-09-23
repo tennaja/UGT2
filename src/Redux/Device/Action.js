@@ -716,7 +716,7 @@ export const ReturnDevice = (id,re,us,callbackFunc) => {
           callbackFunc();
         } else {
           dispatch(setOpenFailModal());
-          dispatch(failRequest(error.message));
+          dispatch(failRequest(error.message)); 
         }
       },
       (error) => {
