@@ -8,6 +8,46 @@ const UploadImg = (props) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isShowFailModal, setIsShowFailModal] = useState(false);
   const [messageFailModal, setMessageFailModal] = useState("");
+  const [currentFile, setCurrentFile] = useState(null);
+
+
+  // Handle file input changes from user uploads
+  const handleChange = (event) => {
+    const input = event.target;
+    const file = input.files[0];
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+
+    if (file) {
+      const validImageTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
+      if (file.size > maxSizeInBytes) {
+        setErrorMessage("File size exceeds the 20MB limit. Please upload a smaller file.");
+        // setIsShowFailModal(true);
+        return;
+      }
+      if (!validImageTypes.includes(file.type)) {
+        setErrorMessage("Invalid file type. Please upload an image file (png, jpg, jpeg, svg).");
+        input.value = '';  // Reset the file input
+        return;
+      }
+      setCurrentFile(file);
+      setErrorMessage(''); // Clear any error messages
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Data = reader.result;
+        const fileContent = base64Data.slice(base64Data.indexOf(',') + 1);
+        const fileName = file.name;
+        const fileType = file.type;
+
+        setBase64(base64Data); // Update base64 state with new image data
+
+        // Call onChange handlers with the new file data
+        onChangeInput && onChangeInput({ fileContent, fileName, fileType });
+        inputProps.onChange && inputProps.onChange({ fileContent, fileName, fileType });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   useEffect(() => {
     // Convert to base64 if it's not the fallback egat image
     const convertToBase64 = (img) => {
@@ -44,48 +84,9 @@ const UploadImg = (props) => {
     };
 
     // Handle defaultImg or fallback to egat
-    const initialImg = defaultImg || egat;
+    const initialImg = currentFile || defaultImg || egat; // Use currentFile if available
     convertToBase64(initialImg);
-  }, [defaultImg, inputProps]);
-
-  // Handle file input changes from user uploads
-  const handleChange = (event) => {
-    const input = event.target;
-    const file = input.files[0];
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
-
-    if (file) {
-      const validImageTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
-      if (file.size > maxSizeInBytes) {
-        setErrorMessage("File size exceeds the 20MB limit. Please upload a smaller file.");
-        // setIsShowFailModal(true);
-        return;
-      }
-      if (!validImageTypes.includes(file.type)) {
-        setErrorMessage("Invalid file type. Please upload an image file (png, jpg, jpeg, svg).");
-        input.value = '';  // Reset the file input
-        return;
-      }
-
-      setErrorMessage(''); // Clear any error messages
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64Data = reader.result;
-        const fileContent = base64Data.slice(base64Data.indexOf(',') + 1);
-        const fileName = file.name;
-        const fileType = file.type;
-
-        setBase64(base64Data); // Update base64 state with new image data
-
-        // Call onChange handlers with the new file data
-        onChangeInput && onChangeInput({ fileContent, fileName, fileType });
-        inputProps.onChange && inputProps.onChange({ fileContent, fileName, fileType });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
+  }, [currentFile, defaultImg, egat, inputProps]); // Add currentFile to dependencies
   const imageSrc = base64 || defaultImg || egat; // Use base64, defaultImg, or egat as image source
 
   return (
