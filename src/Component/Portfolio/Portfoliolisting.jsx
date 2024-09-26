@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Button } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import deviceLogo from "../assets/device.svg";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import submenuPortfolioLogoInfoSelectedwhite from "../assets/graphInfo_selected_white.svg";
 import submenuPortfolioLogoAddSelectedwhite from "../assets/pieplus_selected_white.svg";
 import { useForm, Controller } from "react-hook-form";
