@@ -93,7 +93,7 @@ const ListDevice = (props) => {
   const utilityList = deviceRdc?.filterList?.findUtility;
   const statusList = deviceRdc?.filterList?.findStatus;
   // unAssignedList.map((itm) => {console.log(itm)})
-  console.log(unAssignedList)
+  console.log(userData)
   const {
     setValue,
     control,

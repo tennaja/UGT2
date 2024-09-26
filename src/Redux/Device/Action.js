@@ -151,9 +151,10 @@ export const updateDevice = () => {
   };
 };
 
-export const renewDevice = () => {
+export const renewDevice = (data) => {
   return {
     type: RENEW_STATUS,
+    data: data,
   };
 };
 
@@ -630,7 +631,7 @@ export const FunctionRenewDevice = (data, callback) => {
     await axios.put(RenewDeviceURL, parameterForRenew, getHeaderConfig()).then(
       (response) => {
         if (response.status == 200 || response?.status == 201) {
-          dispatch(updateDevice());
+          dispatch(renewDevice(response?.data?.device));
         } else {
           dispatch(setOpenFailModal());
           dispatch(failRequest(error.message));

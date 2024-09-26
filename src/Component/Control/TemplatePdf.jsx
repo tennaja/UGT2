@@ -6,7 +6,7 @@ import pdfIcon from '../assets/EV.png';
 import './page.css'
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import { IoMdCheckmark } from "react-icons/io";
-const PdfFormPreview = (data,Sign) => {
+const PdfFormPreview = (data,aftersign,Sign) => {
   console.log(data.data)
   console.log(data.Sign)
   const dispatch = useDispatch();
@@ -163,9 +163,9 @@ const numberSlots = formattedNumber.split('');
         const pdfFile = new File([pdfBlob], `SF-02v${newVersion}.pdf`, { type: 'application/pdf' });
         console.log(pdfFile,data)
         // Open the PDF in a new tab for preview
-        // const url = URL.createObjectURL(pdfBlob);
-        // const pdfWindow = window.open(url, '_blank');
-        // if (pdfWindow) pdfWindow.focus();
+        const url = URL.createObjectURL(pdfBlob);
+        const pdfWindow = window.open(url, '_blank');
+        if (pdfWindow) pdfWindow.focus();
   
         
         // Dispatch the generated PDF Blob for storage
@@ -179,19 +179,19 @@ const numberSlots = formattedNumber.split('');
         // setVersion(newVersion);
 
         // Hide the content again
-        // element.style.display = 'none';
+        element.style.display = 'none';
         hideLoading();
         setload(false);
       })
-      // .catch((error) => {
-      //   console.error('Error generating PDF:', error);
-      //   // Hide the content again if there's an error
-      //   element.style.display = 'none';
-      //   setload(false);
-      //   hideLoading();
-      //   // Display an alert to the user (optional)
-      //   alert('An error occurred while generating the PDF. Please try again.');
-      // });
+      .catch((error) => {
+        console.error('Error generating PDF:', error);
+        // Hide the content again if there's an error
+        element.style.display = 'none';
+        setload(false);
+        hideLoading();
+        // Display an alert to the user (optional)
+        alert('An error occurred while generating the PDF. Please try again.');
+      });
   };
  if(load){
   return ""
@@ -284,13 +284,13 @@ submission`})</em></p>
             </thead>
             <tbody>
               {[
-                ['Organisation ID/code', `${data?.Sign == "" ? "" : data?.Sign.organisationId == null ? "" : data?.Sign.organisationId}`],
-                ['Organisation name', `${data?.Sign == "" ? "" : data?.Sign.organisationName == null ? "" : data?.Sign.organisationName}`],
-                ['Contact person', `${data?.Sign == "" ? "" : data?.Sign.contactPerson == null ? "" : data?.Sign.contactPerson} `],
-                ['Business address', `${data?.Sign == "" ? "" : data?.Sign.businessAddress == null ? "" : data?.Sign.businessAddress}`],
-                ['Country', `${data?.Sign == "" ? "" : data?.Sign.country == null ? "" : data?.Sign.country }`],
-                ['e-mail', `${data?.Sign == "" ? "" : data?.Sign.email == null ? "" : data?.Sign.email}`],
-                ['Telephone', `${data?.Sign == "" ? "" : data?.Sign.telephone == null ? "" : data?.Sign.telephone}`]
+                ['Organisation ID/code', `${data?.aftersign == "" ? "" : data?.aftersign.organisationId == null ? "" : data?.aftersign.organisationId}`],
+                ['Organisation name', `${data?.aftersign == "" ? "" : data?.aftersign.organisationName == null ? "" : data?.aftersign.organisationName}`],
+                ['Contact person', `${data?.aftersign == "" ? "" : data?.aftersign.contactPerson == null ? "" : data?.aftersign.contactPerson} `],
+                ['Business address', `${data?.aftersign == "" ? "" : data?.aftersign.businessAddress == null ? "" : data?.aftersign.businessAddress}`],
+                ['Country', `${data?.aftersign == "" ? "" : data?.aftersign.country == null ? "" : data?.aftersign.country }`],
+                ['e-mail', `${data?.aftersign == "" ? "" : data?.aftersign.email == null ? "" : data?.aftersign.email}`],
+                ['Telephone', `${data?.aftersign == "" ? "" : data?.aftersign.telephone == null ? "" : data?.aftersign.telephone}`]
               ].map((row, index) => (
                 <tr key={index}>
                   <td className="border p-2 font-bold break-all w-1/3">{row[0]}</td>

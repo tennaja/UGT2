@@ -32,6 +32,7 @@ const ModalConfirmVerified = (props) => {
     <>
     <PdfTablePreview 
      data={data}
+     aftersign={UserSign}
      Sign={""}/>
       <Modal
         size="md"

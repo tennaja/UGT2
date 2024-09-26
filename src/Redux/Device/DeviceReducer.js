@@ -41,6 +41,7 @@ const initialstate = {
     },
     filterList:[],
     responseDataAddDevice:null, //data ที่คืนมาจาก api กรณีบันทึกสำเร็จ
+    responseDataRenewDevice:null, //data ที่คืนมาจาก api กรณีบันทึกสำเร็จ
     errmessage: '',
     isOpen: null,
     isOpenVerifiedDoneModal:false,
@@ -184,7 +185,8 @@ export const DeviceReducer = (state = initialstate, action) => {
                 ...state,
                 loading:false,
                 isOpen : true,
-                isOpenDoneModal:true
+                isOpenDoneModal:true,
+                responseDataRenewDevice:action.data,
 
             }
 

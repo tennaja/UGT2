@@ -30,7 +30,7 @@ const ModalSignStep3 = (props) => {
   };
   return (
     <>
-    <PdfTablePreview data={data} Sign={UserSign}/>
+    <PdfTablePreview data={data} aftersign={UserSign} Sign={UserSign}/>
       <Modal
         size="lg"
         opened={true}

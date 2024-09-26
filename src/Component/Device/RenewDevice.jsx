@@ -139,13 +139,15 @@ const RenewDevice = () => {
     (state) => state.dropdrow.subDistrictList
   );
   const postcodeList = useSelector((state) => state.dropdrow.postcodeList);
-
   const isOpenDoneModal = useSelector((state) => state.device.isOpenDoneModal);
   const isOpenFailModal = useSelector((state) => state.device.isOpenFailModal);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const userData = useSelector((state) => state.login.userobj);
   const modalFailMessage = useSelector(
     (state) => state.device.modalFailMessage
+  );
+  const responseDataAdd = useSelector(
+    (state) => state.device.responseDataRenewDevice
   );
   console.log(deviceobj)
   console.log(deviceobj?.imagePath?.slice(24))
@@ -2148,9 +2150,8 @@ const RenewDevice = () => {
       {isOpenDoneModal && (
         <ModalDone
           data={vFormData}
-          status={"ADD"}
           onChangeModalDone={handleClickBackToEdit}
-          deviceID={deviceobj?.id}
+          deviceID={responseDataRenewDevice?.id}
         />
       )}
       {isOpenFailModal && (

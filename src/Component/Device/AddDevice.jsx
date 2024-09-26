@@ -1468,6 +1468,7 @@ const AddDevice = () => {
                           control={control}
                           rules={{
                             required: "This field is required",
+                            // validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                             max: {
                               value: 90.000000,
                               message: "Please enter value between -90.000000 to 90.000000",
@@ -1775,7 +1776,7 @@ const AddDevice = () => {
         />
       )}
     />
-    {currentPublicfunding?.Name === "Feed in Tariff" && (
+    {currentPublicfunding?.Name === "Feed in Tariff" ? 
       <div className="ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
         <div className="col">
         <div className="w-full mt-4 bg-[#CFE5AD] h-8 flex justify-start items-center pl-2">
@@ -1797,7 +1798,7 @@ const AddDevice = () => {
           />
         </div>
       </div></div>
-    )}
+    : null }
   </div>
 
   {/* Documents Information Attachments */}

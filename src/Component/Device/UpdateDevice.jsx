@@ -1993,7 +1993,7 @@ const UpdateDevice = () => {
                           )}
                         />
                       </div>
-                      <div className="md:col-span-3">
+                      <div className="col-span-1 md:col-span-3">
                         <Controller
                           name="Publicfunding"
                           control={control}
