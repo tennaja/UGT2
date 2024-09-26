@@ -1779,7 +1779,7 @@ const AddDevice = () => {
     {currentPublicfunding?.Name === "Feed in Tariff" ? 
       <div className="ml-2 pl-3 flex justify-end border-l-2 border-r-0 border-t-0 border-b-2 border-x-gray-200 border-y-gray-200 h-10">
         <div className="col">
-        <div className="w-full mt-4 bg-[#CFE5AD] h-8 flex justify-start items-center pl-2">
+        <div className="w-full mt-4 bg-[#CFE5AD] h-8 flex justify-start items-center pl-2 pointer-events-none">
           (If public (government) funding has been received, when did/will it finish?)
         </div>
         <div className="w-full mt-2">
@@ -1793,6 +1793,7 @@ const AddDevice = () => {
                 id={"FundingReceivedate"}
                 error={errors.FundingReceivedate}
                 validate={" *"}
+                className="pointer-events-auto"
               />
             )}
           />

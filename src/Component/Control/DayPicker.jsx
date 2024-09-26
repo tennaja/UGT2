@@ -141,41 +141,50 @@ export default function DatePicker(props) {
           </p>
         )}
       </div>
+
       {isPopperOpen && (
-        <FocusTrap
-          active
-          focusTrapOptions={{
-            initialFocus: false,
-            allowOutsideClick: true,
-            clickOutsideDeactivates: true,
-            onDeactivate: closePopper,
-            fallbackFocus: buttonRef.current || undefined,
-          }}
-        >
+        <>
+          {/* Overlay to block background interactions */}
           <div
-            tabIndex={-1}
-            style={popper.styles.popper}
-            className="dialog-sheet z-1"
-            {...popper.attributes.popper}
-            ref={setPopperElement}
-            role="dialog"
-            aria-label="DayPicker calendar"
+            className="fixed inset-0 bg-transparent z-40"
+            onClick={closePopper}
+          />
+
+          <FocusTrap
+            active
+            focusTrapOptions={{
+              initialFocus: false,
+              allowOutsideClick: true,
+              clickOutsideDeactivates: true,
+              onDeactivate: closePopper,
+              fallbackFocus: buttonRef.current || undefined,
+            }}
           >
-            <DayPicker
-              {...inputProps}
-              initialFocus={isPopperOpen}
-              mode="single"
-              captionLayout="dropdown-buttons"
-              fromYear={yearMinus100}
-              toYear={yearPlus100}
-              defaultMonth={selected}
-              selected={selected}
-              onSelect={handleDaySelect}
-              className="bg-white shadow-xl"
-              disabled={onCalDisableDate}
-            />
-          </div>
-        </FocusTrap>
+            <div
+              tabIndex={-1}
+              style={popper.styles.popper}
+              className="dialog-sheet z-50" // Set a high z-index to place it above the overlay
+              {...popper.attributes.popper}
+              ref={setPopperElement}
+              role="dialog"
+              aria-label="DayPicker calendar"
+            >
+              <DayPicker
+                {...inputProps}
+                initialFocus={isPopperOpen}
+                mode="single"
+                captionLayout="dropdown-buttons"
+                fromYear={yearMinus100}
+                toYear={yearPlus100}
+                defaultMonth={selected}
+                selected={selected}
+                onSelect={handleDaySelect}
+                className="bg-white shadow-xl"
+                disabled={onCalDisableDate}
+              />
+            </div>
+          </FocusTrap>
+        </>
       )}
     </div>
   );
