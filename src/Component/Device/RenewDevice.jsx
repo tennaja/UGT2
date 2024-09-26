@@ -146,7 +146,7 @@ const RenewDevice = () => {
   const modalFailMessage = useSelector(
     (state) => state.device.modalFailMessage
   );
-  const responseDataAdd = useSelector(
+  const responseDataRenew = useSelector(
     (state) => state.device.responseDataRenewDevice
   );
   console.log(deviceobj)
@@ -2151,7 +2151,7 @@ const RenewDevice = () => {
         <ModalDone
           data={vFormData}
           onChangeModalDone={handleClickBackToEdit}
-          deviceID={responseDataRenewDevice?.id}
+          deviceID={responseDataRenew?.id}
         />
       )}
       {isOpenFailModal && (
