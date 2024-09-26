@@ -538,18 +538,31 @@ const Subscriberlisting = (props) => {
               highlightTag={Highlight}
               searchWords={[searchQueryUnAssigned]}
               autoEscape={true}
-              textToHighlight={row.subcriberName}
+              
+              textToHighlight={
+                row.subcriberName?.length > 100
+                  ? row.subcriberName?.substring(0, 100) + "..."
+                  : row.subcriberName
+              }
             />
           </div>
           <label
-            className={`${
-              row?.subscriberTypeId == 1
-                ? "bg-[#E8E2F6] text-[#4c3486]"
-                : "bg-[#D6EEF1] text-[#32686f]"
-            } rounded w-max px-3 py-1 mt-1 text-xs font-normal`}
-          >
-            {row?.subscriberTypeId == 1 ? "Subscriber" : "Aggregate Subscriber"}
-          </label>
+  className={`${
+    row?.subscriberTypeId == 1
+      ? "bg-[#E8E2F6] text-[#4c3486]"
+      : "bg-[#D6EEF1] text-[#32686f]"
+  } rounded w-max px-3 py-1 mt-1 text-xs font-normal`}
+>
+  <Highlighter
+    highlightClassName="highlight"
+    highlightTag={Highlight}
+    searchWords={[searchQueryUnAssigned]}
+    autoEscape={true}
+    textToHighlight={
+      row?.subscriberTypeId == 1 ? "Subscriber" : "Aggregate Subscriber"
+    }
+  />
+</label>
         </div>
       ),
     },
