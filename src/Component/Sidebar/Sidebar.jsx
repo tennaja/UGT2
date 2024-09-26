@@ -25,7 +25,7 @@ import addLogoSelected from "../assets/add_selected.svg";
 import deviceLogo from "../assets/device.svg";
 import deviceLogoSelected from "../assets/device_selected.svg";
 
-import subscriberLogo from "../assets/3-User.svg";
+import subscriberLogo from "../assets/3-user.svg";
 import subscriberLogoSelected from "../assets/3-user_selected.svg";
 
 import portfolioLogo from "../assets/graph.svg";
