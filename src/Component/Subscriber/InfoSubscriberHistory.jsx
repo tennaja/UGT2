@@ -129,8 +129,8 @@ const InfoSubscriberHistory = () => {
     const address = detail?.address;
     const subdistrictName = detail?.subdistrictName;
     const districtName = detail?.districtName;
-    const proviceName = detail?.proviceName;
-    const postcode = detail?.postcode;
+    const proviceName = detail?.provinceName;
+    const postcode = detail?.postCode;
     let _address = "";
 
     if (

@@ -57,6 +57,8 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import html2pdf from 'html2pdf.js';
 import CollapsSubscriberEdit from "./CollapsSubscriberEdit";
+import TriWarning from "../assets/TriWarning.png"
+import TextareaNoteSubscriber from "./TextareaNoteSubscriber";
 
 const UpdateSubscriber = () => {
   const {
@@ -259,7 +261,7 @@ const UpdateSubscriber = () => {
   }, [
     details,
     dropDrowList,
-    countryList,
+    /*countryList,
     provinceList,
     districtList,
     subDistrictList,
@@ -268,7 +270,7 @@ const UpdateSubscriber = () => {
     provinceBeneficiaryList,
     districtBeneficiaryList,
     subDistrictBeneficiaryList,
-    postcodeBeneficiaryList,
+    postcodeBeneficiaryList,*/
   ]);
 
   /* useEffect(() => {
@@ -448,7 +450,14 @@ const UpdateSubscriber = () => {
     });
   };
   const addAllowcated = () => {
-    setShowModalConfirm(true);
+    //setShowModalConfirm(true);
+    if(yearStartDate1.current !== null && yearEndDate1.current !== null){
+      setShowModalConfirm(true);
+    }
+    else{
+      setIsShowFailModal(true)
+      setMessageFailModal("Please select Retail ESA Contract Start Date and Retail ESA Contract End Date.")
+    }
   };
   const addAllowcatedClose = () => {
     setIsEdit(false);
@@ -609,6 +618,10 @@ const UpdateSubscriber = () => {
     allowcatedEnergyEditTemp[index] = obj;
 
     setAllowcatedEnergyList(allowcatedEnergyEditTemp);
+    const sortedData = [...allowcatedEnergyList].sort(
+      (a, b) => a.year - b.year
+    );
+    setAllowcatedEnergyList(sortedData);
   };
   const onClickEditBtn = (data, index) => {
     data.index = index;
@@ -657,7 +670,7 @@ const UpdateSubscriber = () => {
     const allowcatedEnergyListTemp = allowcatedEnergyList;
     allowcatedEnergyListTemp.push(obj);
     const sortedData = [...allowcatedEnergyList].sort(
-      (a, b) => b.year - a.year
+      (a, b) => a.year - b.year
     );
     setAllowcatedEnergyList(sortedData);
   };
@@ -1190,24 +1203,43 @@ const UpdateSubscriber = () => {
     if(years >= yearStart && years <= yearEnd){
       
       if(years === yearStart){
-        
-        if(months >= monthStart){
-          if(values === 0){
-            return true
+        if(yearStart !== yearEnd){
+          if(months >= monthStart){
+            if(values === 0){
+              return true
+            }
+            else{
+              return false
+            }          
           }
           else{
-            return false
-          }          
+            if(values !== 0){
+              return true
+            }
+            else{
+              return false
+            } 
+            
+            
+          }
         }
         else{
-          if(values !== 0){
-            return true
+          if(months >= monthStart && months <= monthEnd){
+            if(values === 0){
+              return true
+            }
+            else{
+              return false
+            } 
           }
           else{
-            return false
-          } 
-          
-          
+            if(values !== 0){
+              return true
+            }
+            else{
+              return false
+            } 
+          }
         }
       }
       else if(years === yearEnd){
@@ -1221,7 +1253,7 @@ const UpdateSubscriber = () => {
         }
         else{
           if(values !== 0){
-            
+            return true
           }
           else{
             return false
@@ -2076,29 +2108,48 @@ const UpdateSubscriber = () => {
     if(years >= yearStart && years <= yearEnd){
       
       if(years === yearStart){
-        
-        if(months >= monthStart){
-          if(values === 0){
-            return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+        if(yearStart !== yearEnd){
+          if(months >= monthStart){
+              if(values === 0){
+                return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
+              }
+              else{
+                return isWarning?"text-white":undefined
+              }   
           }
           else{
-            return isWarning?"text-white":undefined
-          }          
+            
+            if(values !== 0){
+              return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
+            }
+            else{
+              return isWarning?"text-white":undefined
+            } 
+          }
         }
         else{
-          
-          if(values !== 0){
-            return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+          if(months >= monthStart && months <= monthEnd){
+            if(values === 0){
+              return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
+            }
+            else{
+              return isWarning?"text-white":undefined
+            } 
           }
           else{
-            return isWarning?"text-white":undefined
-          } 
+            if(values !== 0){
+              return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
+            }
+            else{
+              return isWarning?"text-white":undefined
+            } 
+          }
         }
       }
       else if(years === yearEnd){
         if(months <= monthEnd){
           if(values === 0){
-            return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+            return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
           }
           else{
             return isWarning?"text-white":undefined
@@ -2106,7 +2157,7 @@ const UpdateSubscriber = () => {
         }
         else{
           if(values !== 0){
-            return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+            return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
           }
           else{
             return isWarning?"text-white":undefined
@@ -2115,7 +2166,7 @@ const UpdateSubscriber = () => {
       }
       else{
         if(values === 0){
-          return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+          return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
         }
         else{
           return isWarning?"text-white":undefined
@@ -2123,7 +2174,7 @@ const UpdateSubscriber = () => {
       }
     }
     else{
-      return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+      return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
     }
 
   }
@@ -2139,30 +2190,49 @@ const UpdateSubscriber = () => {
     if(years >= yearStart && years <= yearEnd){
       
       if(years === yearStart){
-        
-        if(months >= monthStart){
-          if(values === 0){
-            return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+        if(yearStart !== yearEnd){
+          if(months >= monthStart){
+            if(values === 0){
+              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
+            }
+            else{
+              return "..."
+            }          
           }
           else{
-            return "..."
-          }          
+            if(values !== 0){
+              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
+            }
+            else{
+              return "..."
+            } 
+            
+            
+          }
         }
         else{
-          if(values !== 0){
-            return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+          if(months >= monthStart && months <= monthEnd){
+            if(values === 0){
+              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
+            }
+            else{
+              return "..."
+            } 
           }
           else{
-            return "..."
-          } 
-          
-          
+            if(values !== 0){
+              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
+            }
+            else{
+              return "..."
+            } 
+          }
         }
       }
       else if(years === yearEnd){
         if(months <= monthEnd){
           if(values === 0){
-            return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+            return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
           }
           else{
             return "..."
@@ -2170,7 +2240,7 @@ const UpdateSubscriber = () => {
         }
         else{
           if(values !== 0){
-            return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+            return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
           }
           else{
             return "..."
@@ -2180,7 +2250,7 @@ const UpdateSubscriber = () => {
       }
       else{
         if(values === 0){
-          return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+          return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
         }
         else{
           return "..."
@@ -2189,7 +2259,7 @@ const UpdateSubscriber = () => {
     }
     else{
       
-      return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+      return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
     }
 
   }
@@ -2898,22 +2968,25 @@ const onCloseModalError=()=>{
                 padding="xl"
               >
                 <div className="flex flex-col gap-3">
-                  <div className="flex gap-3 items-center">
-                    <FaChevronCircleLeft
-                      className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
-                      size="30"
-                      onClick={() =>
-                        navigate(WEB_URL.SUBSCRIBER_INFO, {
-                          state: { id: state?.code,contract: state?.contract },
-                        })
-                      }
-                    />
-                    <p className="mb-0  font-semibold">
-                      Subscribers Type <span style={{ color: "red" }}>*</span>
-                    </p>
-                  </div>
-
-                  <div>
+                <div className="flex justify-between">
+                <div className="flex gap-3 items-center">
+                  <FaChevronCircleLeft
+                    className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
+                    size="30"
+                    onClick={() => navigate(WEB_URL.SUBSCRIBER_LIST)}
+                  />
+                  <p className="mb-0 font-semibold text-15 text-md">
+                    Subscribers Info <span style={{ color: "red" }}>*</span>
+                  </p>
+                </div>
+                <div><label className="text-xs text-red-500">* Requried field</label></div>
+                </div>
+                  <hr/>
+                  <div className="flex flex-col gap-3">
+              <div>
+                  <label className="font-bold text-base">Subscriber Type</label><label className="text-red-600 ml-1 text-sm font-bold">*</label>
+                </div>
+                <div>
                     {details?.subscriberDetail?.subscriberTypeId == 1 && (
                       <button
                         className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
@@ -2939,8 +3012,48 @@ const onCloseModalError=()=>{
                       </button>
                     )}
                   </div>
+              </div>
                 </div>
               </Card>
+
+              {/*<Card
+              shadow="md"
+              radius="lg"
+              className="flex w-full h-full"
+              padding="xl"
+            >
+              <div className="flex flex-col gap-3">
+              <div>
+                  <label className="font-bold text-base">Subscriber Type</label><label className="text-red-600 ml-1 text-sm font-bold">*</label>
+                </div>
+                <div>
+                    {details?.subscriberDetail?.subscriberTypeId == 1 && (
+                      <button
+                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                          isActiveForm1
+                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                        }`}
+                        onClick={handleClickForm1}
+                      >
+                        Subscriber
+                      </button>
+                    )}
+                    {details?.subscriberDetail?.subscriberTypeId == 2 && (
+                      <button
+                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                          isActiveForm2
+                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                        }`}
+                        onClick={handleClickForm2}
+                      >
+                        Aggregate Subscriber
+                      </button>
+                    )}
+                  </div>
+              </div>
+            </Card>*/}
 
               <div>
                 {isActiveForm1 && (
@@ -2994,6 +3107,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3014,6 +3128,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3035,6 +3150,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3056,6 +3172,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3187,6 +3304,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3207,6 +3325,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3227,6 +3346,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3415,6 +3535,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3435,6 +3556,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3455,6 +3577,11 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                    pattern: {
+                                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                      message: "Invalid email format"
+                                    }
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3475,6 +3602,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3495,6 +3623,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3516,6 +3645,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3556,6 +3686,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3642,6 +3773,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3692,6 +3824,7 @@ const onCloseModalError=()=>{
                                         control={control}
                                         rules={{
                                           required: "This field is required",
+                                          validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                         }}
                                         render={({ field }) => (
                                           <Input
@@ -3849,7 +3982,7 @@ const onCloseModalError=()=>{
                                     </div>
                                     <div>
                                       <p className="m-0 p-0">
-                                        Total Allocated Energy Amount (kWh)
+                                        Total Contracted Energy Amount (kWh)
                                       </p>
                                     </div>
                                     <div></div>
@@ -3857,7 +3990,7 @@ const onCloseModalError=()=>{
                                 </>
                               )}
 
-                              {allowcatedEnergyList.map((item, index) => (
+                              {allowcatedEnergyList.length > 0? allowcatedEnergyList.map((item, index) => (
                                 <div
                                   key={index}
                                   className="px-4 md:col-span-6 text-sm"
@@ -3897,7 +4030,7 @@ const onCloseModalError=()=>{
                                       </div>
                                       <div>
                                         <p className="text-GRAY_BUTTON">
-                                          Allocated Energy amount (kWh)
+                                        Contracted Energy amount (kWh)
                                         </p>
                                         <hr />
                                         <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -3931,7 +4064,10 @@ const onCloseModalError=()=>{
                                     </div>
                                   </CollapsSubscriberEdit>
                                 </div>
-                              ))}
+                              )):
+                              <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                                <label className="text-gray-400">There is no data to display.</label>
+                              </div>}
                               {allowcatedEnergyList?.length == 0 && (
                                 <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
                                   <div>
@@ -4024,7 +4160,7 @@ const onCloseModalError=()=>{
                               </div>
 
                               <div className="mt-3 mb-4 md:col-span-6">
-                              {benefitList.map((item, index) => (
+                              {benefitList.length > 0? benefitList.map((item, index) => (
                                 statusFilterBene === "All"?
                                 <div
                                   key={index}
@@ -4065,7 +4201,10 @@ const onCloseModalError=()=>{
                                   <BeneficiaryEdit beneficiaryDataEdit={item} editStatus={true}/>
                                 </CollapsSubscriberEdit>
                               </div>:undefined
-                              ))}
+                              )):
+                              <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                              <label className="text-gray-400">There is no data to display.</label>
+                            </div>}
                                 {isBeneficiary && (
                                 <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
                                   <div>
@@ -4298,7 +4437,7 @@ const onCloseModalError=()=>{
                                     control={control}
                                     rules={{}}
                                     render={({ field }) => (
-                                      <Textarea
+                                      <TextareaNoteSubscriber
                                         {...field}
                                         id={"note"}
                                         type={"text"}
@@ -4405,6 +4544,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -4425,6 +4565,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -4445,6 +4586,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -4595,6 +4737,7 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -4679,7 +4822,7 @@ const onCloseModalError=()=>{
                                 <>
                                   <div className="flex flex-col ml-2 col-span-6">
                                     <label className="mt-3 text-[#6B7280] text-xs">
-                                      Total Allocated Energy (kWh)
+                                      Total Contracted Energy (kWh)
                                     </label>
                                     <span className="">
                                       <div className="break-words	font-bold">
@@ -4705,7 +4848,7 @@ const onCloseModalError=()=>{
                                 </>
                               )}
 
-                              {allowcatedEnergyList.map((item, index) => (
+                              {allowcatedEnergyList.length > 0? allowcatedEnergyList.map((item, index) => (
                                 <div
                                   key={index}
                                   className="px-4 md:col-span-6 text-sm"
@@ -4745,7 +4888,7 @@ const onCloseModalError=()=>{
                                       </div>
                                       <div>
                                         <p className="text-GRAY_BUTTON">
-                                          Allocated Energy amount (kWh)
+                                        Contracted Energy amount (kWh)
                                         </p>
                                         <hr />
                                         <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -4779,7 +4922,10 @@ const onCloseModalError=()=>{
                                     </div>
                                   </CollapsSubscriberEdit>
                                 </div>
-                              ))}
+                              )):
+                              <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                              <label className="text-gray-400">There is no data to display.</label>
+                            </div>}
                               {allowcatedEnergyList?.length == 0 && (
                                 <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
                                   <div>
@@ -5012,6 +5158,7 @@ const onCloseModalError=()=>{
                                         id={"uploadFilePDF"}
                                         type={"file"}
                                         multiple = {false}
+                                        maxFiles={1}
                                         accept = {".pdf"}
                                         label={"หนังสือยืนยันหน่วย (.pdf)"}
                                         defaultValue={details?.subscribersFilePdf}
@@ -5045,6 +5192,7 @@ const onCloseModalError=()=>{
                                         id={"uploadFileExcel"}
                                         type={"file"}
                                         multiple = {false}
+                                        maxFiles={1}
                                         accept = {".xls,.xlsx"}
                                         defaultValue={details?.subscribersFileXls}
                                         disabled = {fileListExcel.length === 0?false:true}
@@ -5074,7 +5222,7 @@ const onCloseModalError=()=>{
                                     control={control}
                                     rules={{}}
                                     render={({ field }) => (
-                                      <Textarea
+                                      <TextareaNoteSubscriber
                                         {...field}
                                         id={"note"}
                                         type={"text"}
@@ -5666,7 +5814,7 @@ const onCloseModalError=()=>{
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Allocated Energy (kWh)
+                                    Total Contracted Energy (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -5732,7 +5880,7 @@ const onCloseModalError=()=>{
                                     </div>
                                     <div>
                                       <p className="text-GRAY_BUTTON">
-                                        Allocated Energy amount (kWh)
+                                      Contracted Energy amount (kWh)
                                       </p>
                                       <hr />
                                       <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -6124,7 +6272,7 @@ const onCloseModalError=()=>{
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
-                                <label>{getValues("note")}</label>
+                                <label className="break-all">{getValues("note")}</label>
                               </div>
                             </div>
                           </div>
@@ -6364,7 +6512,7 @@ const onCloseModalError=()=>{
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Allocated Energy (kWh)
+                                    Total Contracted Energy (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -6430,7 +6578,7 @@ const onCloseModalError=()=>{
                                     </div>
                                     <div>
                                       <p className="text-GRAY_BUTTON">
-                                        Allocated Energy amount (kWh)
+                                      Contracted Energy amount (kWh)
                                       </p>
                                       <hr />
                                       <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -6584,7 +6732,7 @@ const onCloseModalError=()=>{
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
-                                <label>{getValues("note")}</label>
+                                <label className="break-all">{getValues("note")}</label>
                               </div>
                             </div>
                           </div>
@@ -6647,6 +6795,8 @@ const onCloseModalError=()=>{
           allowcatedEnergyDataEdit={allowcatedEnergyDataEdit}
           editStatus={isEdit}
           listData={allowcatedEnergyList}
+          yearStart={yearStartDate1.current}
+          yearEnd={yearEndDate1.current}
         />
       )}
       {showModalCreate && (
@@ -6654,8 +6804,10 @@ const onCloseModalError=()=>{
         onClickConfirmBtn={handleClickConfirm}
         onCloseModal={handleCloseModalConfirm}
         title={"Save Changes this Subscriber?"}
-        content={"You confirm all changed information is completed with accuracy and conforms to the evidence(s) attached. By providing your consent, you agree to take full responsibility for any effects resulting from this modification. Would you like to save changes for this subscriber?"}
+        content={"You confirm all changed information is completed with accuracy and conforms to the evidence(s) attached."}
+        content2={"By providing your consent, you agree to take full responsibility for any effects resulting from this modification. Would you like to save changes for this subscriber?"}
         textCheckBox={"I consent and confirm the accuracy of the modifications and attached evidences."}
+        sizeModal = {"md"}
       />
       )}
 
@@ -6664,7 +6816,8 @@ const onCloseModalError=()=>{
           onClickConfirmBtn={handleClickConfirm}
           onCloseModal={handleCloseModalConfirmRemark}
           title={"Save Changes this Subscriber?"}
-          content={"You confirm all changed information is completed with accuracy and conforms to the evidence(s) attached. By providing your consent, you agree to take full responsibility for any effects resulting from this modification. Would you like to save changes for this subscriber?"}
+          content={"You confirm all changed information is completed with accuracy and conforms to the evidence(s) attached."}
+          content2={"By providing your consent, you agree to take full responsibility for any effects resulting from this modification. Would you like to save changes for this subscriber?"}
           textCheckBox={"I consent and confirm the accuracy of the modifications and attached evidences."}
           setRemark={RefRemark}
           remark={details?.subscriberRemark}
@@ -6709,7 +6862,7 @@ const onCloseModalError=()=>{
       {/*Modal Create Complete */}
       {isOpen && (
         <ModalCompleteSubscriber
-          title="Done!"
+          title="Edit Complete"
           context="Edit Complete"
           link={WEB_URL.SUBSCRIBER_LIST}
         />

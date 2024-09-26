@@ -9,6 +9,7 @@ const ModalConfirmCheckBox = (props) => {
     onClickConfirmBtn,
     title = "Confirm?",
     content = "Are you sure you would like to confirm this action?",
+    content2 = "",
     textCheckBox,
     buttonTypeColor = "primary",
     showCheckBox = true,
@@ -59,7 +60,7 @@ const ModalConfirmCheckBox = (props) => {
         closeOnClickOutside={false}
         centered
       >
-        <div className="pt-4 pb-4">
+        <div className="pt-4 ">
           <div className="text-center sm:mt-4">
             <h6
               className="text-2xl leading-6 font-bold text-[#071437] "
@@ -68,8 +69,11 @@ const ModalConfirmCheckBox = (props) => {
               {title}
             </h6>
             <div className="mt-4">
-              <p className="text-base text-gray-600">{content}</p>
+              <p className="text-sm text-center font-bold text-gray-600">{content}</p>
             </div>
+            {content2 !== "" &&<div className="mt-3">
+              <p className="text-sm text-center font-bold text-gray-600">{content2}</p>
+            </div>}
           </div>
         </div>
         {showCheckBox && <div className="flex item-center gap-3">
@@ -81,7 +85,7 @@ const ModalConfirmCheckBox = (props) => {
                   className={"border-1 border-gray-300 rounded mt-2 w-5 h-5 align-top "}
                 />
                 
-                  <label className={`w-[95%] font-bold text-base ml-2 mt-2`}>
+                  <label className={`w-[90%] text-sm ml-2 mt-2`}>
                     {textCheckBox}
                   </label>
               </div>

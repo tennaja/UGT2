@@ -2,6 +2,7 @@ import { Modal } from "@mantine/core";
 import {useRef, useState} from 'react'
 import { useForm, Controller } from "react-hook-form";
 import Textarea from "../Control/Textarea";
+import TextareaNoteSubscriber from "./TextareaNoteSubscriber";
 
 const ModalConfirmRemark = (props) => {
   const {
@@ -20,6 +21,7 @@ const ModalConfirmRemark = (props) => {
     onClickConfirmBtn,
     title = "Confirm?",
     content = "Are you sure you would like to confirm this action?",
+    content2="",
     textCheckBox,
     buttonTypeColor = "primary",
     setRemark,
@@ -74,7 +76,7 @@ const ModalConfirmRemark = (props) => {
         closeOnClickOutside={false}
         centered
       >
-        <div className="pt-4 pb-5">
+        <div className="pt-4 pb-3">
           <div className="text-center sm:mt-4">
             <h6
               className="text-2xl leading-6 font-bold text-[#071437] "
@@ -83,25 +85,30 @@ const ModalConfirmRemark = (props) => {
               {title}
             </h6>
             <div className="mt-4">
-              <p className="text-base text-gray-600">{content}</p>
+              <p className="text-base text-center font-bold text-gray-600">{content}</p>
             </div>
-            <div className="mt-4">
-                <Controller
-                    name="remark"
-                    control={control}
-                    rules={{
-                      required: "This field is required",
-                    }}
-                    render={({ field }) => (
-                      <Textarea
-                        {...field}
-                        id={"note"}
-                        type={"text"}
-                        label={"Note"}
-                        error={errors.note}
-                        // ... other props
-                        />
-                      )}
+            {content2 !== "" &&<div className="mt-4">
+              <p className="text-base text-center font-bold text-gray-600">{content2}</p>
+            </div>}
+            <div className="mt-4 text-left">
+              <Controller
+                name="remark"
+                control={control}
+                rules={{
+                  required: "This field is required",
+                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                }}
+                render={({ field }) => (
+                  <TextareaNoteSubscriber
+                    {...field}
+                    id={"remark"}
+                    type={"text"}
+                    label={"Remark"}
+                    error={errors.remark}
+                    validate={" *"}
+                    // ... other props
+                  />
+                )}
                 />
             </div>
           </div>
@@ -115,7 +122,7 @@ const ModalConfirmRemark = (props) => {
                   className={"border-1 border-gray-300 rounded mt-2 w-5 h-5 align-top "}
                 />
                 
-                  <label className={`w-[95%] font-bold text-base ml-2 mt-2`}>
+                  <label className={`w-[95%] text-base ml-2 mt-2`}>
                     {textCheckBox}
                   </label>
               </div>

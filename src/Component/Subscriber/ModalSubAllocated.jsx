@@ -4,6 +4,7 @@ import Input from "../Control/Input";
 import MySelect from "../Control/Select";
 import { initialvalueForSelectField } from "../../Utils/FuncUtils";
 import { Modal, ScrollArea } from "@mantine/core";
+import InputSubAllow from "./InputSubAllow";
 
 const ModalSubAllocated = (props) => {
   const {
@@ -23,6 +24,8 @@ const ModalSubAllocated = (props) => {
     allowcatedEnergyDataEdit,
     allowcatedEnergyDataIndex,
     buttonTypeColor = "primary",
+    yearStart,
+    yearEnd
   } = props;
 
   const [dropDownListYear, setDropDownListYear] = useState([]);
@@ -41,32 +44,33 @@ const ModalSubAllocated = (props) => {
     setSelectedOption(allowcatedEnergyDataEdit.allocateType);
 
     if (allowcatedEnergyDataEdit.allocateType == "MONTHLY") {
-      setValue("MONTHLY", allowcatedEnergyDataEdit.amount01);
+      setValue("MONTHLY", parseFloat(allowcatedEnergyDataEdit.amount01).toFixed(2));
     }
-    setValue("month0", allowcatedEnergyDataEdit.amount01);
-    setValue("month1", allowcatedEnergyDataEdit.amount02);
-    setValue("month2", allowcatedEnergyDataEdit.amount03);
-    setValue("month3", allowcatedEnergyDataEdit.amount04);
-    setValue("month4", allowcatedEnergyDataEdit.amount05);
-    setValue("month5", allowcatedEnergyDataEdit.amount06);
-    setValue("month6", allowcatedEnergyDataEdit.amount07);
-    setValue("month7", allowcatedEnergyDataEdit.amount08);
-    setValue("month8", allowcatedEnergyDataEdit.amount09);
-    setValue("month9", allowcatedEnergyDataEdit.amount10);
-    setValue("month10", allowcatedEnergyDataEdit.amount11);
-    setValue("month11", allowcatedEnergyDataEdit.amount12);
+    setValue("month0", parseFloat(allowcatedEnergyDataEdit.amount01).toFixed(2));
+    setValue("month1", parseFloat(allowcatedEnergyDataEdit.amount02).toFixed(2));
+    setValue("month2", parseFloat(allowcatedEnergyDataEdit.amount03).toFixed(2));
+    setValue("month3", parseFloat(allowcatedEnergyDataEdit.amount04).toFixed(2));
+    setValue("month4", parseFloat(allowcatedEnergyDataEdit.amount05).toFixed(2));
+    setValue("month5", parseFloat(allowcatedEnergyDataEdit.amount06).toFixed(2));
+    setValue("month6", parseFloat(allowcatedEnergyDataEdit.amount07).toFixed(2));
+    setValue("month7", parseFloat(allowcatedEnergyDataEdit.amount08).toFixed(2));
+    setValue("month8", parseFloat(allowcatedEnergyDataEdit.amount09).toFixed(2));
+    setValue("month9", parseFloat(allowcatedEnergyDataEdit.amount10).toFixed(2));
+    setValue("month10", parseFloat(allowcatedEnergyDataEdit.amount11).toFixed(2));
+    setValue("month11", parseFloat(allowcatedEnergyDataEdit.amount12).toFixed(2));
   };
 
   useEffect(() => {
     const currentYear = new Date().getFullYear();
     const yearList = [];
     const yearData = [];
-
+    console.log("Year Start",yearStart)
+    console.log("Year End",yearEnd)
     for (let i = 0; i < listData?.length; i++) {
       yearData.push(listData[i]?.year);
     }
 
-    for (let i = currentYear - 10; i <= currentYear + 10; i++) {
+    for (let i = yearStart; i <= yearEnd; i++) {
       yearList.push({
         value: i,
         year: i.toString(),
@@ -215,7 +219,7 @@ const ModalSubAllocated = (props) => {
     >
       <div className="pt-4 px-4 pb-2">
         <h6 className="text-PRIMARY_TEXT font-semibold">
-          Allocated energy amount
+        Contracted energy amount
         </h6>
 
         <form className="text-sm">
@@ -244,13 +248,13 @@ const ModalSubAllocated = (props) => {
 
           <div className="md:col-span-2 mt-4">
             <strong>
-              Allocated energy amount
+              Contracted energy amount
               <span className="text-red-500"> *</span>
             </strong>
           </div>
 
           <div className="pt-3">
-            <label className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2">
               <input
                 id="MONTHLY"
                 value="MONTHLY"
@@ -277,13 +281,19 @@ const ModalSubAllocated = (props) => {
                         },
                       }}
                       render={({ field }) => (
-                        <Input
+                        <InputSubAllow
                           {...field}
                           id={"MONTHLY"}
                           type={"number"}
                           label={""}
                           placeholder={"0"}
                           disabled={selectedOption === "MONTHLY" ? false : true}
+                          onKeyDown={(e) => {
+                            // Prevent invalid characters like 'e', '+', '-'
+                            if (['e', 'E', '+','-'].includes(e.key)) {
+                              e.preventDefault();
+                            }
+                          }}
                           onBlur={(e) => {
                             let val = parseFloat(e?.target?.value).toFixed(2);
                             setValue("MONTHLY", val);
@@ -300,7 +310,7 @@ const ModalSubAllocated = (props) => {
                   <span className="ml-3"> kWh</span>
                 </div>
               )}
-            </label>
+            </div>
           </div>
 
           <div className="pt-4">
@@ -323,7 +333,7 @@ const ModalSubAllocated = (props) => {
                 Month
               </div>
               <div className="col-span-3 text-center text-gray-500 text-sm">
-                Allocated energy amount (kWh)
+                Contracted energy amount (kWh)
               </div>
             </div>
             <hr className="mx-4 my-1" />
@@ -349,7 +359,7 @@ const ModalSubAllocated = (props) => {
                           },
                         }}
                         render={({ field }) => (
-                          <Input
+                          <InputSubAllow
                             {...field}
                             id={"month" + index}
                             type={"number"}
@@ -358,6 +368,12 @@ const ModalSubAllocated = (props) => {
                             disabled={
                               selectedOption === "CUSTOM" ? false : true
                             }
+                            onKeyDown={(e) => {
+                              // Prevent invalid characters like 'e', '+', '-'
+                              if (['e', 'E', '+','-'].includes(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
                             onBlur={(e) => {
                               let val = parseFloat(e?.target?.value).toFixed(2);
                               setValue("month" + index, val);

@@ -42,6 +42,8 @@ import ModalFail from "../Control/Modal/ModalFail";
 import { message } from "antd";
 import ModalConfirmWithdrawn from "./ModalConfirmWithDrawn";
 import ModalCompleteSubscriberButton from "./ModalCompleteSubscriberButton";
+import { ImLoop } from "react-icons/im";
+import { HiOutlineArrowPathRoundedSquare } from "react-icons/hi2";
 
 const InfoSubscriber = () => {
   const dispatch = useDispatch();
@@ -132,8 +134,8 @@ const InfoSubscriber = () => {
     const address = detail?.address;
     const subdistrictName = detail?.subdistrictName;
     const districtName = detail?.districtName;
-    const proviceName = detail?.proviceName;
-    const postcode = detail?.postcode;
+    const proviceName = detail?.provinceName;
+    const postcode = detail?.postCode;
     let _address = "";
 
     if (
@@ -201,6 +203,7 @@ const InfoSubscriber = () => {
   
       // Add the binary data as a file to the ZIP
       zip.file(name, arrayBuffer);
+      console.log("Zip",zip)
     });
   
     // Generate the ZIP file and trigger the download
@@ -216,8 +219,33 @@ const InfoSubscriber = () => {
     const zipfilename = "Download_All_"+formattedDateTime
     const PDFFile = details?.subscribersFilePdf
     const ExcelFile = details?.subscribersFileXls
+    const FileBinary = []
+    FileBinary.push(PDFFile[0]);
+    FileBinary.push(ExcelFile[0])
+    console.log(FileBinary)
+     // Add each file to the ZIP
+     FileBinary.forEach(file => {
+      const { name, binary } = file;
+      
+      // Decode the Base64 string and convert it to binary data
+      const binaryData = atob(binary);
+      const arrayBuffer = new Uint8Array(binaryData.length);
+      
+      for (let i = 0; i < binaryData.length; i++) {
+        arrayBuffer[i] = binaryData.charCodeAt(i);
+      }
+  
+      // Add the binary data as a file to the ZIP
+      zip.file(name, arrayBuffer);
+      console.log("Zip",zip)
+    });
+  
+    // Generate the ZIP file and trigger the download
+    zip.generateAsync({ type: 'blob' }).then(content => {
+      saveAs(content, zipfilename);
+    });
     //PDF File
-    const binaryDataPDF = atob(PDFFile[0].binary);
+    /*const binaryDataPDF = atob(PDFFile[0].binary);
     const arrayBufferPDF = new Uint8Array(binaryDataPDF.length);
       
       for (let i = 0; i < binaryDataPDF.length; i++) {
@@ -226,6 +254,7 @@ const InfoSubscriber = () => {
   
       // Add the binary data as a file to the ZIP
       zip.file(PDFFile.name, arrayBufferPDF);
+      console.log("Zip PDF",zip)
 
     //Excel File
     const binaryDataExcel = atob(PDFFile[0].binary);
@@ -238,9 +267,11 @@ const InfoSubscriber = () => {
       // Add the binary data as a file to the ZIP
       zip.file(ExcelFile.name, arrayBufferExcel);
 
+      console.log("Zip Excel",zip)
+
       zip.generateAsync({ type: 'blob' }).then(content => {
         saveAs(content, zipfilename);
-      });
+      });*/
   }
 
   const downloadFile =(items)=>{
@@ -273,6 +304,10 @@ const confirmDeleteSubscriber=()=>{
   setIsOpenConfirmDel(false)
   //showLoading()
   dispatch(FunctionwithDrawSubscriber(state.id))
+  setTimeout(()=>{
+    dispatch(SubscriberInfo(state.id,0))
+  },500)
+  //dispatch(SubscriberInfo(state.id,0))
   //message.success(`Withdraw Subscriber Complete!`);
   //setIsOpenConfirmDel(false)
 }
@@ -287,6 +322,126 @@ const onCLickComplete=()=>{
     })
   );
 }
+
+function CheckActionManageButton(){
+  let showAction = []
+  if(details?.subscriberDetail?.subscriberStatusId === 1){
+    if(details?.subscriberDetail?.renewStatus === "N"){
+      showAction = [{
+        icon: <FaRegEdit />,
+        label: "Edit",
+        onClick: onClickEdit,
+      },
+      {
+        icon: <MdOutlineHistory />,
+        label: "History",
+        onClick: onClickHistory,
+      },
+      {
+        icon: <LuTrash2 />,
+        label: "Withdraw",
+        onClick: deleteSubscriber,
+      }]
+      return showAction
+    }
+    else{
+      showAction = [
+      {
+        icon: <HiOutlineArrowPathRoundedSquare  />,
+        label: "Renew",
+        onClick: onClickRenew,
+      },  
+      {
+        icon: <FaRegEdit />,
+        label: "Edit",
+        onClick: onClickEdit,
+      },
+      {
+        icon: <MdOutlineHistory />,
+        label: "History",
+        onClick: onClickHistory,
+      },
+      {
+        icon: <LuTrash2 />,
+        label: "Withdraw",
+        onClick: deleteSubscriber,
+      }]
+      return showAction
+    }
+    
+  }
+  else if(details?.subscriberDetail?.subscriberStatusId === 2){
+    if(details?.subscriberDetail?.renewStatus === "N"){
+      showAction = [
+        {
+          icon: <FaRegEdit />,
+          label: "Edit",
+          onClick: onClickEdit,
+        },
+        {
+          icon: <MdOutlineHistory />,
+          label: "History",
+          onClick: onClickHistory,
+        }
+      ]
+      return showAction
+    }
+    else{
+      showAction = [
+      {
+        icon: <HiOutlineArrowPathRoundedSquare  />,
+        label: "Renew",
+        onClick: onClickRenew,
+      },  
+      {
+        icon: <FaRegEdit />,
+        label: "Edit",
+        onClick: onClickEdit,
+      },
+      {
+        icon: <MdOutlineHistory />,
+        label: "History",
+        onClick: onClickHistory,
+      },]
+      return showAction
+    }
+  }
+  else if(details?.subscriberDetail?.subscriberStatusId === 3){
+    showAction = [
+      {
+        icon: <MdOutlineHistory />,
+        label: "History",
+        onClick: onClickHistory,
+      }
+    ]
+    return showAction
+    
+  }
+  else if(details?.subscriberDetail?.subscriberStatusId === 4){
+    showAction = [
+      {
+        icon: <MdOutlineHistory />,
+        label: "History",
+        onClick: onClickHistory,
+      },
+      {
+        icon: <ImLoop  />,
+        label: "Renew",
+        onClick: onClickRenew,
+      }
+    ]
+    return showAction
+  }
+  else if(!details?.subscriberDetail?.subscriberStatusId){
+    return []
+  }
+  
+}
+const onClickRenew = () => {
+  console.log(state)
+  //navigate(`${WEB_URL.SUBSCRIBER_RENEW}`, { state: { code: state?.id ,contract: state?.contract } });
+};
+const action = CheckActionManageButton()
 
   return (
     <div>
@@ -376,42 +531,9 @@ const onCLickComplete=()=>{
                             </Menu.Item>
                           </Menu.Dropdown>
                         </Menu> */}
-                        <ManageBtn
-                          actionList={details?.subscriberDetail?.activePortfolioStatus === "Y"?[
-                            {
-                              icon: <FaRegEdit />,
-                              label: "Edit",
-                              onClick: onClickEdit,
-                            },
-                            {
-                              icon: <MdOutlineHistory />,
-                              label: "History",
-                              onClick: onClickHistory,
-                            }
-                          ]: details?.subscriberDetail?.subscriberStatusId === 3?
-                          [
-                            {
-                              icon: <MdOutlineHistory />,
-                              label: "History",
-                              onClick: onClickHistory,
-                            }
-                          ]:
-                          [{
-                            icon: <FaRegEdit />,
-                            label: "Edit",
-                            onClick: onClickEdit,
-                          },
-                          {
-                            icon: <MdOutlineHistory />,
-                            label: "History",
-                            onClick: onClickHistory,
-                          },
-                            {
-                              icon: <LuTrash2 />,
-                              label: "Delete",
-                              onClick: deleteSubscriber,
-                            }]}
-                        />
+                        {details?.subscriberDetail?.subscriberStatusId !== 3 && details?.subscriberDetail?.subscriberStatusId !== 4 &&<ManageBtn
+                          actionList={action}
+                        />}
                       </div>
                     )}
                     {/* Button Section */}
@@ -1460,7 +1582,7 @@ const onCLickComplete=()=>{
                                 ))}
                               </div>
 
-                              <div className="mt-3">
+                              {details?.fileUpload.length !== 0 &&<div className="mt-3">
                                 <button className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center " onClick={()=>downloadZip(details?.fileUpload,"TestDownloadFileZip")}>
                                   <div className="flex items-center justify-center " >
                                     <LiaDownloadSolid className=" w-5 h-5 text-PRIMARY_TEXT cursor-pointer"/>
@@ -1468,7 +1590,7 @@ const onCLickComplete=()=>{
                                   </div>
                                     
                                   </button>
-                              </div>
+                              </div>}
                             </div>
                             <div className="col-5 mt-3 ml-5">
                               <div>
@@ -1501,7 +1623,7 @@ const onCLickComplete=()=>{
                             </div>
                           </div>
 
-                        <div className="mt-3">
+                         <div className="mt-3">
                           <button className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center" onClick={()=>downloadAllFileAggregate("TestDownloadAggregateFileZip")}>
                             <div className="flex items-center justify-center cursor-pointer">
                               <LiaDownloadSolid className=" w-5 h-5 text-PRIMARY_TEXT" />
@@ -1511,12 +1633,12 @@ const onCLickComplete=()=>{
                             </button>
                         </div>
                       </div>
-                      <div className="col-5 mt-3 ml-5">
+                      <div className="col-6 mt-3 ml-5">
                         <div>
                           <label className="ml-2 text-sm font-semibold">Note</label>                                
                         </div>
-                        <div>
-                            <label className="mt-2 ml-2 text-sm font-normal">{renderData(details?.subscriberDetail?.note || "-")}</label>
+                        <div className="col-span-4">
+                            <label className="mt-2 ml-2 break-all text-sm font-normal">{renderData(details?.subscriberDetail?.note || "-")}</label>
                         </div>
                       </div>  
                     </div>
@@ -1567,6 +1689,7 @@ const onCLickComplete=()=>{
           buttonTypeColor={"danger"}
           showCheckBox={false}
           sizeModal={"md"}
+          contentButton={"Confirm Withdraw"}
         />
       )}
       {/*Madal Fail Save */}
@@ -1579,13 +1702,13 @@ const onCLickComplete=()=>{
         />
       )}
       {/*Modal Create Complete */}
-      {isOpen && (
+      {/*isOpen && (
         <ModalCompleteSubscriberButton
           title="Done!"
           context="Withdraw Subscriber Complete!"
           onclick={onCLickComplete}
         />
-      )}
+      )*/}
     </div>
   );
 };

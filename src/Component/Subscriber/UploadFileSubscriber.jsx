@@ -19,6 +19,9 @@ import { useDispatch } from "react-redux";
 import ModalConfirm from "../Control/Modal/ModalConfirm";
 import ModelFail from "../Control/Modal/ModalFail";
 import { message } from "antd";
+import { LuTrash2 } from "react-icons/lu";
+import { RiEyeLine } from "react-icons/ri";
+import { TfiDownload } from "react-icons/tfi";
 
 const UploadFileSubscriber = (props) => {
   const {
@@ -36,7 +39,7 @@ const UploadFileSubscriber = (props) => {
     onClickFile,
     ...inputProps
   } = props;
-  
+  console.log("Nor Input",inputProps)
 
   // const [percent,setPercent] = useState(0)
   // const [status,setStatus] = useState('')
@@ -124,6 +127,69 @@ const UploadFileSubscriber = (props) => {
       //.........
     };
 
+    const handlePreview =(file)=>{
+      console.log(file)
+      if(file.binary === undefined){
+        const blobResult = file instanceof Blob ? file : new Blob([file], { type: file.type });;
+        console.log("Blob Result",blobResult)
+      
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const arrayBuffer = e.target.result;
+            console.log('Binary data as ArrayBuffer:', arrayBuffer);
+            const base64Content = arrayBuffer.split(",")[1];
+            
+            const pdfWindow = window.open("");
+          console.log("PDF",pdfWindow)
+          //console.log(type)
+          if (pdfWindow) {
+            pdfWindow.document.write(
+                `<iframe width="100%" height="100%" src="data:${file.type};base64,${base64Content}" style="border:none; position:fixed; top:0; left:0; bottom:0; right:0; width:100vw; height:100vh;"></iframe>`
+            );
+            pdfWindow.document.body.style.margin = "0"; // Remove any default margin
+                  pdfWindow.document.body.style.overflow = "hidden"; // Hide any scrollbars
+        } else {
+            alert('Unable to open new tab. Please allow popups for this website.');
+        }
+            
+        };
+        reader.readAsDataURL(blobResult);
+      }
+      else{
+          const pdfWindow = window.open("");
+          console.log("PDF",pdfWindow)
+          //console.log(type)
+          if (pdfWindow) {
+            pdfWindow.document.write(
+                `<iframe width="100%" height="100%" src="data:${file.type};base64,${file.binary}" style="border:none; position:fixed; top:0; left:0; bottom:0; right:0; width:100vw; height:100vh;"></iframe>`
+            );
+            pdfWindow.document.body.style.margin = "0"; // Remove any default margin
+                  pdfWindow.document.body.style.overflow = "hidden"; // Hide any scrollbars
+        } else {
+            alert('Unable to open new tab. Please allow popups for this website.');
+        }
+      }
+    }
+
+    const handleDownloadFile=(file)=>{
+        console.log(file)
+        const base64Content = file.binary//.split(",")[1];
+        const binaryString = atob(base64Content);
+        const binaryLength = binaryString.length;
+        const bytes = new Uint8Array(binaryLength);
+
+        for (let i = 0; i < binaryLength; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+        }
+
+        const blob = new Blob([bytes], { type: file.type });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = file.name;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+
     return (
       <div
         className={` ${
@@ -133,7 +199,7 @@ const UploadFileSubscriber = (props) => {
       >
         {!isViewMode && (
             
-          <div
+            <div
             {...dropzoneProps}
             style={{
               border: "1px solid #d1d5db",
@@ -221,15 +287,29 @@ const UploadFileSubscriber = (props) => {
                       {/* {readableBytes(file?.props?.meta?.size)} */}
                     </label>
                   </div>
+                  {file?.props?.meta?.name?.split(".").pop() === "pdf" && <button type="button"
+                    onClick={() => {
+                      handlePreview(file?.props?.fileWithMeta?.file);
+                    }}>
+                      <RiEyeLine className="pl-2 text-xl font-medium cursor-pointer h-[30px] w-[30px]"/>
+                      </button>}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleDownloadFile(file?.props?.fileWithMeta?.file);
+                    }}
+                  >
+                    <TfiDownload className="pl-2 text-xl font-medium cursor-pointer h-[30px] w-[30px]"/>
+                    
+                  </button>
                   <button
                     type="button"
                     onClick={() => {
                       handleDeleteClick(file);
                     }}
                   >
-                    <label className="pl-2 text-xl font-medium cursor-pointer">
-                      x
-                    </label>
+                    <LuTrash2 className="pl-2 text-xl font-medium cursor-pointer h-[30px] w-[30px]"/>
+                    
                   </button>
                 </div>
               </>
@@ -350,6 +430,7 @@ const UploadFileSubscriber = (props) => {
   const handleChangeStatus = ({ meta, file, remove }, status, allFiles) => {
     // { meta ,file ,remove }, status, allFiles
     // let status = props?.meta?.status
+    console.log(allFiles)
     inputProps.onChange(allFiles);
     setNewRender(!newRender);
     console.log("status", status);
@@ -380,9 +461,26 @@ const UploadFileSubscriber = (props) => {
       remove();
     }
     if (status === "rejected_file_type") {
-      message.error(
-        "You can only upload jpeg, jpg, png, svg, pdf, doc, xls, docx, xlsx, pptx, txt and csv file!"
-      );
+      if(accept==="image/*, application/pdf, .doc, .docx, .xls, .xlsx, application/msword, .txt, .csv, .pptx , .ppt"){
+        message.error(
+          "You can only upload jpeg, jpg, png, svg, pdf, doc, xls, docx, xlsx, pptx, txt and csv file!"
+        );
+      }
+      else if(accept === "image/*"){
+        message.error(
+          "You can only upload jpeg, jpg, png, svg file!"
+        );
+      }
+      else if(accept==="application/pdf"){
+        message.error(
+          "You can only upload pdf file!"
+        );
+      }
+      else if(accept===".xls,.xlsx"){
+        message.error(
+          "You can only upload xls, xlsx file!"
+        );
+      }
     }
     if (status === "error_upload") {
       message.error("Upload file fail!");

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-// import SubscriberLOGO01 from "../assets/3-user.svg";
-import Calendar from "../assets/calendars.svg"
-import User from "../assets/3 User.svg"
-import Clock from "../assets/Clock.svg"
-import Graph from "../assets/graphNew.svg"
+import SubscriberLOGO01 from "../assets/3-User.svg";
+import Calendar from "../assets/calendars.svg";
+import User from "../assets/3 User.svg";
+import Clock from "../assets/Clock.svg";
+import Graph from "../assets/graphNew.svg";
 import SubscriberLOGO02 from "../assets/contractenergy.svg";
 import SubscriberLOGO03 from "../assets/accumconsum.svg";
 import { useForm, Controller } from "react-hook-form";
@@ -15,7 +15,7 @@ import * as WEB_URL from "../../Constants/WebURL";
 import addLogoWhite from "../assets/Add-User.svg";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Multiselect from "../Control/Multiselect";
-import MySelect from "../Control/Select"
+import MySelect from "../Control/Select";
 import { setCookie } from "../../Utils/FuncUtils";
 import {
   SUB_MENU_ID,
@@ -161,14 +161,15 @@ const Subscriberlisting = (props) => {
 
   const [searchQueryAssigned, setSearchQueryAssigned] = useState("");
   const [searchQueryUnAssigned, setSearchQueryUnAssigned] = useState("");
-  const [labelPie,setLabelPie] = useState([]);
-  const [dataOnPie,setOnDataPie] = useState([]);
+  const [labelPie, setLabelPie] = useState([]);
+  const [dataOnPie, setOnDataPie] = useState([]);
 
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
   );
 
-  const [dataPie,setDataPie] = useState({labels: ["EGAT", "MEA", "PEA"],
+  const [dataPie, setDataPie] = useState({
+    labels: ["EGAT", "MEA", "PEA"],
     datasets: [
       {
         data: [0, 0, 0],
@@ -185,24 +186,41 @@ const Subscriberlisting = (props) => {
         borderWidth: 1,
         hoverOffset: 4,
       },
-    ],})
+    ],
+  });
 
-  useEffect(()=>{
+  useEffect(() => {
     setDataPieChart();
-  },[dashboardOBJ])
+  }, [dashboardOBJ]);
 
-  const setDataPieChart =()=>{
-    const egat = dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.filter((item)=>item.utilityName === "EGAT")
-    const mea = dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.filter((item)=>item.utilityName === "MEA")
-    const pea = dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.filter((item)=>item.utilityName === "PEA")
-    const egatNum = egat?.length === 0 ? 0:egat?.[0].totalUtility
-    const meaNum = mea?.length === 0 ? 0:mea?.[0].totalUtility
-    const peaNum = pea?.length === 0 ? 0:pea?.[0].totalUtility
-    let labelname = []
-    let datanum = []
-    for(let i = 0;i < dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.length;i++){
-      labelname.push(dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].utilityName)
-        datanum.push(dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].totalUtility)
+  const setDataPieChart = () => {
+    const egat =
+      dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.filter(
+        (item) => item.utilityName === "EGAT"
+      );
+    const mea = dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.filter(
+      (item) => item.utilityName === "MEA"
+    );
+    const pea = dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.filter(
+      (item) => item.utilityName === "PEA"
+    );
+    const egatNum = egat?.length === 0 ? 0 : egat?.[0].totalUtility;
+    const meaNum = mea?.length === 0 ? 0 : mea?.[0].totalUtility;
+    const peaNum = pea?.length === 0 ? 0 : pea?.[0].totalUtility;
+    let labelname = [];
+    let datanum = [];
+    for (
+      let i = 0;
+      i < dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.length;
+      i++
+    ) {
+      labelname.push(
+        dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].utilityName
+      );
+      datanum.push(
+        dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i]
+          .totalUtility
+      );
       /*if(i === 0){
         console.log("I",dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].utilityName)
         setLabelPie(dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].utilityName)
@@ -213,8 +231,8 @@ const Subscriberlisting = (props) => {
         setOnDataPie([...dataOnPie,dashboardOBJ?.utilitySubscription?.utilitySubscriptions?.[i].totalUtility])
       }*/
     }
-    console.log("Label Name",labelname)
-    console.log("DATA",egat,meaNum,mea,pea)
+    console.log("Label Name", labelname);
+    console.log("DATA", egat, meaNum, mea, pea);
 
     const dataObj = {
       labels: labelname,
@@ -235,9 +253,9 @@ const Subscriberlisting = (props) => {
           hoverOffset: 4,
         },
       ],
-    }
-    setDataPie(dataObj)
-    
+    };
+    setDataPie(dataObj);
+
     /*if(egat !== 0 && meaNum !== 0 && peaNum !== 0){
       const dataObj = {
         labels: ["EGAT", "MEA", "PEA"],
@@ -376,7 +394,7 @@ const Subscriberlisting = (props) => {
       }
       setDataPie(dataObj)
     }*/
-  }
+  };
 
   const columnsAssigned = [
     {
@@ -413,9 +431,19 @@ const Subscriberlisting = (props) => {
               row?.subscriberTypeId == 1
                 ? "bg-[#E8E2F6] text-[#4c3486]"
                 : "bg-[#D6EEF1] text-[#32686f]"
-            } rounded w-max px-2 py-1 mt-1 text-xs font-normal`}
+            } rounded w-max px-3 py-1 mt-1 text-xs font-normal`}
           >
-            {row?.subscriberTypeId == 1 ? "Subscriber" : "Aggregate Subscriber"}
+            <Highlighter
+              highlightClassName="highlight"
+              highlightTag={Highlight}
+              searchWords={[searchQueryAssigned]}
+              autoEscape={true}
+              textToHighlight={
+                row?.subscriberTypeId == 1
+                  ? "Subscriber"
+                  : "Aggregate Subscriber"
+              }
+            />
           </label>
         </div>
       ),
@@ -493,7 +521,15 @@ const Subscriberlisting = (props) => {
       render: (row) => (
         // StatusLabel(row?.subscriberStatusId == 1 ? "Inactive" : "Active"),
         <StatusLabel
-          status={row?.subscriberStatusId == 1 ? "Inactive" : row?.subscriberStatusId == 2 ?"Active":row?.subscriberStatusId == 3 ?"Withdrawn":"Expired"}
+          status={
+            row?.subscriberStatusId == 1
+              ? "Inactive"
+              : row?.subscriberStatusId == 2
+              ? "Active"
+              : row?.subscriberStatusId == 3
+              ? "Withdrawn"
+              : "Expired"
+          }
           searchQuery={searchQueryAssigned}
         />
       ),
@@ -504,7 +540,7 @@ const Subscriberlisting = (props) => {
       render: (row) => (
         <Link
           type="button"
-          state={{ id: row.id, contract:0 }}
+          state={{ id: row.id, contract: 0 }}
           to={WEB_URL.SUBSCRIBER_INFO}
           className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#4D6A00] bg-[#87BE33]`}
         >
@@ -538,31 +574,28 @@ const Subscriberlisting = (props) => {
               highlightTag={Highlight}
               searchWords={[searchQueryUnAssigned]}
               autoEscape={true}
-              
-              textToHighlight={
-                row.subcriberName?.length > 100
-                  ? row.subcriberName?.substring(0, 100) + "..."
-                  : row.subcriberName
-              }
+              textToHighlight={row.subcriberName}
             />
           </div>
           <label
-  className={`${
-    row?.subscriberTypeId == 1
-      ? "bg-[#E8E2F6] text-[#4c3486]"
-      : "bg-[#D6EEF1] text-[#32686f]"
-  } rounded w-max px-3 py-1 mt-1 text-xs font-normal`}
->
-  <Highlighter
-    highlightClassName="highlight"
-    highlightTag={Highlight}
-    searchWords={[searchQueryUnAssigned]}
-    autoEscape={true}
-    textToHighlight={
-      row?.subscriberTypeId == 1 ? "Subscriber" : "Aggregate Subscriber"
-    }
-  />
-</label>
+            className={`${
+              row?.subscriberTypeId == 1
+                ? "bg-[#E8E2F6] text-[#4c3486]"
+                : "bg-[#D6EEF1] text-[#32686f]"
+            } rounded w-max px-3 py-1 mt-1 text-xs font-normal`}
+          >
+            <Highlighter
+              highlightClassName="highlight"
+              highlightTag={Highlight}
+              searchWords={[searchQueryUnAssigned]}
+              autoEscape={true}
+              textToHighlight={
+                row?.subscriberTypeId == 1
+                  ? "Subscriber"
+                  : "Aggregate Subscriber"
+              }
+            />
+          </label>
         </div>
       ),
     },
@@ -638,7 +671,15 @@ const Subscriberlisting = (props) => {
       render: (row) => (
         // StatusLabel(row?.subscriberStatusId == 1 ? "Inactive" : "Active"),
         <StatusLabel
-          status={row?.subscriberStatusId == 1 ? "Inactive" : row?.subscriberStatusId == 2 ?"Active":row?.subscriberStatusId == 3 ?"Withdrawn":"Expired"}
+          status={
+            row?.subscriberStatusId == 1
+              ? "Inactive"
+              : row?.subscriberStatusId == 2
+              ? "Active"
+              : row?.subscriberStatusId == 3
+              ? "Withdrawn"
+              : "Expired"
+          }
           searchQuery={searchQueryUnAssigned}
         />
       ),
@@ -659,7 +700,7 @@ const Subscriberlisting = (props) => {
       render: (row) => (
         <Link
           type="button"
-          state={{ id: row.id, contract:0 }}
+          state={{ id: row.id, contract: 0 }}
           to={WEB_URL.SUBSCRIBER_INFO}
           className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#4D6A00] bg-[#87BE33]`}
         >
@@ -729,12 +770,12 @@ const Subscriberlisting = (props) => {
         dispatch(SubscriberManagementdashboard(paramDashboard));
       }
     }
-  }, [currentUGTGroup,isAssignedPortfolioId]);
+  }, [currentUGTGroup, isAssignedPortfolioId]);
 
   // assign table
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
-      console.log("Fetch assign")
+      console.log("Fetch assign");
       fetchTableAssign();
     }
   }, [currentUGTGroup, isAssignedStatusId, userData, isAssignedPortfolioId]);
@@ -742,15 +783,10 @@ const Subscriberlisting = (props) => {
   // unAssign table
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
-      console.log("Fetch Unassign")
+      console.log("Fetch Unassign");
       fetchTableUnassign();
     }
-  }, [
-    currentUGTGroup,
-    isUnassignedStatusId,
-    userData,
-    isAssignedPortfolioId,
-  ]);
+  }, [currentUGTGroup, isUnassignedStatusId, userData, isAssignedPortfolioId]);
 
   const fetchTableAssign = () => {
     if (currentUGTGroup?.id !== null) {
@@ -819,7 +855,7 @@ const Subscriberlisting = (props) => {
           PageNumber: 1,
           PageSize: itemsPerPage,
         };
-        console.log("Param Filter",paramSubscriberAssign)
+        console.log("Param Filter", paramSubscriberAssign);
         dispatch(SubscriberFilterList());
         dispatch(
           SubscriberManagementAssign(paramSubscriberAssign, (res) => {
@@ -957,11 +993,11 @@ const Subscriberlisting = (props) => {
     setIsAssignedUtilityId(newCurrentFilter);
   };
   const handleChangeAssignPortfolio = (data) => {
-    console.log("Data input",data)
-    const currentFilter = data === null?null:data.id /*data.map((item) => {
+    console.log("Data input", data);
+    const currentFilter = data === null ? null : data.id; /*data.map((item) => {
       return item.id;
     });*/
-    console.log(currentFilter)
+    console.log(currentFilter);
     const newCurrentFilter = {
       ...isAssignedPortfolioId,
       portfolio: [currentFilter],
@@ -969,9 +1005,9 @@ const Subscriberlisting = (props) => {
     const newNullFilter = {
       ...isAssignedPortfolioId,
       portfolio: null,
-    }
-    console.log("New Data",data === null?newNullFilter:newCurrentFilter)
-    setIsAssignedPortfolioId(data === null?newNullFilter:newCurrentFilter);
+    };
+    console.log("New Data", data === null ? newNullFilter : newCurrentFilter);
+    setIsAssignedPortfolioId(data === null ? newNullFilter : newCurrentFilter);
   };
   const handleChangeAssignStatus = (data) => {
     const currentFilter = data.map((item) => {
@@ -1207,40 +1243,39 @@ const Subscriberlisting = (props) => {
             <div className="flex justify-between">
               <div>
                 <h2 className="font-semibold text-xl text-black">
-                Subscriber Info
-              </h2>
-              <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                {currentUGTGroup?.name} / Subscriber Management / Subscriber
-                Info
-              </p>
+                  Subscriber Info
+                </h2>
+                <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
+                  {currentUGTGroup?.name} / Subscriber Management / Subscriber
+                  Info
+                </p>
               </div>
-              
+
               <div>
                 <div className="w-96 px-2">
-                            <Controller
-                              name="assignPortfolio"
-                              control={control}
-                              defaultValue={null}
-                              render={({ field }) => (
-                                <MySelectSubscriber
-                                  {...field}
-                                  id={"assignPortfolio"}
-                                  typeSelect={1}
-                                  options={portfolioList}
-                                  valueProp={"id"}
-                                  displayProp={"portfolioName"}
-                                  disable={false}
-                                  placeholder={"Find Portfolio"}
-                                  onChangeInput={(value) => {
-                                    handleChangeAssignPortfolio(value);
-                                  }}
-                                />
-                              )}
-                            />
-                          </div>
+                  <Controller
+                    name="assignPortfolio"
+                    control={control}
+                    defaultValue={null}
+                    render={({ field }) => (
+                      <MySelectSubscriber
+                        {...field}
+                        id={"assignPortfolio"}
+                        typeSelect={1}
+                        options={portfolioList}
+                        valueProp={"id"}
+                        displayProp={"portfolioName"}
+                        disable={false}
+                        placeholder={"Find Portfolio"}
+                        onChangeInput={(value) => {
+                          handleChangeAssignPortfolio(value);
+                        }}
+                      />
+                    )}
+                  />
+                </div>
               </div>
             </div>
-            
 
             <div className="flex sm:flex-col lg:flex-row justify-start items-start gap-3">
               <div className="grid grid-flow-col grid-rows-2 gap-3 w-full">
@@ -1275,9 +1310,7 @@ const Subscriberlisting = (props) => {
                         </label>
                       </div>
                     </div>
-                    <div className="font-bold mt-2">
-                      Total Subscriber
-                    </div>
+                    <div className="font-bold mt-2">Total Subscriber</div>
                     <div className="text-gray-500 text-xs">
                       Keep track of all your devices at a glance.
                     </div>
@@ -1362,7 +1395,6 @@ const Subscriberlisting = (props) => {
                         Monitor your contracted energy for the current year.
                       </div>
                     </div>
-                    
                   </div>
                 </Card>
 
@@ -1388,7 +1420,8 @@ const Subscriberlisting = (props) => {
                       <div className="text-end">
                         <label className="text-2xl font-semibold flex justify-end">
                           {numeral(
-                            dashboardOBJ?.netDeliverables?.netDeliverables/* * 0.001*/
+                            dashboardOBJ?.netDeliverables
+                              ?.netDeliverables /* * 0.001*/
                           ).format("0,0.00")}
                         </label>
                         <label className="text-lg font-medium text-slate-500">
@@ -1400,9 +1433,9 @@ const Subscriberlisting = (props) => {
                     <div className="w-60">
                       <div className="font-bold mt-2">Net Deliverables</div>
                       <div className="text-gray-500 text-xs">
-                      Track the proportion of Total Contracted Energy delivered in real-time.
+                        Track the proportion of Total Contracted Energy
+                        delivered in real-time.
                       </div>
-                      
                     </div>
                     <div></div>
 
@@ -1458,7 +1491,8 @@ const Subscriberlisting = (props) => {
                       Utility Subscription
                     </div>
                     <div className="text-gray-500 text-sm font-medium">
-                      Observe the overall subscription ratio of all utilities’ subscribers.
+                      Observe the overall subscription ratio of all utilities’
+                      subscribers.
                     </div>
                     <div
                       style={{ width: "250px", height: "250px" }}
@@ -1489,10 +1523,14 @@ const Subscriberlisting = (props) => {
                       </div>
 
                       <div>
-                        <div className={`text-gray-500 text-right text-[0.6rem] font-light mt-[40px]`}>
+                        <div
+                          className={`text-gray-500 text-right text-[0.6rem] font-light mt-[40px]`}
+                        >
                           Last Updated on
                         </div>
-                        <div className={`text-gray-500 text-right text-[0.8rem] font-medium`}>
+                        <div
+                          className={`text-gray-500 text-right text-[0.8rem] font-medium`}
+                        >
                           {dashboardOBJ?.utilitySubscription?.lastUpdated}
                         </div>
                       </div>

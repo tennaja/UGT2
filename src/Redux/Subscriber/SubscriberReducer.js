@@ -25,6 +25,7 @@ import { GET_SUBSCRIBER_DASHBOARD_OBJ,
     GET_HISTORY_LOG_ACTIVE,
     GET_HISTORY_LOG_INACTIVE,
     GTE_BINARY_FILE_HISTORY,
+    WITHDRAWN_SUBSCRIBER_STATUS,
 } from "../ActionType"
 
 const initialstate = {
@@ -62,6 +63,7 @@ const initialstate = {
     historyActiveList: [],
     historyInactiveList: [],
     binaryFileHistory: [],
+    responseWithdrawn : null,
 }
 
 export const SubscriberReducer = (state = initialstate, action) => {
@@ -257,6 +259,14 @@ export const SubscriberReducer = (state = initialstate, action) => {
                 errmessage: '',
                 binaryFileHistory: action.payload
             }
+            case WITHDRAWN_SUBSCRIBER_STATUS:return{
+                ...state,
+                loading:false,
+                // errmessage: action.payload,
+                responseWithdrawn:action.data,
+                //isOpen : true,
+                //isOpenDoneModal:true
+            } 
         default: return state
     }
 }

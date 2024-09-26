@@ -27,7 +27,8 @@ import {
   GET_SUB_DISTRICTBENE_LIST_EDIT,
   GET_HISTORY_LOG_ACTIVE,
   GET_HISTORY_LOG_INACTIVE,
-  GTE_BINARY_FILE_HISTORY
+  GTE_BINARY_FILE_HISTORY,
+  WITHDRAWN_SUBSCRIBER_STATUS
 } from "../../Redux/ActionType";
 import {
   DASHBOARD_LIST_URL,
@@ -48,6 +49,8 @@ import {
   WITHDRAWN_SUBSCRIBER_URL
 } from "../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../Utils/FuncUtils";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const optimizeParam = (param) => {
   let optimizeParam = "?";
@@ -951,7 +954,7 @@ export const GetBinaryFileHistory = (guid,callback) =>{
 // Withdrawn Subscriber
 export const withDrawSubscriber = (data) => {
   return {
-    type: CREATE_SUBSCRIBER_STATUS,
+    type: WITHDRAWN_SUBSCRIBER_STATUS,
     data: data,
   };
 };
@@ -965,6 +968,16 @@ export const FunctionwithDrawSubscriber = (id, callback) => {
         if (response?.status == 200 || response?.status == 201) {
           console.log("Create Success")
           dispatch(withDrawSubscriber(response?.data));
+          toast.success("Withdraw Subscriber Complete!", {
+            position: "top-right",
+            autoClose: 3000,
+            style: {
+              border: "1px solid #a3d744", // Green border similar to the one in your image
+              color: "#6aa84f", // Green text color
+              fontSize: "16px", // Adjust font size as needed
+              backgroundColor: "##FFFFFF", // Light green background
+            }, // 3 seconds
+          });
         } else {
           console.log("Create not success")
           dispatch(setOpenFailModal());

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import AlmostDone from "../assets/done.png";
+import AlmostDone from "../assets/Done.png";
 import { Link, useNavigate } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import { getCookie, removeCookie, setCookie } from "../../Utils/FuncUtils";
 import { setSelectedSubMenu } from "../../Redux/Menu/Action";
 import { useDispatch, useSelector } from "react-redux";
 import { clearModal } from "../../Redux/Subscriber/Action";
+import ImgDone from "../assets/ImgDone.png"
 
 const ModalCompleteSubscriber = (props) => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const ModalCompleteSubscriber = (props) => {
     setCookie("currentSubmenu", 1);
     dispatch(clearModal());
     navigate(`${link}`);
+    //window.location.reload()
   };
   return (
     <>
@@ -42,20 +44,20 @@ const ModalCompleteSubscriber = (props) => {
                     type="file"
                     id="preview_img"
                     className="h-16 w-56 object-cover rounded-full flex items-center justify-center"
-                    src={AlmostDone}
+                    src={ImgDone}
                     alt="Current profile photo"
                   />
                 </div>
 
                 <div className="md:col-span-6 mt-4 text-center sm:mt-4">
-                  <h6
+                  {/*<h6
                     className="text-2xl leading-6 font-bold text-[#071437] "
                     id="modal-headline"
                   >
-                    {title}
-                  </h6>
-                  <div className="mt-4">
-                    <p className="text-sm text-gray-500">{context}</p>
+                    {context}
+                  </h6>*/}
+                 <div className="mt-4">
+                    <p className="text-2xl leading-6 font-bold text-[#071437] ">{context}</p>
                   </div>
                 </div>
               </div>

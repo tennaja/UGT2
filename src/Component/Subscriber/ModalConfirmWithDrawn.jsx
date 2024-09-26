@@ -14,6 +14,7 @@ const ModalConfirmWithdrawn = (props) => {
     buttonTypeColor = "primary",
     showCheckBox = true,
     sizeModal="lg",
+    contentButton = "Confirm"
   } = props;
 
   const [isCheckBox,setIsCheckBox] = useState(false)
@@ -95,7 +96,7 @@ const ModalConfirmWithdrawn = (props) => {
             className={`${getButtonColor()} w-50 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm ${getButtonColorHover()} `}
             disabled={showCheckBox?!isCheckBox:false}
           >
-            Confirm
+            {contentButton}
           </button>
         </div>
       </Modal>

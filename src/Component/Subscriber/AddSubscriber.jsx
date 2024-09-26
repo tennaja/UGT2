@@ -52,6 +52,9 @@ import { message } from "antd";
 import ModalFail from "../Control/Modal/ModalFail";
 import ModalConfirmCheckBox from "./ModalConfirmCheckBox";
 import ModalCompleteSubscriber from "./ModalCompleteSubscriber";
+import TriWarning from "../assets/TriWarning.png"
+import TextareaNoteSubscriber from "./TextareaNoteSubscriber";
+import FileUpload from "./UploadFileButton";
 
 
 const AddSubscriber = () => {
@@ -143,8 +146,8 @@ const AddSubscriber = () => {
   const isError = useSelector((state)=>state.subscriber.isOpenFailModal)
   const errorMessage = useSelector((state)=>state.subscriber.errmessage)
   const isOpen = useSelector((state)=>state.subscriber.isOpen)
-  console.log(errorMessage)
-  console.log(isError)
+  //console.log(errorMessage)
+  //console.log(isError)
 
   const [allowcatedEnergyList, setAllowcatedEnergyList] = useState([]);
   const [allowcatedEnergyDataEdit, setAllowcatedEnergyDataEdit] = useState({});
@@ -313,7 +316,14 @@ const AddSubscriber = () => {
     }
   };
   const addAllowcated = () => {
-    setShowModalConfirm(true);
+    if(yearStartDate1.current !== null && yearEndDate1.current !== null){
+      setShowModalConfirm(true);
+    }
+    else{
+      setIsShowFailModal(true)
+      setMessageFailModal("Please select Retail ESA Contract Start Date and Retail ESA Contract End Date.")
+    }
+    
   };
 
   const addBeneficiary =()=>{
@@ -348,6 +358,10 @@ const AddSubscriber = () => {
     const allowcatedEnergyEditTemp = allowcatedEnergyList;
     allowcatedEnergyEditTemp[index] = obj;
     setAllowcatedEnergyList(allowcatedEnergyEditTemp);
+    const sortedData = [...allowcatedEnergyList].sort(
+      (a, b) => a.year - b.year
+    );
+    setAllowcatedEnergyList(sortedData);
   };
   const benefitDataIndex = (obj,index)=>{
     
@@ -1460,29 +1474,48 @@ const AddSubscriber = () => {
     if(years >= yearStart && years <= yearEnd){
       
       if(years === yearStart){
-        
-        if(months >= monthStart){
-          if(values === 0){
-            return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+        if(yearStart !== yearEnd){
+          if(months >= monthStart){
+              if(values === 0){
+                return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
+              }
+              else{
+                return isWarning?"text-white":undefined
+              }   
           }
           else{
-            return isWarning?"text-white":undefined
-          }          
+            
+            if(values !== 0){
+              return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
+            }
+            else{
+              return isWarning?"text-white":undefined
+            } 
+          }
         }
         else{
-          
-          if(values !== 0){
-            return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+          if(months >= monthStart && months <= monthEnd){
+            if(values === 0){
+              return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
+            }
+            else{
+              return isWarning?"text-white":undefined
+            } 
           }
           else{
-            return isWarning?"text-white":undefined
-          } 
+            if(values !== 0){
+              return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
+            }
+            else{
+              return isWarning?"text-white":undefined
+            } 
+          }
         }
       }
       else if(years === yearEnd){
         if(months <= monthEnd){
           if(values === 0){
-            return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+            return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
           }
           else{
             return isWarning?"text-white":undefined
@@ -1490,7 +1523,7 @@ const AddSubscriber = () => {
         }
         else{
           if(values !== 0){
-            return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+            return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
           }
           else{
             return isWarning?"text-white":undefined
@@ -1499,7 +1532,7 @@ const AddSubscriber = () => {
       }
       else{
         if(values === 0){
-          return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+          return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
         }
         else{
           return isWarning?"text-white":undefined
@@ -1507,7 +1540,7 @@ const AddSubscriber = () => {
       }
     }
     else{
-      return isWarning?"bg-rose-300 text-rose-300":"bg-rose-300"
+      return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
     }
 
   }
@@ -1523,30 +1556,49 @@ const AddSubscriber = () => {
     if(years >= yearStart && years <= yearEnd){
       
       if(years === yearStart){
-        
-        if(months >= monthStart){
-          if(values === 0){
-            return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+        if(yearStart !== yearEnd){
+          if(months >= monthStart){
+            if(values === 0){
+              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
+            }
+            else{
+              return "..."
+            }          
           }
           else{
-            return "..."
-          }          
+            if(values !== 0){
+              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
+            }
+            else{
+              return "..."
+            } 
+            
+            
+          }
         }
         else{
-          if(values !== 0){
-            return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+          if(months >= monthStart && months <= monthEnd){
+            if(values === 0){
+              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
+            }
+            else{
+              return "..."
+            } 
           }
           else{
-            return "..."
-          } 
-          
-          
+            if(values !== 0){
+              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
+            }
+            else{
+              return "..."
+            } 
+          }
         }
       }
       else if(years === yearEnd){
         if(months <= monthEnd){
           if(values === 0){
-            return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+            return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
           }
           else{
             return "..."
@@ -1554,7 +1606,7 @@ const AddSubscriber = () => {
         }
         else{
           if(values !== 0){
-            return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+            return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
           }
           else{
             return "..."
@@ -1564,7 +1616,7 @@ const AddSubscriber = () => {
       }
       else{
         if(values === 0){
-          return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+          return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
         }
         else{
           return "..."
@@ -1573,7 +1625,7 @@ const AddSubscriber = () => {
     }
     else{
       
-      return <img src={warning} alt="React Logo" width={20} height={20} className="inline-block"/>
+      return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
     }
 
   }
@@ -1589,24 +1641,43 @@ const AddSubscriber = () => {
     if(years >= yearStart && years <= yearEnd){
       
       if(years === yearStart){
-        
-        if(months >= monthStart){
-          if(values === 0){
-            return true
+        if(yearStart !== yearEnd){
+          if(months >= monthStart){
+            if(values === 0){
+              return true
+            }
+            else{
+              return false
+            }          
           }
           else{
-            return false
-          }          
+            if(values !== 0){
+              return true
+            }
+            else{
+              return false
+            } 
+            
+            
+          }
         }
         else{
-          if(values !== 0){
-            return true
+          if(months >= monthStart && months <= monthEnd){
+            if(values === 0){
+              return true
+            }
+            else{
+              return false
+            } 
           }
           else{
-            return false
-          } 
-          
-          
+            if(values !== 0){
+              return true
+            }
+            else{
+              return false
+            } 
+          }
         }
       }
       else if(years === yearEnd){
@@ -1620,7 +1691,7 @@ const AddSubscriber = () => {
         }
         else{
           if(values !== 0){
-            
+            return true
           }
           else{
             return false
@@ -1666,17 +1737,25 @@ const AddSubscriber = () => {
               padding="xl"
             >
               <div className="flex flex-col gap-3">
+                <div className="flex justify-between">
                 <div className="flex gap-3 items-center">
                   <FaChevronCircleLeft
                     className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
                     size="30"
-                    onClick={() => navigate(WEB_URL.SUBSCRIBER_LIST)}
+                    onClick={() => (navigate(WEB_URL.SUBSCRIBER_LIST)/*,window.location.reload()*/) }
                   />
                   <p className="mb-0 font-semibold text-15 text-md">
-                    Subscribers Type <span style={{ color: "red" }}>*</span>
+                    Subscribers Info <span style={{ color: "red" }}>*</span>
                   </p>
                 </div>
-
+                <div><label className="text-xs text-red-500">* Requried field</label></div>
+                </div>
+                
+               <hr/>
+                <div className="flex flex-col gap-3">
+                <div>
+                  <label className="font-bold text-base">Subscriber Type</label><label className="text-red-600 ml-1 text-sm font-bold">*</label>
+                </div>
                 <div>
                   {permission === "EGAT Subscriber Manager" && (
                     <button
@@ -1703,7 +1782,45 @@ const AddSubscriber = () => {
                   </button>
                 </div>
               </div>
+              </div>
             </Card>
+            {/*<Card
+              shadow="md"
+              radius="lg"
+              className="flex w-full h-full"
+              padding="xl"
+            >
+              <div className="flex flex-col gap-3">
+                <div>
+                  <label className="font-bold text-base">Subscriber Type</label><label className="text-red-600 ml-1 text-sm font-bold">*</label>
+                </div>
+                <div>
+                  {permission === "EGAT Subscriber Manager" && (
+                    <button
+                      className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                        isActiveForm1
+                          ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                          : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                      }`}
+                      onClick={handleClickForm1}
+                    >
+                      Subscriber
+                    </button>
+                  )}
+
+                  <button
+                    className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                      isActiveForm2
+                        ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                        : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                    }`}
+                    onClick={handleClickForm2}
+                  >
+                    Aggregate Subscriber
+                  </button>
+                </div>
+              </div>
+            </Card>*/}
 
             <div>
               {/*Form 1 */}
@@ -1779,6 +1896,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -1800,6 +1918,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -1821,6 +1940,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -1842,6 +1962,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2007,6 +2128,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2027,6 +2149,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2047,6 +2170,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2225,6 +2349,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2245,6 +2370,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2265,6 +2391,11 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  pattern: {
+                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                    message: "Invalid email format"
+                                  }
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2285,6 +2416,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2305,6 +2437,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2326,6 +2459,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2367,6 +2501,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2453,6 +2588,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2502,6 +2638,7 @@ const AddSubscriber = () => {
                                       control={control}
                                       rules={{
                                         required: "This field is required",
+                                        validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                       }}
                                       render={({ field }) => (
                                         <Input
@@ -2637,7 +2774,7 @@ const AddSubscriber = () => {
                                   </div>
                                   <div>
                                     <p className="m-0 p-0">
-                                      Total Allocated Energy Amount (kWh)
+                                      Total Contracted Energy Amount (kWh)
                                     </p>
                                   </div>
                                   <div></div>
@@ -2645,7 +2782,7 @@ const AddSubscriber = () => {
                               </>
                             )}
                             {/*Collaps Contract Energy Amount */}
-                            {allowcatedEnergyList.map((item, index) => (
+                            {allowcatedEnergyList.length > 0 ?allowcatedEnergyList.map((item, index) => (
                               <div
                                 key={index}
                                 className="px-4 md:col-span-6 text-sm"
@@ -2684,7 +2821,7 @@ const AddSubscriber = () => {
                                     </div>
                                     <div>
                                       <p className="text-GRAY_BUTTON">
-                                        Allocated Energy amount (kWh)
+                                      Contracted Energy amount (kWh)
                                       </p>
                                       <hr />
                                       <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -2718,7 +2855,10 @@ const AddSubscriber = () => {
                                   </div>
                                 </Collaps>
                               </div>
-                            ))}
+                            )):
+                            <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                              <label className="text-gray-400">There is no data to display.</label>
+                            </div>}
                             {/*Error */}
                             {isAllocatedEnergyAmount && (
                               <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
@@ -2785,7 +2925,7 @@ const AddSubscriber = () => {
                             </div>
 
                             <div className="mt-3 mb-4 md:col-span-6">
-                            {benefitList.map((item, index) => (
+                            {benefitList.length > 0? benefitList.map((item, index) => (
                               <div
                                 key={index}
                                 className="px-4 md:col-span-6 text-sm"
@@ -2803,7 +2943,10 @@ const AddSubscriber = () => {
                                   <Beneficiary beneficiaryDataEdit={item} editStatus={true}/>
                                 </Collaps>
                               </div>
-                            ))}
+                            )):
+                            <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                              <label className="text-gray-400">There is no data to display.</label>
+                            </div>}
                               {isBeneficiary && (
                               <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
                                 <div>
@@ -3005,7 +3148,6 @@ const AddSubscriber = () => {
                                 <Controller
                                   name="uploadFile"
                                   control={control}
-                                  
                                   render={({ field }) => (
                                     <UploadFileSubscriber
                                       {...field}
@@ -3023,7 +3165,7 @@ const AddSubscriber = () => {
                                         handleClickDownloadFile(item);
                                       }}
                                       error={errors.uploadFile}
-                                      validate={" *"}
+                                      //validate={" *"}
                                       // ... other props
                                     />
                                   )}
@@ -3035,7 +3177,7 @@ const AddSubscriber = () => {
                                   control={control}
                                   rules={{}}
                                   render={({ field }) => (
-                                    <Textarea
+                                    <TextareaNoteSubscriber
                                       {...field}
                                       id={"note"}
                                       type={"text"}
@@ -3112,6 +3254,7 @@ const AddSubscriber = () => {
                                   control={control}
                                   rules={{
                                     required: "This field is required",
+                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                   <Input
@@ -3133,6 +3276,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -3154,6 +3298,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -3347,6 +3492,7 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
+                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -3512,7 +3658,7 @@ const AddSubscriber = () => {
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Allocated Energy (kWh)
+                                    Total Contracted Energy (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -3539,7 +3685,7 @@ const AddSubscriber = () => {
                               </>
                             )}
                             {/*Collaps Contract Energy Amount Form 2*/}
-                            {allowcatedEnergyList.map((item, index) => (
+                            {allowcatedEnergyList.length > 0? allowcatedEnergyList.map((item, index) => (
                               <div
                                 key={index}
                                 className="px-4 md:col-span-6 text-sm"
@@ -3578,7 +3724,7 @@ const AddSubscriber = () => {
                                     </div>
                                     <div>
                                       <p className="text-GRAY_BUTTON">
-                                        Allocated Energy amount (kWh)
+                                      Contracted Energy amount (kWh)
                                       </p>
                                       <hr />
                                       <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -3612,7 +3758,10 @@ const AddSubscriber = () => {
                                   </div>
                                 </Collaps>
                               </div>
-                            ))}
+                            )):
+                            <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                              <label className="text-gray-400">There is no data to display.</label>
+                            </div>}
                             {isAllocatedEnergyAmount && (
                               <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
                                 <div>
@@ -3669,6 +3818,7 @@ const AddSubscriber = () => {
                                       id={"uploadFilePDF"}
                                       type={"file"}
                                       multiple = {false}
+                                      maxFiles={1}
                                       accept = {".pdf"}
                                       label={"หนังสือยืนยันหน่วย (.pdf)"}
                                       disabled = {fileListPDF.length === 0?false:true}
@@ -3683,6 +3833,8 @@ const AddSubscriber = () => {
                                       }}
                                       error={errors.uploadFilePDF}
                                       validate={" *"}
+                                      filesData = {fileListPDF}
+                                      setFilesData={setFileListPDF}
                                       // ... other props
                                     />
                                   )}
@@ -3701,6 +3853,7 @@ const AddSubscriber = () => {
                                       id={"uploadFileExcel"}
                                       type={"file"}
                                       multiple = {false}
+                                      maxFiles={1}
                                       accept = {".xls,.xlsx"}
                                       disabled = {fileListExcel.length === 0?false:true}
                                       label={"ข้อมูลหน่วยแยกผู้รับ (blinded) in detail (.xls)"}
@@ -3728,7 +3881,7 @@ const AddSubscriber = () => {
                                   control={control}
                                   rules={{}}
                                   render={({ field }) => (
-                                    <Textarea
+                                    <TextareaNoteSubscriber
                                       {...field}
                                       id={"note"}
                                       type={"text"}
@@ -3770,6 +3923,8 @@ const AddSubscriber = () => {
           allowcatedEnergyDataEdit={allowcatedEnergyDataEdit}
           editStatus={isEdit}
           listData={allowcatedEnergyList}
+          yearStart={yearStartDate1.current}
+          yearEnd={yearEndDate1.current}
         />
       )}
       {/*Modal Create Beneficiary */}
@@ -3806,14 +3961,16 @@ const AddSubscriber = () => {
           onClickConfirmBtn={handleClickConfirm}
           onCloseModal={handleCloseModalConfirm}
           title={"Save this Subscriber?"}
-          content={"You confirm all the information is completed with accuracy and conforms to the evidence(s) attached. By providing your consent, you agree to take full responsibility for any effects resulting from this information. Would you like to save this subscriber?"}
+          content={"You confirm all the information is completed with accuracy and conforms to the evidence(s) attached."}
+          content2={"By providing your consent, you agree to take full responsibility for any effects resulting from this information. Would you like to save this subscriber?"}
           textCheckBox={"I consent and confirm the accuracy of the information and attached evidences"}
+          sizeModal="md"
         />
       )}
       {/*Modal Create Complete */}
       {isOpen && (
         <ModalCompleteSubscriber
-          title="Done!"
+          title="Registration Complete!"
           context="Registration Complete!"
           link={WEB_URL.SUBSCRIBER_LIST}
         />

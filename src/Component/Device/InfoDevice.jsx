@@ -404,7 +404,7 @@ const InfoDevice = () => {
         <b>Submission Date:</b> ${formatDate(Datenow)} 
       </p>
       
-      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      <p>Please verify via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
       
       <p>UGT Platform</p>
     </body>
