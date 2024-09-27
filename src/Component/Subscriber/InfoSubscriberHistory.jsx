@@ -1422,7 +1422,7 @@ const InfoSubscriberHistory = () => {
                                 <label className="ml-2 text-sm font-semibold">Note</label>                                
                               </div>
                               <div>
-                                  <label className="mt-2 ml-2 text-sm font-normal">{renderData(details?.subscriberDetail?.note || "-")}</label>
+                                  <label className="mt-2 ml-2 text-sm font-normal break-all">{renderData(details?.subscriberDetail?.note || "-")}</label>
                               </div>
                             </div>  
                           </div>
