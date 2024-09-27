@@ -138,7 +138,7 @@ const ModalSubAllocated = (props) => {
     let allocateEnergyAmount = {};
     if (selectedOption == "CUSTOM") {
       allocateEnergyAmount = {
-        year: data?.year?.value,
+        year: parseInt(data?.year?.value),
         amount01: Number(data?.month0),
         amount02: Number(data?.month1),
         amount03: Number(data?.month2),
@@ -155,7 +155,7 @@ const ModalSubAllocated = (props) => {
       };
     } else {
       allocateEnergyAmount = {
-        year: data?.year?.value,
+        year: parseInt(data?.year?.value),
         amount01: Number(data?.MONTHLY),
         amount02: Number(data?.MONTHLY),
         amount03: Number(data?.MONTHLY),
