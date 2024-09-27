@@ -4425,7 +4425,7 @@ const onCloseModalError=()=>{
                                           handleClickDownloadFile(item);
                                         }}
                                         error={errors.uploadFile}
-                                        validate={" *"}
+                                        
                                         // ... other props
                                       />
                                     )}
