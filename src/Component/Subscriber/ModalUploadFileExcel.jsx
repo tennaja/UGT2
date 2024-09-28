@@ -128,113 +128,134 @@ export default function ModalUploadFileExcel(props) {
     if (sheetData.length >= 3) {
       if(sheetData[1]?.[1] === "Year"||sheetData[1]?.[1] === "Year (A.D.)"){
         const filterYearSheet = sheetData.filter((items) => items[1] > 2100)
-        if(filterYearSheet.length === 0){
-        sheetData.map((item, index) => {
-        if (index >= 2) {
-          console.log("Items", item);
-            if (listData.length === 0) {
-              console.log("Add new");
-              setAllowcatedEnergyList((prevEnergyList) => {
-                console.log("prevFileList", prevEnergyList);
-                let newFileList = [
-                  ...prevEnergyList,
-                  {
-                    allocateType: "CUSTOM",
-                    amount01: Number(item[2]),
-                    amount02: Number(item[3]),
-                    amount03: Number(item[4]),
-                    amount04: Number(item[5]),
-                    amount05: Number(item[6]),
-                    amount06: Number(item[7]),
-                    amount07: Number(item[8]),
-                    amount08: Number(item[9]),
-                    amount09: Number(item[10]),
-                    amount10: Number(item[11]),
-                    amount11: Number(item[12]),
-                    amount12: Number(item[13]),
-                    year: Number(item[1]),
-                  },
-                ];
-                return newFileList;
-              });
-            } else {
-              console.log("have data")
-              const lenghtFilter = listData.filter(
-                (items) => items.year === item[1]
-              );
-              //console.log(lenghtFilter)
-              if (lenghtFilter.length === 0) {
-                console.log("Add new Year");
-                setAllowcatedEnergyList((prevEnergyList) => {
-                  console.log("prevFileList", prevEnergyList);
-                  let newFileList = [
-                    ...prevEnergyList,
-                    {
+        const filterYearSheetEmpty = sheetData.filter((items) => items[1] === undefined)
+        if(filterYearSheetEmpty.length === 0){
+            if(filterYearSheet.length === 0){
+            sheetData.map((item, index) => {
+            if (index >= 2) {
+              console.log("Items", item);
+                if (listData.length === 0) {
+                  console.log("Add new");
+                  console.log("Items : ",item[2])
+                  setAllowcatedEnergyList((prevEnergyList) => {
+                    console.log("prevFileList", prevEnergyList);
+                    let newFileList = [
+                      ...prevEnergyList,
+                      {
+                        
+                        allocateType: "CUSTOM",
+                        amount01: Number(item[2] === undefined?0:isNaN(Number(item[2]))?0:item[2]),
+                        amount02: Number(item[3] === undefined?0:isNaN(Number(item[3]))?0:item[3]),
+                        amount03: Number(item[4] === undefined?0:isNaN(Number(item[4]))?0:item[4]),
+                        amount04: Number(item[5] === undefined?0:isNaN(Number(item[5]))?0:item[5]),
+                        amount05: Number(item[6] === undefined?0:isNaN(Number(item[6]))?0:item[6]),
+                        amount06: Number(item[7] === undefined?0:isNaN(Number(item[7]))?0:item[7]),
+                        amount07: Number(item[8] === undefined?0:isNaN(Number(item[8]))?0:item[8]),
+                        amount08: Number(item[9] === undefined?0:isNaN(Number(item[9]))?0:item[9]),
+                        amount09: Number(item[10] === undefined?0:isNaN(Number(item[10]))?0:item[10]),
+                        amount10: Number(item[11] === undefined?0:isNaN(Number(item[11]))?0:item[11]),
+                        amount11: Number(item[12] === undefined?0:isNaN(Number(item[12]))?0:item[12]),
+                        amount12: Number(item[13] === undefined?0:isNaN(Number(item[13]))?0:item[13]),
+                        year: Number(item[1]),
+                      },
+                    ];
+                    return newFileList;
+                  });
+                } else {
+                  console.log("have data")
+                  const lenghtFilter = listData.filter(
+                    (items) => items.year === item[1]
+                  );
+                  //console.log(lenghtFilter)
+                  if (lenghtFilter.length === 0) {
+                    console.log("Add new Year");
+                    setAllowcatedEnergyList((prevEnergyList) => {
+                      console.log("prevFileList", prevEnergyList);
+                      let newFileList = [
+                        ...prevEnergyList,
+                        {
+                          allocateType: "CUSTOM",
+                          amount01: Number(item[2] === undefined?0:isNaN(Number(item[2]))?0:item[2]),
+                        amount02: Number(item[3] === undefined?0:isNaN(Number(item[3]))?0:item[3]),
+                        amount03: Number(item[4] === undefined?0:isNaN(Number(item[4]))?0:item[4]),
+                        amount04: Number(item[5] === undefined?0:isNaN(Number(item[5]))?0:item[5]),
+                        amount05: Number(item[6] === undefined?0:isNaN(Number(item[6]))?0:item[6]),
+                        amount06: Number(item[7] === undefined?0:isNaN(Number(item[7]))?0:item[7]),
+                        amount07: Number(item[8] === undefined?0:isNaN(Number(item[8]))?0:item[8]),
+                        amount08: Number(item[9] === undefined?0:isNaN(Number(item[9]))?0:item[9]),
+                        amount09: Number(item[10] === undefined?0:isNaN(Number(item[10]))?0:item[10]),
+                        amount10: Number(item[11] === undefined?0:isNaN(Number(item[11]))?0:item[11]),
+                        amount11: Number(item[12] === undefined?0:isNaN(Number(item[12]))?0:item[12]),
+                        amount12: Number(item[13] === undefined?0:isNaN(Number(item[13]))?0:item[13]),
+                          year: Number(item[1]),
+                        },
+                      ];
+                      return newFileList;
+                    });
+                  } else {
+                    console.log("Update Old Data");
+                    const indexFilterList = listData.findIndex(
+                      (items) => items.year === item[1]
+                    );
+                    
+                    const listTempData = listData;
+                    //console.log("List Old",listTempData[indexFilterList])
+                    
+                    listTempData[indexFilterList] = {
                       allocateType: "CUSTOM",
-                      amount01: Number(item[2]),
-                      amount02: Number(item[3]),
-                      amount03: Number(item[4]),
-                      amount04: Number(item[5]),
-                      amount05: Number(item[6]),
-                      amount06: Number(item[7]),
-                      amount07: Number(item[8]),
-                      amount08: Number(item[9]),
-                      amount09: Number(item[10]),
-                      amount10: Number(item[11]),
-                      amount11: Number(item[12]),
-                      amount12: Number(item[13]),
+                      amount01: Number(item[2] === undefined?0:isNaN(Number(item[2]))?0:item[2]),
+                        amount02: Number(item[3] === undefined?0:isNaN(Number(item[3]))?0:item[3]),
+                        amount03: Number(item[4] === undefined?0:isNaN(Number(item[4]))?0:item[4]),
+                        amount04: Number(item[5] === undefined?0:isNaN(Number(item[5]))?0:item[5]),
+                        amount05: Number(item[6] === undefined?0:isNaN(Number(item[6]))?0:item[6]),
+                        amount06: Number(item[7] === undefined?0:isNaN(Number(item[7]))?0:item[7]),
+                        amount07: Number(item[8] === undefined?0:isNaN(Number(item[8]))?0:item[8]),
+                        amount08: Number(item[9] === undefined?0:isNaN(Number(item[9]))?0:item[9]),
+                        amount09: Number(item[10] === undefined?0:isNaN(Number(item[10]))?0:item[10]),
+                        amount10: Number(item[11] === undefined?0:isNaN(Number(item[11]))?0:item[11]),
+                        amount11: Number(item[12] === undefined?0:isNaN(Number(item[12]))?0:item[12]),
+                        amount12: Number(item[13] === undefined?0:isNaN(Number(item[13]))?0:item[13]),
                       year: Number(item[1]),
-                    },
-                  ];
-                  return newFileList;
-                });
-              } else {
-                console.log("Update Old Data");
-                const indexFilterList = listData.findIndex(
-                  (items) => items.year === item[1]
-                );
-                const listTempData = listData;
-                //console.log("List Old",listTempData[indexFilterList])
-                
-                listTempData[indexFilterList] = {
-                  allocateType: "CUSTOM",
-                  amount01: Number(item[2]),
-                  amount02: Number(item[3]),
-                  amount03: Number(item[4]),
-                  amount04: Number(item[5]),
-                  amount05: Number(item[6]),
-                  amount06: Number(item[7]),
-                  amount07: Number(item[8]),
-                  amount08: Number(item[9]),
-                  amount09: Number(item[10]),
-                  amount10: Number(item[11]),
-                  amount11: Number(item[12]),
-                  amount12: Number(item[13]),
-                  year: Number(item[1]),
-                };
-                setAllowcatedEnergyList(listTempData);
-              }
+                    };
+                    setAllowcatedEnergyList(listTempData);
+                  }
+                }
+            }
+            });
+            setTumbFile([]);
+            onCloseModal();
+            }
+            else{
+              //message.error("Please check file data is not match and try again.")
+              setIsShowFailModal(true)
+              setMessageFailModal("Please check file data is not match and try again.")
+              setAllowcatesExcelfileList([])
+              setTumbFile([]);
+              onCloseModal();
             }
         }
-        });
-        setTumbFile([]);
-        onCloseModal();
-        }
         else{
-          message.error("Please check file data is not match and try again.")
+          //message.error("Please check file data again year is empty.")
+          setIsShowFailModal(true)
+          setMessageFailModal("Please check file data again year is empty.")
           setAllowcatesExcelfileList([])
           setTumbFile([]);
           onCloseModal();
         }
+        
       }
       else{
-        message.error("Please check file data is not match and try again.")
+        //message.error("Please check file data is not match and try again.")
+        setIsShowFailModal(true)
+        setMessageFailModal("Please check file data is not match and try again.")
         setAllowcatesExcelfileList([])
         setTumbFile([]);
         onCloseModal();
       }
     } else {
-      message.error("This file didn't have data to add.");
+      //message.error("This file didn't have data to add.");
+      setIsShowFailModal(true)
+      setMessageFailModal("This file didn't have data to add.")
     }
   };
 

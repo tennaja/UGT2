@@ -57,6 +57,10 @@ export const EDIT_AGGREGATE_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/ag
 export const HISTORY_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/GetSubscriberContractHistory`;
 export const BINARY_FILE_HISTORY_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/GetFileSubscribersFileUpload`;
 export const WITHDRAWN_SUBSCRIBER_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/withdrawn`;
+export const RENEW_SUBSCRIBER_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/renewsubscriber`;
+export const RENEW_AGGREGATE_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/renewaggregatesubscriber`;
+export const RENEW_SUBSCRIBER_INFO_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/RenewSubscriberInfo`;
+export const RENEW_EDIT_SUBSCRIBER_INFO_URL = `${DOMAIN_URL}/ugt/v1/subscriber-management/RenewSubscriberEditInfo`;
 
 // Portfolio
 export const DASHBOARD_PORTFOLIO_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/dashboard`;

@@ -14,7 +14,6 @@ import { LiaDownloadSolid } from "react-icons/lia";
 
 const FileInfo = (props) =>{
     const {items} = props
-    console.log(items)
 
     const getIcon = (name) => {
         const extension = name?.split(".").pop();

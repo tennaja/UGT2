@@ -9,7 +9,7 @@ import { FetchDeviceDropdrowList } from "../../Redux/Dropdrow/Action";
 import Collaps from "../Control/Collaps";
 import plus from "../assets/plus.svg";
 import * as _ from "lodash";
-import ModalSubAllocated from "../Subscriber/ModalSubAllocated";
+import ModalSubAllocated from "./ModalSubAllocated";
 import ModalConfirm from "../Control/Modal/ModalConfirm";
 import bin from "../assets/bin-3.svg";
 import { Tooltip } from "react-tooltip";
@@ -17,7 +17,7 @@ import DatePicker from "../Control/DayPicker";
 import { useFieldArray } from "react-hook-form";
 import * as WEB_URL from "../../Constants/WebURL";
 import ModalComplete from "../Control/Modal/ModalComplete";
-import { SubscriberInfo } from "../../Redux/Subscriber/Action";
+import { SubscriberInfo,SubscriberRenewEditInfo } from "../../Redux/Subscriber/Action";
 import LoadPage from "../Control/LoadPage";
 
 import {
@@ -35,6 +35,8 @@ import {
   FunctionEditSubscriber,
   FunctioneditAggregateSubscriber,
   clearModal,
+  FunctionRenewSubscriber,
+  FunctionRenewAggregateSubscriber,
 } from "../../Redux/Subscriber/Action";
 import dayjs from "dayjs";
 import { FaChevronCircleLeft } from "react-icons/fa";
@@ -57,10 +59,11 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import html2pdf from 'html2pdf.js';
 import CollapsSubscriberEdit from "./CollapsSubscriberEdit";
+import ModalCompleteSubscriberButton from "./ModalCompleteSubscriberButton";
 import TriWarning from "../assets/TriWarning.png"
 import TextareaNoteSubscriber from "./TextareaNoteSubscriber";
 
-const UpdateSubscriber = () => {
+const RenewSubscriber = () => {
   const {
     // register,
     handleSubmit,
@@ -94,7 +97,6 @@ const UpdateSubscriber = () => {
   const addInput = (data) => {
     if (data?.length > 0) {
       //console.log("Data",data)
-      
       for (let i = 0; i < data?.length; i++) {
         const filterName = fields.filter((items)=> items.feederName === data[i]?.feederName)
         //console.log("Filter",filterName)
@@ -188,7 +190,7 @@ const UpdateSubscriber = () => {
   const [FormData1, setFormData1] = useState("");
   const [FormData2, setFormData2] = useState("");
   const [isOpenLoading, setIsOpenLoading] = useState(false);
-  const details = useSelector((state) => state.subscriber.detailInfoList);
+  const details = useSelector((state) => state.subscriber.renewEditDetailInfo);
 
   const [yearStartDate,setYearStartDate] = useState()
   const [monthStartDate,setMonthStartDate] = useState()
@@ -262,7 +264,7 @@ const UpdateSubscriber = () => {
   }, [
     details,
     dropDrowList,
-    /*countryList,
+    countryList,
     provinceList,
     districtList,
     subDistrictList,
@@ -271,7 +273,7 @@ const UpdateSubscriber = () => {
     provinceBeneficiaryList,
     districtBeneficiaryList,
     subDistrictBeneficiaryList,
-    postcodeBeneficiaryList,*/
+    postcodeBeneficiaryList,
   ]);
 
   /* useEffect(() => {
@@ -403,7 +405,7 @@ const UpdateSubscriber = () => {
     showLoading();
 
     dispatch(
-      SubscriberInfo(state?.code,state?.contract, () => {
+      SubscriberRenewEditInfo(state?.code, () => {
         // setIsOpenLoading(false);
         dispatch(FetchCountryList());
         dispatch(FetchDeviceDropdrowList());
@@ -451,13 +453,7 @@ const UpdateSubscriber = () => {
     });
   };
   const addAllowcated = () => {
-    if(yearStartDate1.current !== null && yearEndDate1.current !== null){
-      setShowModalConfirm(true);
-    }
-    else{
-      setIsShowFailModal(true)
-      setMessageFailModal("Please select Retail ESA Contract Start Date and Retail ESA Contract End Date.")
-    }
+    setShowModalConfirm(true);
   };
   const addAllowcatedClose = () => {
     setIsEdit(false);
@@ -546,7 +542,11 @@ const UpdateSubscriber = () => {
       setValue("note",details?.subscriberDetail?.note)
       // Subscription Information
 
-      setAllowcatedEnergyList(details?.allocateEnergyAmount);
+      //setAllowcatedEnergyList(details?.allocateEnergyAmount);
+      const sortedData = [...details?.allocateEnergyAmount].sort(
+        (a, b) => a.year - b.year
+      );
+      setAllowcatedEnergyList(sortedData);
       const tempStatusFilter = initialvalueForSelectField(
         statusList,
         "id",
@@ -594,7 +594,11 @@ const UpdateSubscriber = () => {
       setValue("note",details?.subscriberDetail?.note)
       // Subscription Information
 
-      setAllowcatedEnergyList(details?.allocateEnergyAmount);
+      //setAllowcatedEnergyList(details?.allocateEnergyAmount);
+      const sortedData = [...details?.allocateEnergyAmount].sort(
+        (a, b) => a.year - b.year
+      );
+      setAllowcatedEnergyList(sortedData);
       const tempStatusFilter = initialvalueForSelectField(
         statusList,
         "id",
@@ -618,10 +622,6 @@ const UpdateSubscriber = () => {
     allowcatedEnergyEditTemp[index] = obj;
 
     setAllowcatedEnergyList(allowcatedEnergyEditTemp);
-    const sortedData = [...allowcatedEnergyList].sort(
-      (a, b) => a.year - b.year
-    );
-    setAllowcatedEnergyList(sortedData);
   };
   const onClickEditBtn = (data, index) => {
     data.index = index;
@@ -670,7 +670,7 @@ const UpdateSubscriber = () => {
     const allowcatedEnergyListTemp = allowcatedEnergyList;
     allowcatedEnergyListTemp.push(obj);
     const sortedData = [...allowcatedEnergyList].sort(
-      (a, b) => a.year - b.year
+      (a, b) => b.year - a.year
     );
     setAllowcatedEnergyList(sortedData);
   };
@@ -747,7 +747,6 @@ const UpdateSubscriber = () => {
 
   const onSubmitForm1New = (formData) => {
     if (allowcatedEnergyList.length > 0) {      
-      if(details?.subscriberDetail.activePortfolioStatus === "N"){
         //Not assign to portfolio or inactive
         let errorCheckContractEnnergy = null
         let errorYear = null
@@ -760,435 +759,267 @@ const UpdateSubscriber = () => {
         console.log("Length Contract Amount",allowcatedEnergyList.length)
         const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
         const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
-        if(lengthCreateStartyear.length !== 0){
-            if(lenghtCreateEndyear.length !== 0){
-              for(let i = yearStart+1;i < yearEnd;i++){
-                const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
-                if(checkDisappearData.length === 0){
-                  errorYear = i;
-                  isErrorAllow = true
-                  break;
+        if(formData.retailESAContractStartDate !== details?.subscriberDetail.retailESAContractStartDate)
+        {
+          if(formData.retailESAContractStartDate > details?.subscriberDetail.retailESAContractEndDate){
+            if(lengthCreateStartyear.length !== 0){
+              if(lenghtCreateEndyear.length !== 0){
+                for(let i = yearStart+1;i < yearEnd;i++){
+                  const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
+                  if(checkDisappearData.length === 0){
+                    errorYear = i;
+                    isErrorAllow = true
+                    break;
+                  }
                 }
-              }
-                if(isErrorAllow === false){
-                    for(let i = 0;i < allowcatedEnergyList.length;i++){
-                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
-                          //console.log("Month 1 is not error")
-                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
-                            //console.log("Month 2 is not error")
-                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
-                                //console.log("Month 3 is not error")
-                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
-                                  //console.log("Month 4 is not error")
-                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
-                                      //console.log("Month 5 is not error")
-                                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
-                                          //console.log("Month 6 is not error")
-                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
-                                          // console.log("Month 7 is not error")
-                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
-                                            // console.log("Month 8 is not error")
-                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
-                                              //  console.log("Month 9 is not error")
-                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
-                                              //   console.log("Month 10 is not error")
-                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
-                                              //     console.log("Month 11 is not error")
-                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
-                                                    {
-                                                      //console.log("Month 12 is not error")
-                                                      errorCheckContractEnnergy = false                                            
+                  if(isErrorAllow === false){
+                      for(let i = 0;i < allowcatedEnergyList.length;i++){
+                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
+                            //console.log("Month 1 is not error")
+                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
+                              //console.log("Month 2 is not error")
+                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
+                                  //console.log("Month 3 is not error")
+                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
+                                    //console.log("Month 4 is not error")
+                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
+                                        //console.log("Month 5 is not error")
+                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
+                                            //console.log("Month 6 is not error")
+                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
+                                            // console.log("Month 7 is not error")
+                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
+                                              // console.log("Month 8 is not error")
+                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
+                                                //  console.log("Month 9 is not error")
+                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
+                                                //   console.log("Month 10 is not error")
+                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
+                                                //     console.log("Month 11 is not error")
+                                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
+                                                      {
+                                                        //console.log("Month 12 is not error")
+                                                        errorCheckContractEnnergy = false                                            
+                                                      }
+                                                      else{
+                                                        //console.log("Month 12 is error")
+                                                        errorCheckContractEnnergy = true;
+                                                        errorYear = allowcatedEnergyList[i].year;
+                                                        errorMonth = "Dec";
+                                                        break;
+                                                      }
                                                     }
                                                     else{
-                                                      //console.log("Month 12 is error")
+                                                      //console.log("Month 11 is error")
                                                       errorCheckContractEnnergy = true;
                                                       errorYear = allowcatedEnergyList[i].year;
-                                                      errorMonth = "Dec";
+                                                      errorMonth = "Nov";
                                                       break;
                                                     }
                                                   }
                                                   else{
-                                                    //console.log("Month 11 is error")
+                                                    //console.log("Month 10 is error")
                                                     errorCheckContractEnnergy = true;
                                                     errorYear = allowcatedEnergyList[i].year;
-                                                    errorMonth = "Nov";
+                                                    errorMonth = "Oct";
                                                     break;
                                                   }
                                                 }
                                                 else{
-                                                  //console.log("Month 10 is error")
+                                                  //console.log("Month 9 is error")
                                                   errorCheckContractEnnergy = true;
                                                   errorYear = allowcatedEnergyList[i].year;
-                                                  errorMonth = "Oct";
+                                                  errorMonth = "Sep";
                                                   break;
                                                 }
                                               }
                                               else{
-                                                //console.log("Month 9 is error")
+                                                //console.log("Month 8 is error")
                                                 errorCheckContractEnnergy = true;
                                                 errorYear = allowcatedEnergyList[i].year;
-                                                errorMonth = "Sep";
+                                                errorMonth = "Aug";
                                                 break;
                                               }
                                             }
                                             else{
-                                              //console.log("Month 8 is error")
+                                              //console.log("Month 7 is error")
                                               errorCheckContractEnnergy = true;
                                               errorYear = allowcatedEnergyList[i].year;
-                                              errorMonth = "Aug";
+                                              errorMonth = "Jul";
                                               break;
                                             }
                                           }
                                           else{
-                                            //console.log("Month 7 is error")
+                                            //console.log("Month 6 is error")
                                             errorCheckContractEnnergy = true;
                                             errorYear = allowcatedEnergyList[i].year;
-                                            errorMonth = "Jul";
+                                            errorMonth = "Jun";
                                             break;
                                           }
-                                        }
-                                        else{
-                                          //console.log("Month 6 is error")
-                                          errorCheckContractEnnergy = true;
-                                          errorYear = allowcatedEnergyList[i].year;
-                                          errorMonth = "Jun";
-                                          break;
-                                        }
-                                    }
-                                    else{
-                                      //console.log("Month 5 is error")
-                                      errorCheckContractEnnergy = true;
-                                      errorYear = allowcatedEnergyList[i].year;
-                                      errorMonth = "May";
-                                      break;
-                                    }
+                                      }
+                                      else{
+                                        //console.log("Month 5 is error")
+                                        errorCheckContractEnnergy = true;
+                                        errorYear = allowcatedEnergyList[i].year;
+                                        errorMonth = "May";
+                                        break;
+                                      }
+                                  }
+                                  else{
+                                    //console.log("Month 4 is error")
+                                    errorCheckContractEnnergy = true;
+                                    errorYear = allowcatedEnergyList[i].year;
+                                    errorMonth = "Apr";
+                                    break;
+                                  }
                                 }
                                 else{
-                                  //console.log("Month 4 is error")
+                                  //console.log("Month 3 is error")
                                   errorCheckContractEnnergy = true;
                                   errorYear = allowcatedEnergyList[i].year;
-                                  errorMonth = "Apr";
+                                  errorMonth = "Mar";
                                   break;
                                 }
-                              }
-                              else{
-                                //console.log("Month 3 is error")
-                                errorCheckContractEnnergy = true;
-                                errorYear = allowcatedEnergyList[i].year;
-                                errorMonth = "Mar";
-                                break;
-                              }
-                          }
-                          else{
-                            //console.log("Month 2 is error")
-                            errorCheckContractEnnergy = true;
-                            errorYear = allowcatedEnergyList[i].year;
-                            errorMonth = "Feb";
-                            break;
-                          }
-                      }
-                      else{
-                        //console.log("Month 1 is error")
-                        errorCheckContractEnnergy = true;
-                        errorYear = allowcatedEnergyList[i].year;
-                        errorMonth = "Jan";
-                        break;
-                      }
+                            }
+                            else{
+                              //console.log("Month 2 is error")
+                              errorCheckContractEnnergy = true;
+                              errorYear = allowcatedEnergyList[i].year;
+                              errorMonth = "Feb";
+                              break;
+                            }
+                        }
+                        else{
+                          //console.log("Month 1 is error")
+                          errorCheckContractEnnergy = true;
+                          errorYear = allowcatedEnergyList[i].year;
+                          errorMonth = "Jan";
+                          break;
+                        }
+                    }
+                  const param = {
+                        subscriberId: details?.subscriberDetail?.subscriberId,
+                        subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
+                        ugtGroupId: currentUGTGroup?.id,
+                        subscriberTypeId: 1,
+                        //General Information
+                        assignedUtilityId: formData.assignUtil.id,
+                        //subscriberCode: formData.subscriberCode,
+                        tradeAccount: formData.tradeAccount,
+                        tradeAccountCode: formData.tradeAccountCode,
+                        redemptionAccountCode: formData.redemptionAccountCode,
+                        redemptionAccount: formData.redemptionAccount,
+                        //tradeAccount: formData.tradeAccount,
+                        //retailESANo: formData.retailESANo,
+                        //retailESAContractStartDate: formData.retailESAContractStartDate,
+                        //retailESAContractEndDate: formData.retailESAContractEndDate,
+                        //retailESAContractDuration: formData?.retailESAContractDuration || "",
+                        //redemptionAccount: formData.redemptionAccount,
+                        subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
+                        //Organization Information
+                        organizationName: formData.organizationName,
+                        businessRegistrationNo: formData.businessRegistrationNo,
+                        address: formData.address,
+                        subdistrictCode: formData.subdistrictCode.subdistrictCode,
+                        subdistrictName: formData.subdistrictCode.subdistrictNameEn,
+                        districtCode: formData.districtCode.districtCode,
+                        districtName: formData.districtCode.districtNameEn,
+                        provinceCode: formData.stateCode.provinceCode,
+                        provinceName: formData.stateCode.provinceNameEn,
+                        countryCode: formData.countryCode.alpha2.toUpperCase(),
+                        countryName: formData.countryCode.name,
+                        postCode: formData.postCode.postalCode.toString(),
+                        //Personal Information
+                        title: formData.title?.value,
+                        name: formData.name,
+                        lastname: formData.lastname,
+                        email: formData.email,
+                        mobilePhone: formData.mobilePhone,
+                        officePhone: formData.officePhone,
+                        attorney: formData.attorney,
+                        //Subscription Information
+                        retailESANo: formData.retailESANo,
+                        retailESAContractStartDate: formData.retailESAContractStartDate,
+                        retailESAContractEndDate: formData.retailESAContractEndDate,
+                        retailESAContractDuration: formData?.retailESAContractDuration || "",
+                        portfolioAssignment: formData.portfolioAssignment,
+                        optForUp: formData.optGreen?"Active":"Inactive",
+                        optForExcess: formData.optContract?"Active":"Inactive",
+                        feeder: formData.feeder,
+                        allocateEnergyAmount: allowcatedEnergyList,
+                        fileUploadContract: allowcatedExcelFileList,
+                        //Beneficiary Information
+                        beneficiaryInfo:benefitList,
+                        subscriberRemark:null /*{
+                          beneficiaryName: formData.beneficiaryName,
+                          beneficiaryStatus: "Active",
+                          beneficiaryCountry: formData.beneficiaryCountryCode.name,
+                          beneficiaryAddress: formData.beneficiaryAddress,
+                          beneficiarySubdistrictCode:
+                            formData.beneficiarySubdistrictCode.subdistrictCode,
+                          beneficiarySubdistrictName:
+                            formData.beneficiarySubdistrictCode.subdistrictNameEn,
+                          beneficiaryDistrictCode:
+                            formData.beneficiaryDistrictCode.districtCode,
+                          beneficiaryDistrictName:
+                            formData.beneficiaryDistrictCode.districtNameEn,
+                          beneficiaryProviceCode: formData.beneficiaryProviceCode.provinceCode,
+                          beneficiaryProviceName:
+                            formData.beneficiaryProviceCode.provinceNameEn,
+                          beneficiaryCountryCode:
+                            formData.beneficiaryCountryCode.alpha2.toUpperCase(),
+                          beneficiaryCountryName: formData.beneficiaryCountryCode.name,
+                          beneficiaryPostcode:
+                            formData.beneficiaryPostcode.postalCode.toString(),
+                        }*/,
+                        //Attach File
+                        fileUpload:fileList,
+                        note:formData.note,
+                        fileUploadSubscriberContractHistoryLog:[],
+                        subscriberContractHistoryLog:{action:"Renew",createBy: (userDetail.firstName+" "+userDetail.lastName)}
+                      };
+                  if(errorCheckContractEnnergy === false){
+                   // console.log("Contract Amount is not Error")
+                      //setIsAllocatedEnergyAmount(false);
+                      setIsBeficiary(false)
+                      setFormData1(param);
+                      console.log(param)
+                      setShowModalCreateConfirm(true);
                   }
-                const param = {
-                      subscriberId: details?.subscriberDetail?.subscriberId,
-                      subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
-                      ugtGroupId: currentUGTGroup?.id,
-                      subscriberTypeId: 1,
-                      //General Information
-                      assignedUtilityId: formData.assignUtil.id,
-                      //subscriberCode: formData.subscriberCode,
-                      tradeAccount: formData.tradeAccount,
-                      tradeAccountCode: formData.tradeAccountCode,
-                      redemptionAccountCode: formData.redemptionAccountCode,
-                      redemptionAccount: formData.redemptionAccount,
-                      //tradeAccount: formData.tradeAccount,
-                      //retailESANo: formData.retailESANo,
-                      //retailESAContractStartDate: formData.retailESAContractStartDate,
-                      //retailESAContractEndDate: formData.retailESAContractEndDate,
-                      //retailESAContractDuration: formData?.retailESAContractDuration || "",
-                      //redemptionAccount: formData.redemptionAccount,
-                      subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
-                      //Organization Information
-                      organizationName: formData.organizationName,
-                      businessRegistrationNo: formData.businessRegistrationNo,
-                      address: formData.address,
-                      subdistrictCode: formData.subdistrictCode.subdistrictCode,
-                      subdistrictName: formData.subdistrictCode.subdistrictNameEn,
-                      districtCode: formData.districtCode.districtCode,
-                      districtName: formData.districtCode.districtNameEn,
-                      provinceCode: formData.stateCode.provinceCode,
-                      provinceName: formData.stateCode.provinceNameEn,
-                      countryCode: formData.countryCode.alpha2.toUpperCase(),
-                      countryName: formData.countryCode.name,
-                      postCode: formData.postCode.postalCode.toString(),
-                      //Personal Information
-                      title: formData.title?.value,
-                      name: formData.name,
-                      lastname: formData.lastname,
-                      email: formData.email,
-                      mobilePhone: formData.mobilePhone,
-                      officePhone: formData.officePhone,
-                      attorney: formData.attorney,
-                      //Subscription Information
-                      retailESANo: formData.retailESANo,
-                      retailESAContractStartDate: formData.retailESAContractStartDate,
-                      retailESAContractEndDate: formData.retailESAContractEndDate,
-                      retailESAContractDuration: formData?.retailESAContractDuration || "",
-                      portfolioAssignment: formData.portfolioAssignment,
-                      optForUp: formData.optGreen?"Active":"Inactive",
-                      optForExcess: formData.optContract?"Active":"Inactive",
-                      feeder: formData.feeder,
-                      allocateEnergyAmount: allowcatedEnergyList,
-                      fileUploadContract: allowcatedExcelFileList,
-                      //Beneficiary Information
-                      beneficiaryInfo:benefitList,
-                      subscriberRemark:null /*{
-                        beneficiaryName: formData.beneficiaryName,
-                        beneficiaryStatus: "Active",
-                        beneficiaryCountry: formData.beneficiaryCountryCode.name,
-                        beneficiaryAddress: formData.beneficiaryAddress,
-                        beneficiarySubdistrictCode:
-                          formData.beneficiarySubdistrictCode.subdistrictCode,
-                        beneficiarySubdistrictName:
-                          formData.beneficiarySubdistrictCode.subdistrictNameEn,
-                        beneficiaryDistrictCode:
-                          formData.beneficiaryDistrictCode.districtCode,
-                        beneficiaryDistrictName:
-                          formData.beneficiaryDistrictCode.districtNameEn,
-                        beneficiaryProviceCode: formData.beneficiaryProviceCode.provinceCode,
-                        beneficiaryProviceName:
-                          formData.beneficiaryProviceCode.provinceNameEn,
-                        beneficiaryCountryCode:
-                          formData.beneficiaryCountryCode.alpha2.toUpperCase(),
-                        beneficiaryCountryName: formData.beneficiaryCountryCode.name,
-                        beneficiaryPostcode:
-                          formData.beneficiaryPostcode.postalCode.toString(),
-                      }*/,
-                      //Attach File
-                      fileUpload:fileList,
-                      note:formData.note,
-                      fileUploadSubscriberContractHistoryLog:[],
-                      subscriberContractHistoryLog:{action:"Edit",createBy: (userDetail.firstName+" "+userDetail.lastName)}
-                    };
-                if(errorCheckContractEnnergy === false){
-                 // console.log("Contract Amount is not Error")
-                    //setIsAllocatedEnergyAmount(false);
-                    setIsBeficiary(false)
-                    setFormData1(param);
-                    console.log(param)
-                    setShowModalCreateConfirm(true);
+                  else{
+                    setIsShowFailModal(true)
+                    setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
+                    console.log("Contract Amount Error",errorYear+" "+errorMonth)
+                  }
+                  }
+                  else{
+                    setIsShowFailModal(true)
+                    setMessageFailModal("Contract energy amount is not create in " + errorYear)
+                    console.log("Error create ContractEnergy is not match select Date")
+                  }
                 }
                 else{
                   setIsShowFailModal(true)
-                  setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
-                  console.log("Contract Amount Error",errorYear+" "+errorMonth)
+                  setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
+                  console.log("Error is not Create Allowcated End Year")
                 }
-                }
-                else{
-                  setIsShowFailModal(true)
-                  setMessageFailModal("Contract energy amount is not create in " + errorYear)
-                  console.log("Error create ContractEnergy is not match select Date")
-                }
-              }
-              else{
-                setIsShowFailModal(true)
-                setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-                console.log("Error is not Create Allowcated End Year")
-              }
+            }
+            else{
+              setIsShowFailModal(true)
+              setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
+              console.log("Error is not Create Allowcated Start Year")
+            }
           }
           else{
-            setIsShowFailModal(true)
-            setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-            console.log("Error is not Create Allowcated Start Year")
+          setIsShowFailModal(true)
+          setMessageFailModal("Please select new Retail ESA Contract Start Date more than old Retail ESA Contract Start Date and old Retail ESA Contract End Date.")
           }
-      }
-      else{
-        //Assign to Portfolio and Active
-        let errorCheckContractEnnergy = null
-        let errorYear = null
-        let errorMonth = null
-        let isErrorAllow = false
-        const yearStart = parseInt(yearStartDate1.current)
-        const yearEnd = parseInt(yearEndDate1.current)
-        const diffYear = (yearEnd-yearStart)+1
-        console.log("Diff Year",diffYear)
-        console.log("Length Contract Amount",allowcatedEnergyList.length)
-        const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
-        const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
-        if(lengthCreateStartyear.length !== 0){
-            if(lenghtCreateEndyear.length !== 0){
-              for(let i = yearStart+1;i < yearEnd;i++){
-                const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
-                if(checkDisappearData.length === 0){
-                  errorYear = i;
-                  isErrorAllow = true
-                  break;
-                }
-              }
-                if(isErrorAllow === false){
-                    for(let i = 0;i < allowcatedEnergyList.length;i++){
-                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
-                          //console.log("Month 1 is not error")
-                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
-                            //console.log("Month 2 is not error")
-                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
-                                //console.log("Month 3 is not error")
-                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
-                                  //console.log("Month 4 is not error")
-                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
-                                      //console.log("Month 5 is not error")
-                                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
-                                          //console.log("Month 6 is not error")
-                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
-                                          // console.log("Month 7 is not error")
-                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
-                                            // console.log("Month 8 is not error")
-                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
-                                              //  console.log("Month 9 is not error")
-                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
-                                              //   console.log("Month 10 is not error")
-                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
-                                              //     console.log("Month 11 is not error")
-                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
-                                                    {
-                                                      //console.log("Month 12 is not error")
-                                                      errorCheckContractEnnergy = false                                            
-                                                    }
-                                                    else{
-                                                      //console.log("Month 12 is error")
-                                                      errorCheckContractEnnergy = true;
-                                                      errorYear = allowcatedEnergyList[i].year;
-                                                      errorMonth = "Dec";
-                                                      break;
-                                                    }
-                                                  }
-                                                  else{
-                                                    //console.log("Month 11 is error")
-                                                    errorCheckContractEnnergy = true;
-                                                    errorYear = allowcatedEnergyList[i].year;
-                                                    errorMonth = "Nov";
-                                                    break;
-                                                  }
-                                                }
-                                                else{
-                                                  //console.log("Month 10 is error")
-                                                  errorCheckContractEnnergy = true;
-                                                  errorYear = allowcatedEnergyList[i].year;
-                                                  errorMonth = "Oct";
-                                                  break;
-                                                }
-                                              }
-                                              else{
-                                                //console.log("Month 9 is error")
-                                                errorCheckContractEnnergy = true;
-                                                errorYear = allowcatedEnergyList[i].year;
-                                                errorMonth = "Sep";
-                                                break;
-                                              }
-                                            }
-                                            else{
-                                              //console.log("Month 8 is error")
-                                              errorCheckContractEnnergy = true;
-                                              errorYear = allowcatedEnergyList[i].year;
-                                              errorMonth = "Aug";
-                                              break;
-                                            }
-                                          }
-                                          else{
-                                            //console.log("Month 7 is error")
-                                            errorCheckContractEnnergy = true;
-                                            errorYear = allowcatedEnergyList[i].year;
-                                            errorMonth = "Jul";
-                                            break;
-                                          }
-                                        }
-                                        else{
-                                          //console.log("Month 6 is error")
-                                          errorCheckContractEnnergy = true;
-                                          errorYear = allowcatedEnergyList[i].year;
-                                          errorMonth = "Jun";
-                                          break;
-                                        }
-                                    }
-                                    else{
-                                      //console.log("Month 5 is error")
-                                      errorCheckContractEnnergy = true;
-                                      errorYear = allowcatedEnergyList[i].year;
-                                      errorMonth = "May";
-                                      break;
-                                    }
-                                }
-                                else{
-                                  //console.log("Month 4 is error")
-                                  errorCheckContractEnnergy = true;
-                                  errorYear = allowcatedEnergyList[i].year;
-                                  errorMonth = "Apr";
-                                  break;
-                                }
-                              }
-                              else{
-                                //console.log("Month 3 is error")
-                                errorCheckContractEnnergy = true;
-                                errorYear = allowcatedEnergyList[i].year;
-                                errorMonth = "Mar";
-                                break;
-                              }
-                          }
-                          else{
-                            //console.log("Month 2 is error")
-                            errorCheckContractEnnergy = true;
-                            errorYear = allowcatedEnergyList[i].year;
-                            errorMonth = "Feb";
-                            break;
-                          }
-                      }
-                      else{
-                        //console.log("Month 1 is error")
-                        errorCheckContractEnnergy = true;
-                        errorYear = allowcatedEnergyList[i].year;
-                        errorMonth = "Jan";
-                        break;
-                      }
-                  }
-                
-                if(errorCheckContractEnnergy === false){
-                 // console.log("Contract Amount is not Error")
-                    //setIsAllocatedEnergyAmount(false);
-                    setIsBeficiary(false)
-                    //setFormData1(param);
-                    //console.log(param)
-                    setShowMadalCreateRemark(true);
-                }
-                else{
-                  setIsShowFailModal(true)
-                  setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
-                  console.log("Contract Amount Error",errorYear+" "+errorMonth)
-                }
-                }
-                else{
-                  setIsShowFailModal(true)
-                  setMessageFailModal("Contract energy amount is not create in " + errorYear)
-                  console.log("Error create ContractEnergy is not match select Date")
-                }
-              }
-              else{
-                setIsShowFailModal(true)
-                setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-                console.log("Error is not Create Allowcated End Year")
-              }
+        }
+        else{
+          setIsShowFailModal(true)
+          setMessageFailModal("Please select new Retail ESA Contract Start Date.")
           }
-          else{
-            setIsShowFailModal(true)
-            setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-            console.log("Error is not Create Allowcated Start Year")
-          }
-      }
+       
     }
   };
 
@@ -1203,43 +1034,24 @@ const UpdateSubscriber = () => {
     if(years >= yearStart && years <= yearEnd){
       
       if(years === yearStart){
-        if(yearStart !== yearEnd){
-          if(months >= monthStart){
-            if(values < 0){
-              return true
-            }
-            else{
-              return false
-            }          
+        
+        if(months >= monthStart){
+          if(values < 0){
+            return true
           }
           else{
-            if(values !== 0){
-              return true
-            }
-            else{
-              return false
-            } 
-            
-            
-          }
+            return false
+          }          
         }
         else{
-          if(months >= monthStart && months <= monthEnd){
-            if(values < 0){
-              return true
-            }
-            else{
-              return false
-            } 
+          if(values !== 0){
+            return true
           }
           else{
-            if(values !== 0){
-              return true
-            }
-            else{
-              return false
-            } 
-          }
+            return false
+          } 
+          
+          
         }
       }
       else if(years === yearEnd){
@@ -1253,7 +1065,7 @@ const UpdateSubscriber = () => {
         }
         else{
           if(values !== 0){
-            return true
+            
           }
           else{
             return false
@@ -1283,10 +1095,9 @@ const UpdateSubscriber = () => {
     // setIsOpenLoading(true);
     showLoading();
     if (isActiveForm1 == true) {
-      if(details?.subscriberDetail.activePortfolioStatus === "N"){
         console.log("Param Form1",FormData1)
           dispatch(
-            FunctionEditSubscriber(FormData1, details?.subscriberDetail?.subscriberId, () => {
+            FunctionRenewSubscriber(FormData1, details?.subscriberDetail?.subscriberId, () => {
               if (isError === false) {
                 console.log("Create Form 1 success")
               // setIsOpenLoading(false);
@@ -1303,93 +1114,9 @@ const UpdateSubscriber = () => {
               //setShowModalComplete(true);
             })
           );
-       }
-       else{
-        createPdfPDFForm1()
-        /*const param = {
-          subscriberId: details?.subscriberDetail?.subscriberId,
-          subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
-          ugtGroupId: currentUGTGroup?.id,
-          subscriberTypeId: 1,
-          //General Information
-          assignedUtilityId: details?.subscriberDetail.assignedUtilityId,
-          //subscriberCode: formData.subscriberCode,
-          tradeAccount: getValues("tradeAccount"),
-          tradeAccountCode: getValues("tradeAccountCode"),
-          redemptionAccountCode: getValues("redemptionAccountCode"),
-          redemptionAccount: getValues("redemptionAccount"),
-          //tradeAccount: formData.tradeAccount,
-          //retailESANo: formData.retailESANo,
-          //retailESAContractStartDate: formData.retailESAContractStartDate,
-          //retailESAContractEndDate: formData.retailESAContractEndDate,
-          //retailESAContractDuration: formData?.retailESAContractDuration || "",
-          //redemptionAccount: formData.redemptionAccount,
-          subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
-          //Organization Information
-          organizationName: getValues("organizationName"),
-          businessRegistrationNo: getValues("businessRegistrationNo"),
-          address: getValues("address"),
-          subdistrictCode: getValues("subdistrictCode").subdistrictCode,
-          subdistrictName: getValues("subdistrictCode").subdistrictNameEn,
-          districtCode: getValues("districtCode").districtCode,
-          districtName: getValues("districtCode").districtNameEn,
-          provinceCode: getValues("stateCode").provinceCode,
-          provinceName: getValues("stateCode").provinceNameEn,
-          countryCode: getValues("countryCode").alpha2.toUpperCase(),
-          countryName: getValues("countryCode").name,
-          postCode: getValues("postCode").postalCode.toString(),
-          //Personal Information
-          title: getValues("title")?.value,
-          name: getValues("name"),
-          lastname: getValues("lastname"),
-          email: getValues("email"),
-          mobilePhone: getValues("mobilePhone"),
-          officePhone: getValues("officePhone"),
-          attorney: getValues("attorney"),
-          //Subscription Information
-          retailESANo: getValues("retailESANo"),
-          retailESAContractStartDate: getValues("retailESAContractStartDate"),
-          retailESAContractEndDate: getValues("retailESAContractEndDate"),
-          retailESAContractDuration: getValues("retailESAContractDuration") || "",
-          portfolioAssignment: getValues("portfolioAssignment"),
-          optForUp: getValues("optGreen")?"Active":"Inactive",
-          optForExcess: getValues("optContract")?"Active":"Inactive",
-          feeder: getValues("feeder"),
-          allocateEnergyAmount: allowcatedEnergyList,
-          fileUploadContract: allowcatedExcelFileList,
-          //Beneficiary Information
-          beneficiaryInfo:benefitList,
-          //Attach File
-          fileUpload:fileList,
-          note:getValues("note"),
-          subscriberRemark:RefRemark.current
-        };
-        dispatch(
-          FunctionEditSubscriber(param, details?.subscriberDetail?.subscriberId, () => {
-            if (isError === false) {
-              
-              console.log("Create Form 1 success")
-            // setIsOpenLoading(false);
-              hideLoading();
-              setShowMadalCreateRemark(false);
-              setShowModalComplete(true);}
-            else{
-              console.log("Create form 1 error")
-              hideLoading();
-              setIsShowFailError(true)
-              setShowMadalCreateRemark(false);
-              setMessageFailModal(errorMessage)
-            }
-            // setIsOpenLoading(false);
-            //hideLoading();
-            //setShowModalComplete(true);
-          })
-        );*/
-       }
     } else {
-      if(details?.subscriberDetail.activePortfolioStatus === "N"){
             dispatch(
-              FunctioneditAggregateSubscriber(
+              FunctionRenewAggregateSubscriber(
                 FormData2,
                 details?.subscriberDetail?.subscriberId,
                 () => {
@@ -1410,59 +1137,6 @@ const UpdateSubscriber = () => {
                 }
               )
             );
-          }
-          else{
-            createPdfPDFForm2()
-            /*const param = {
-              subscriberId: details?.subscriberDetail?.subscriberId,
-              subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
-              ugtGroupId: currentUGTGroup?.id,
-              subscriberTypeId: 2,
-              assignedUtilityId: details?.subscriberDetail.assignedUtilityId,
-              //tradeAccount: formData.tradeAccount,
-              name: getValues("name"),
-              tradeAccount:getValues("tradeAccount"),
-              tradeAccountCode:getValues("tradeAccountCode"),
-              retailESAContractStartDate: getValues("retailESAContractStartDate"),
-              retailESAContractEndDate: getValues("retailESAContractEndDate"),
-              retailESAContractDuration: getValues("retailESAContractDuration") || "",
-              portfolioAssignment: getValues("portfolioAssignment"),
-              optForUp: getValues("optGreen")?"Active":"Inactive",
-              optForExcess: getValues("optContract")?"Active":"Inactive",
-              subscribersFilePdf:fileListPDF,
-              subscribersFileXls:fileListExcel,
-              note:getValues("note"),
-              subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
-              //aggregateAllocatedEnergy: parseInt(formData.aggregateAllocatedEnergy),
-              allocateEnergyAmount: allowcatedEnergyList,
-              fileUploadContract: allowcatedExcelFileList,
-              subscriberRemark:RefRemark.current,
-            };
-            dispatch(
-              FunctioneditAggregateSubscriber(
-                param,
-                details?.subscriberDetail?.subscriberId,
-                () => {
-                  if (isError === false) {
-                    console.log("Create form 2 success")
-                    // setIsOpenLoading(false);
-                      hideLoading();
-                      setShowMadalCreateRemark(false);
-                      setShowModalComplete(true);}
-                    else{
-                      console.log("Create form 2 error")
-                      hideLoading();
-                      setShowMadalCreateRemark(false);
-                      setIsShowFailError(true)
-                      setMessageFailModal(errorMessage)
-                    }
-                  // setIsOpenLoading(false);
-                  //hideLoading();
-                  //setShowModalComplete(true);
-                }
-              )
-            );*/
-          }
     }
   };
 
@@ -1493,7 +1167,6 @@ const UpdateSubscriber = () => {
 
   const onSubmitForm2New = (formData) => {
     if (allowcatedEnergyList.length > 0) {      
-        if(details?.subscriberDetail.activePortfolioStatus === "N"){
         //Not assign to portfolio or inactive
         let errorCheckContractEnnergy = null
         let errorYear = null
@@ -1506,380 +1179,212 @@ const UpdateSubscriber = () => {
         console.log("Length Contract Amount",allowcatedEnergyList.length)
         const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
         const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
-        if(lengthCreateStartyear.length !== 0){
-            if(lenghtCreateEndyear.length !== 0){
-              for(let i = yearStart+1;i < yearEnd;i++){
-                const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
-                if(checkDisappearData.length === 0){
-                  errorYear = i;
-                  isError = true
-                  break;
-                }
-              }
-                
-                if(isError === false){
-                    for(let i = 0;i < allowcatedEnergyList.length;i++){
-                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
-                          //console.log("Month 1 is not error")
-                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
-                            //console.log("Month 2 is not error")
-                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
-                                //console.log("Month 3 is not error")
-                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
-                                  //console.log("Month 4 is not error")
-                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
-                                      //console.log("Month 5 is not error")
-                                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
-                                          //console.log("Month 6 is not error")
-                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
-                                            //console.log("Month 7 is not error")
-                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
-                                              //console.log("Month 8 is not error")
-                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
-                                                //console.log("Month 9 is not error")
-                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
-                                                  //console.log("Month 10 is not error")
-                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
-                                                    //console.log("Month 11 is not error")
-                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
-                                                    {
-                                                      //console.log("Month 12 is not error")
-                                                      errorCheckContractEnnergy = false                                            
+        if(formData.retailESAContractStartDate !== details?.subscriberDetail.retailESAContractStartDate)
+          {
+            if(formData.retailESAContractStartDate > details?.subscriberDetail.retailESAContractEndDate){
+              if(lengthCreateStartyear.length !== 0){
+                  if(lenghtCreateEndyear.length !== 0){
+                    for(let i = yearStart+1;i < yearEnd;i++){
+                      const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
+                      if(checkDisappearData.length === 0){
+                        errorYear = i;
+                        isError = true
+                        break;
+                      }
+                    }
+                      
+                      if(isError === false){
+                          for(let i = 0;i < allowcatedEnergyList.length;i++){
+                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
+                                //console.log("Month 1 is not error")
+                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
+                                  //console.log("Month 2 is not error")
+                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
+                                      //console.log("Month 3 is not error")
+                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
+                                        //console.log("Month 4 is not error")
+                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
+                                            //console.log("Month 5 is not error")
+                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
+                                                //console.log("Month 6 is not error")
+                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
+                                                  //console.log("Month 7 is not error")
+                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
+                                                    //console.log("Month 8 is not error")
+                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
+                                                      //console.log("Month 9 is not error")
+                                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
+                                                        //console.log("Month 10 is not error")
+                                                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
+                                                          //console.log("Month 11 is not error")
+                                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
+                                                          {
+                                                            //console.log("Month 12 is not error")
+                                                            errorCheckContractEnnergy = false                                            
+                                                          }
+                                                          else{
+                                                            //console.log("Month 12 is error")
+                                                            errorCheckContractEnnergy = true;
+                                                            errorYear = allowcatedEnergyList[i].year;
+                                                            errorMonth = "Dec";
+                                                            break;
+                                                          }
+                                                        }
+                                                        else{
+                                                          //console.log("Month 11 is error")
+                                                          errorCheckContractEnnergy = true;
+                                                          errorYear = allowcatedEnergyList[i].year;
+                                                          errorMonth = "Nov";
+                                                          break;
+                                                        }
+                                                      }
+                                                      else{
+                                                        //console.log("Month 10 is error")
+                                                        errorCheckContractEnnergy = true;
+                                                        errorYear = allowcatedEnergyList[i].year;
+                                                        errorMonth = "Oct";
+                                                        break;
+                                                      }
                                                     }
                                                     else{
-                                                      //console.log("Month 12 is error")
+                                                      //console.log("Month 9 is error")
                                                       errorCheckContractEnnergy = true;
                                                       errorYear = allowcatedEnergyList[i].year;
-                                                      errorMonth = "Dec";
+                                                      errorMonth = "Sep";
                                                       break;
                                                     }
                                                   }
                                                   else{
-                                                    //console.log("Month 11 is error")
+                                                    //console.log("Month 8 is error")
                                                     errorCheckContractEnnergy = true;
                                                     errorYear = allowcatedEnergyList[i].year;
-                                                    errorMonth = "Nov";
+                                                    errorMonth = "Aug";
                                                     break;
                                                   }
                                                 }
                                                 else{
-                                                  //console.log("Month 10 is error")
+                                                  //console.log("Month 7 is error")
                                                   errorCheckContractEnnergy = true;
                                                   errorYear = allowcatedEnergyList[i].year;
-                                                  errorMonth = "Oct";
+                                                  errorMonth = "Jul";
                                                   break;
                                                 }
                                               }
                                               else{
-                                                //console.log("Month 9 is error")
+                                                //console.log("Month 6 is error")
                                                 errorCheckContractEnnergy = true;
                                                 errorYear = allowcatedEnergyList[i].year;
-                                                errorMonth = "Sep";
+                                                errorMonth = "Jun";
                                                 break;
                                               }
-                                            }
-                                            else{
-                                              //console.log("Month 8 is error")
-                                              errorCheckContractEnnergy = true;
-                                              errorYear = allowcatedEnergyList[i].year;
-                                              errorMonth = "Aug";
-                                              break;
-                                            }
                                           }
                                           else{
-                                            //console.log("Month 7 is error")
+                                            //console.log("Month 5 is error")
                                             errorCheckContractEnnergy = true;
                                             errorYear = allowcatedEnergyList[i].year;
-                                            errorMonth = "Jul";
+                                            errorMonth = "May";
                                             break;
                                           }
-                                        }
-                                        else{
-                                          //console.log("Month 6 is error")
-                                          errorCheckContractEnnergy = true;
-                                          errorYear = allowcatedEnergyList[i].year;
-                                          errorMonth = "Jun";
-                                          break;
-                                        }
+                                      }
+                                      else{
+                                        //console.log("Month 4 is error")
+                                        errorCheckContractEnnergy = true;
+                                        errorYear = allowcatedEnergyList[i].year;
+                                        errorMonth = "Apr";
+                                        break;
+                                      }
                                     }
                                     else{
-                                      //console.log("Month 5 is error")
+                                      //console.log("Month 3 is error")
                                       errorCheckContractEnnergy = true;
                                       errorYear = allowcatedEnergyList[i].year;
-                                      errorMonth = "May";
+                                      errorMonth = "Mar";
                                       break;
                                     }
                                 }
                                 else{
-                                  //console.log("Month 4 is error")
+                                  //console.log("Month 2 is error")
                                   errorCheckContractEnnergy = true;
                                   errorYear = allowcatedEnergyList[i].year;
-                                  errorMonth = "Apr";
+                                  errorMonth = "Feb";
                                   break;
                                 }
-                              }
-                              else{
-                                //console.log("Month 3 is error")
-                                errorCheckContractEnnergy = true;
-                                errorYear = allowcatedEnergyList[i].year;
-                                errorMonth = "Mar";
-                                break;
-                              }
+                            }
+                            else{
+                              //console.log("Month 1 is error")
+                              errorCheckContractEnnergy = true;
+                              errorYear = allowcatedEnergyList[i].year;
+                              errorMonth = "Jan";
+                              break;
+                            }
+                        }
+                          const param = {
+                            subscriberId: details?.subscriberDetail?.subscriberId,
+                            subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
+                            ugtGroupId: currentUGTGroup?.id,
+                            subscriberTypeId: 2,
+                            assignedUtilityId: formData.assignUtil.id,
+                            //tradeAccount: formData.tradeAccount,
+                            name: formData.name,
+                            tradeAccount:formData.tradeAccount,
+                            tradeAccountCode:formData.tradeAccountCode,
+                            retailESAContractStartDate: formData.retailESAContractStartDate,
+                            retailESAContractEndDate: formData.retailESAContractEndDate,
+                            retailESAContractDuration: formData?.retailESAContractDuration || "",
+                            portfolioAssignment: formData.portfolioAssignment,
+                            optForUp: formData.optGreen?"Active":"Inactive",
+                            optForExcess: formData.optContract?"Active":"Inactive",
+                            subscribersFilePdf:fileListPDF,
+                            subscribersFileXls:fileListExcel,
+                            note:formData.note,
+                            subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
+                            //aggregateAllocatedEnergy: parseInt(formData.aggregateAllocatedEnergy),
+                            allocateEnergyAmount: allowcatedEnergyList,
+                            fileUploadContract: allowcatedExcelFileList,
+                            subscriberRemark:null,
+                            fileUploadSubscriberContractHistoryLog:[],
+                            subscriberContractHistoryLog:{action:"Renew",createBy: (userDetail.firstName+" "+userDetail.lastName)}
+                          };
+                          if(errorCheckContractEnnergy === false){
+                            //console.log("Contract Amount is not Error")
+                            //console.log("param",param)
+                            setFormData2(param);
+                            setShowModalCreateConfirm(true);
                           }
                           else{
-                            //console.log("Month 2 is error")
-                            errorCheckContractEnnergy = true;
-                            errorYear = allowcatedEnergyList[i].year;
-                            errorMonth = "Feb";
-                            break;
+                            setIsShowFailModal(true)
+                            setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
+                            //console.log("Contract Amount Error",errorYear+" "+errorMonth)
                           }
                       }
                       else{
-                        //console.log("Month 1 is error")
-                        errorCheckContractEnnergy = true;
-                        errorYear = allowcatedEnergyList[i].year;
-                        errorMonth = "Jan";
-                        break;
+                        setIsShowFailModal(true)
+                        setMessageFailModal("Contract energy amount is not create in " + errorYear)
+                        //console.log("Error create ContractEnergy is not match select Date")
                       }
-                  }
-                    const param = {
-                      subscriberId: details?.subscriberDetail?.subscriberId,
-                      subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
-                      ugtGroupId: currentUGTGroup?.id,
-                      subscriberTypeId: 2,
-                      assignedUtilityId: formData.assignUtil.id,
-                      //tradeAccount: formData.tradeAccount,
-                      name: formData.name,
-                      tradeAccount:formData.tradeAccount,
-                      tradeAccountCode:formData.tradeAccountCode,
-                      retailESAContractStartDate: formData.retailESAContractStartDate,
-                      retailESAContractEndDate: formData.retailESAContractEndDate,
-                      retailESAContractDuration: formData?.retailESAContractDuration || "",
-                      portfolioAssignment: formData.portfolioAssignment,
-                      optForUp: formData.optGreen?"Active":"Inactive",
-                      optForExcess: formData.optContract?"Active":"Inactive",
-                      subscribersFilePdf:fileListPDF,
-                      subscribersFileXls:fileListExcel,
-                      note:formData.note,
-                      subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
-                      //aggregateAllocatedEnergy: parseInt(formData.aggregateAllocatedEnergy),
-                      allocateEnergyAmount: allowcatedEnergyList,
-                      fileUploadContract: allowcatedExcelFileList,
-                      subscriberRemark:null,
-                      fileUploadSubscriberContractHistoryLog:[],
-                      subscriberContractHistoryLog:{action:"Edit",createBy: (userDetail.firstName+" "+userDetail.lastName)}
-                    };
-                    if(errorCheckContractEnnergy === false){
-                      //console.log("Contract Amount is not Error")
-                      //console.log("param",param)
-                      setFormData2(param);
-                      setShowModalCreateConfirm(true);
                     }
                     else{
                       setIsShowFailModal(true)
-                      setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
-                      //console.log("Contract Amount Error",errorYear+" "+errorMonth)
+                      setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
+                      //console.log("Error is not Create Allowcated End Year")
                     }
                 }
                 else{
                   setIsShowFailModal(true)
-                  setMessageFailModal("Contract energy amount is not create in " + errorYear)
-                  //console.log("Error create ContractEnergy is not match select Date")
+                  setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
+                  //console.log("Error is not Create Allowcated Start Year")
                 }
               }
               else{
-                setIsShowFailModal(true)
-                setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-                //console.log("Error is not Create Allowcated End Year")
+              setIsShowFailModal(true)
+              setMessageFailModal("Please select new Retail ESA Contract Start Date more than old Retail ESA Contract Start Date and old Retail ESA Contract End Date.")
               }
           }
           else{
             setIsShowFailModal(true)
-            setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-            //console.log("Error is not Create Allowcated Start Year")
+            setMessageFailModal("Please select new Retail ESA Contract Start Date.")
           }
-      }
-      else{
-        //Assign to Portfolio and Active
-        let errorCheckContractEnnergy = null
-        let errorYear = null
-        let errorMonth = null
-        let isErrorAllow = false
-        const yearStart = parseInt(yearStartDate1.current)
-        const yearEnd = parseInt(yearEndDate1.current)
-        const diffYear = (yearEnd-yearStart)+1
-        console.log("Diff Year",diffYear)
-        console.log("Length Contract Amount",allowcatedEnergyList.length)
-        const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
-        const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
-        if(lengthCreateStartyear.length !== 0){
-            if(lenghtCreateEndyear.length !== 0){
-              for(let i = yearStart+1;i < yearEnd;i++){
-                const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
-                if(checkDisappearData.length === 0){
-                  errorYear = i;
-                  isErrorAllow = true
-                  break;
-                }
-              }
-                if(isErrorAllow === false){
-                    for(let i = 0;i < allowcatedEnergyList.length;i++){
-                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
-                          //console.log("Month 1 is not error")
-                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
-                            //console.log("Month 2 is not error")
-                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
-                                //console.log("Month 3 is not error")
-                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
-                                  //console.log("Month 4 is not error")
-                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
-                                      //console.log("Month 5 is not error")
-                                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
-                                          //console.log("Month 6 is not error")
-                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
-                                          // console.log("Month 7 is not error")
-                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
-                                            // console.log("Month 8 is not error")
-                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
-                                              //  console.log("Month 9 is not error")
-                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
-                                              //   console.log("Month 10 is not error")
-                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
-                                              //     console.log("Month 11 is not error")
-                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
-                                                    {
-                                                      //console.log("Month 12 is not error")
-                                                      errorCheckContractEnnergy = false                                            
-                                                    }
-                                                    else{
-                                                      //console.log("Month 12 is error")
-                                                      errorCheckContractEnnergy = true;
-                                                      errorYear = allowcatedEnergyList[i].year;
-                                                      errorMonth = "Dec";
-                                                      break;
-                                                    }
-                                                  }
-                                                  else{
-                                                    //console.log("Month 11 is error")
-                                                    errorCheckContractEnnergy = true;
-                                                    errorYear = allowcatedEnergyList[i].year;
-                                                    errorMonth = "Nov";
-                                                    break;
-                                                  }
-                                                }
-                                                else{
-                                                  //console.log("Month 10 is error")
-                                                  errorCheckContractEnnergy = true;
-                                                  errorYear = allowcatedEnergyList[i].year;
-                                                  errorMonth = "Oct";
-                                                  break;
-                                                }
-                                              }
-                                              else{
-                                                //console.log("Month 9 is error")
-                                                errorCheckContractEnnergy = true;
-                                                errorYear = allowcatedEnergyList[i].year;
-                                                errorMonth = "Sep";
-                                                break;
-                                              }
-                                            }
-                                            else{
-                                              //console.log("Month 8 is error")
-                                              errorCheckContractEnnergy = true;
-                                              errorYear = allowcatedEnergyList[i].year;
-                                              errorMonth = "Aug";
-                                              break;
-                                            }
-                                          }
-                                          else{
-                                            //console.log("Month 7 is error")
-                                            errorCheckContractEnnergy = true;
-                                            errorYear = allowcatedEnergyList[i].year;
-                                            errorMonth = "Jul";
-                                            break;
-                                          }
-                                        }
-                                        else{
-                                          //console.log("Month 6 is error")
-                                          errorCheckContractEnnergy = true;
-                                          errorYear = allowcatedEnergyList[i].year;
-                                          errorMonth = "Jun";
-                                          break;
-                                        }
-                                    }
-                                    else{
-                                      //console.log("Month 5 is error")
-                                      errorCheckContractEnnergy = true;
-                                      errorYear = allowcatedEnergyList[i].year;
-                                      errorMonth = "May";
-                                      break;
-                                    }
-                                }
-                                else{
-                                  //console.log("Month 4 is error")
-                                  errorCheckContractEnnergy = true;
-                                  errorYear = allowcatedEnergyList[i].year;
-                                  errorMonth = "Apr";
-                                  break;
-                                }
-                              }
-                              else{
-                                //console.log("Month 3 is error")
-                                errorCheckContractEnnergy = true;
-                                errorYear = allowcatedEnergyList[i].year;
-                                errorMonth = "Mar";
-                                break;
-                              }
-                          }
-                          else{
-                            //console.log("Month 2 is error")
-                            errorCheckContractEnnergy = true;
-                            errorYear = allowcatedEnergyList[i].year;
-                            errorMonth = "Feb";
-                            break;
-                          }
-                      }
-                      else{
-                        //console.log("Month 1 is error")
-                        errorCheckContractEnnergy = true;
-                        errorYear = allowcatedEnergyList[i].year;
-                        errorMonth = "Jan";
-                        break;
-                      }
-                  }
-                
-                if(errorCheckContractEnnergy === false){
-                    // console.log("Contract Amount is not Error")
-                    //setIsAllocatedEnergyAmount(false);
-                    setIsBeficiary(false)
-                    //setFormData1(param);
-                    //console.log(param)
-                    setShowMadalCreateRemark(true);
-                }
-                else{
-                  setIsShowFailModal(true)
-                  setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
-                  console.log("Contract Amount Error",errorYear+" "+errorMonth)
-                }
-                }
-                else{
-                  setIsShowFailModal(true)
-                  setMessageFailModal("Contract energy amount is not create in " + errorYear)
-                  console.log("Error create ContractEnergy is not match select Date")
-                }
-              }
-              else{
-                setIsShowFailModal(true)
-                setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-                console.log("Error is not Create Allowcated End Year")
-              }
-          }
-          else{
-            setIsShowFailModal(true)
-            setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-            console.log("Error is not Create Allowcated Start Year")
-          }
-      }
+      
     }
   };
 
@@ -2674,273 +2179,17 @@ const getTime=(Date)=>{
   return timeFull
 }
 
-const createPdfPDFForm1 = () => {
-  setDefaultShow(true)
-  setIsShowSnap(true)
-  setTimeout(()=>{
-    // เลือก DOM element ที่ต้องการแปลงเป็น PDF
-  const element = contentRef.current//document.getElementById('pdf-content');
-
-  // กำหนดตัวเลือกสำหรับ html2pdf
-  const options = {
-    margin: 0,
-    filename: 'webscreen.pdf',
-    image: { type: 'jpeg', quality: 50 },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
-    html2canvas: { scale: 2}, // เพิ่ม scale เพื่อเพิ่มความละเอียด
-    jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait'},
-  };
-
-  // สร้าง PDF ด้วย html2pdf และดึง base64 string
-  html2pdf()
-    .from(element)
-    .set(options)
-    .outputPdf('datauristring') // ดึงข้อมูลออกมาเป็น Base64 string
-    .then((pdfBase64) => {
-      console.log(pdfBase64); // แสดง base64 string ใน console
-      const base64Content = pdfBase64.split(",")[1];
-      const now = new Date();
-      const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
-      const structrueSend =[{
-        id:0,
-        guid:"",
-        name: formattedDateTime+".pdf",
-        binary: base64Content,
-        type: "application/pdf"
-      }]
-      console.log(userDetail)
-      const param = {
-        subscriberId: details?.subscriberDetail?.subscriberId,
-        subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
-        ugtGroupId: currentUGTGroup?.id,
-        subscriberTypeId: 1,
-        //General Information
-        assignedUtilityId: details?.subscriberDetail.assignedUtilityId,
-        //subscriberCode: formData.subscriberCode,
-        tradeAccount: getValues("tradeAccount"),
-        tradeAccountCode: getValues("tradeAccountCode"),
-        redemptionAccountCode: getValues("redemptionAccountCode"),
-        redemptionAccount: getValues("redemptionAccount"),
-        //tradeAccount: formData.tradeAccount,
-        //retailESANo: formData.retailESANo,
-        //retailESAContractStartDate: formData.retailESAContractStartDate,
-        //retailESAContractEndDate: formData.retailESAContractEndDate,
-        //retailESAContractDuration: formData?.retailESAContractDuration || "",
-        //redemptionAccount: formData.redemptionAccount,
-        subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
-        //Organization Information
-        organizationName: getValues("organizationName"),
-        businessRegistrationNo: getValues("businessRegistrationNo"),
-        address: getValues("address"),
-        subdistrictCode: getValues("subdistrictCode").subdistrictCode,
-        subdistrictName: getValues("subdistrictCode").subdistrictNameEn,
-        districtCode: getValues("districtCode").districtCode,
-        districtName: getValues("districtCode").districtNameEn,
-        provinceCode: getValues("stateCode").provinceCode,
-        provinceName: getValues("stateCode").provinceNameEn,
-        countryCode: getValues("countryCode").alpha2.toUpperCase(),
-        countryName: getValues("countryCode").name,
-        postCode: getValues("postCode").postalCode.toString(),
-        //Personal Information
-        title: getValues("title")?.value,
-        name: getValues("name"),
-        lastname: getValues("lastname"),
-        email: getValues("email"),
-        mobilePhone: getValues("mobilePhone"),
-        officePhone: getValues("officePhone"),
-        attorney: getValues("attorney"),
-        //Subscription Information
-        retailESANo: getValues("retailESANo"),
-        retailESAContractStartDate: getValues("retailESAContractStartDate"),
-        retailESAContractEndDate: getValues("retailESAContractEndDate"),
-        retailESAContractDuration: getValues("retailESAContractDuration") || "",
-        portfolioAssignment: getValues("portfolioAssignment"),
-        optForUp: getValues("optGreen")?"Active":"Inactive",
-        optForExcess: getValues("optContract")?"Active":"Inactive",
-        feeder: getValues("feeder"),
-        allocateEnergyAmount: allowcatedEnergyList,
-        fileUploadContract: allowcatedExcelFileList,
-        //Beneficiary Information
-        beneficiaryInfo:benefitList,
-        //Attach File
-        fileUpload:fileList,
-        note:getValues("note"),
-        subscriberRemark:RefRemark.current,
-        fileUploadSubscriberContractHistoryLog:structrueSend,
-        subscriberContractHistoryLog:{action:"Edit",createBy: (userDetail.firstName+" "+userDetail.lastName)}
-
-      };
-      console.log(param)
-      dispatch(
-        FunctionEditSubscriber(param, details?.subscriberDetail?.subscriberId, () => {
-          if (isError === false) {
-            
-            console.log("Create Form 1 success")
-          // setIsOpenLoading(false);
-            hideLoading();
-            setShowMadalCreateRemark(false);
-            setShowModalComplete(true);}
-          else{
-            console.log("Create form 1 error")
-            hideLoading();
-            setIsShowFailError(true)
-            setShowMadalCreateRemark(false);
-            setMessageFailModal(errorMessage)
-          }
-          // setIsOpenLoading(false);
-          //hideLoading();
-          //setShowModalComplete(true);
-        })
-      );
-        //const binaryString = atob(base64Content);
-        //const binaryLength = binaryString.length;
-        //const bytes = new Uint8Array(binaryLength);
-
-        //for (let i = 0; i < binaryLength; i++) {
-        //bytes[i] = binaryString.charCodeAt(i);
-        //}
-
-        //const blob = new Blob([bytes], { type: "application/pdf" });
-        //const link = document.createElement("a");
-        //link.href = URL.createObjectURL(blob);
-        //link.download = "TestGeneratePDF.pdf";
-        //link.click();
-        //URL.revokeObjectURL(link.href);
-      // คุณสามารถใช้ base64 string ได้ตามต้องการ เช่น ส่งไปเซิร์ฟเวอร์หรือใช้ใน client
-      return structrueSend
-    });
-    setDefaultShow(false)
-    setIsShowSnap(false)
-  },500)
-};
-
-const createPdfPDFForm2 = () => {
-  setDefaultShow(true)
-  setIsShowSnap(true)
-  setTimeout(()=>{
-    // เลือก DOM element ที่ต้องการแปลงเป็น PDF
-  const element = contentRef.current//document.getElementById('pdf-content');
-
-  // กำหนดตัวเลือกสำหรับ html2pdf
-  const options = {
-    margin: 0,
-    filename: 'webscreen.pdf',
-    image: { type: 'jpeg', quality: 50 },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
-    html2canvas: { scale: 2}, // เพิ่ม scale เพื่อเพิ่มความละเอียด
-    jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait'},
-  };
-
-  // สร้าง PDF ด้วย html2pdf และดึง base64 string
-  html2pdf()
-    .from(element)
-    .set(options)
-    .outputPdf('datauristring') // ดึงข้อมูลออกมาเป็น Base64 string
-    .then((pdfBase64) => {
-      console.log(pdfBase64); // แสดง base64 string ใน console
-      const base64Content = pdfBase64.split(",")[1];
-      const now = new Date();
-      const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
-      const structrueSend =[{
-        id:0,
-        guid:"",
-        name: formattedDateTime+".pdf",
-        binary: base64Content,
-        type: "application/pdf"
-      }]
-      console.log(userDetail)
-      const param = {
-        subscriberId: details?.subscriberDetail?.subscriberId,
-        subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
-        ugtGroupId: currentUGTGroup?.id,
-        subscriberTypeId: 2,
-        assignedUtilityId: details?.subscriberDetail.assignedUtilityId,
-        //tradeAccount: formData.tradeAccount,
-        name: getValues("name"),
-        tradeAccount:getValues("tradeAccount"),
-        tradeAccountCode:getValues("tradeAccountCode"),
-        retailESAContractStartDate: getValues("retailESAContractStartDate"),
-        retailESAContractEndDate: getValues("retailESAContractEndDate"),
-        retailESAContractDuration: getValues("retailESAContractDuration") || "",
-        portfolioAssignment: getValues("portfolioAssignment"),
-        optForUp: getValues("optGreen")?"Active":"Inactive",
-        optForExcess: getValues("optContract")?"Active":"Inactive",
-        subscribersFilePdf:fileListPDF,
-        subscribersFileXls:fileListExcel,
-        note:getValues("note"),
-        subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
-        //aggregateAllocatedEnergy: parseInt(formData.aggregateAllocatedEnergy),
-        allocateEnergyAmount: allowcatedEnergyList,
-        fileUploadContract: allowcatedExcelFileList,
-        subscriberRemark:RefRemark.current,
-        fileUploadSubscriberContractHistoryLog:structrueSend,
-        subscriberContractHistoryLog:{action:"Edit",createBy: (userDetail.firstName+" "+userDetail.lastName)}
-      };
-      dispatch(
-        FunctioneditAggregateSubscriber(
-          param,
-          details?.subscriberDetail?.subscriberId,
-          () => {
-            if (isError === false) {
-              console.log("Create form 2 success")
-              // setIsOpenLoading(false);
-                hideLoading();
-                setShowMadalCreateRemark(false);
-                setShowModalComplete(true);}
-              else{
-                console.log("Create form 2 error")
-                hideLoading();
-                setShowMadalCreateRemark(false);
-                setIsShowFailError(true)
-                setMessageFailModal(errorMessage)
-              }
-            // setIsOpenLoading(false);
-            //hideLoading();
-            //setShowModalComplete(true);
-          }
-        )
-      );
-        //const binaryString = atob(base64Content);
-        //const binaryLength = binaryString.length;
-        //const bytes = new Uint8Array(binaryLength);
-
-        //for (let i = 0; i < binaryLength; i++) {
-        //bytes[i] = binaryString.charCodeAt(i);
-        //}
-
-        //const blob = new Blob([bytes], { type: "application/pdf" });
-        //const link = document.createElement("a");
-        //link.href = URL.createObjectURL(blob);
-        //link.download = "TestGeneratePDF.pdf";
-        //link.click();
-        //URL.revokeObjectURL(link.href);
-      // คุณสามารถใช้ base64 string ได้ตามต้องการ เช่น ส่งไปเซิร์ฟเวอร์หรือใช้ใน client
-      return structrueSend
-    });
-    setDefaultShow(false)
-    setIsShowSnap(false)
-  },500)
-};
-
-const TestFile =()=>{
-  const structrueFile = createPdf();
-  setTimeout(()=>{
-    console.log("Structrue",structrueFile)
-  },1000)
-  
-}
-
-const onCloseModalError=()=>{
-  setDefaultShow(false)
-  setIsShowSnap(false)
+const onCloseModalComplete=()=>{
   dispatch(clearModal())
+  navigate(WEB_URL.SUBSCRIBER_INFO, {
+    state: { id: state?.code,contract: 0 },
+  })
 }
 
 
   return (
-    <div ref={contentRef} style={{ width: '100%', padding: '20px', background: '#f5f5f5' }}>
+    
       <div>
-        {isShownSnap === false?
         <div className="min-h-screen p-6 items-center justify-center">
           <div className="container max-w-screen-lg mx-auto">
             <div className="text-left flex flex-col gap-3">
@@ -2967,6 +2216,7 @@ const onCloseModalError=()=>{
                 className="flex w-full h-full"
                 padding="xl"
               >
+                
                 <div className="flex flex-col gap-3">
                 <div className="flex justify-between">
                 <div className="flex gap-3 items-center">
@@ -3071,7 +2321,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3081,6 +2330,7 @@ const onCloseModalError=()=>{
                                       label={"Trade Account Name"}
                                       error={errors.tradeAccount}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3092,7 +2342,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3102,6 +2351,7 @@ const onCloseModalError=()=>{
                                       label={"Trade Account Code"}
                                       error={errors.tradeAccountCode}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3114,7 +2364,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3124,6 +2373,7 @@ const onCloseModalError=()=>{
                                       label={"Redemption Account"}
                                       error={errors.redemptionAccount}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3136,7 +2386,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3146,6 +2395,7 @@ const onCloseModalError=()=>{
                                       label={"Redemption Account Code"}
                                       error={errors.redemptionAccountCode}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3268,7 +2518,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3278,6 +2527,7 @@ const onCloseModalError=()=>{
                                       label={"Organization Name"}
                                       error={errors.organizationName}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3289,7 +2539,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3299,6 +2548,7 @@ const onCloseModalError=()=>{
                                       label={"Business Registration No."}
                                       error={errors.businessRegistrationNo}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3310,7 +2560,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3320,6 +2569,7 @@ const onCloseModalError=()=>{
                                       label={"Address"}
                                       error={errors.address}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3344,7 +2594,7 @@ const onCloseModalError=()=>{
                                       validate={" *"}
                                       onChangeInput={onChangeProvince}
                                       error={errors.stateCode}
-
+                                      disable={true}
                                       // ... other props
                                     />
                                   )}
@@ -3369,7 +2619,7 @@ const onCloseModalError=()=>{
                                       error={errors.districtCode}
                                       validate={" *"}
                                       onChangeInput={onChangeDistrict}
-
+                                      disable={true}
                                       // ... other props
                                     />
                                   )}
@@ -3395,7 +2645,7 @@ const onCloseModalError=()=>{
                                       validate={" *"}
                                       error={errors.subdistrictCode}
                                       onChangeInput={onChangeSubDistrict}
-
+                                      disable={true}
                                       // ... other props
                                     />
                                   )}
@@ -3419,7 +2669,7 @@ const onCloseModalError=()=>{
                                       onChangeInput={onChangeCountry}
                                       disable
                                       validate={" *"}
-
+                                      
                                       // ... other props
                                     />
                                   )}
@@ -3444,7 +2694,7 @@ const onCloseModalError=()=>{
                                       validate={" *"}
                                       onChangeInput={onChangePostCode}
                                       error={errors.postCode}
-
+                                      disable={true}
                                       // ... other props
                                     />
                                   )}
@@ -3488,6 +2738,7 @@ const onCloseModalError=()=>{
                                       label={"Title"}
                                       validate={" *"}
                                       error={errors.title}
+                                      disable={true}
                                       // ... other props
                                     />
                                   )}
@@ -3499,7 +2750,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3509,6 +2759,7 @@ const onCloseModalError=()=>{
                                       label={"Name"}
                                       error={errors.name}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3520,7 +2771,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3530,6 +2780,7 @@ const onCloseModalError=()=>{
                                       label={"Lastname"}
                                       error={errors.lastname}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3541,11 +2792,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
-                                    pattern: {
-                                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                      message: "Invalid email format"
-                                    }
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3555,6 +2801,7 @@ const onCloseModalError=()=>{
                                       label={"Email"}
                                       error={errors.email}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3566,7 +2813,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3576,6 +2822,7 @@ const onCloseModalError=()=>{
                                       label={"Telephone (Mobile)"}
                                       error={errors.mobilePhone}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3587,7 +2834,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3597,6 +2843,7 @@ const onCloseModalError=()=>{
                                       label={"Telephone (Office)"}
                                       error={errors.officePhone}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3609,7 +2856,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3619,6 +2865,7 @@ const onCloseModalError=()=>{
                                       label={"Attorney / Attorney-in-fact"}
                                       error={errors.attorney}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -3894,7 +3141,6 @@ const onCloseModalError=()=>{
                                     {
                                       label: "Import File",
                                       onClick: addExcelfile,
-                                      disabled: true
                                     },
                                     {
                                       label: "Create New",
@@ -3929,7 +3175,7 @@ const onCloseModalError=()=>{
                                 <>
                                   <div className="flex flex-col ml-2 col-span-6">
                                     <label className="mt-3 text-[#6B7280] text-xs">
-                                      Contracted Allocated Energy (kWh)
+                                      Total Contracted Energy (kWh)
                                     </label>
                                     <span className="">
                                       <div className="break-words	font-bold">
@@ -4031,8 +3277,8 @@ const onCloseModalError=()=>{
                                 </div>
                               )):
                               <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
-                                <label className="text-gray-400">There is no data to display.</label>
-                              </div>}
+                              <label className="text-gray-400">There is no data to display.</label>
+                            </div>}
                               {allowcatedEnergyList?.length == 0 && (
                                 <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
                                   <div>
@@ -4509,7 +3755,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -4519,6 +3764,7 @@ const onCloseModalError=()=>{
                                       label={"Name"}
                                       error={errors.name}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -4530,7 +3776,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -4540,6 +3785,7 @@ const onCloseModalError=()=>{
                                       label={"Trade Account"}
                                       error={errors.tradeAccount}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -4551,7 +3797,6 @@ const onCloseModalError=()=>{
                                   control={control}
                                   rules={{
                                     required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -4561,6 +3806,7 @@ const onCloseModalError=()=>{
                                       label={"Trade Account Code"}
                                       error={errors.tradeAccountCode}
                                       validate={" *"}
+                                      disabled
                                       // ... other props
                                     />
                                   )}
@@ -4775,7 +4021,6 @@ const onCloseModalError=()=>{
                                     {
                                       label: "Import File",
                                       onClick: addExcelfile,
-                                      disabled: true
                                     },
                                     {
                                       label: "Create New",
@@ -4921,183 +4166,7 @@ const onCloseModalError=()=>{
                           </div>
                         </div>
                       </Card>
-                      {/*<Card
-                        shadow="md"
-                        radius="lg"
-                        className="flex w-full h-full"
-                        padding="xl"
-                      >
-                        <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                          <div className="lg:col-span-2">
-                            <div className="grid gap-2 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                              <div className="md:col-span-6">
-                                <h6 className="text-PRIMARY_TEXT font-semibold">
-                                  Contract Information
-                                </h6>
-                              </div>
-                              <div className="flex justify-between ml-2 md:col-span-6">
-                                <div>
-                                  <strong>
-                                    Allocated Energy Amount
-                                    <span className="text-red-500">*</span>
-                                  </strong>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={addAllowcated}
-                                  className="flex items-center w-30 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
-                                >
-                                  <img
-                                    src={plus}
-                                    alt="React Logo"
-                                    width={20}
-                                    height={20}
-                                    className={"text-white mr-2"}
-                                  />
-                                  <p className="m-0">Add Allocation</p>
-                                </button>
-                              </div>
-                              {allowcatedEnergyList?.length > 0 && (
-                                <>
-                                  <div className="flex flex-col ml-2 col-span-6">
-                                    <label className="mt-3 text-[#6B7280] text-xs">
-                                      Total Allocated Energy (kWh)
-                                    </label>
-                                    <span className="">
-                                      <div className="break-words	font-bold">
-                                        {numeral(
-                                          sumAllAllocatedEnergyList(
-                                            allowcatedEnergyList
-                                          )
-                                        ).format("0,0.00")}
-                                      </div>
-                                    </span>
-                                  </div>
-                                  <div className="grid grid-cols-3 text-center mt-4 md:col-span-6 text-GRAY_BUTTON font-semibold">
-                                    <div>
-                                      <p>Year</p>
-                                    </div>
-                                    <div>
-                                      <p className="m-0 p-0">
-                                        Total Allocated Energy Amount (kWh)
-                                      </p>
-                                    </div>
-                                    <div></div>
-                                  </div>
-                                </>
-                              )}
-
-                              {allowcatedEnergyList?.map((item, index) => (
-                                <div key={index} className="px-4 md:col-span-6">
-                                  <Collaps
-                                    onClickEditBtn={() => {
-                                      onClickEditBtn(item, index);
-                                    }}
-                                    title={item.year}
-                                    total={sumAllocatedEnergyAmount(
-                                      item
-                                    ).toLocaleString(undefined, {
-                                      minimumFractionDigits: 2,
-                                    })}
-                                    onClickDeleteBtn={() =>
-                                      onClickDeleteBtn(item)
-                                    }
-                                  >
-                                    <div className="grid grid-cols-3 text-center">
-                                      <div>
-                                        <p className="text-GRAY_BUTTON">Month</p>
-                                        <hr />
-                                        <p>JAN</p>
-                                        <p>FEB</p>
-                                        <p>MAR</p>
-                                        <p>APR</p>
-                                        <p>MAY</p>
-                                        <p>JUN</p>
-                                        <p>JUL</p>
-                                        <p>AUG</p>
-                                        <p>SEP</p>
-                                        <p>OCT</p>
-                                        <p>NOV</p>
-                                        <p>DEC</p>
-                                      </div>
-                                      <div>
-                                        <p className="text-GRAY_BUTTON">
-                                          Allocated Energy amount (kWh)
-                                        </p>
-                                        <hr />
-                                        <p>
-                                          {numeral(item.amount01).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount02).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount03).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount04).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount05).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount06).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount07).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount08).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount09).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount10).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount11).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                        <p>
-                                          {numeral(item.amount12).format(
-                                            "0,0.00"
-                                          )}
-                                        </p>
-                                      </div>
-                                      <div>
-                                        <hr style={{ "margin-top": "2.25rem" }} />
-                                      </div>
-                                    </div>
-                                  </Collaps>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </Card>*/}
-
+                     
                       {/*Documents Information Attachments*/}                 
                       <Card 
                             shadow="md"
@@ -5248,1516 +4317,7 @@ const onCloseModalError=()=>{
               </div>
             </div>
           </div>
-        </div>:
-        <div className="min-h-screen p-6 items-center justify-center">
-        <div className="container max-w-screen-lg mx-auto">
-          <div className="text-left flex flex-col gap-3">
-            <div>
-              <h2 className="font-semibold text-xl text-black">
-                {details?.subscriberDetail?.organizationName !== ""
-                  ? details?.subscriberDetail?.organizationName
-                  : details?.subscriberDetail?.name}
-              </h2>
-              <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                {currentUGTGroup?.name} / Subscriber Management / Subscriber
-                Info /{" "}
-                <span className="truncate">
-                  {details?.subscriberDetail?.organizationName !== ""
-                    ? details?.subscriberDetail?.organizationName
-                    : details?.subscriberDetail?.name}
-                </span>
-              </p>
-            </div>
-            
-            <Card
-              shadow="md"
-              radius="lg"
-              className="flex w-full h-full"
-              padding="xl"
-            >
-              <div className="flex flex-col gap-3">
-                <div className="flex justify-between">
-                <div className="flex gap-3 items-center">
-                  <FaChevronCircleLeft
-                    className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
-                    size="30"
-                    onClick={() => navigate(WEB_URL.SUBSCRIBER_INFO, {
-                      state: { id: state?.code,contract: state?.contract },
-                    })
-                  }
-                  />
-                  <p className="mb-0 font-semibold text-15 text-md">
-                    Subscribers Info <span style={{ color: "red" }}>*</span>
-                  </p>
-                </div>
-                <div><label className="text-xs text-red-500">* Requried field</label></div>
-                </div>
-                  <hr/>
-                  <div className="flex flex-col gap-3">
-              <div>
-                  <label className="font-bold text-base">Subscriber Type</label><label className="text-red-600 ml-1 text-sm font-bold">*</label>
-                </div>
-                <div>
-                    {details?.subscriberDetail?.subscriberTypeId == 1 && (
-                      <button
-                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
-                          isActiveForm1
-                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
-                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
-                        }`}
-                        onClick={handleClickForm1}
-                      >
-                        Subscriber
-                      </button>
-                    )}
-                    {details?.subscriberDetail?.subscriberTypeId == 2 && (
-                      <button
-                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
-                          isActiveForm2
-                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
-                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
-                        }`}
-                        onClick={handleClickForm2}
-                      >
-                        Aggregate Subscriber
-                      </button>
-                    )}
-                  </div>
-              </div>
-                </div>
-            </Card>
-
-            <div>
-              {isActiveForm1 && (
-                <form>
-                  <div className="flex flex-col gap-3">
-                    {/* General Information */}
-                    <Card
-                      shadow="md"
-                      radius="lg"
-                      className="flex w-full h-full overflow-visible"
-                      padding="xl"
-                    >
-                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                        <div className="lg:col-span-2">
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                            <div className="md:col-span-6">
-                              <h6 className="text-PRIMARY_TEXT font-semibold">
-                                General Information
-                              </h6>
-                            </div>
-                            <div className="md:col-span-3">
-                              <div className="w-full">
-                                <label>
-                                  <b>Assigned Utility</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("assignUtil")?.name}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3">
-                            </div>
-
-                            <div className="md:col-span-3">
-                              <div className="w-full">
-                                <label>
-                                  <b>Trade Account Name</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("tradeAccount")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3">
-                            <div className="w-full">
-                                <label>
-                                  <b>Trade Account Code</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("tradeAccountCode")}</label>
-                              </div>
-                            </div>
-
-                            <div className="md:col-span-3">
-                              <div className="w-full">
-                                <label>
-                                  <b>Redemption Account</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("redemptionAccount")}</label>
-                              </div>
-                            </div>
-
-                            <div className="md:col-span-3">
-                              <div className="w-full">
-                                <label>
-                                  <b>Redemption Account Code</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("redemptionAccountCode")}</label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-
-                    {/* Organization Information */}
-                    <Card
-                      shadow="md"
-                      radius="lg"
-                      className="flex w-full h-full overflow-visible"
-                      padding="xl"
-                    >
-                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                        <div className="lg:col-span-2">
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                            <div className="md:col-span-6">
-                              <h6 className="text-PRIMARY_TEXT font-semibold">
-                                Organization Information
-                              </h6>
-                            </div>
-                            <div className="md:col-span-6">
-                              <div className="w-full">
-                                <label>
-                                  <b>Organization Name</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("organizationName")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-6">
-                              <div className="w-full">
-                                <label>
-                                  <b>Business Registration No.</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("businessRegistrationNo")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-6">
-                            <div className="w-full">
-                                <label>
-                                  <b>Address</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("address")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>State / Province</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("stateCode")?.provinceNameEn}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>District</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("districtCode")?.districtNameEn}</label>
-                              </div>
-                            </div>
-
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Subdistrict</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("subdistrictCode")?.subdistrictNameEn}</label>
-                              </div>
-                            </div>
-
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Country</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("countryCode")?.name}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Postcode</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("postCode")?.postCodeDisplay}</label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-
-                    {/* Personal Information */}
-                    <Card
-                      shadow="md"
-                      radius="lg"
-                      className="flex w-full h-full overflow-visible"
-                      padding="xl"
-                    >
-                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                        <div className="lg:col-span-2">
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                            <div className="md:col-span-6">
-                              <h6 className="text-PRIMARY_TEXT font-semibold">
-                                Personal Information
-                              </h6>
-                            </div>
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Title</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("title")?.name}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Name</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("name")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Lastname</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("lastname")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Email</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("email")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Telephone (Mobile)</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("mobilePhone")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-2">
-                              <div className="w-full">
-                                <label>
-                                  <b>Telephone (Office)</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("officePhone")}</label>
-                              </div>
-                            </div>
-
-                            <div className="md:col-span-6">
-                              <div className="w-full">
-                                <label>
-                                  <b>Attorney / Attorney-in-fact</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("attorney")}</label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-
-                    {/* Contract Information */}
-                    <Card
-                      shadow="md"
-                      radius="lg"
-                      className="flex w-full h-full overflow-visible"
-                      padding="xl"
-                    >
-                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                        <div className="lg:col-span-2">
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                            <div className="md:col-span-6 mb-4">
-                              <h6 className="text-PRIMARY_TEXT font-semibold">
-                                Contract Information
-                              </h6>
-                            </div>
-                            <div className="md:col-span-3 ml-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Retail ESA No.</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("retailESANo")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3 ml-2">
-                              <div className="w-full">
-                                <label>
-                                  <b>Retail ESA Contract Start Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("retailESAContractStartDate")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3 ml-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Retail ESA Contract End Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("retailESAContractEndDate")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3 ml-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Retail ESA Contract Duration</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("retailESAContractDuration")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3 ml-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Portfolio Assignment</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("portfolioAssignment")}</label>
-                              </div>
-                            </div>
-
-
-                            <div className="flex justify-between mt-2 ml-2 md:col-span-6">
-                              <div>
-                                <strong>
-                                  Feeder Name{" "}
-                                  <span className="text-red-500">*</span>
-                                </strong>
-                              </div>
-                              <button
-                                onClick={addInput}
-                                type="button"
-                                className="flex items-center w-30 rounded h-10 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
-                              >
-                                <img
-                                  src={plus}
-                                  alt="React Logo"
-                                  width={20}
-                                  height={20}
-                                  className={"text-white mr-2"}
-                                />
-                                <p className="m-0">Add Feeder</p>
-                              </button>
-                            </div>
-                            <div className="mt-3 mb-4 md:col-span-6">
-                              {fields?.map((item, index) => (
-                                <div
-                                  key={item.id}
-                                  className="flex items-center mb-1"
-                                >
-                                  <div className="flex-grow">
-                                  <label>{getValues("feeder")[index].feederName}</label>
-                                    
-                                  </div>
-                                  
-                                </div>
-                              ))}
-                            </div>
-
-                            {/*Check Box*/}
-                            <div className="mt-3 ml-2 mb-4 md:col-span-6">
-                              <div className="font-bold col-span-3">Additional Contract Condition</div>
-                              <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-
-                              <div className="mt-2">
-                              <Controller
-                                name="optGreen"
-                                control={control}
-                                
-                                render={({ field }) => (
-                                  <CheckBox
-                                    {...field}
-                                    id={"optGreen"}
-                                    type={"checkbox"}
-                                    label={"Opt for up to 15% green electricity from UGT1"}
-                                    error={errors.optGreen}
-                                    validate={" *"}
-                                    value={field.value === undefined?false:field.value}
-                                  />
-                                )}
-                              />
-                              </div>
-                              <div className="mt-2">
-                              <Controller
-                                name="optContract"
-                                control={control}
-                                
-                                render={({ field }) => (
-                                  <CheckBox
-                                    {...field}
-                                    id={"optContract"}
-                                    type={"checkbox"}
-                                    label={"Opt for excess UGT beyond contract"}
-                                    error={errors.optContract}
-                                    validate={" *"}
-                                    value={field.value === undefined?false:field.value}
-                                    
-                                  />
-                                )}
-                              />
-                              </div>
-                              </div>
-                              
-                            </div>
-
-                            <div className="flex justify-between ml-2 md:col-span-6">
-                              <div>
-                                <strong>
-                                Contracted Energy Amount
-                                  <span className="text-red-500"> *</span>
-                                </strong>
-                              </div>
-                              {/*<button
-                                type="button"
-                                onClick={addAllowcated}
-                                className="flex items-center w-30 rounded h-10 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
-                              >
-                                <img
-                                  src={plus}
-                                  alt="React Logo"
-                                  width={20}
-                                  height={20}
-                                  className={"text-white mr-2"}
-                                />
-                                <p className="m-0">Add Allocation</p>
-                              </button>*/}
-                              <AddContract
-                                actionList={[
-                                  {
-                                    label: "Import File",
-                                    onClick: addExcelfile,
-                                  },
-                                  {
-                                    label: "Create New",
-                                    onClick: addAllowcated,
-                                  },
-                                ]}
-                              />
-                            </div>
-                            {allowcatedEnergyList?.length > 0 && (
-                              <>
-                                <div className="flex flex-col ml-2 col-span-6">
-                                  <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Allocated Energy (kWh)
-                                  </label>
-                                  <span className="">
-                                    <div className="break-words	font-bold">
-                                      {numeral(
-                                        sumAllAllocatedEnergyList(
-                                          allowcatedEnergyList
-                                        )
-                                      ).format("0,0.00")}
-                                    </div>
-                                  </span>
-                                </div>
-                                <div className="grid grid-cols-3 text-center mt-4 md:col-span-6 text-GRAY_BUTTON font-semibold">
-                                  <div>
-                                    <p>Year</p>
-                                  </div>
-                                  <div>
-                                    <p className="m-0 p-0">
-                                      Total Allocated Energy Amount (kWh)
-                                    </p>
-                                  </div>
-                                  <div></div>
-                                </div>
-                              </>
-                            )}
-
-                            {allowcatedEnergyList.map((item, index) => (
-                              <div
-                                key={index}
-                                className="px-4 md:col-span-6 text-sm"
-                              >
-                                <CollapsSubscriberEdit
-                                  onClickEditBtn={() => {
-                                    onClickEditBtn(item, index);
-                                  }}
-                                  title={item.year}
-                                  total={sumAllocatedEnergyAmount(
-                                    item
-                                  ).toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                  })}
-                                  onClickDeleteBtn={() => {
-                                    onClickDeleteBtn(item);
-                                  }}
-                                  isDefaultShow={isDefaultShow}
-                                >
-                                  <div className="grid grid-cols-3 text-center font-semibold">
-                                    <div>
-                                      <p className="text-GRAY_BUTTON">Month</p>
-                                      <hr />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>JAN</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02)}>FEB</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03)}>MAR</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04)}>APR</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05)}>MAY</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06)}>JUN</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07)}>JUL</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08)}>AUG</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09)}>SEP</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10)}>OCT</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11)}>NOV</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12)}>DEC</p>
-                                      
-                                    </div>
-                                    <div>
-                                      <p className="text-GRAY_BUTTON">
-                                        Allocated Energy amount (kWh)
-                                      </p>
-                                      <hr />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02)}>{item.amount02?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03)}>{item.amount03?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04)}>{item.amount04?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05)}>{item.amount05?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06)}>{item.amount06?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07)}>{item.amount07?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08)}>{item.amount08?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09)}>{item.amount09?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10)}>{item.amount10?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11)}>{item.amount11?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12)}>{item.amount12?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                    </div>
-                                    <div>
-                                    <hr style={{ "margin-top": "2.25rem" }} />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01,true)}>{getWarningAssign(item.year,1,item.amount01)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02,true)}>{getWarningAssign(item.year,2,item.amount02)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03,true)}>{getWarningAssign(item.year,3,item.amount03)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04,true)}>{getWarningAssign(item.year,4,item.amount04)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05,true)}>{getWarningAssign(item.year,5,item.amount05)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06,true)}>{getWarningAssign(item.year,6,item.amount06)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07,true)}>{getWarningAssign(item.year,7,item.amount07)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08,true)}>{getWarningAssign(item.year,8,item.amount08)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09,true)}>{getWarningAssign(item.year,9,item.amount09)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10,true)}>{getWarningAssign(item.year,10,item.amount10)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11,true)}>{getWarningAssign(item.year,11,item.amount11)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12,true)}>{getWarningAssign(item.year,12,item.amount12)}</p>
-                                    </div>
-                                  </div>
-                                </CollapsSubscriberEdit>
-                              </div>
-                            ))}
-                            {allowcatedEnergyList?.length == 0 && (
-                              <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                <div>
-                                  <h6 className="text-red-500 font-semibold">
-                                    This field is required
-                                  </h6>
-                                </div>
-                              </div>
-                            )}
-                            
-                          </div>
-                          {allowcatedExcelFileList.length !== 0?
-                              <div className="grow bg-lime-200 mt-2 w-full p-2">
-                                <div className="flex justify-content items-center">
-                                    <div className="mr-8">
-                                    </div>
-                                      <label className="text-sm font-normal">
-                                        Download Import File : 
-                                      </label>
-                                      <div>
-                                      <label style={{ cursor: 'pointer', color: 'blue' }} className="text-sm font-normal ml-1" onClick={()=>downloadFile(allowcatedExcelFileList[0])}>
-                                      {allowcatedExcelFileList[0].name}
-                                      </label>
-                                    </div>
-                                </div>
-                              </div>:undefined}
-                        </div>
-                      </div>
-                    </Card>
-
-                    {/* Beneficiary Information*/}
-                    <Card
-                      shadow="md"
-                      radius="lg"
-                      className="flex w-full h-full overflow-visible"
-                      padding="xl"
-                    >
-                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                        <div className="lg:col-span-2">
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                            <div className="md:col-span-6 flex justify-between">
-                              <div>
-                                <h6 className="text-PRIMARY_TEXT font-semibold">
-                                  Beneficiary Information
-                                </h6>
-                              </div>
-                              <div>
-                                <div className="flex items-center">
-                                  <div className="col-span-2 px-2 border-2 mr-2 rounded-[10px]">
-                                  <label>{getValues("statusFilter")?.statusName}</label>
-                                  </div>
-                                  <div>
-                                    <button
-                                  onClick={addBeneficiary}
-                                  type="button"
-                                  className="flex items-center w-30 rounded h-10 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
-                                >
-                                  <img
-                                    src={plus}
-                                    alt="React Logo"
-                                    width={20}
-                                    height={20}
-                                    className={"text-white mr-2"}
-                                  />
-                                  <p className="m-0">Add Beneficiary</p>
-                                </button>
-                                  </div>
-                                </div>
-
-                                
-                              </div>
-                            </div>
-
-                            <div className="mt-3 mb-4 md:col-span-6">
-                            {benefitList.map((item, index) => (
-                              statusFilterBene === "All"?
-                              <div
-                                key={index}
-                                className="px-4 md:col-span-6 text-sm"
-                              >
-                                <CollapsSubscriberEdit
-                                  onClickEditBtn={() => {
-                                    onClickEditBeneBtn(item, index);
-                                  }}
-                                  title={item.beneficiaryName}
-                                  total={item.status}
-                                  onClickDeleteBtn={() => {
-                                    onClickDeleteBeneBtn(item);
-                                  }}
-                                  isDefaultShow={isDefaultShow}
-                                  isShowDelete={item.id === 0 ?true:false}
-                                >
-                                  <div className="pt-4 px-4 pb-2">
-                                    <form className="text-sm">
-                                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                                        <div className="lg:col-span-2">
-                                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                                            {/*Input Data*/}
-                                            <div className="md:col-span-3">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Name</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.beneficiaryName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-3">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Address</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.address}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>State / Province</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.proviceName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>District</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.districtName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Subdistrict</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.subdistrictName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Country</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.countryName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Postcode</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.postcode}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Status</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.status}</label>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>  
-                                    </form>
-                                  </div>
-                                </CollapsSubscriberEdit>
-                              </div>:
-                              item.status === statusFilterBene ?
-                              <div
-                              key={index}
-                              className="px-4 md:col-span-6 text-sm"
-                            >
-                              <CollapsSubscriberEdit
-                                onClickEditBtn={() => {
-                                  onClickEditBeneBtn(item, index);
-                                }}
-                                title={item.beneficiaryName}
-                                total={item.status}
-                                onClickDeleteBtn={() => {
-                                  onClickDeleteBeneBtn(item);
-                                }}
-                                isDefaultShow={isDefaultShow}
-                                isShowDelete={item.id === 0 ?true:false}
-                              >
-                                <form className="text-sm">
-                                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                                        <div className="lg:col-span-2">
-                                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                                            {/*Input Data*/}
-                                            <div className="md:col-span-3">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Name</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.beneficiaryName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-3">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Address</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.address}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>State / Province</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.proviceName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>District</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.districtName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Subdistrict</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.subdistrictName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Country</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.countryName}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Postcode</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.postcode}</label>
-                                              </div>
-                                            </div>
-                                            <div className="md:col-span-2">
-                                            <div className="w-full">
-                                                <label>
-                                                  <b>Status</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                                </label>
-                                              </div>
-                                              <div className="mt-2 w-full">
-                                                <label>{item.status}</label>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>  
-                                    </form>
-                              </CollapsSubscriberEdit>
-                            </div>:undefined
-                            ))}
-                              {isBeneficiary && (
-                              <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                <div>
-                                  <h6 className="text-red-500 font-semibold">
-                                    * This field is required.
-                                  </h6>
-                                </div>
-                              </div>
-                            )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-
-                    {/*Documents Information Attachments */}
-                    <Card 
-                          shadow="md"
-                          radius="lg"
-                          className="flex w-full h-full overflow-visible"
-                          padding="xl">
-                          <div className="md:col-span-6 mt-4">
-                            <h6 className="text-PRIMARY_TEXT">
-                              <b>Documents Information Attachments</b>
-                            </h6>
-                          </div>
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
-                              <div className="md:col-span-3">
-                                <Controller
-                                  name="uploadFile"
-                                  control={control}
-                                  
-                                  render={({ field }) => (
-                                    <UploadFileSubscriberEdit
-                                      {...field}
-                                      id={"uploadFile"}
-                                      type={"file"}
-                                      multiple
-                                      label={"File upload"}
-                                      defaultValue={details?.fileUpload}
-                                      onChngeInput={(id, res) => {
-                                        handleUploadfile(id, res);
-                                      }}
-                                      onDeleteFile={(id, evidentFileID, fileName) => {
-                                        handleDeleteFile(id, evidentFileID, fileName);
-                                      }}
-                                      onClickFile={(item) => {
-                                        handleClickDownloadFile(item);
-                                      }}
-                                      error={errors.uploadFile}
-                                      validate={" *"}
-                                      // ... other props
-                                    />
-                                  )}
-                                />
-                              </div>
-                              <div className="md:col-span-3">
-                              <div className="w-full">
-                                <label>
-                                  <b>Note</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("note")}</label>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="mt-3 mb-4 md:col-span-3"></div>
-                    </Card>
-                    {/* submit button */}
-                    {/*<div className="text-center my-5">
-                      <button
-                        onClick={handleSubmit(onSubmitForm1New)}
-                        className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
-                      >
-                        <b>Save</b>
-                      </button>
-                    </div>*/}
-                   
-                    {/*Remark */}
-                    {details?.subscriberRemark && <Card>
-                      <div className="md:col-span-6">
-                          
-                            <hr className="mt-3 mb-3"/>
-                            {details?.subscriberRemark &&
-                            details?.subscriberRemark.map((items,index)=>(
-                              <div key={items.id} className="bg-[#F5F5F5] px-5 py-4 mb-3 rounded-[10px]">
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <label className="text-black font-bold text-lg">{items.remarkName}</label>
-                                  </div>
-                                  <div>
-                                    <label className="text-sm">{"Date: "+getDate(items.createdDateTime)+" | Time: "+getTime(items.createdDateTime)}</label>
-                                  </div>
-                                </div>
-                                <hr className="mt-0"/>
-                                <div>
-                                  <label className="mt-2 font-medium text-base">{items.remarkDetail}</label>
-                                </div>
-                                <div className="mt-3 text-right">
-                                  <label className="text-sm">{"By "+items.createdBy}</label>
-                                </div>
-                              </div>
-                            ))}
-                    </div>
-                    </Card>}
-                    
-
-                    
-                  </div>
-                </form>
-              )}
-
-              {isActiveForm2 && (
-                <form onSubmit={handleSubmit(onSubmitForm2New)}>
-                  <div className="flex flex-col gap-3">
-                    {/* General Information */}
-                    <Card
-                      shadow="md"
-                      radius="lg"
-                      className="flex w-full h-full overflow-visible"
-                      padding="xl"
-                    >
-                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                        <div className="lg:col-span-2">
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                            <div className="md:col-span-6">
-                              <h6 className="text-PRIMARY_TEXT font-semibold">
-                                General Information
-                              </h6>
-                            </div>
-                            <div className="md:col-span-3">
-                            <div className="w-full">
-                                <label>
-                                  <b>Assigned Utility</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("assignUtil")?.name}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3">
-                            <div className="w-full">
-                                <label>
-                                  <b>Name</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("name")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3">
-                            <div className="w-full">
-                                <label>
-                                  <b>Trade Account Name</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("tradeAccount")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3">
-                            <div className="w-full">
-                                <label>
-                                  <b>Trade Account Code</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("tradeAccountCode")}</label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
-
-                    {/* Subscription Information */}
-                    <Card
-                      shadow="md"
-                      radius="lg"
-                      className="flex w-full h-full overflow-visible"
-                      padding="xl"
-                    >
-                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-                        <div className="lg:col-span-2">
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                            <div className="md:col-span-6 mb-4">
-                              <h6 className="text-PRIMARY_TEXT font-semibold">
-                                Contract Information
-                              </h6>
-                            </div>
-                            
-                            <div className="md:col-span-3 ml-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Retail ESA Contract Start Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("retailESAContractStartDate")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3 ml-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Retail ESA Contract End Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("retailESAContractEndDate")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3 ml-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Retail ESA Contract Duration</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("retailESAContractDuration")}</label>
-                              </div>
-                            </div>
-                            <div className="md:col-span-3 ml-2">
-                            <div className="w-full">
-                                <label>
-                                  <b>Portfolio Assignment</b><b className="text-[#f94a4a] ml-[5px]">*</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("portfolioAssignment")}</label>
-                              </div>
-                            </div>
-
-                            {/*Check Box*/}
-                            <div className="mt-3 ml-2 mb-4 md:col-span-6">
-                              <div className="font-bold col-span-3">Additional Contract Condition</div>
-                              <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-
-                              <div className="mt-2">
-                              <Controller
-                                name="optGreen"
-                                control={control}
-                                
-                                render={({ field }) => (
-                                  <CheckBox
-                                    {...field}
-                                    id={"optGreen"}
-                                    type={"checkbox"}
-                                    label={"Opt for up to 15% green electricity from UGT1"}
-                                    error={errors.optGreen}
-                                    validate={" *"}
-                                    value={field.value === undefined?false:field.value}
-                                  />
-                                )}
-                              />
-                              </div>
-                              <div className="mt-2">
-                              <Controller
-                                name="optContract"
-                                control={control}
-                                
-                                render={({ field }) => (
-                                  <CheckBox
-                                    {...field}
-                                    id={"optContract"}
-                                    type={"checkbox"}
-                                    label={"Opt for excess UGT beyond contract"}
-                                    error={errors.optContract}
-                                    validate={" *"}
-                                    value={field.value === undefined?false:field.value}
-                                    
-                                  />
-                                )}
-                              />
-                              </div>
-                              </div> 
-                            </div>
-                            <div className="flex justify-between ml-2 md:col-span-6">
-                              <div>
-                                <strong>
-                                Contracted Energy Amount
-                                  <span className="text-red-500"> *</span>
-                                </strong>
-                              </div>
-                            
-                              <AddContract
-                                actionList={[
-                                  {
-                                    label: "Import File",
-                                    onClick: addExcelfile,
-                                  },
-                                  {
-                                    label: "Create New",
-                                    onClick: addAllowcated,
-                                  },
-                                ]}
-                              />
-                            </div>
-                            {allowcatedEnergyList?.length > 0 && (
-                              <>
-                                <div className="flex flex-col ml-2 col-span-6">
-                                  <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Allocated Energy (kWh)
-                                  </label>
-                                  <span className="">
-                                    <div className="break-words	font-bold">
-                                      {numeral(
-                                        sumAllAllocatedEnergyList(
-                                          allowcatedEnergyList
-                                        )
-                                      ).format("0,0.00")}
-                                    </div>
-                                  </span>
-                                </div>
-                                <div className="grid grid-cols-3 text-center mt-4 md:col-span-6 text-GRAY_BUTTON font-semibold">
-                                  <div>
-                                    <p>Year</p>
-                                  </div>
-                                  <div>
-                                    <p className="m-0 p-0">
-                                      Total Allocated Energy Amount (kWh)
-                                    </p>
-                                  </div>
-                                  <div></div>
-                                </div>
-                              </>
-                            )}
-
-                            {allowcatedEnergyList.map((item, index) => (
-                              <div
-                                key={index}
-                                className="px-4 md:col-span-6 text-sm"
-                              >
-                                <CollapsSubscriberEdit
-                                  onClickEditBtn={() => {
-                                    onClickEditBtn(item, index);
-                                  }}
-                                  title={item.year}
-                                  total={sumAllocatedEnergyAmount(
-                                    item
-                                  ).toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                  })}
-                                  onClickDeleteBtn={() => {
-                                    onClickDeleteBtn(item);
-                                  }}
-                                  isDefaultShow={isDefaultShow}
-                                >
-                                  <div className="grid grid-cols-3 text-center font-semibold">
-                                    <div>
-                                      <p className="text-GRAY_BUTTON">Month</p>
-                                      <hr />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>JAN</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02)}>FEB</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03)}>MAR</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04)}>APR</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05)}>MAY</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06)}>JUN</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07)}>JUL</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08)}>AUG</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09)}>SEP</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10)}>OCT</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11)}>NOV</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12)}>DEC</p>
-                                      
-                                    </div>
-                                    <div>
-                                      <p className="text-GRAY_BUTTON">
-                                        Allocated Energy amount (kWh)
-                                      </p>
-                                      <hr />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02)}>{item.amount02?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03)}>{item.amount03?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04)}>{item.amount04?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05)}>{item.amount05?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06)}>{item.amount06?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07)}>{item.amount07?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08)}>{item.amount08?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09)}>{item.amount09?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10)}>{item.amount10?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11)}>{item.amount11?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12)}>{item.amount12?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                    </div>
-                                    <div>
-                                    <hr style={{ "margin-top": "2.25rem" }} />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01,true)}>{getWarningAssign(item.year,1,item.amount01)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02,true)}>{getWarningAssign(item.year,2,item.amount02)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03,true)}>{getWarningAssign(item.year,3,item.amount03)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04,true)}>{getWarningAssign(item.year,4,item.amount04)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05,true)}>{getWarningAssign(item.year,5,item.amount05)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06,true)}>{getWarningAssign(item.year,6,item.amount06)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07,true)}>{getWarningAssign(item.year,7,item.amount07)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08,true)}>{getWarningAssign(item.year,8,item.amount08)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09,true)}>{getWarningAssign(item.year,9,item.amount09)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10,true)}>{getWarningAssign(item.year,10,item.amount10)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11,true)}>{getWarningAssign(item.year,11,item.amount11)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12,true)}>{getWarningAssign(item.year,12,item.amount12)}</p>
-                                    </div>
-                                  </div>
-                                </CollapsSubscriberEdit>
-                              </div>
-                            ))}
-                            {allowcatedEnergyList?.length == 0 && (
-                              <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                <div>
-                                  <h6 className="text-red-500 font-semibold">
-                                    This field is required
-                                  </h6>
-                                </div>
-                              </div>
-                            )}
-                            
-                          </div>
-                          {allowcatedExcelFileList.length !== 0?
-                              <div className="grow bg-lime-200 mt-2 w-full p-2">
-                                <div className="flex justify-content items-center">
-                                    <div className="mr-8">
-                                    </div>
-                                      <label className="text-sm font-normal">
-                                        Download Import File : 
-                                      </label>
-                                      <div>
-                                      <label style={{ cursor: 'pointer', color: 'blue' }} className="text-sm font-normal ml-1" onClick={()=>downloadFile(allowcatedExcelFileList[0])}>
-                                      {allowcatedExcelFileList[0].name}
-                                      </label>
-                                    </div>
-                                </div>
-                              </div>:undefined}
-                        </div>
-                      </div>
-                    </Card>
-
-                    {/*Documents Information Attachments*/}                 
-                    <Card 
-                          shadow="md"
-                          radius="lg"
-                          className="flex w-full h-full overflow-visible"
-                          padding="xl">
-                          <div className="md:col-span-6 mt-4">
-                            <h6 className="text-PRIMARY_TEXT">
-                              <b>Documents Information Attachments</b>
-                            </h6>
-                          </div>
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
-                              <div className="md:col-span-3">
-                                <div>
-                                <Controller
-                                  name="uploadFilePDF"
-                                  control={control}
-                                  rules={{
-                                    required: "This field is required",
-                                  }}
-                                  render={({ field }) => (
-                                    <UploadFileSubscriberEdit
-                                      {...field}
-                                      id={"uploadFilePDF"}
-                                      type={"file"}
-                                      multiple = {false}
-                                      accept = {".pdf"}
-                                      label={"หนังสือยืนยันหน่วย (.pdf)"}
-                                      defaultValue={details?.subscribersFilePdf}
-                                      disabled = {fileListPDF.length === 0?false:true}
-                                      onChngeInput={(id, res) => {
-                                        handleUploadfilePDF(id, res);
-                                      }}
-                                      onDeleteFile={(id, evidentFileID, fileName) => {
-                                        handleDeleteFilePDF(id, evidentFileID, fileName);
-                                      }}
-                                      onClickFile={(item) => {
-                                        handleClickDownloadFilePDF(item);
-                                      }}
-                                      error={errors.uploadFilePDF}
-                                      validate={" *"}
-                                      // ... other props
-                                    />
-                                  )}
-                                />
-                                </div>
-                                <div className="mt-5">
-                                <Controller
-                                  name="uploadFileExcel"
-                                  control={control}
-                                  rules={{
-                                    required: "This field is required",
-                                  }}
-                                  render={({ field }) => (
-                                    <UploadFileSubscriberEdit
-                                      {...field}
-                                      id={"uploadFileExcel"}
-                                      type={"file"}
-                                      multiple = {false}
-                                      accept = {".xls,.xlsx"}
-                                      defaultValue={details?.subscribersFileXls}
-                                      disabled = {fileListExcel.length === 0?false:true}
-                                      label={"ข้อมูลหน่วยแยกผู้รับ (blinded) in detail (.xls)"}
-                                      onChngeInput={(id, res) => {
-                                        handleUploadfileExcel(id, res);
-                                      }}
-                                      onDeleteFile={(id, evidentFileID, fileName) => {
-                                        handleDeleteFileExcel(id, evidentFileID, fileName);
-                                      }}
-                                      onClickFile={(item) => {
-                                        handleClickDownloadFileExcel(item);
-                                      }}
-                                      error={errors.uploadFileExcel}
-                                      validate={" *"}
-                                      // ... other props
-                                    />
-                                  )}
-                                />
-                                </div>
-                                
-                              </div>
-                              {/*Note */}
-                          <div className="md:col-span-3">
-                            <div className="w-full">
-                                <label>
-                                  <b>Note</b>
-                                </label>
-                              </div>
-                              <div className="mt-2 w-full">
-                                <label>{getValues("note")}</label>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="mt-3 mb-4 md:col-span-3"></div>
-                    </Card>
-                    {/* submit button */}
-                    {/*<div className="text-center my-5">
-                      <button
-                        onClick={handleSubmit(onSubmitForm2New)}
-                        className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
-                      >
-                        <b>Save</b>
-                      </button>
-                    </div>*/}
-
-                    {/*Remark */}
-                    {details?.subscriberRemark && <Card>
-                      <div className="md:col-span-6">
-                          
-                            <hr className="mt-3 mb-3"/>
-                            {details?.subscriberRemark &&
-                            details?.subscriberRemark.map((items,index)=>(
-                              <div key={items.id} className="bg-[#F5F5F5] px-5 py-4 mb-3 rounded-[10px]">
-                                <div className="flex justify-between items-center">
-                                  <div>
-                                    <label className="text-black font-bold text-lg">{items.remarkName}</label>
-                                  </div>
-                                  <div>
-                                    <label className="text-sm">{"Date: "+getDate(items.createdDateTime)+" | Time: "+getTime(items.createdDateTime)}</label>
-                                  </div>
-                                </div>
-                                <hr className="mt-0"/>
-                                <div>
-                                  <label className="mt-2 font-medium text-base">{items.remarkDetail}</label>
-                                </div>
-                                <div className="mt-3 text-right">
-                                  <label className="text-sm">{"By "+items.createdBy}</label>
-                                </div>
-                              </div>
-                            ))}
-                    </div>
-                    </Card>}
-
-                    
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
         </div>
-      </div>}
 
       {showModal && (
         <ModalSubAllocated
@@ -6768,18 +4328,15 @@ const onCloseModalError=()=>{
           allowcatedEnergyDataEdit={allowcatedEnergyDataEdit}
           editStatus={isEdit}
           listData={allowcatedEnergyList}
-          yearStart={yearStartDate1.current}
-          yearEnd={yearEndDate1.current}
         />
       )}
       {showModalCreate && (
         <ModalConfirmCheckBox
         onClickConfirmBtn={handleClickConfirm}
         onCloseModal={handleCloseModalConfirm}
-        title={"Save Changes this Subscriber?"}
-        content={"You confirm all changed information is completed with accuracy and conforms to the evidence(s) attached."}
-        content2={"By providing your consent, you agree to take full responsibility for any effects resulting from this modification. Would you like to save changes for this subscriber?"}
-        textCheckBox={"I consent and confirm the accuracy of the modifications and attached evidences."}
+        title={"Are you sure?"}
+        content={"Do you confirm to add Subscriber and active Beneficiary Account ?"}
+        textCheckBox={"I confirm ......"}
         sizeModal = {"md"}
       />
       )}
@@ -6834,10 +4391,10 @@ const onCloseModalError=()=>{
       )}
       {/*Modal Create Complete */}
       {isOpen && (
-        <ModalCompleteSubscriber
+        <ModalCompleteSubscriberButton
           title="Done!"
-          context="Edit Complete"
-          link={WEB_URL.SUBSCRIBER_LIST}
+          context="Renew Complete"
+          onclick={onCloseModalComplete}
         />
       )}
       {isOpenLoading && <ModelLoadPage></ModelLoadPage>}
@@ -6851,20 +4408,19 @@ const onCloseModalError=()=>{
         />
       )}
       {/*Madal Fail Save */}
-      {isError &&
-      (
+      {isError &&(
         <ModalFail
           onClickOk={() => {
-            onCloseModalError
+            dispatch(clearModal())
           }}
           content={errorMessage}
         />
       )}
       {isOpenLoading && <LoadPage></LoadPage>}
       </div>
-    </div>
+    
     
   );
 };
 
-export default UpdateSubscriber;
+export default RenewSubscriber;

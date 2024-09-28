@@ -173,22 +173,48 @@ const UploadFileSubscriber = (props) => {
     }
 
     const handleDownloadFile=(file)=>{
-        console.log(file)
-        const base64Content = file.binary//.split(",")[1];
-        const binaryString = atob(base64Content);
-        const binaryLength = binaryString.length;
-        const bytes = new Uint8Array(binaryLength);
+      if(file?.binary === undefined){
+          console.log(file)
+          const reader = new FileReader();
+          reader.onload = function(e) {
+          const arrayBuffer = e.target.result;
+          console.log('Binary data as ArrayBuffer:', arrayBuffer);
+          const base64Content = arrayBuffer.split(",")[1];
+          const binaryString = atob(base64Content);
+          const binaryLength = binaryString.length;
+          const bytes = new Uint8Array(binaryLength);
 
-        for (let i = 0; i < binaryLength; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-        }
+          for (let i = 0; i < binaryLength; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
 
-        const blob = new Blob([bytes], { type: file.type });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = file.name;
-        link.click();
-        URL.revokeObjectURL(link.href);
+          const blob = new Blob([bytes], { type: file.type });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = file.name;
+           link.click();
+          URL.revokeObjectURL(link.href);
+        };
+            //const base64Content = file.binary//.split(",")[1];
+          reader.readAsDataURL(file)
+      }
+      else{
+          const base64Content = file.binary//.split(",")[1];
+          const binaryString = atob(base64Content);
+          const binaryLength = binaryString.length;
+          const bytes = new Uint8Array(binaryLength);
+
+          for (let i = 0; i < binaryLength; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+
+          const blob = new Blob([bytes], { type: file.type });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = file.name;
+           link.click();
+          URL.revokeObjectURL(link.href);
+      }
     }
 
     return (
@@ -549,9 +575,26 @@ const UploadFileSubscriber = (props) => {
       remove();
     }
     if (status === "rejected_file_type") {
-      message.error(
-        "You can only upload jpeg, jpg, png, svg, pdf, doc, xls, docx, xlsx, pptx, txt and csv file!"
-      );
+      if(accept==="image/*, application/pdf, .doc, .docx, .xls, .xlsx, application/msword, .txt, .csv, .pptx , .ppt"){
+        message.error(
+          "You can only upload jpeg, jpg, png, svg, pdf, doc, xls, docx, xlsx, pptx, txt and csv file!"
+        );
+      }
+      else if(accept === "image/*"){
+        message.error(
+          "You can only upload jpeg, jpg, png, svg file!"
+        );
+      }
+      else if(accept==="application/pdf"){
+        message.error(
+          "You can only upload pdf file!"
+        );
+      }
+      else if(accept===".xls,.xlsx"){
+        message.error(
+          "You can only upload xls, xlsx file!"
+        );
+      }
     }
     if (status === "error_upload") {
       message.error("Upload file fail!");

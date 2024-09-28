@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import Calendar from "../assets/calendars.svg";
 import User from "../assets/3 User.svg";
 import Clock from "../assets/Clock.svg";
@@ -724,6 +724,7 @@ const Subscriberlisting = (props) => {
 
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
+      console.log("Fetch DATA")
       if (
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG
@@ -759,7 +760,8 @@ const Subscriberlisting = (props) => {
         dispatch(SubscriberManagementdashboard(paramDashboard));
       } else if (
         userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER
+        userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER ||
+        userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN
       ) {
         let permissFindUntilyty = { utility: [UTILITY_GROUP_ID.ALL] };
         const paramDashboard = {
@@ -769,6 +771,9 @@ const Subscriberlisting = (props) => {
         };
         dispatch(SubscriberManagementdashboard(paramDashboard));
       }
+    }
+    else{
+      console.log("Not Fetch Data")
     }
   }, [currentUGTGroup, isAssignedPortfolioId]);
 
@@ -866,7 +871,8 @@ const Subscriberlisting = (props) => {
         );
       } else if (
         userData?.userGroup?.id === USER_GROUP_ID.PORTFOLIO_MNG ||
-        userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER
+        userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER ||
+        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN 
       ) {
         setIsSubscriberGroup(false);
         permissFindUntilyty = { utility: [] };
@@ -962,7 +968,8 @@ const Subscriberlisting = (props) => {
         );
       } else if (
         userData?.userGroup?.id === USER_GROUP_ID.PORTFOLIO_MNG ||
-        userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER
+        userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER ||
+        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN 
       ) {
         permissFindUntilyty = { utility: [] };
         const paramSubscriberUnassign = {

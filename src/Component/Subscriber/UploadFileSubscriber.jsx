@@ -172,22 +172,29 @@ const UploadFileSubscriber = (props) => {
     }
 
     const handleDownloadFile=(file)=>{
-        console.log(file)
-        const base64Content = file.binary//.split(",")[1];
-        const binaryString = atob(base64Content);
-        const binaryLength = binaryString.length;
-        const bytes = new Uint8Array(binaryLength);
+      console.log(file)
+      const reader = new FileReader();
+      reader.onload = function(e) {
+      const arrayBuffer = e.target.result;
+      console.log('Binary data as ArrayBuffer:', arrayBuffer);
+      const base64Content = arrayBuffer.split(",")[1];
+      const binaryString = atob(base64Content);
+      const binaryLength = binaryString.length;
+      const bytes = new Uint8Array(binaryLength);
 
-        for (let i = 0; i < binaryLength; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-        }
+      for (let i = 0; i < binaryLength; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+      }
 
-        const blob = new Blob([bytes], { type: file.type });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = file.name;
-        link.click();
-        URL.revokeObjectURL(link.href);
+      const blob = new Blob([bytes], { type: file.type });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = file.name;
+      link.click();
+      URL.revokeObjectURL(link.href);
+  };
+      //const base64Content = file.binary//.split(",")[1];
+      reader.readAsDataURL(file)
     }
 
     return (

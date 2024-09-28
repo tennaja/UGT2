@@ -784,7 +784,7 @@ const AddDevice = () => {
                                 <Input
                                   {...field}
                                   id={"defaultAccountCode"}
-                                  placeholder={"Please fill the form in Number"}
+                                  
                                   type={"text"}
                                   label={"Default account code"}
                                   // error={errors.defaultAccountCode}

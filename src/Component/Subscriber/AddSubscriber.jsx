@@ -738,6 +738,8 @@ const AddSubscriber = () => {
       console.log("Length Contract Amount",allowcatedEnergyList.length)
       const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
       const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
+      console.log("Year Start",yearStart)
+      console.log("Aloow List",allowcatedEnergyList)
       if(lengthCreateStartyear.length !== 0){
           if(lenghtCreateEndyear.length !== 0){
             for(let i = yearStart+1;i < yearEnd;i++){
@@ -1476,7 +1478,7 @@ const AddSubscriber = () => {
       if(years === yearStart){
         if(yearStart !== yearEnd){
           if(months >= monthStart){
-              if(values === 0){
+              if(values < 0){
                 return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
               }
               else{
@@ -1495,7 +1497,7 @@ const AddSubscriber = () => {
         }
         else{
           if(months >= monthStart && months <= monthEnd){
-            if(values === 0){
+            if(values < 0){
               return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
             }
             else{
@@ -1514,7 +1516,7 @@ const AddSubscriber = () => {
       }
       else if(years === yearEnd){
         if(months <= monthEnd){
-          if(values === 0){
+          if(values < 0){
             return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
           }
           else{
@@ -1531,7 +1533,7 @@ const AddSubscriber = () => {
         }
       }
       else{
-        if(values === 0){
+        if(values < 0){
           return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
         }
         else{
@@ -1558,7 +1560,7 @@ const AddSubscriber = () => {
       if(years === yearStart){
         if(yearStart !== yearEnd){
           if(months >= monthStart){
-            if(values === 0){
+            if(values < 0){
               return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
             }
             else{
@@ -1578,7 +1580,7 @@ const AddSubscriber = () => {
         }
         else{
           if(months >= monthStart && months <= monthEnd){
-            if(values === 0){
+            if(values < 0){
               return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
             }
             else{
@@ -1597,7 +1599,7 @@ const AddSubscriber = () => {
       }
       else if(years === yearEnd){
         if(months <= monthEnd){
-          if(values === 0){
+          if(values < 0){
             return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
           }
           else{
@@ -1615,7 +1617,7 @@ const AddSubscriber = () => {
         }
       }
       else{
-        if(values === 0){
+        if(values < 0){
           return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
         }
         else{
@@ -1643,7 +1645,7 @@ const AddSubscriber = () => {
       if(years === yearStart){
         if(yearStart !== yearEnd){
           if(months >= monthStart){
-            if(values === 0){
+            if(values < 0){
               return true
             }
             else{
@@ -1663,7 +1665,7 @@ const AddSubscriber = () => {
         }
         else{
           if(months >= monthStart && months <= monthEnd){
-            if(values === 0){
+            if(values < 0){
               return true
             }
             else{
@@ -1682,7 +1684,7 @@ const AddSubscriber = () => {
       }
       else if(years === yearEnd){
         if(months <= monthEnd){
-          if(values === 0){
+          if(values < 0){
             return true
           }
           else{
@@ -1700,7 +1702,7 @@ const AddSubscriber = () => {
         }
       }
       else{
-        if(values === 0){
+        if(values < 0){
           return true
         }
         else{

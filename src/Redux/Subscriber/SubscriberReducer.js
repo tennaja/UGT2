@@ -25,6 +25,10 @@ import { GET_SUBSCRIBER_DASHBOARD_OBJ,
     GET_HISTORY_LOG_ACTIVE,
     GET_HISTORY_LOG_INACTIVE,
     GTE_BINARY_FILE_HISTORY,
+    RENEW_AGGREGATE_STATUS,
+    RENEW_SUBSCRIBER_STATUS,
+    GET_RENEW_SUBSCRIBER_INFO,
+    GET_RENEW_EDIT_SUBSCRIBER_INFO,
     WITHDRAWN_SUBSCRIBER_STATUS,
 } from "../ActionType"
 
@@ -63,6 +67,8 @@ const initialstate = {
     historyActiveList: [],
     historyInactiveList: [],
     binaryFileHistory: [],
+    renewDetailInfo:{},
+    renewEditDetailInfo:{},
     responseWithdrawn : null,
 }
 
@@ -144,6 +150,21 @@ export const SubscriberReducer = (state = initialstate, action) => {
                 isOpenDoneModal:true
             }   
             case EDIT_AGGREGATE_STATUS: return{
+                ...state,
+                loading:false,
+                responseDataAggregate:action.data,
+                isOpen : true,
+                isOpenDoneModal:true
+            }
+            case RENEW_SUBSCRIBER_STATUS:return{
+                ...state,
+                loading:false,
+                // errmessage: action.payload,
+                responseDataSubscriber:action.data,
+                isOpen : true,
+                isOpenDoneModal:true
+            }   
+            case RENEW_AGGREGATE_STATUS: return{
                 ...state,
                 loading:false,
                 responseDataAggregate:action.data,
@@ -259,6 +280,14 @@ export const SubscriberReducer = (state = initialstate, action) => {
                 errmessage: '',
                 binaryFileHistory: action.payload
             }
+            case GET_RENEW_SUBSCRIBER_INFO:return{
+                ...state,
+                renewDetailInfo: action.payload
+            }
+            case GET_RENEW_EDIT_SUBSCRIBER_INFO:return{
+                ...state,
+                renewEditDetailInfo: action.payload
+            }
             case WITHDRAWN_SUBSCRIBER_STATUS:return{
                 ...state,
                 loading:false,
@@ -266,7 +295,7 @@ export const SubscriberReducer = (state = initialstate, action) => {
                 responseWithdrawn:action.data,
                 //isOpen : true,
                 //isOpenDoneModal:true
-            } 
+            }
         default: return state
     }
 }
