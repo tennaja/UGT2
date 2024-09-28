@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import AlmostDone from "../../assets/Almosttdone.png";
+import AlmostDone from "../../assets/ImgDone.png";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "@mantine/core";
 import { useDispatch } from "react-redux";
 // import {
 //   WithdrawDevice,
+
 //   SubmitDevice,
 //   clearModal,
 //   VerifingDevice
