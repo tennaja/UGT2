@@ -15,7 +15,7 @@ import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import Subscriberlisting from "./Component/Subscriber/Subscruberlisting";
 import InfoSubscriber from "./Component/Subscriber/InfoSubscriber";
 import AddScriber from "./Component/Subscriber/AddSubscriber";
-import UpdateSubscriber from "./Component/Subscriber/UpdateSubscriber";ฃ
+import UpdateSubscriber from "./Component/Subscriber/UpdateSubscriber";
 import InfoSubscriberHistory from "./Component/Subscriber/InfoSubscriberHistory";
 import RenewSubscriber from "./Component/Subscriber/RenewSubscriber";
 import UpdateSubscriberRenew from "./Component/Subscriber/UpdateSubscriberRenew";
