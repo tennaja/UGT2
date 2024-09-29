@@ -11,6 +11,8 @@ export const SUBSCRIBER_EDIT = "/subscriber/edit";
 export const SUBSCRIBER_INFO = "/subscriber/info";
 export const SUBSCRIBER_HISTORY = "/subscriber/history"
 export const SUBSCRIBER_HISTORY_INFO = "/subscriber/historyInfo"
+export const SUBSCRIBER_RENEW = "/subscriber/renew"
+export const SUBSCRIBER_RENEW_EDIT = "/subscriber/renewedit"
 
 export const PORTFOLIO_LIST = "/portfolio";
 export const PORTFOLIO_ADD = "/portfolio/add";

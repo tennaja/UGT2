@@ -15,12 +15,16 @@ import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import Subscriberlisting from "./Component/Subscriber/Subscruberlisting";
 import InfoSubscriber from "./Component/Subscriber/InfoSubscriber";
 import AddScriber from "./Component/Subscriber/AddSubscriber";
-import UpdateSubscriber from "./Component/Subscriber/UpdateSubscriber";
+import UpdateSubscriber from "./Component/Subscriber/UpdateSubscriber";ฃ
+import InfoSubscriberHistory from "./Component/Subscriber/InfoSubscriberHistory";
+import RenewSubscriber from "./Component/Subscriber/RenewSubscriber";
+import UpdateSubscriberRenew from "./Component/Subscriber/UpdateSubscriberRenew";
 
 import Portfoliolisting from "./Component/Portfolio/Portfoliolisting";
 import AddPortfolio from "./Component/Portfolio/AddPortfolio";
 import InfoPortfolio from "./Component/Portfolio/InfoPortfolio";
 import UpdatePortfolio from "./Component/Portfolio/UpdatePortfolio";
+import HistorySubscriber from "./Component/Subscriber/HistorySubscriber";
 
 import Main from "./Component/Dashboard/Main";
 // import 'bootstrap/dist/css/bootstrap.min.css';
@@ -45,8 +49,8 @@ import TransferInfo from "./Component/EAC/Transfer/TransferInfo";
 import Redemption from "./Component/EAC/Redemption/Redemption";
 import RedemptionInfo from "./Component/EAC/Redemption/RedemptionInfo";
 import RenewDevice from "./Component/Device/RenewDevice";
-import HistorySubscriber from "./Component/Subscriber/HistorySubscriber";
-import InfoSubscriberHistory from "./Component/Subscriber/InfoSubscriberHistory";
+
+
 function App() {
   return (
     <Provider store={Store}>
@@ -95,6 +99,14 @@ function App() {
                 <Route
                   path={webURL.SUBSCRIBER_HISTORY_INFO}
                   element={<InfoSubscriberHistory></InfoSubscriberHistory>}
+                ></Route>
+                <Route
+                  path={webURL.SUBSCRIBER_RENEW}
+                  element={<RenewSubscriber></RenewSubscriber>}
+                ></Route>
+                <Route
+                  path={webURL.SUBSCRIBER_RENEW_EDIT}
+                  element={<UpdateSubscriberRenew></UpdateSubscriberRenew>}
                 ></Route>
                 <Route
                   path={webURL.PORTFOLIO_LIST}
