@@ -27,7 +27,7 @@ export const DEVICE_STATUS = {
   REJECTED: "Rejected",
   WITHDRAWN: "Withdrawn",
   IN_PROGRESS: "In Progress",
-  RETURN: "RETURN"
+  RETURN: "Return"
 };
 
 export const USER_GROUP_ID = {

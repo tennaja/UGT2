@@ -184,9 +184,9 @@ const UpdateDevice = () => {
         <b>Edited Date:</b> ${formatDate(Datenow)} 
       </p>
       <p>
-      <b>Edited by:</b> ${userData?.firstName + userData?.lastName}
+      <b>Edited by:</b> ${userData?.firstName +"  "+ userData?.lastName}
       </p>
-      <p>Please see details via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      <p>Please see details via this link: <a href="${`https://ugt-2.vercel.app/`}">UGT Platform</a>.</p>
       
       <p>UGT Platform</p>
     </body>
@@ -1406,7 +1406,7 @@ const UpdateDevice = () => {
                                   validate={" *"}
                                   onKeyDown={(e) => {
                                     // Prevent invalid characters like 'e', '+', '-'
-                                    if (['e', 'E', '+'].includes(e.key)) {
+                                    if (['e', 'E', '+','-','.'].includes(e.key)) {
                                       e.preventDefault();
                                     }
                                   }}
@@ -1466,7 +1466,7 @@ const UpdateDevice = () => {
                               {...field}
                               id={"ExpectedFormofVolumeEvidence"}
                               value={checking} 
-                              label={"ExpectedForm of Volume Evidence"}
+                              label={"Expected Form of Volume Evidence"}
                               error={errors.ExpectedFormofVolumeEvidence}
                               validate={" *"}
                               

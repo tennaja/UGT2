@@ -1137,7 +1137,7 @@ const AddDevice = () => {
                                   validate={" *"}
                                   onKeyDown={(e) => {
                                     // Prevent invalid characters like 'e', '+', '-'
-                                    if (['e', 'E', '+'].includes(e.key)) {
+                                    if (['e', 'E', '+','-','.'].includes(e.key)) {
                                       e.preventDefault();
                                     }
                                   }}
@@ -1196,7 +1196,7 @@ const AddDevice = () => {
                       
                       <div className="md:col-span-3 mt-4">
                       <Controller
-                          name="ExpectedFormofVolumeEvidence"
+                          name="Expected Form of Volume Evidence"
                           control={control}
                           rules={{
                             validate: {

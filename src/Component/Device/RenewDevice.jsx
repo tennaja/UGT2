@@ -186,9 +186,9 @@ const RenewDevice = () => {
         <b>Edited Date:</b> ${formatDate(Datenow)} 
       </p>
       <p>
-      <b>Edited by:</b> ${userData?.firstName + userData?.lastName}
+      <b>Edited by:</b> ${userData?.firstName +"  "+ userData?.lastName}
       </p>
-      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">UGT Platform</a>.</p>
       
       <p>UGT Platform</p>
     </body>
@@ -671,6 +671,16 @@ const RenewDevice = () => {
       FunctionRenewDevice(deviceData, () => {
         // setIsOpenLoading(false);
         hideLoading();
+        dispatch (
+          sendEmail(titleemail,emailBodytoOwner,deviceobj?.userEmail
+            ,() => {
+            hideLoading();
+            // dispatch(clearModal());
+          })
+        )
+        if (deviceobj?.statusName !== "Draft") {
+          navigate(DEVICE_LIST); // Replace '/' with your home page path
+        }
       })
     );
     // dispatch (
@@ -1403,7 +1413,7 @@ const RenewDevice = () => {
                                   validate={" *"}
                                   onKeyDown={(e) => {
                                     // Prevent invalid characters like 'e', '+', '-'
-                                    if (['e', 'E', '+'].includes(e.key)) {
+                                    if (['e', 'E', '+','-','.'].includes(e.key)) {
                                       e.preventDefault();
                                     }
                                   }}
@@ -1445,7 +1455,7 @@ const RenewDevice = () => {
                       </div>
                       <div className="md:col-span-3 mt-4">
                       <Controller
-                          name="ExpectedFormofVolumeEvidence"
+                          name="Expected Form of Volume Evidence"
                           control={control}
                           rules={{
                             validate: {

@@ -875,7 +875,7 @@ const ListDevice = (props) => {
                           </p>
                           <span> </span>
                           <p className="text-lg font-medium text-slate-500 text-end	">
-                            {totalDevice > 1 ? "Devices" : "Devices"}
+                            {totalDevice > 1 ? "Devices" : "Device"}
                           </p>
                         </div>
                       </div>
@@ -954,7 +954,7 @@ const ListDevice = (props) => {
                           </p>
                           <span> </span>
                           <p className="text-lg font-medium text-slate-500 text-end">
-                          Devices
+                          {totalRegistration > 1 ? "Devices" : "Device"}
                           </p>
                         </div>
                       </div>
@@ -996,7 +996,7 @@ const ListDevice = (props) => {
                           </p>
                           <span> </span>
                           <p className="text-lg font-medium text-slate-500 text-end">
-                          Devices
+                          {totalDeviceInactive > 1 ? "Devices" : "Device"}
                           </p>
                         </div>
                       </div>
@@ -1035,7 +1035,7 @@ const ListDevice = (props) => {
                           </p>
                           <span> </span>
                           <p className="text-lg font-medium text-slate-500 text-end">
-                          Devices
+                          {totalExpire > 1 ? "Devices" : "Device"}
                           </p>
                         </div>
                       </div>

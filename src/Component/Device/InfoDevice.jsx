@@ -45,7 +45,7 @@ import { FaChevronCircleLeft, FaRegEdit } from "react-icons/fa";
 import { LuChevronDown, LuSend } from "react-icons/lu";
 import numeral from "numeral";
 import ManageBtn from "../Control/ManageBtn";
-import { end } from "@popperjs/core";
+import { end, hide } from "@popperjs/core";
 import { USER_GROUP_ID } from "../../Constants/Constants";
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import ModalVerifyDone from "../Control/Modal/ModalDoneVerrify";
@@ -424,7 +424,7 @@ const emailBodyWithdraw = `
         <b><span style="color: red;"> withdrawn.</span></b>
       </p>
       
-      <p>Device Details:</p>
+      <p><b>Device Details:</b></p>
        
       <p>
       <b>Name:</b> ${deviceobj?.name}
@@ -433,7 +433,7 @@ const emailBodyWithdraw = `
         <b>Withdrawn Date:</b> ${formatDate(Datenow)} 
       </p>
       <p>
-      <b>Withdrawn by:</b>  ${userData?.firstName + userData?.lastName}
+      <b>Withdrawn by:</b>  ${userData?.firstName +"  "+userData?.lastName}
       </p>
       
       
@@ -461,7 +461,7 @@ const emailBodyWithdraw = `
         <b>Submission Date:</b> ${formatDate(Datenow)} 
       </p>
       
-      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">UGT Platform</a>.</p>
       
       <p>UGT Platform</p>
     </body>
@@ -487,7 +487,7 @@ const emailBodywhenSubmited = `
         <b>Submission Date:</b> ${formatDate(Datenow)} 
       </p>
       
-      <p>Please see details via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      <p>Please see details via this link: <a href="${`https://ugt-2.vercel.app/`}">UGT Platform</a>.</p>
       
       <p>UGT Platform</p>
     </body>
@@ -743,7 +743,7 @@ const handleClickDownloadFile = async (item) => {
   const handleClickConfirmReturn = (rem) => {
     setOpenConfirmReturnModal(false)
     showLoading();
-    const titleemail = "[Device Registration] Return UGT Device Registration"
+    const titleemail = "[Device Registration] Return UGT Device Registration Returned"
     const emailBodytoOwnerWhenreturn = `
   <html>
     <body>
@@ -766,7 +766,7 @@ const handleClickDownloadFile = async (item) => {
         <b>Remark:</b> ${rem} 
       </p>
       
-      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">UGT Platform</a>.</p>
       
       <p>UGT Platform</p>
     </body>
@@ -1009,7 +1009,8 @@ const handleClickDownloadFile = async (item) => {
       if (
         status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
         status == DEVICE_STATUS.VERIFIED.toLowerCase() ||
-        status == DEVICE_STATUS.VERIFYING.toLowerCase()  
+        status == DEVICE_STATUS.VERIFYING.toLowerCase() || 
+        status == DEVICE_STATUS.WITHDRAWN.toLowerCase() 
         
       ) {
         return false;
@@ -1023,7 +1024,8 @@ const handleClickDownloadFile = async (item) => {
       if (
         status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
         status == DEVICE_STATUS.APPROVED.toLowerCase() ||
-        status == DEVICE_STATUS.VERIFIED.toLowerCase()  
+        status == DEVICE_STATUS.VERIFIED.toLowerCase() || 
+        status == DEVICE_STATUS.WITHDRAWN.toLowerCase()
       ) {
         return false;
       } else {
@@ -1035,7 +1037,8 @@ const handleClickDownloadFile = async (item) => {
     ) {
       if (
         status == DEVICE_STATUS.SUBMITTED.toLowerCase() ||
-        status == DEVICE_STATUS.APPROVED.toLowerCase() 
+        status == DEVICE_STATUS.APPROVED.toLowerCase() || 
+        status == DEVICE_STATUS.WITHDRAWN.toLowerCase()
       ) {
         return false;
       } else {
@@ -1171,51 +1174,50 @@ const handleClickDownloadFile = async (item) => {
 
       {isShowManageBtn && (
         <ManageBtn
-          actionList={[
-            {
-              label: "Sign&Submit",
-              onClick: onclicksubmitstep1,
-              disabled: !canSubmit,
-              endSection: true,
-            },
-            {
-              label: "Edit",
-              onClick: onClickEdit,
-              disabled: !canEdit,
-              endSection: true,
-            },
-            {
-              label: "Withdraw",
-              onClick: onClickWithdrawBtn,
-              disabled: !canWithdrawn,
-              endSection: true,
-            },
-            {
-              label: "Return",
-              onClick: onClickReturnBtn,
-              disabled: !canReturn,
-              endSection: true,
-            },
-            {
-              label: "Send to Verify",
-              onClick: onClickSendtoVerifyBtn,
-              disabled: !canVerifying,
-              endSection: true,
-            },
-            {
-              label: "Verify",
-              onClick: onClickVerifiedBtn,
-              disabled: !canVerified,
-              endSection: true,
-            },
-            {
-              label: "Change Detail / Renew",
-              onClick: onClickRenew,
-              disabled: !canRenew,
-              // endSection: false,
-            },
-          ]}
-        />
+        actionList={[
+          {
+            label: "Edit",
+            onClick: onClickEdit,
+            disabled: !canEdit,
+            endSection: true,
+          },
+          {
+            label: "Withdraw",
+            onClick: onClickWithdrawBtn,
+            disabled: !canWithdrawn,
+            endSection: true,
+          },
+          {
+            label: "Send to Verify",
+            onClick: onClickSendtoVerifyBtn,
+            disabled: !canVerifying,
+            endSection: true,
+          },
+          {
+            label: "Verify",
+            onClick: onClickVerifiedBtn,
+            disabled: !canVerified,
+            endSection: true,
+          },
+          {
+            label: "Sign&Submit",
+            onClick: onclicksubmitstep1,
+            disabled: !canSubmit,
+            endSection: true,
+          },
+          {
+            label: "Return",
+            onClick: onClickReturnBtn,
+            disabled: !canReturn,
+            endSection: true,
+          },
+          {
+            label: "Change Detail / Renew",
+            onClick: onClickRenew,
+            disabled: !canRenew,
+          },
+        ].filter(action => !action.disabled)} // filter out disabled actions
+      />
       )}
 
       {infoMessage() && (
