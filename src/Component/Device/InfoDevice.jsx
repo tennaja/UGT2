@@ -765,16 +765,14 @@ const handleClickDownloadFile = async (item) => {
     const remark = rem;
     const username = userData.firstName +" "+userData.lastName;
     dispatch(
-      ReturnDevice(deviceID,remark,username,(status) => {
+      ReturnDevice(deviceID,remark,username,() => {
         hideLoading();
         dispatch(clearModal());
-        if (status === 200 || status === 201) {
           dispatch(
             sendEmail(titleemail,emailBodytoOwnerWhenreturn,deviceobj?.userEmail, () => {
-      
             })
           )
-        }
+        
         navigate(WEB_URL.DEVICE_LIST);
       })
     );

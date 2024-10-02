@@ -485,9 +485,9 @@ function CheckActionManageButton(){
             onClick: onClickHistory,
           },
           {
-            icon: <ImLoop  />,
-            label: "Renew",
-            onClick: onClickRenew,
+            icon: <LuTrash2 />,
+            label: "Withdraw",
+            onClick: deleteSubscriber,
           }
         ]
         return showAction
@@ -498,11 +498,11 @@ function CheckActionManageButton(){
     }
     else if(userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN){
       if(details?.subscriberDetail?.subscriberStatusId){
-        showAction = [{
+        showAction = [/*{
           icon: <FaRegEdit />,
           label: "Report",
           onClick: onClickReport,
-        },
+        }*/,
         {
           icon: <MdOutlineHistory />,
           label: "History",
@@ -627,7 +627,7 @@ const EditRenew =()=>{
                           </Menu.Item>
                         </Menu.Dropdown>
                       </Menu> */}
-                      {details?.subscriberDetail?.subscriberStatusId !== 3 && details?.subscriberDetail?.subscriberStatusId !== 4 &&<ManageBtn
+                      {details?.subscriberDetail?.subscriberStatusId !== 3 &&<ManageBtn
                         actionList={[
                           {
                             icon: <MdOutlineHistory />,
@@ -660,8 +660,8 @@ const EditRenew =()=>{
             {tabSelect === "contract"?
             <div className="p-6 px-8 md:p-8 mb-6 ">
               <div className=" lg:col-span-2 ">
-                <div className="mb-5 text-right">
-                <ManageBtn
+              {isEdit && (<div className="mb-5 text-right">
+                  {details?.subscriberDetail?.subscriberStatusId !== 3 &&<ManageBtn
                         actionList={[
                           {
                             icon: <FaRegEdit />,
@@ -669,8 +669,8 @@ const EditRenew =()=>{
                             onClick: EditContract,
                           }
                         ]}
-                      />
-                </div>
+                      />}
+                </div>)}
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
                   {/* Subscriber Detail */}
                   <div className="md:col-span-6">
@@ -1802,8 +1802,8 @@ const EditRenew =()=>{
             </div>:
             <div className="p-6 px-8 md:p-8 mb-6 ">
               <div className=" lg:col-span-2 ">
-              <div className="mb-5 text-right">
-                <ManageBtn
+              {isEdit && (<div className="mb-5 text-right">
+                {details?.subscriberDetail?.subscriberStatusId !== 3 &&<ManageBtn
                         actionList={[
                           {
                             icon: <FaRegEdit />,
@@ -1811,8 +1811,8 @@ const EditRenew =()=>{
                             onClick: EditRenew,
                           }
                         ]}
-                      />
-                </div>
+                      />}
+                </div>)}
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
                   {/* Subscriber Detail */}
                   <div className="md:col-span-6">
@@ -3010,7 +3010,7 @@ const EditRenew =()=>{
                             </Menu.Item>
                           </Menu.Dropdown>
                         </Menu> */}
-                        {details?.subscriberDetail?.subscriberStatusId !== 3 && details?.subscriberDetail?.subscriberStatusId !== 4 &&<ManageBtn
+                        {details?.subscriberDetail?.subscriberStatusId !== 3 &&<ManageBtn
                           actionList={action}
                         />}
                       </div>
