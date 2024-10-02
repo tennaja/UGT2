@@ -77,12 +77,15 @@ const ModalSignStep1 = (props) => {
           </button>
 
           <button
-            onClick={onClickOk}
-            className={`${getButtonColor()} w-50 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm hover:bg-[#4D6A00]`}
-            disabled={!isChecked} // Disable the button if checkbox is not checked
-          >
-            Next
-          </button>
+  onClick={onClickOk}
+  className={`${isChecked ? getButtonColor() : 'bg-gray-400 cursor-not-allowed'} w-50 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm ${
+    isChecked ? 'hover:bg-[#4D6A00]' : ''
+  }`}
+  disabled={!isChecked} // Disable the button if checkbox is not checked
+>
+  Next
+</button>
+
         </div>
       </Modal>
     </>
