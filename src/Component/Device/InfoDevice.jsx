@@ -25,7 +25,8 @@ import {
   FetchDeleteFile,
   FetchSF02ByID,
   sendEmail,
-  sendEmailByUserGroup
+  sendEmailByUserGroup,
+  FetchUserVerifier
 } from "../../Redux/Device/Action";
 import StatusLabel from "../../Component/Control/StatusLabel";
 import LoadPage from "../Control/LoadPage";
@@ -103,6 +104,7 @@ const InfoDevice = () => {
   const deviceobj = useSelector((state) => state.device.deviceobj);
   const sf02obj = useSelector((state) => state.device.sf02obj);
   const filesf02 = useSelector((state)=> state.device.filesf02) 
+  const userverifier = useSelector((state)=> state.device.userverifier) 
   const userData = useSelector((state) => state.login?.userobj);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const isOpenDoneModal = useSelector((state) => state.device.isOpenDoneModal);
@@ -114,7 +116,7 @@ const InfoDevice = () => {
   const [isSyncing, syncHandlers] = useDisclosure();
   const [showModalSyncSuccess, modalSyncSuccessHandlers] = useDisclosure();
   const [showModalSyncFail, modalSyncFailHandlers] = useDisclosure();
-
+ console.log(userverifier)
   const handleClickBackToHome = () => {
     dispatch(clearModal());
     navigate(WEB_URL.DEVICE_LIST);
@@ -187,7 +189,7 @@ const InfoDevice = () => {
         hideLoading();
       })
     );
-
+    dispatch(FetchUserVerifier());
     autoScroll();
   }, []);
 
@@ -380,6 +382,7 @@ const InfoDevice = () => {
   Verified device will be sent to sign and unable to recall.`,
       buttonTypeColor: "primary",
       data : deviceobj,
+      registanstdetail : userverifier,
       UserSign : userData   
     });
   };
@@ -392,7 +395,7 @@ const InfoDevice = () => {
       
       <p>
       Device registration is
-        <b><span style="color: red;"> Send to Verify.</span></b>
+        <b><span style="color: red;"> waiting for verification.</span></b>
       </p>
       
       <p>Device Details:</p>
@@ -594,6 +597,7 @@ const handleClickDownloadFile = async (item) => {
 
   //Call Api Submit
   const handleClickConfirmSubmit = () => {
+    setOpenSubmitstep3(false)
     const titleemail = "[Device Registration] UGT Device Registration Submitted" 
     showLoading();
     const deviceID = deviceobj?.id;
@@ -609,13 +613,13 @@ const handleClickDownloadFile = async (item) => {
     dispatch(
       SubmitDevice(deviceID,username,SignatureDateTime,organisationId,
         organisationName,contactPerson,businessAddress,country,email,telephone,test.current,
-        (error,status) => {
+        (error) => {
         if (error) {
-          setOpenConfirmSubmitModal(false);
+          setOpenSubmitstep3(false);
         } else {
           // dispatch(clearModal());
           // navigate(WEB_URL.DEVICE_LIST);
-         
+           
             dispatch(
               sendEmail(titleemail,emailBodywhenSubmited,deviceobj?.userEmail, () => {
                 
@@ -641,7 +645,7 @@ const handleClickDownloadFile = async (item) => {
           
         
         hideLoading();
-        setOpenConfirmSubmitModal(false);
+        setOpenSubmitstep3(false);
       })
     );
     
@@ -649,11 +653,13 @@ const handleClickDownloadFile = async (item) => {
 
   //Call Api Withdraw
   const handleClickConfirmWithdraw = () => {
+    setOpenConfirmModalRenew(false)
     const titleemail = "[Device Registration] UGT Device Registration Withdrawn"
     showLoading();
     const deviceID = deviceobj?.id;
     dispatch(
-      WithdrawDevice(deviceID, (status) => {
+      WithdrawDevice(deviceID, () => {
+        
         hideLoading();
         dispatch(clearModal());
         
@@ -673,11 +679,13 @@ const handleClickDownloadFile = async (item) => {
 
   //Call Api Verifying
   const handleClickConfirmVerifying = () => {
+    setOpenConfirmModal(false)
     const titleemail = "[Device Registration] Verify UGT Device Registration"
     showLoading();
     const deviceID = deviceobj?.id;
     dispatch(
-      VerifingDevice(deviceID, (status) => {
+      VerifingDevice(deviceID, () => {
+      
         hideLoading();
         dispatch(clearModal());
         
@@ -700,12 +708,14 @@ const handleClickDownloadFile = async (item) => {
 
   //Call Api Verified
   const handleClickConfirmVerified = () => {
+    setOpenConfirmVerifiedModal(false);
     const titleemail = "[Device Registration] Sign and Submit UGT Device Registration"
     showLoading();
     const deviceID = deviceobj?.id;
     // console.log("FILE CURRENT-------",test.current)
     dispatch(
-      VerifiedDevice(deviceID, test.current,(status) => {
+      VerifiedDevice(deviceID, test.current,() => {
+  
         hideLoading();
         // dispatch(clearModal());
         
@@ -731,6 +741,7 @@ const handleClickDownloadFile = async (item) => {
 
   //Call Api Return
   const handleClickConfirmReturn = (rem) => {
+    setOpenConfirmReturnModal(false)
     showLoading();
     const titleemail = "[Device Registration] Return UGT Device Registration"
     const emailBodytoOwnerWhenreturn = `
@@ -767,7 +778,6 @@ const handleClickDownloadFile = async (item) => {
     dispatch(
       ReturnDevice(deviceID,remark,username,() => {
         hideLoading();
-        dispatch(clearModal());
           dispatch(
             sendEmail(titleemail,emailBodytoOwnerWhenreturn,deviceobj?.userEmail, () => {
             })
@@ -1872,6 +1882,7 @@ const handleClickDownloadFile = async (item) => {
       {opensubmitstep3 && <ModalSignStep3
       data = {deviceobj}
       UserSign = {userData}
+      registanstdetail = {userverifier}
       onCloseModal={onclickclosemodalsubmit}
       onClickConfirmBtn={handleClickConfirmSubmit}
       />}

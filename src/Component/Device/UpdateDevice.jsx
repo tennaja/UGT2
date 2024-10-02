@@ -44,7 +44,7 @@ import { format } from "date-fns";
 import { Tooltip } from "react-tooltip";
 import LoadPage from "../Control/LoadPage";
 import { FaChevronCircleLeft } from "react-icons/fa";
-import { DEVICE_INFO } from "../../Constants/WebURL";
+import { DEVICE_INFO ,DEVICE_LIST} from "../../Constants/WebURL";
 import StatusLabel from "../Control/StatusLabel";
 import { hideLoading, padNumber, showLoading } from "../../Utils/Utils";
 import TextareaNote from "../Control/TextareaNote";
@@ -666,7 +666,7 @@ const UpdateDevice = () => {
     // console.log("deviceData=>>>",deviceData)
 
     dispatch(
-      FunctionEditDevice(deviceData, (status) => {
+      FunctionEditDevice(deviceData, () => {
         // setIsOpenLoading(false);
         hideLoading();
         
@@ -677,7 +677,9 @@ const UpdateDevice = () => {
               // dispatch(clearModal());
             })
           )
-        
+          if (deviceobj?.statusName !== "Draft") {
+            navigate(DEVICE_LIST); // Replace '/' with your home page path
+          }
       })
     );
     
@@ -2152,6 +2154,7 @@ const UpdateDevice = () => {
         <ModalDone
           data={vFormData}
           status={"ADD"}
+          Name={deviceName}
           onChangeModalDone={handleClickBackToEdit}
           deviceID={deviceobj?.id}
         />

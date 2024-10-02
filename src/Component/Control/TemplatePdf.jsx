@@ -6,7 +6,7 @@ import pdfIcon from '../assets/EV.png';
 import './page.css'
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import { IoMdCheckmark } from "react-icons/io";
-const PdfFormPreview = (data,aftersign,Sign) => {
+const PdfFormPreview = (data,aftersign,Sign,Status) => {
   console.log(data.data)
   console.log(data.Sign)
   const dispatch = useDispatch();
@@ -160,7 +160,7 @@ const numberSlots = formattedNumber.split('');
         const pdfBlob = pdf.output('blob');
         
   // Create a File object from the Blob with a filename
-        const pdfFile = new File([pdfBlob], `SF-02v${newVersion}.pdf`, { type: 'application/pdf' });
+        const pdfFile = new File([pdfBlob], `SF-02v${newVersion}(${data?.Status}).pdf`, { type: 'application/pdf' });
         console.log(pdfFile,data)
         // Open the PDF in a new tab for preview
         // const url = URL.createObjectURL(pdfBlob);

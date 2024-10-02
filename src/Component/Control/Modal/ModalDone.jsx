@@ -7,7 +7,7 @@ import {
   WithdrawDevice,
   SubmitDevice,
   clearModal,
-  VerifingDevice
+  VerifingDevice,sendEmailByUserGroup
 } from "../../../Redux/Device/Action";
 import ModalConfirm from "./ModalConfirm";
 import * as WEB_URL from "../../../Constants/WebURL";
@@ -16,7 +16,7 @@ import { setSelectedSubMenu } from "../../../Redux/Menu/Action";
 import { hideLoading, padNumber, showLoading } from "../../../Utils/Utils";
 const ModalDone = (props) => {
   const {
-    // data,
+    Name,
     deviceID,
     status,
     onChangeModalDone,
@@ -40,28 +40,37 @@ const ModalDone = (props) => {
   };
 
   // ---------------Submit Function---------------- //
-
-  const handleClickSubmit = () => {
-    setOpenConfirmModal(true);
-    setModalConfirmProps({
-      onCloseModal: handleCloseModalConfirm,
-      onClickConfirmBtn: handleClickConfirmSubmit,
-      title: "Are you sure?",
-      content:
-        "If you confirm , this device will be submitted to review by EVIDENT, you will no longer be able to modify it.",
-      buttonTypeColor: "primary",
-    });
+  const Datenow = new Date();
+  const formatDate = (date) => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
+  // const handleClickSubmit = () => {
+  //   setOpenConfirmModal(true);
+  //   setModalConfirmProps({
+  //     onCloseModal: handleCloseModalConfirm,
+  //     onClickConfirmBtn: handleClickConfirmSubmit,
+  //     title: "Are you sure?",
+  //     content:
+  //       "If you confirm , this device will be submitted to review by EVIDENT, you will no longer be able to modify it.",
+  //     buttonTypeColor: "primary",
+  //   });
+  // };
 
-  const handleClickConfirmSubmit = () => {
-    dispatch(
-      SubmitDevice(deviceID, () => {
-        //Call Back
-        dispatch(clearModal());
-        navigate(WEB_URL.DEVICE_LIST);
-      })
-    );
-  };
+  // const handleClickConfirmSubmit = () => {
+  //   dispatch(
+  //     SubmitDevice(deviceID, () => {
+  //       //Call Back
+  //       dispatch(clearModal());
+  //       navigate(WEB_URL.DEVICE_LIST);
+  //     })
+  //   );
+  // };
 
   // ---------------------------------------------- //
 
@@ -79,11 +88,45 @@ const onClickSendtoVerifyBtn = () => {
   });
 };
 
+const emailBodytoVerifier = `
+  <html>
+    <body>
+      <p>Dear UGT Registrant (Verifier),</p>
+      
+      <p>
+      Device registration is
+        <b><span style="color: red;"> waiting for verification.</span></b>
+      </p>
+      
+      <p>Device Details:</p>
+       
+      <p>
+      <b>Name:</b> ${Name}
+      </p>
+      <p>
+        <b>Submission Date:</b> ${formatDate(Datenow)} 
+      </p>
+      
+      <p>Please verify via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      
+      <p>UGT Platform</p>
+    </body>
+  </html>
+`;
 //Call Api Verifying
 const handleClickConfirmVerifying = () => {
+  onChangeModalDone()
+  handleCloseModalConfirm()
   showLoading();
+  const titleemail = "[Device Registration] Verify UGT Device Registration"
   dispatch(
     VerifingDevice(deviceID, () => {
+      dispatch (
+        sendEmailByUserGroup(21,titleemail,emailBodytoVerifier,() => {
+          hideLoading();
+          // dispatch(clearModal());
+        })
+      )
       dispatch(clearModal());
       navigate(WEB_URL.DEVICE_LIST);
       hideLoading();

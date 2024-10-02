@@ -387,22 +387,38 @@ function CheckActionManageButton(){
     ) {
       if(details?.subscriberDetail?.subscriberStatusId === 1){
         if(details?.subscriberDetail?.renewStatus === "N"){
-          showAction = [{
-            icon: <FaRegEdit />,
-            label: "Edit",
-            onClick: onClickEdit,
-          },
-          {
-            icon: <MdOutlineHistory />,
-            label: "History",
-            onClick: onClickHistory,
-          },
-          {
-            icon: <LuTrash2 />,
-            label: "Withdraw",
-            onClick: deleteSubscriber,
-          }]
-          return showAction
+          if(details?.subscriberDetail?.canEdit === true){
+            showAction = [{
+              icon: <FaRegEdit />,
+              label: "Edit",
+              onClick: onClickEdit,
+            },
+            {
+              icon: <MdOutlineHistory />,
+              label: "History",
+              onClick: onClickHistory,
+            },
+            {
+              icon: <LuTrash2 />,
+              label: "Withdraw",
+              onClick: deleteSubscriber,
+            }]
+            return showAction
+          }
+          else{
+            showAction = [
+            {
+              icon: <MdOutlineHistory />,
+              label: "History",
+              onClick: onClickHistory,
+            },
+            {
+              icon: <LuTrash2 />,
+              label: "Withdraw",
+              onClick: deleteSubscriber,
+            }]
+            return showAction
+          }
         }
         else{
           showAction = [
@@ -432,19 +448,31 @@ function CheckActionManageButton(){
       }
       else if(details?.subscriberDetail?.subscriberStatusId === 2){
         if(details?.subscriberDetail?.renewStatus === "N"){
-          showAction = [
-            {
-              icon: <FaRegEdit />,
-              label: "Edit",
-              onClick: onClickEdit,
-            },
-            {
-              icon: <MdOutlineHistory />,
-              label: "History",
-              onClick: onClickHistory,
-            }
-          ]
-          return showAction
+          if(details?.subscriberDetail?.canEdit === true){
+            showAction = [
+              {
+                icon: <FaRegEdit />,
+                label: "Edit",
+                onClick: onClickEdit,
+              },
+              {
+                icon: <MdOutlineHistory />,
+                label: "History",
+                onClick: onClickHistory,
+              }
+            ]
+            return showAction
+          }
+          else{
+            showAction = [
+              {
+                icon: <MdOutlineHistory />,
+                label: "History",
+                onClick: onClickHistory,
+              }
+            ]
+            return showAction
+          }
         }
         else{
           showAction = [
@@ -519,6 +547,7 @@ function CheckActionManageButton(){
   
   
 }
+
 const action = CheckActionManageButton()
 console.log("Action",action)
 
@@ -660,7 +689,7 @@ const EditRenew =()=>{
             {tabSelect === "contract"?
             <div className="p-6 px-8 md:p-8 mb-6 ">
               <div className=" lg:col-span-2 ">
-              {isEdit && (<div className="mb-5 text-right">
+              {/*isEdit && (<div className="mb-5 text-right">
                   {details?.subscriberDetail?.subscriberStatusId !== 3 &&<ManageBtn
                         actionList={[
                           {
@@ -670,7 +699,7 @@ const EditRenew =()=>{
                           }
                         ]}
                       />}
-                </div>)}
+                </div>)*/}
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
                   {/* Subscriber Detail */}
                   <div className="md:col-span-6">

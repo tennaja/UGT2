@@ -19,7 +19,8 @@ import {
   SF02_BY_ID_URL,
   SEND_EMAIL_URL,
   SEND_EMAIL_BY_USERGROUPID_URL,
-  RENEW_DEVICE_URL
+  RENEW_DEVICE_URL,
+  USER_VERIFIER_FOR_SF02_URL
 } from "../../Constants/ServiceURL";
 import {
   ADD_STATUS,
@@ -45,7 +46,8 @@ import {
   SF_02,
   DOWLOAD_SF_02,
   COUNT,
-  RENEW_STATUS
+  RENEW_STATUS,
+  USER_VERIFIER_FOR_SF02
 } from "../../Redux/ActionType";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -138,6 +140,12 @@ export const setDeviceObj = (data) => {
   };
 };
 
+export const userVerifierforsf02 = (data) => {
+  return {
+    type: USER_VERIFIER_FOR_SF02,
+    payload: data,
+  };
+};
 export const setDownloadsf02 = (data) => {
   return {
     type: DOWLOAD_SF_02,
@@ -145,9 +153,10 @@ export const setDownloadsf02 = (data) => {
   };
 };
 
-export const updateDevice = () => {
+export const updateDevice = (data) => {
   return {
     type: UPDATE_STATUS,
+    payload : data
   };
 };
 
@@ -548,7 +557,7 @@ export const FunctionEditDevice = (data, callback) => {
     await axios.put(editDeviceURL, parameterForEdit, getHeaderConfig()).then(
       (response) => {
         if (response.status == 200 || response?.status == 201) {
-          dispatch(updateDevice());
+          dispatch(updateDevice(response?.data?.device));
         } else {
           dispatch(setOpenFailModal());
           dispatch(failRequest(error.message));
@@ -1034,4 +1043,23 @@ export const FetchDeleteFile = async (requestParamter) => {
   }
 };
 
+export const FetchUserVerifier = () => {
+const UserVerifier = `${USER_VERIFIER_FOR_SF02_URL}`;
+return async (dispatch) => {
+  await axios
+    .get(UserVerifier, getHeaderConfig())
+    .then((res) => {
+      if (res?.status == 200) {
+        dispatch(userVerifierforsf02(res.data));
+        console.log(res.data)
+      } else {
+        dispatch(failRequest(err.message));
+      }
+    })
+    .catch((err) => {
+      dispatch(failRequest(err.message));
+    });
+  // }, 2000);
+};
+};
 // -------------- //

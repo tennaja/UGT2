@@ -23,6 +23,7 @@ export const SET_DEVICE_DASHBOARD = "SET_DEVICE_DASHBOARD";
 export const SET_DEVICE_ASSIGNED = "SET_DEVICE_ASSIGNED";
 export const SET_DEVICE_UNASSIGNED = "SET_DEVICE_UNASSIGNED";
 export const COUNT = "COUNT";
+export const USER_VERIFIER_FOR_SF02 ="USER_VERIFIER_FOR_SF02"
 //for login reducer
 export const SET_USER_DETAIL = "SET_USER_DETAIL";
 //Dropdrow

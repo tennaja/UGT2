@@ -377,7 +377,7 @@ const AddDevice = () => {
   const handleClickBackToEdit = () => {
     const deviceID = responseDataAdd?.id;
     dispatch(clearModal());
-    navigate(`${WEB_URL.DEVICE_EDIT}`, { state: { code: deviceID } });
+    // navigate(`${WEB_URL.DEVICE_EDIT}`, { state: { code: deviceID } });
   };
 
   const commissioningDateDisableDateCal = (day) => {
@@ -1909,6 +1909,7 @@ const AddDevice = () => {
         <ModalDone
           data={vFormData}
           deviceID={responseDataAdd?.id}
+          Name={deviceName}
           onChangeModalDone={handleClickBackToEdit}
         />
       )}

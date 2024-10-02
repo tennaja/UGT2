@@ -5,6 +5,7 @@ const ModalConfirmVerified = (props) => {
   const {
     data,
     UserSign,
+    registanstdetail,
     status,
     onCloseModal,
     onClickConfirmBtn,
@@ -32,7 +33,8 @@ const ModalConfirmVerified = (props) => {
     <>
     <PdfTablePreview 
      data={data}
-     aftersign={UserSign}
+     aftersign={registanstdetail}
+     Status ={"Verified"}
      Sign={""}/>
       <Modal
         size="md"

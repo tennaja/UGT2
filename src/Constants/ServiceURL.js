@@ -27,6 +27,8 @@ export const SF02_BY_ID_URL = `${DOMAIN_URL}/ugt/v1/device-management/sf02downlo
 export const SEND_EMAIL_URL = `${DOMAIN_URL}/ugt/v1/email/sendemail`;
 export const SEND_EMAIL_BY_USERGROUPID_URL = `${DOMAIN_URL}/ugt/v1/email/sendemailbyusergroup`;
 export const RENEW_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/device-management/Renew`;
+export const USER_VERIFIER_FOR_SF02_URL = `${DOMAIN_URL}/ugt/v1/device-management/usercontact`;
+
 
 //Menu
 export const GET_MENU_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/menu-list`;

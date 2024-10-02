@@ -9,7 +9,8 @@ import {SET_OPEN_FAIL_MODAL,CLEAR_MODAL,SET_DEVICE_FILTER_LIST, FAIL_REQUEST, MA
     VERIFIED_STATUS,
     SF_02,
     DOWLOAD_SF_02,
-    COUNT,RENEW_STATUS
+    COUNT,RENEW_STATUS,
+    USER_VERIFIER_FOR_SF02
 } from "../ActionType"
 
 const initialstate = {
@@ -17,6 +18,7 @@ const initialstate = {
 
     // devicelist: [],
     deviceobj: {},
+    userverifier : {},
     totalDevice:null,
     totalExpire:null,
     totalDeviceInactive:null,
@@ -96,6 +98,15 @@ export const DeviceReducer = (state = initialstate, action) => {
                 
             }
         }
+
+        case USER_VERIFIER_FOR_SF02 :{
+            return {
+                ...state,
+                userverifier: action?.payload,
+                
+            }
+        }
+
         case SET_DEVICE_ASSIGNED:{
             return {
                 ...state,
@@ -176,9 +187,10 @@ export const DeviceReducer = (state = initialstate, action) => {
 
             case UPDATE_STATUS:return{
                 ...state,
+                updatedata : action.payload,
                 loading:false,
                 isOpen : true,
-                isOpenDoneModal:true
+                isOpenDoneModal:action.payload.statusName === 'Draft' ? true : false
 
             }
             case RENEW_STATUS:return{

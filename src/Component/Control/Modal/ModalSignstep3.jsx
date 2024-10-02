@@ -5,6 +5,7 @@ const ModalSignStep3 = (props) => {
   const {
     data,
     UserSign,
+    registanstdetail,
     status,
     onCloseModal,
     onClickConfirmBtn,
@@ -30,7 +31,7 @@ const ModalSignStep3 = (props) => {
   };
   return (
     <>
-    <PdfTablePreview data={data} aftersign={UserSign} Sign={UserSign}/>
+    <PdfTablePreview data={data} aftersign={registanstdetail} Sign={UserSign} Status ={"Submited"}/>
       <Modal
         size="lg"
         opened={true}
