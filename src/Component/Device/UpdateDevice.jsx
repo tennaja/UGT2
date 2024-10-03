@@ -1176,12 +1176,6 @@ const UpdateDevice = () => {
                                   value: 100,
                                   message: "must be at max 100 characters",
                                 },
-                                validate: {
-                                  notOnlySpaces: (value) => {
-                                    // Handle undefined values
-                                    return (value && value.trim() !== "") || "This field cannot be empty";
-                                  },
-                                },
                                 
                               }}
                               render={({ field }) => (
