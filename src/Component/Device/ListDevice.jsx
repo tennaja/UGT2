@@ -802,7 +802,8 @@ const ListDevice = (props) => {
     }
     else if (
       userGroupID == USER_GROUP_ID.PORTFOLIO_MNG ||
-      userGroupID == USER_GROUP_ID.ALL_MODULE_VIEWER
+      userGroupID == USER_GROUP_ID.ALL_MODULE_VIEWER || 
+      userGroupID == USER_GROUP_ID.WHOLE_SALEER_ADMIN
     ) {
       const utilityID = UTILITY_GROUP_ID.ALL; //EGAT
 

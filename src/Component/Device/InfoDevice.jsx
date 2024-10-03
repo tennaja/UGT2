@@ -1822,7 +1822,7 @@ const handleClickDownloadFile = async (item) => {
                 </div>
                  {deviceobj?.deviceReturnLogs?.length === 0 ? null : 
                  <div className="pt-2 pb-2 mt-4 border-l-0 border-r-0 border-t-2 border-b-2 border-x-gray-50 border-y-gray-200">
-                 {deviceobj?.deviceReturnLogs?.map ((item) => 
+                 {deviceobj?.deviceReturnLogs?.map ((item,index) => 
                  
                  <div className="bg-gray-100 p-4 rounded-lg shadow-md mt-4 mb-4 border border-gray-500">
                  <div className="flex justify-between items-center mb-2 border-b-2 border-x-gray-50 border-y-gray-200">
@@ -1833,7 +1833,7 @@ const handleClickDownloadFile = async (item) => {
                  </div>
                  <p className="text-gray-700 mb-4  pt-2 pb-2">{item.remark}</p>
                  <div className="text-right text-sm text-gray-600">
-                   <em>By {item.createBy}</em>
+                   <em>By UGT Registrant (Signatory) {String(index + 1).padStart(2, '0')}</em>
                  </div>
                </div>)}
                </div>
