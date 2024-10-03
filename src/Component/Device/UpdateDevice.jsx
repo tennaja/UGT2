@@ -996,11 +996,12 @@ const UpdateDevice = () => {
                                     "Device Name must be at max 500 characters",
                                 },
                                 validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                                  notOnlySpaces: (value) => {
+                                    // Handle undefined values
+                                    return (value && value.trim() !== "") || "This field cannot be empty";
+                                  },
+                                },
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1056,12 +1057,7 @@ const UpdateDevice = () => {
                                   value: 8,
                                   message: "must be at max 8 characters",
                                 },
-                                validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1090,11 +1086,12 @@ const UpdateDevice = () => {
                                   message: "must be at max 500 characters",
                                 },
                                 validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                                  notOnlySpaces: (value) => {
+                                    // Handle undefined values
+                                    return (value && value.trim() !== "") || "This field cannot be empty";
+                                  },
+                                },
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1122,11 +1119,12 @@ const UpdateDevice = () => {
                                   message: "must be at max 500 characters",
                                 },
                                 validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                                  notOnlySpaces: (value) => {
+                                    // Handle undefined values
+                                    return (value && value.trim() !== "") || "This field cannot be empty";
+                                  },
+                                },
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1179,11 +1177,12 @@ const UpdateDevice = () => {
                                   message: "must be at max 100 characters",
                                 },
                                 validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                                  notOnlySpaces: (value) => {
+                                    // Handle undefined values
+                                    return (value && value.trim() !== "") || "This field cannot be empty";
+                                  },
+                                },
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1281,12 +1280,8 @@ const UpdateDevice = () => {
                               value: onlyPositiveNum,
                               message: "Please enter only numeric characters.",
                             },
-                            validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                            
+                            
                           }}
                           render={({ field }) => (
                             <Input
@@ -1390,11 +1385,11 @@ const UpdateDevice = () => {
                                       rules={{
                                         required: "This field is required",
                                         validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                                          notOnlySpaces: (value) => {
+                                            // Handle undefined values
+                                            return (value && value.trim() !== "") || "This field cannot be empty";
+                                          },
+                                        },
                                       }}
                                       render={({ field }) => (
                                         <Input
@@ -1437,12 +1432,7 @@ const UpdateDevice = () => {
                                   value: 500,
                                   message: "must be at max 500 characters",
                                 },
-                                validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1506,12 +1496,7 @@ const UpdateDevice = () => {
                                 const otherItem = value.find(item => item.name === "Other");
                                 return !(otherItem && otherItem.Checked && !otherItem.otherText.trim()) || "This field is required when 'Other' is selected.";
                               },
-                              validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      }, // Custom validation
+                               // Custom validation
                             }
                           }}
                           render={({ field }) => (
@@ -1564,11 +1549,11 @@ const UpdateDevice = () => {
                           rules={{
                             required: "This field is required",
                             validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                              notOnlySpaces: (value) => {
+                                // Handle undefined values
+                                return (value && value.trim() !== "") || "This field cannot be empty";
+                              },
+                            },
                           }}
                           render={({ field }) => (
                             <Textarea
@@ -1627,11 +1612,11 @@ const UpdateDevice = () => {
                           rules={{
                             required: "This field is required",
                             validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                              notOnlySpaces: (value) => {
+                                // Handle undefined values
+                                return (value && value.trim() !== "") || "This field cannot be empty";
+                              },
+                            },
                           }}
                           render={({ field }) => (
                             <Input
@@ -1795,12 +1780,7 @@ const UpdateDevice = () => {
                               value: -90.000000,
                               message: "Please enter value between -90.000000 to 90.000000",
                             },
-                            validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                            
                             // pattern: {
                             //   value: onlyNumRegex,
                             //   message: "Please enter only numeric characters.",
@@ -1861,12 +1841,7 @@ const UpdateDevice = () => {
                               value: -180.000000,
                               message: "Please enter value between -180.000000 to 180.000000",
                             },
-                            validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                            
                             // pattern: {
                             //   value: onlyNumRegex,
                             //   message: "Please enter only numeric characters.",
@@ -1938,6 +1913,7 @@ const UpdateDevice = () => {
                           defaultValue={null}
                           rules={{
                             required: "This field is required",
+                            
                           }}
                           render={({ field }) => (
                             <MySelect
@@ -1966,11 +1942,11 @@ const UpdateDevice = () => {
                           rules={{
                             required: "This field is required",
                             validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                              notOnlySpaces: (value) => {
+                                // Handle undefined values
+                                return (value && value.trim() !== "") || "This field cannot be empty";
+                              },
+                            },
                           }}
                           render={({ field }) => (
                             <Input
@@ -2020,11 +1996,11 @@ const UpdateDevice = () => {
                           rules={{
                             required: "This field is required",
                             validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                              notOnlySpaces: (value) => {
+                                // Handle undefined values
+                                return (value && value.trim() !== "") || "This field cannot be empty";
+                              },
+                            },
                           }}
                           render={({ field }) => (
                             <Input
@@ -2050,11 +2026,11 @@ const UpdateDevice = () => {
                           rules={{
                             required: "This field is required",
                             validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                              notOnlySpaces: (value) => {
+                                // Handle undefined values
+                                return (value && value.trim() !== "") || "This field cannot be empty";
+                              },
+                            },
                           }}
                           render={({ field }) => (
                             <Textarea
@@ -2078,11 +2054,11 @@ const UpdateDevice = () => {
                           rules={{
                             required: "This field is required",
                             validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                              notOnlySpaces: (value) => {
+                                // Handle undefined values
+                                return (value && value.trim() !== "") || "This field cannot be empty";
+                              },
+                            },
                           }}
                           render={({ field }) => (
                             <Textarea
@@ -2200,7 +2176,9 @@ const UpdateDevice = () => {
                         <Controller
                           name="note"
                           control={control}
-                          rules={{}}
+                          rules={{
+
+                          }}
                           render={({ field }) => (
                             <TextareaNote
                               {...field}

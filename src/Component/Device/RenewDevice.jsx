@@ -1063,12 +1063,7 @@ const RenewDevice = () => {
                                   value: 8,
                                   message: "must be at max 8 characters",
                                 },
-                                validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1288,12 +1283,7 @@ const RenewDevice = () => {
                               value: onlyPositiveNum,
                               message: "Please enter only numeric characters.",
                             },
-                            validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                            
                           }}
                           render={({ field }) => (
                             <Input
@@ -1444,12 +1434,7 @@ const RenewDevice = () => {
                                   value: 500,
                                   message: "must be at max 500 characters",
                                 },
-                                validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1796,12 +1781,7 @@ const RenewDevice = () => {
                               value: -90.000000,
                               message: "Please enter value between -90.000000 to 90.000000",
                             },
-                            validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                           
                             // pattern: {
                             //   value: onlyNumRegex,
                             //   message: "Please enter only numeric characters.",
@@ -1862,12 +1842,7 @@ const RenewDevice = () => {
                               value: -180.000000,
                               message: "Please enter value between -180.000000 to 180.000000",
                             },
-                            validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      },
+                            
                             // pattern: {
                             //   value: onlyNumRegex,
                             //   message: "Please enter only numeric characters.",

@@ -1220,11 +1220,11 @@ const handleClickDownloadFile = async (item) => {
       />
       )}
 
-      {infoMessage() && (
+      {/* {infoMessage() && (
         <div className="text-xs text-gray-500">
           {infoMessage()}
         </div>
-      )}
+      )} */}
     </div>
   </div>
 </div>
