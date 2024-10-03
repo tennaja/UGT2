@@ -10,12 +10,14 @@ import { useFieldArray } from "react-hook-form";
 import bin from "../assets/bin-3.svg";
 import plus from "../assets/plus.svg";
 import Radiobtn from "../Control/RadioBtn";
+import PdfTablePreview from '../Control/TemplatePdf';
 import {
   FetchDeviceDropdrowList,
   FetchCountryList,
   FetchProvinceList,
   FetchDistrictList,
   FetchSubDistrictList,
+  
   FetchPostcodeList,
 } from "../../Redux/Dropdrow/Action";
 import egat from "../assets/default_device.png";
@@ -32,7 +34,8 @@ import {
   WithdrawDevice,
   FetchDeleteFile,
   FetchDownloadFile,
-  sendEmail
+  sendEmail,
+  VerifiedDevice,
 } from "../../Redux/Device/Action";
 
 import ModalConfirm from "../Control/Modal/ModalConfirm";
@@ -124,22 +127,26 @@ const UpdateDevice = () => {
   const isOpen = useSelector((state) => state.device.isOpen);
   const [locationDataList, setLocationDataList] = useState([]);
   const [mapZoomLevel, setMapZoomLevel] = useState(15); //default zoom level
-
+ const [generatedfile,setGenerateFile]=useState(false)
   const [status, setStatus] = useState(null);
   const [vFormData, setFormData] = useState("");
+  const [FormDatasf02, setFormDatasf02] = useState("");
   const [fileList, setFileList] = React.useState([]);
   const [deviceTechnoList, setDeviceTechnoList] = React.useState([]);
-
+  
   const deviceobj = useSelector((state) => state.device.deviceobj);
-
+  
   const countryList = useSelector((state) => state.dropdrow.countryList);
   const provinceList = useSelector((state) => state.dropdrow.provinceList);
   const districtList = useSelector((state) => state.dropdrow.districtList);
   const subDistrictList = useSelector(
     (state) => state.dropdrow.subDistrictList
   );
+  const test = useRef(null)
   const postcodeList = useSelector((state) => state.dropdrow.postcodeList);
-
+  const userverifier = useSelector((state)=> state.device.userverifier)
+  console.log(userverifier) 
+  const filesf02 = useSelector((state)=> state.device.filesf02) 
   const isOpenDoneModal = useSelector((state) => state.device.isOpenDoneModal);
   const isOpenFailModal = useSelector((state) => state.device.isOpenFailModal);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
@@ -206,7 +213,15 @@ const UpdateDevice = () => {
       }
     }
   },[deviceobj])
-
+  useEffect(() => {
+    // This effect will run whenever filesf02 changes
+    if (filesf02) {
+      test.current = filesf02
+      // setTest(filesf02)
+      console.log('filesf02 has changed:', test.current);
+      // Perform any side effect here, like an API call or state update
+    }
+  }, [filesf02]);
   useEffect(() => {
     if (deviceobj?.publicFunding) {
       
@@ -493,14 +508,70 @@ const UpdateDevice = () => {
   }, [postCodeListForDisplay]);
 
   const onHandleSubmitForm = (formData) => {
+    const dataForEdit = {
+      assignedUtilityId: formData?.assignedUtilityCode?.id, //assignedUtilityCode.id //number
+      imageFile: formData?.deviceImg,
+      name: formData?.name, //name //string
+      issuerId: formData?.issuerCode?.id,
+      registrantOrganisationCode: "string", // ??
+      defaultAccountCode: formData?.defaultAccountCode, //defaultAccountCode //string
+      ppaNo: formData?.ppaNo, //ppaNo //string
+      deviceOwner: formData?.owner, //owner //string
+      deviceCode: formData?.code, //code //string
+      deviceNameBySO: formData?.deviceNameBySO, //deviceNameBySO //string
+      deviceFuelCode: formData?.fuelCode?.code, //fuelCode.code //"string"
+      deviceFuelName : formData?.fuelCode?.name,
+      deviceTechnologyCode: formData?.technologyCode.code, // technologyCode.id //number
+      deviceTechnologyName : formData?.technologyCode.name,
+      capacity: formData?.capacity, // capacity //number
+      commissioningDate: formData?.commissioningDate, //commissioningDate // YYYY-MM-DD
+      registrationDate: formData?.registrationDate, //registrationDate // YYYY-MM-DD
+      otherLabellingSchemeId: formData?.otherLabellingCode?.id, // otherLabellingCode.id // number
+      address: formData?.address,
+      subdistrictCode: formData?.subdistrictCode.subdistrictCode, //subdistrictCode.subdistrictCode // number
+      subdistrictName: currentSubDistrict?.subdistrictNameEn, //subdistrictNameEn //string
+      districtCode: formData?.districtCode.districtCode, //districtCode.districtCode //number
+      districtName: formData?.districtCode.districtNameEn, //districtCode.districtNameEn //string
+      proviceCode: formData?.stateCode.provinceCode, //stateCode.provinceCode //number
+      proviceName: currentProvince?.provinceNameEn, //stateCode.provinceNameEn //string
+      countryCode: formData?.countryCode?.alpha2, //countryCode //"string",
+      countryName: formData?.countryCode?.name,
+      postcode: `${formData?.postCode?.postalCode}`, //postalCode //string
+      latitude: formData?.latitude ? formData?.latitude : 0, //latitude // number
+      longitude: formData?.longitude ? formData?.longitude : 0, //longitude //number
+      fileUploads: formData?.uploadFile,
+      notes: formData?.note, //note//"string",
+      issuerCode: formData?.issuerCode?.issuerCode, //issuerCode?.issuerCode // string
+      active: "yes", // คุณม่ำบอก ใส่ yes ไปก่อน
+      isApproved : "",
+      generatingUnit : formData.NumberofGeneratingUnits,
+      OwnerNetwork : formData.OwnerofNetwork,
+      onSiteConsumer: formData.Onsite?.Name,
+      otherImportEletricity: formData.Otherimport,
+      energySource: formData.Energysources?.Name,
+      otherCarbonOffset: formData.Othercarbon,
+      publicFunding: formData.Publicfunding?.Name,
+      fundingReceive :formData?.FundingReceivedate? formData?.FundingReceivedate : null,
+      isMeteringData : formData.ExpectedFormofVolumeEvidence[0]?.Checked ? "True" : "False" ,
+      isContractSaleInvoice : formData.ExpectedFormofVolumeEvidence[1]?.Checked ? "True" : "False" ,
+      isOther : formData.ExpectedFormofVolumeEvidence[2]?.Checked ? "True" : "False" ,
+      otherDescription : formData.ExpectedFormofVolumeEvidence[2]?.otherText,
+      deviceMeasurements : formData?.devicemeasure,
+      onSiteConsumerDetail : formData?.Onsitedetail,
+      energySourceDetail : formData?.Energysourcesdetail,
+    };
     const data = {
       ...formData,
       provinceNameEn: currentProvince?.provinceNameEn,
       districtNameEn: currentDistrict?.districtNameEn,
       subdistrictNameEn: currentSubDistrict?.subdistrictNameEn,
     };
-    console.log(data)
+    
+    setFormDatasf02(dataForEdit)
     setFormData(data);
+    if (deviceobj?.statusName === "Verified") {
+      setGenerateFile(true); // Assuming setGenerate is a state setter function
+    }
     setShowModalConfirm(true);
   };
 
@@ -647,48 +718,62 @@ const UpdateDevice = () => {
 
   const handleCloseModalConfirm = (val) => {
     setShowModalConfirm(false);
+    setGenerateFile(false)
   };
 
   const handleClickConfirm = () => {
     setShowModalConfirm(false);
-    // setIsOpenLoading(true);
-    showLoading();
+    showLoading(); // Show loading spinner
 
-    console.log("vFormData",vFormData)
-    console.log("fileList",fileList)
-    // const filterFileNoUndefined = fileList.filter(item => item.evidentFileID != undefined )
-    const fileListEvident = fileList?.map((item) => {
-      return item?.evidentFileID;
-    });
+    console.log("vFormData", vFormData);
+    console.log("fileList", fileList);
 
-    // console.log("fileListEvident=>>>",fileListEvident)
+    const fileListEvident = fileList?.map((item) => item?.evidentFileID);
     const deviceData = { ...vFormData, uploadFile: fileListEvident };
-    // console.log("deviceData=>>>",deviceData)
 
     dispatch(
       FunctionEditDevice(deviceData, () => {
-        // setIsOpenLoading(false);
-        hideLoading();
-        
-          dispatch (
-            sendEmail(titleemail,emailBodytoOwner,deviceobj?.userEmail
-              ,() => {
-              hideLoading();
-              // dispatch(clearModal());
-            })
-          )
-          if (deviceobj?.statusName !== "Draft") {
+        dispatch(
+          sendEmail(titleemail, emailBodytoOwner, deviceobj?.userEmail, () => {
+            // Email sent successfully
+          })
+        );
+
+        if (deviceobj?.statusName === "Verified") {
+          handleClickConfirmVerified();
+        } else if (deviceobj?.statusName !== "Draft") {
+          // Delay navigation by 1 second for transition effect
+          setTimeout(() => {
             navigate(DEVICE_LIST); // Replace '/' with your home page path
-          }
+          }, 1000); 
+        }
       })
     );
-    
-  };
+};
 
+const handleClickConfirmVerified = () => {
+    showLoading();
+    const deviceID = deviceobj?.id;
+
+    dispatch(
+      VerifiedDevice(deviceID, test.current, () => {
+        hideLoading(); // Hide loading spinner when the device is verified
+        dispatch(clearModal());
+        // Add a delay for smooth transition after the verification is complete
+        setTimeout(() => {
+          navigate(DEVICE_LIST); // Navigate to the device list page after 1 second delay
+        }, 1000); // Adjust the delay as needed
+      })
+    );
+};
 
   
   const handleClickBackToEdit = () => {
     dispatch(clearModal());
+  };
+  const handleClickBackToDetail = () => {
+    dispatch(clearModal());
+    navigate(DEVICE_INFO, { code: code })
   };
 
   const checkPermission = () => {
@@ -1082,7 +1167,7 @@ const UpdateDevice = () => {
                               rules={{
                                 required: "This field is required",
                                 maxLength: {
-                                  value: 10,
+                                  value: 150,
                                   message: "must be at max 500 characters",
                                 },
                                 validate: {
@@ -2216,6 +2301,12 @@ const UpdateDevice = () => {
           </div>
         </div>
       </div>
+      
+      {generatedfile && <PdfTablePreview 
+      data={FormDatasf02}
+      aftersign={userverifier}
+      Status ={"Verified"}
+      Sign={""}/>}
 
       {showModal && (
         <ModalConfirm
@@ -2231,7 +2322,7 @@ const UpdateDevice = () => {
           data={vFormData}
           status={"ADD"}
           Name={deviceName}
-          onChangeModalDone={handleClickBackToEdit}
+          onChangeModalDone={handleClickBackToDetail}
           deviceID={deviceobj?.id}
         />
       )}
