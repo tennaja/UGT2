@@ -1253,12 +1253,7 @@ const AddDevice = () => {
                                 const otherItem = value.find(item => item.name === "Other");
                                 return !(otherItem && otherItem.Checked && !otherItem.otherText.trim()) || "This field is required when 'Other' is selected.";
                               },
-                              validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      }, // Custom validation
+                              
                             }
                           }}
                           render={({ field }) => (
