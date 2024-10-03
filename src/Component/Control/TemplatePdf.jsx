@@ -422,7 +422,7 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Owner of the network to which the Production Device is connected and the voltage of that connection</td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.deviceOwner}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.ownerNetwork}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">If the Production Device is not connected directly to the grid, specify the circumstances, and additional relevant meter registration numbers</td>
