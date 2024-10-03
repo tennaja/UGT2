@@ -378,8 +378,8 @@ const UploadFile = (props) => {
             )
             
           )}
-          {props.value == undefined ? 
-           null : <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={() => {downloadZip(previews.map(file => file.props.fileWithMeta.file));}}>Download All Files (.zip)</div> }
+          {files.length > 0 && 
+           <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={() => {downloadZip(previews.map(file => file.props.fileWithMeta.file));}}>Download All Files (.zip)</div> }
         </div>
     
         {showModalConfirm && (
