@@ -548,7 +548,7 @@ const UpdateDevice = () => {
       active: "yes", // คุณม่ำบอก ใส่ yes ไปก่อน
       isApproved : "",
       generatingUnit : formData.NumberofGeneratingUnits,
-      OwnerNetwork : formData.OwnerofNetwork,
+      ownerNetwork : formData.OwnerofNetwork,
       onSiteConsumer: formData.Onsite?.Name,
       otherImportEletricity: formData.Otherimport,
       energySource: formData.Energysources?.Name,
@@ -569,7 +569,7 @@ const UpdateDevice = () => {
       districtNameEn: currentDistrict?.districtNameEn,
       subdistrictNameEn: currentSubDistrict?.subdistrictNameEn,
     };
-    
+     console.log(data)
     setFormDatasf02(dataForEdit)
     setFormData(data);
     if (deviceobj?.statusName === "Verified") {
@@ -725,6 +725,12 @@ const UpdateDevice = () => {
   };
 
   const handleClickConfirm = () => {
+    // Check if the status is "Draft"
+    // if (deviceobj?.statusName === "Draft") {
+    //     // Exit the function if status is "Draft"
+    //     return;
+    // }
+
     setShowModalConfirm(false);
     showLoading(); // Show loading spinner
 
@@ -736,23 +742,37 @@ const UpdateDevice = () => {
 
     dispatch(
       FunctionEditDevice(deviceData, () => {
+        hideLoading();
         dispatch(
           sendEmail(titleemail, emailBodytoOwner, deviceobj?.userEmail, () => {
             // Email sent successfully
           })
         );
 
+        // If the status is "Verified", call the function handleClickConfirmVerified
         if (deviceobj?.statusName === "Verified") {
           handleClickConfirmVerified();
-        } else if (deviceobj?.statusName !== "Draft") {
+        } else if (deviceobj?.statusName === "Submitted") {
           // Delay navigation by 1 second for transition effect
-          setTimeout(() => {
-            navigate(DEVICE_LIST); // Replace '/' with your home page path
-          }, 1000); 
+          
+            handleClickBackToDetail(); // Navigate back to the detail page
+          
+        }else if (deviceobj?.statusName === "Verifying") {
+          // Delay navigation by 1 second for transition effect
+          
+            handleClickBackToDetail(); // Navigate back to the detail page
+          
+        }
+        else if (deviceobj?.statusName === "Return") {
+          // Delay navigation by 1 second for transition effect
+          
+            handleClickBackToDetail(); // Navigate back to the detail page
+          
         }
       })
     );
 };
+
 
 const handleClickConfirmVerified = () => {
     showLoading();
@@ -761,11 +781,11 @@ const handleClickConfirmVerified = () => {
     dispatch(
       VerifiedDevice(deviceID, test.current, () => {
         hideLoading(); // Hide loading spinner when the device is verified
-        dispatch(clearModal());
+        
         // Add a delay for smooth transition after the verification is complete
-        setTimeout(() => {
-          navigate(DEVICE_LIST); // Navigate to the device list page after 1 second delay
-        }, 1000); // Adjust the delay as needed
+        
+          handleClickBackToDetail(); // Navigate to the device list page after 1 second delay
+         // Adjust the delay as needed
       })
     );
 };

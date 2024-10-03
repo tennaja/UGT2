@@ -82,6 +82,7 @@ function getYear(date) {
 
 const formatNumber = (value) => {
   if (typeof value !== 'number' || isNaN(value)) {
+    console.log("Invalid input:", value); // Log invalid input
     return '000000000000'; // Default value if input is invalid
   }
   
@@ -100,12 +101,19 @@ const formatNumber = (value) => {
   // Combine integer and fractional parts
   return paddedIntegerPart + paddedFractionalPart;
 };
+
+// Log capacity before formatting
 const capacity = data?.data?.capacity;
-const formattedNumber = formatNumber(capacity);
+console.log("Raw capacity:", capacity); // Log raw value of capacity
+
+// Format number only if capacity is valid
+const formattedNumber = formatNumber(Number(capacity));
 
 // Split the formatted number into individual characters for display
 const numberSlots = formattedNumber.split('');
-  
+
+console.log("Formatted number:", formattedNumber); // Log formatted output
+
 
   const pdfContentRef = useRef("");
   
