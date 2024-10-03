@@ -495,15 +495,18 @@ const UpdateDevice = () => {
         item.districtCode == deviceobj?.districtCode &&
         item.postalCode == deviceobj?.postcode
     );
+
     if (postCodeListForDisplay.length > 0) {
-      setValue(
-        "postCode",
-        initialvalueForSelectField(
-          postCodeFilter,
-          "postalCode",
-          deviceobj?.postcode
-        )
-      );
+      if (currentSubDistrict?.subdistrictCode == deviceobj?.subdistrictCode) {
+        setValue(
+          "postCode",
+          initialvalueForSelectField(
+            postCodeFilter,
+            "postalCode",
+            deviceobj?.postcode
+          )
+        );
+      }
     }
   }, [postCodeListForDisplay]);
 
