@@ -115,10 +115,11 @@ export async function showLoading(
     Swal.fire({
       title: title,
       html: text,
-      allowOutsideClick: false,
+      allowOutsideClick: false, // Prevents clicking outside
       showConfirmButton: false,
       timerProgressBar: true,
-      backdrop: false,
+      backdrop: `
+        rgba(0, 0, 0, 0.4)`, // Semi-transparent dark background
       didOpen: () => {
         Swal.showLoading();
       },
@@ -133,3 +134,4 @@ export async function hideLoading() {
   }
   Swal.close();
 }
+

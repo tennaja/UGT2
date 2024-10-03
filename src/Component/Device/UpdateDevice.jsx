@@ -751,22 +751,22 @@ const UpdateDevice = () => {
 
         // If the status is "Verified", call the function handleClickConfirmVerified
         if (deviceobj?.statusName === "Verified") {
-          handleClickConfirmVerified();
+          navigate(DEVICE_LIST);
         } else if (deviceobj?.statusName === "Submitted") {
           // Delay navigation by 1 second for transition effect
           
-            handleClickBackToDetail(); // Navigate back to the detail page
+          navigate(DEVICE_LIST); // Navigate back to the detail page
           
         }else if (deviceobj?.statusName === "Verifying") {
           // Delay navigation by 1 second for transition effect
           
-            handleClickBackToDetail(); // Navigate back to the detail page
+          navigate(DEVICE_LIST); // Navigate back to the detail page
           
         }
         else if (deviceobj?.statusName === "Return") {
           // Delay navigation by 1 second for transition effect
           
-            handleClickBackToDetail(); // Navigate back to the detail page
+          navigate(DEVICE_LIST); // Navigate back to the detail page
           
         }
       })
