@@ -785,12 +785,7 @@ const AddDevice = () => {
                                   value: 8,
                                   message: "must be at max 8 characters",
                                 },
-                                validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      }, // Custom validation
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1002,12 +997,7 @@ const AddDevice = () => {
                               message:
                                 "This value must be between 0 and 99999.999999",
                             },
-                            validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      }, // Custom validation
+                            
                             // pattern: {
                             //   value: onlyPositiveNum,
                             //   message: "Please enter only numeric characters.",
@@ -1166,12 +1156,7 @@ const AddDevice = () => {
                                   message: "must be at max 500 characters",
                                   
                                 },
-                                validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      }, // Custom validation
+                                
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1539,12 +1524,7 @@ const AddDevice = () => {
                               value: -90.000000,
                               message: "Please enter value between -90.000000 to 90.000000",
                             },
-                            validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      }, // Custom validation
+                            
                             // pattern: {
                             //   value: onlyNumRegex,
                             //   message: "Please enter only numeric characters.",
@@ -1604,12 +1584,7 @@ const AddDevice = () => {
                               value: -180.000000,
                               message: "Please enter value between -180.000000 to 180.000000",
                             },
-                            validate: {
-        notOnlySpaces: (value) => {
-          // Handle undefined values
-          return (value && value.trim() !== "") || "This field cannot be empty";
-        },
-      }, // Custom validation
+                            
                             // pattern: {
                             //   value: onlyNumRegex,
                             //   message: "Please enter only numeric characters.",
