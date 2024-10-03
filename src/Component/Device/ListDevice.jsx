@@ -202,7 +202,7 @@ const ListDevice = (props) => {
             highlightTag={Highlight}
             searchWords={[searchQueryAssigned]}
             autoEscape={true}
-            textToHighlight={numeral(row.capacity).format("0,0.000000")}
+            textToHighlight={numeral(row.capacity).format("0,0.00")}
           />
         </span>
       ),
@@ -337,7 +337,7 @@ const ListDevice = (props) => {
             highlightTag={Highlight}
             searchWords={[searchQueryUnAssigned]}
             autoEscape={true}
-            textToHighlight={numeral(row.capacity).format("0,0.000000")}
+            textToHighlight={numeral(row.capacity).format("0,0.00")}
           />
         </span>
       ),
@@ -386,7 +386,7 @@ const ListDevice = (props) => {
           state={{ code: row.id }}
           to={WEB_URL.DEVICE_INFO}
           // hover:bg-[#4D6A00] bg-[#87BE33]
-          className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#A6D37F] bg-[#8FBF57]`}
+          className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#8FBF57] bg-[#A6D37F]`}
         >
           <label className="cursor-pointer text-white font-semibold mr-2">
             {"View"}
@@ -849,10 +849,10 @@ const ListDevice = (props) => {
               </p>
             </div>
 
-            <div className="flex sm:flex-col lg:flex-row w-full h-auto gap-4">
+            <div className="flex sm:flex-col lg:flex-row w-full h-auto gap-3">
               {/* {'left content'} */}
-              <div className="flex flex-col w-full h-auto gap-3">
-                <div className="w-full h-full flex justify-start items-start">
+              {/* Total Active Devices Card */}
+                <div className="w-full h-auto flex justify-start items-start">
                   <Card
                     shadow="md"
                     radius="lg"
@@ -890,9 +890,9 @@ const ListDevice = (props) => {
                       </div>
                     </div>
                   </Card>
-                </div></div>
-                <div className="flex flex-col w-full h-auto gap-3">
-                <div className=" w-auto h-full flex justify-start items-start ">
+              </div>
+                {/* Total Active Capacity Card */}
+                <div className=" w-full h-auto flex justify-start items-start ">
                   <Card
                     shadow="md"
                     radius="lg"
@@ -914,7 +914,7 @@ const ListDevice = (props) => {
                         </div>
                         <div>
                           <p className="text-3xl font-semibold m-0 text-end">
-                            {numeral(totalCapacity).format("0,0.000000")}
+                            {numeral(totalCapacity).format("0,0.00")}
                           </p>
                           <span> </span>
                           <p className="text-lg font-medium text-slate-500 text-end">
@@ -930,9 +930,9 @@ const ListDevice = (props) => {
                       </div>
                     </div>
                   </Card>
-                </div></div>
-                <div className="flex flex-col w-full h-auto gap-3">
-                <div className="w-full h-full flex justify-start items-end ">
+                </div>
+                {/* Registration Tracking Card */}
+                <div className="w-full h-auto flex justify-start items-end ">
                   <Card
                     shadow="md"
                     radius="lg"
@@ -970,11 +970,12 @@ const ListDevice = (props) => {
                       </div>
                     </div>
                   </Card>
-                </div></div>
+                </div>
               
               {/*Right Content*/}
-              <div className="flex flex-col w-full h-auto gap-4">
-<div className="w-full h-full flex justify-start items-end ">
+              <div className="flex flex-col w-full h-auto gap-3">
+                {/* Total Inactive Devices Card */}
+              <div className="w-full h-full flex justify-start items-end ">
                   <Card
                     shadow="md"
                     radius="lg"
@@ -1008,12 +1009,13 @@ const ListDevice = (props) => {
                       Total Inactive Devices
                       </div>
                       <div className="text-gray-500 text-xs">
-                      Monitor devices awaiting for approval at a glance.
+                      Monitor devices awaiting both approval and operation.
                       </div>
                     </div>
                   </Card>
                 </div> 
-                <div className="w-full h-full flex justify-start items-end">
+                {/* About to Expire Card */}
+                <div className="w-full h-auto flex justify-start items-end">
                   <Card
                     shadow="md"
                     radius="lg"
@@ -1047,7 +1049,7 @@ const ListDevice = (props) => {
                       About to Expire
                       </div>
                       <div className="text-gray-500 text-xs">
-                      Track device expiry to ensure continuous operation through renewal. Registration Tracking
+                      Track device expiry for its registration renewal.
                       </div>
                     </div>
                   </Card>

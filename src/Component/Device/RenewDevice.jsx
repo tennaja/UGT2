@@ -998,10 +998,16 @@ const RenewDevice = () => {
                                 required: "This field is required",
 
                                 maxLength: {
-                                  value: 500,
+                                  value: 150,
                                   message:
                                     "Device Name must be at max 500 characters",
                                 },
+                                validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1057,6 +1063,12 @@ const RenewDevice = () => {
                                   value: 8,
                                   message: "must be at max 8 characters",
                                 },
+                                validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1081,9 +1093,15 @@ const RenewDevice = () => {
                               rules={{
                                 required: "This field is required",
                                 maxLength: {
-                                  value: 500,
+                                  value: 150,
                                   message: "must be at max 500 characters",
                                 },
+                                validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1107,9 +1125,15 @@ const RenewDevice = () => {
                               rules={{
                                 required: "This field is required",
                                 maxLength: {
-                                  value: 500,
+                                  value: 150,
                                   message: "must be at max 500 characters",
                                 },
+                                validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1161,6 +1185,12 @@ const RenewDevice = () => {
                                   value: 100,
                                   message: "must be at max 100 characters",
                                 },
+                                validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1258,6 +1288,12 @@ const RenewDevice = () => {
                               value: onlyPositiveNum,
                               message: "Please enter only numeric characters.",
                             },
+                            validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                           }}
                           render={({ field }) => (
                             <Input
@@ -1360,6 +1396,12 @@ const RenewDevice = () => {
                                       control={control}
                                       rules={{
                                         required: "This field is required",
+                                        validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                                       }}
                                       render={({ field }) => (
                                         <Input
@@ -1402,6 +1444,12 @@ const RenewDevice = () => {
                                   value: 500,
                                   message: "must be at max 500 characters",
                                 },
+                                validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                               }}
                               render={({ field }) => (
                                 <Input
@@ -1455,7 +1503,7 @@ const RenewDevice = () => {
                       </div>
                       <div className="md:col-span-3 mt-4">
                       <Controller
-                          name="Expected Form of Volume Evidence"
+                          name="ExpectedFormofVolumeEvidence"
                           control={control}
                           rules={{
                             validate: {
@@ -1473,7 +1521,7 @@ const RenewDevice = () => {
                               {...field}
                               id={"ExpectedFormofVolumeEvidence"}
                               value={checking} 
-                              label={"ExpectedForm of Volume Evidence"}
+                              label={"Expected Form of Volume Evidence"}
                               error={errors.ExpectedFormofVolumeEvidence}
                               validate={" *"}
                               
@@ -1514,7 +1562,15 @@ const RenewDevice = () => {
                         <Controller
                           name="OwnerofNetwork"
                           control={control}
-                          rules={{}}
+                          rules={{
+                            required: "This field is required",
+                            validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
+                          }}
                           render={({ field }) => (
                             <Textarea
                               {...field}
@@ -1571,6 +1627,12 @@ const RenewDevice = () => {
                           control={control}
                           rules={{
                             required: "This field is required",
+                            validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                           }}
                           render={({ field }) => (
                             <Input
@@ -1734,6 +1796,12 @@ const RenewDevice = () => {
                               value: -90.000000,
                               message: "Please enter value between -90.000000 to 90.000000",
                             },
+                            validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                             // pattern: {
                             //   value: onlyNumRegex,
                             //   message: "Please enter only numeric characters.",
@@ -1794,6 +1862,12 @@ const RenewDevice = () => {
                               value: -180.000000,
                               message: "Please enter value between -180.000000 to 180.000000",
                             },
+                            validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                             // pattern: {
                             //   value: onlyNumRegex,
                             //   message: "Please enter only numeric characters.",
@@ -1892,6 +1966,12 @@ const RenewDevice = () => {
                           control={control}
                           rules={{
                             required: "This field is required",
+                            validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                           }}
                           render={({ field }) => (
                             <Input
@@ -1940,6 +2020,12 @@ const RenewDevice = () => {
                           control={control}
                           rules={{
                             required: "This field is required",
+                            validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                           }}
                           render={({ field }) => (
                             <Input
@@ -1964,6 +2050,12 @@ const RenewDevice = () => {
                           control={control}
                           rules={{
                             required: "This field is required",
+                            validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                           }}
                           render={({ field }) => (
                             <Textarea
@@ -1986,6 +2078,12 @@ const RenewDevice = () => {
                           control={control}
                           rules={{
                             required: "This field is required",
+                            validate: {
+        notOnlySpaces: (value) => {
+          // Handle undefined values
+          return (value && value.trim() !== "") || "This field cannot be empty";
+        },
+      },
                           }}
                           render={({ field }) => (
                             <Textarea
