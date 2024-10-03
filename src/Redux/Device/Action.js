@@ -558,6 +558,16 @@ export const FunctionEditDevice = (data, callback) => {
       (response) => {
         if (response.status == 200 || response?.status == 201) {
           dispatch(updateDevice(response?.data?.device));
+          toast.success("Save Device Complete!", {
+            position: "top-right",
+            autoClose: 3000,
+            style: {
+              border: "1px solid #a3d744", // Green border similar to the one in your image
+              color: "#6aa84f", // Green text color
+              fontSize: "16px", // Adjust font size as needed
+              backgroundColor: "##FFFFFF", // Light green background
+            }, // 3 seconds
+          });
         } else {
           dispatch(setOpenFailModal());
           dispatch(failRequest(error.message));
