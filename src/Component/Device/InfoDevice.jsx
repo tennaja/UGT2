@@ -1876,7 +1876,8 @@ const handleClickDownloadFile = async (item) => {
       />}
       
       {opensubmitstep2 && <ModalSignStep2
-      registanName = {deviceobj?.name}
+      registanName = {userverifier?.organisationId
+      }
       onCloseModal={onclickclosemodalsubmit}
       onClickConfirmBtn={onclicksubmitstep3}
       />}
