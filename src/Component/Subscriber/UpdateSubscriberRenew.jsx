@@ -6378,6 +6378,8 @@ const onCloseModalError=()=>{
           allowcatedEnergyDataEdit={allowcatedEnergyDataEdit}
           editStatus={isEdit}
           listData={allowcatedEnergyList}
+          yearStart={yearStartDate1.current}
+          yearEnd={yearEndDate1.current}
         />
       )}
       {showModalCreate && (
