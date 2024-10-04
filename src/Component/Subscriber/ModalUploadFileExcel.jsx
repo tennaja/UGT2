@@ -131,7 +131,108 @@ export default function ModalUploadFileExcel(props) {
         const filterYearSheetEmpty = sheetData.filter((items) => items[1] === undefined)
         if(filterYearSheetEmpty.length === 0){
             if(filterYearSheet.length === 0){
-            sheetData.map((item, index) => {
+              for(let i = 0;i < sheetData.length;i++){
+                if(i>=2){
+                  const filterDuplicate = sheetData.filter((items)=>items[1] === sheetData[i]?.[1])
+                  if(filterDuplicate.length === 1){
+                    if (listData.length === 0) {
+                      console.log("Add new");
+                      console.log("Items : ",sheetData[i]?.[2])
+                      setAllowcatedEnergyList((prevEnergyList) => {
+                        console.log("prevFileList", prevEnergyList);
+                        let newFileList = [
+                          ...prevEnergyList,
+                          {
+                            
+                            allocateType: "CUSTOM",
+                            amount01: Number(sheetData[i]?.[2] === undefined?0:isNaN(Number(sheetData[i]?.[2]))?0:sheetData[i]?.[2]%10 === 0?sheetData[i]?.[2]:sheetData[i]?.[2].toFixed(2)),
+                            amount02: Number(sheetData[i]?.[3] === undefined?0:isNaN(Number(sheetData[i]?.[3]))?0:sheetData[i]?.[3]%10 === 0?sheetData[i]?.[3]:sheetData[i]?.[3].toFixed(2)),
+                            amount03: Number(sheetData[i]?.[4] === undefined?0:isNaN(Number(sheetData[i]?.[4]))?0:sheetData[i]?.[4]%10 === 0?sheetData[i]?.[4]:sheetData[i]?.[4].toFixed(2)),
+                            amount04: Number(sheetData[i]?.[5] === undefined?0:isNaN(Number(sheetData[i]?.[5]))?0:sheetData[i]?.[5]%10 === 0?sheetData[i]?.[5]:sheetData[i]?.[5].toFixed(2)),
+                            amount05: Number(sheetData[i]?.[6] === undefined?0:isNaN(Number(sheetData[i]?.[6]))?0:sheetData[i]?.[6]%10 === 0?sheetData[i]?.[6]:sheetData[i]?.[6].toFixed(2)),
+                            amount06: Number(sheetData[i]?.[7] === undefined?0:isNaN(Number(sheetData[i]?.[7]))?0:sheetData[i]?.[7]%10 === 0?sheetData[i]?.[7]:sheetData[i]?.[7].toFixed(2)),
+                            amount07: Number(sheetData[i]?.[8] === undefined?0:isNaN(Number(sheetData[i]?.[8]))?0:sheetData[i]?.[8]%10 === 0?sheetData[i]?.[8]:sheetData[i]?.[8].toFixed(2)),
+                            amount08: Number(sheetData[i]?.[9] === undefined?0:isNaN(Number(sheetData[i]?.[9]))?0:sheetData[i]?.[9]%10 === 0?sheetData[i]?.[9]:sheetData[i]?.[9].toFixed(2)),
+                            amount09: Number(sheetData[i]?.[10] === undefined?0:isNaN(Number(sheetData[i]?.[10]))?0:sheetData[i]?.[10]%10 === 0?sheetData[i]?.[10]:sheetData[i]?.[10].toFixed(2)),
+                            amount10: Number(sheetData[i]?.[11] === undefined?0:isNaN(Number(sheetData[i]?.[11]))?0:sheetData[i]?.[11]%10 === 0?sheetData[i]?.[11]:sheetData[i]?.[11].toFixed(2)),
+                            amount11: Number(sheetData[i]?.[12] === undefined?0:isNaN(Number(sheetData[i]?.[12]))?0:sheetData[i]?.[12]%10 === 0?sheetData[i]?.[12]:sheetData[i]?.[12].toFixed(2)),
+                            amount12: Number(sheetData[i]?.[13] === undefined?0:isNaN(Number(sheetData[i]?.[13]))?0:sheetData[i]?.[13]%10 === 0?sheetData[i]?.[13]:sheetData[i]?.[13].toFixed(2)),
+                            year: Number(sheetData[i]?.[1]),
+                          },
+                        ];
+                        return newFileList;
+                      });
+                    } else {
+                      console.log("have data")
+                      const lenghtFilter = listData.filter(
+                        (items) => items.year === sheetData[i]?.[1]
+                      );
+                      //console.log(lenghtFilter)
+                      if (lenghtFilter.length === 0) {
+                        console.log("Add new Year");
+                        setAllowcatedEnergyList((prevEnergyList) => {
+                          console.log("prevFileList", prevEnergyList);
+                          let newFileList = [
+                            ...prevEnergyList,
+                            {
+                              allocateType: "CUSTOM",
+                              amount01: Number(sheetData[i]?.[2] === undefined?0:isNaN(Number(sheetData[i]?.[2]))?0:sheetData[i]?.[2]%10 === 0?sheetData[i]?.[2]:sheetData[i]?.[2].toFixed(2)),
+                              amount02: Number(sheetData[i]?.[3] === undefined?0:isNaN(Number(sheetData[i]?.[3]))?0:sheetData[i]?.[3]%10 === 0?sheetData[i]?.[3]:sheetData[i]?.[3].toFixed(2)),
+                              amount03: Number(sheetData[i]?.[4] === undefined?0:isNaN(Number(sheetData[i]?.[4]))?0:sheetData[i]?.[4]%10 === 0?sheetData[i]?.[4]:sheetData[i]?.[4].toFixed(2)),
+                              amount04: Number(sheetData[i]?.[5] === undefined?0:isNaN(Number(sheetData[i]?.[5]))?0:sheetData[i]?.[5]%10 === 0?sheetData[i]?.[5]:sheetData[i]?.[5].toFixed(2)),
+                              amount05: Number(sheetData[i]?.[6] === undefined?0:isNaN(Number(sheetData[i]?.[6]))?0:sheetData[i]?.[6]%10 === 0?sheetData[i]?.[6]:sheetData[i]?.[6].toFixed(2)),
+                              amount06: Number(sheetData[i]?.[7] === undefined?0:isNaN(Number(sheetData[i]?.[7]))?0:sheetData[i]?.[7]%10 === 0?sheetData[i]?.[7]:sheetData[i]?.[7].toFixed(2)),
+                              amount07: Number(sheetData[i]?.[8] === undefined?0:isNaN(Number(sheetData[i]?.[8]))?0:sheetData[i]?.[8]%10 === 0?sheetData[i]?.[8]:sheetData[i]?.[8].toFixed(2)),
+                              amount08: Number(sheetData[i]?.[9] === undefined?0:isNaN(Number(sheetData[i]?.[9]))?0:sheetData[i]?.[9]%10 === 0?sheetData[i]?.[9]:sheetData[i]?.[9].toFixed(2)),
+                              amount09: Number(sheetData[i]?.[10] === undefined?0:isNaN(Number(sheetData[i]?.[10]))?0:sheetData[i]?.[10]%10 === 0?sheetData[i]?.[10]:sheetData[i]?.[10].toFixed(2)),
+                              amount10: Number(sheetData[i]?.[11] === undefined?0:isNaN(Number(sheetData[i]?.[11]))?0:sheetData[i]?.[11]%10 === 0?sheetData[i]?.[11]:sheetData[i]?.[11].toFixed(2)),
+                              amount11: Number(sheetData[i]?.[12] === undefined?0:isNaN(Number(sheetData[i]?.[12]))?0:sheetData[i]?.[12]%10 === 0?sheetData[i]?.[12]:sheetData[i]?.[12].toFixed(2)),
+                              amount12: Number(sheetData[i]?.[13] === undefined?0:isNaN(Number(sheetData[i]?.[13]))?0:sheetData[i]?.[13]%10 === 0?sheetData[i]?.[13]:sheetData[i]?.[13].toFixed(2)),
+                              year: Number(sheetData[i]?.[1]),
+                            },
+                          ];
+                          return newFileList;
+                        });
+                      } else {
+                        console.log("Update Old Data");
+                        const indexFilterList = listData.findIndex(
+                          (items) => items.year === sheetData[i]?.[1]
+                        );
+                        
+                        const listTempData = listData;
+                        //console.log("List Old",listTempData[indexFilterList])
+                        
+                        listTempData[indexFilterList] = {
+                            allocateType: "CUSTOM",
+                            amount01: Number(sheetData[i]?.[2] === undefined?0:isNaN(Number(sheetData[i]?.[2]))?0:sheetData[i]?.[2]%10 === 0?sheetData[i]?.[2]:sheetData[i]?.[2].toFixed(2)),
+                            amount02: Number(sheetData[i]?.[3] === undefined?0:isNaN(Number(sheetData[i]?.[3]))?0:sheetData[i]?.[3]%10 === 0?sheetData[i]?.[3]:sheetData[i]?.[3].toFixed(2)),
+                            amount03: Number(sheetData[i]?.[4] === undefined?0:isNaN(Number(sheetData[i]?.[4]))?0:sheetData[i]?.[4]%10 === 0?sheetData[i]?.[4]:sheetData[i]?.[4].toFixed(2)),
+                            amount04: Number(sheetData[i]?.[5] === undefined?0:isNaN(Number(sheetData[i]?.[5]))?0:sheetData[i]?.[5]%10 === 0?sheetData[i]?.[5]:sheetData[i]?.[5].toFixed(2)),
+                            amount05: Number(sheetData[i]?.[6] === undefined?0:isNaN(Number(sheetData[i]?.[6]))?0:sheetData[i]?.[6]%10 === 0?sheetData[i]?.[6]:sheetData[i]?.[6].toFixed(2)),
+                            amount06: Number(sheetData[i]?.[7] === undefined?0:isNaN(Number(sheetData[i]?.[7]))?0:sheetData[i]?.[7]%10 === 0?sheetData[i]?.[7]:sheetData[i]?.[7].toFixed(2)),
+                            amount07: Number(sheetData[i]?.[8] === undefined?0:isNaN(Number(sheetData[i]?.[8]))?0:sheetData[i]?.[8]%10 === 0?sheetData[i]?.[8]:sheetData[i]?.[8].toFixed(2)),
+                            amount08: Number(sheetData[i]?.[9] === undefined?0:isNaN(Number(sheetData[i]?.[9]))?0:sheetData[i]?.[9]%10 === 0?sheetData[i]?.[9]:sheetData[i]?.[9].toFixed(2)),
+                            amount09: Number(sheetData[i]?.[10] === undefined?0:isNaN(Number(sheetData[i]?.[10]))?0:sheetData[i]?.[10]%10 === 0?sheetData[i]?.[10]:sheetData[i]?.[10].toFixed(2)),
+                            amount10: Number(sheetData[i]?.[11] === undefined?0:isNaN(Number(sheetData[i]?.[11]))?0:sheetData[i]?.[11]%10 === 0?sheetData[i]?.[11]:sheetData[i]?.[11].toFixed(2)),
+                            amount11: Number(sheetData[i]?.[12] === undefined?0:isNaN(Number(sheetData[i]?.[12]))?0:sheetData[i]?.[12]%10 === 0?sheetData[i]?.[12]:sheetData[i]?.[12].toFixed(2)),
+                            amount12: Number(sheetData[i]?.[13] === undefined?0:isNaN(Number(sheetData[i]?.[13]))?0:sheetData[i]?.[13]%10 === 0?sheetData[i]?.[13]:sheetData[i]?.[13].toFixed(2)),
+                            year: Number(sheetData[i]?.[1]),
+                        };
+                        setAllowcatedEnergyList(listTempData);
+                      }
+                    }
+                  }
+                  else{
+                    setIsShowFailModal(true)
+                    setMessageFailModal("Please check file data again have year is duplicate.")
+                    setAllowcatesExcelfileList([])
+                    setTumbFile([]);
+                    onCloseModal();
+                    break;
+                  }
+                }
+              }
+            /*sheetData.map((item, index) => {
             if (index >= 2) {
               console.log("Items", item);
                 if (listData.length === 0) {
@@ -221,7 +322,7 @@ export default function ModalUploadFileExcel(props) {
                   }
                 }
             }
-            });
+            });*/
             setTumbFile([]);
             onCloseModal();
             }
