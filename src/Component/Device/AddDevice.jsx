@@ -1164,6 +1164,7 @@ const AddDevice = () => {
                                   id={"NumberofGeneratingUnits"}
                                   placeholder={"Please fill the form in Number"}
                                   type={"number"}
+                                  min={0}
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}

@@ -1541,6 +1541,7 @@ const handleClickConfirmVerified = () => {
                                   {...field}
                                   id={"NumberofGeneratingUnits"}
                                   type={"number"}
+                                  min={0}
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
