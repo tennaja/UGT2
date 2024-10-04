@@ -1558,7 +1558,7 @@ const handleClickConfirmVerified = () => {
                                     
                                     // Optionally pad the number if needed
                                     
-                                    setValue("NumberofGeneratingUnits", value);
+                                    setValue("NumberofGeneratingUnits",  value.toString());
                                   }}
                                   // ... other props
                                 />

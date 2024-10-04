@@ -449,7 +449,7 @@ export const FunctionAddDevice = (data, callback) => {
     ugtStartDate: "2023-11-09", // ??
     ugtEndDate: "2023-11-09", // ??
     ugtGroup: data?.ugtGroup,
-    generatingUnit : data.NumberofGeneratingUnits,
+    GeneratingUnit : data.NumberofGeneratingUnits,
     OwnerNetwork : data.OwnerofNetwork,
     OnSiteConsumer: data.Onsite?.Name,
     onSiteConsumerDetail : data?.Onsitedetail,
@@ -535,7 +535,7 @@ export const FunctionEditDevice = (data, callback) => {
     notes: data?.note, //note//"string",
     issuerCode: data?.issuerCode?.issuerCode, //issuerCode?.issuerCode // string
     active: "yes", // คุณม่ำบอก ใส่ yes ไปก่อน
-    generatingUnit : data.NumberofGeneratingUnits,
+    GeneratingUnit : data.NumberofGeneratingUnits,
     OwnerNetwork : data.OwnerofNetwork,
     OnSiteConsumer: data.Onsite?.Name,
     OtherImportEletricity: data.Otherimport,
