@@ -1168,7 +1168,7 @@ const AddDevice = () => {
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
-                                  
+
                                   onKeyDown={(e) => {
                                     // Prevent invalid characters like 'e', '+', '-'
                                     if (['e', 'E', '+','-','.'].includes(e.key)) {
@@ -1179,9 +1179,6 @@ const AddDevice = () => {
                                     let value = parseFloat(e.target.value);
                                     
                                     if (value <= 0) value = 1;
-                                    
-                                    // Optionally pad the number if needed
-                                    
                                     setValue("NumberofGeneratingUnits", value);
                                   }}
                                   // ... other props
