@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import Calendar from "../assets/calendars.svg";
 import User from "../assets/3 User.svg";
 import Clock from "../assets/Clock.svg";
@@ -398,8 +398,6 @@ const Subscriberlisting = (props) => {
     }*/
   };
 
-  
-
   const columnsAssigned = [
     {
       id: "subcriberName",
@@ -408,12 +406,12 @@ const Subscriberlisting = (props) => {
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className="font-semibold break-words"
+            className="font-semibold	break-words"
             style={{
-              // whiteSpace: "nowrap",
+              //  whiteSpace: "nowrap",
               // overflow: "hidden",
               // textOverflow: "ellipsis",
-              maxWidth: "350px",
+              maxWidth: "300px",
             }}
           >
             <Highlighter
@@ -424,6 +422,12 @@ const Subscriberlisting = (props) => {
               textToHighlight={row.subcriberName}
             />
           </div>
+          <style>{`
+    .highlight {
+      background-color: yellow;
+      font-weight: bold;
+    }
+  `}</style>
           <label
             className={`${
               row?.subscriberTypeId == 1
@@ -442,7 +446,6 @@ const Subscriberlisting = (props) => {
                   : "Aggregate Subscriber"
               }
             />
-
           </label>
         </div>
       ),
@@ -484,7 +487,6 @@ const Subscriberlisting = (props) => {
         </span>
       ),
     },
-    // { id: "portfolio", label: "Portfolio" },
     {
       id: "portfolio",
       label: "Portfolio",
@@ -507,7 +509,7 @@ const Subscriberlisting = (props) => {
               textToHighlight={row.portfolio}
             />
           </div>
-          {row?.portfolioCode === null && 
+          {row?.portfolioCode !== null && 
           <div>
           <label
             className={`${"bg-[#FFDAE1] text-[#FE3C90]"} rounded w-max px-3 py-1 mt-1 text-xs font-bold`}
@@ -517,8 +519,10 @@ const Subscriberlisting = (props) => {
               highlightTag={Highlight}
               searchWords={[searchQueryAssigned]}
               autoEscape={true}
-              textToHighlight={row?.utilityContractAbbr}
-            />            
+              textToHighlight={row?.portfolioCode || ""}
+            />
+            
+            
           </label>
           <button>
               <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.utilityContractAbbr)}/>
@@ -527,6 +531,21 @@ const Subscriberlisting = (props) => {
         </div>
       ),
     },
+    /*{
+      id: "portfolioCode",
+      label: "Portfolio Code",
+      render: (row) => (
+        <span>
+          <Highlighter
+            highlightClassName="highlight"
+            highlightTag={Highlight}
+            searchWords={[searchQueryAssigned]}
+            autoEscape={true}
+            textToHighlight={row.portfolioCode || ""}
+          />
+        </span>
+      ),
+    },*/
     {
       id: "subscriberStatusId",
       label: "Status",
@@ -545,16 +564,6 @@ const Subscriberlisting = (props) => {
           searchQuery={searchQueryAssigned}
         />
       ),
-      // render: (row) => (
-      //   <div
-      //     className={`text-white rounded-large font-semibold text-xs py-1.5 px-2
-      //     bg-${
-      //       row.subscriberStatusId == 1 ? "PRIMARY_BUTTON" : "SUCCESS_BUTTON"
-      //     }`}
-      //   >
-      //     {row.subscriberStatusId == 1 ? "Inactive" : "Active"}
-      //   </div>
-      // ),
     },
     {
       id: "manage",
@@ -681,7 +690,7 @@ const Subscriberlisting = (props) => {
               textToHighlight={row.portfolio}
             />
           </div>
-          {row?.portfolioCode === null && 
+          {row?.portfolioCode !== null && 
           <div>
             <label
               className={`${"bg-[#FFDAE1] text-[#FE3C90]"} rounded w-max px-3 py-1 mt-1 text-xs font-bold`}
@@ -691,7 +700,7 @@ const Subscriberlisting = (props) => {
                 highlightTag={Highlight}
                 searchWords={[searchQueryUnAssigned]}
                 autoEscape={true}
-                textToHighlight={row?.utilityContractAbbr}
+                textToHighlight={row?.portfolioCode || ""}
               />
               
             </label>
@@ -702,6 +711,21 @@ const Subscriberlisting = (props) => {
         </div>
       ),
     },
+   /* {
+      id: "portfolioCode",
+      label: "Portfolio Code",
+      render: (row) => (
+        <span>
+          <Highlighter
+            highlightClassName="highlight"
+            highlightTag={Highlight}
+            searchWords={[searchQueryAssigned]}
+            autoEscape={true}
+            textToHighlight={row.portfolioCode || ""}
+          />
+        </span>
+      ),
+    },*/
     {
       id: "subscriberStatusId",
       label: "Status",
@@ -772,7 +796,7 @@ const Subscriberlisting = (props) => {
 
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
-      console.log("Fetch DATA");
+      console.log("Fetch DATA")
       if (
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG
@@ -819,8 +843,9 @@ const Subscriberlisting = (props) => {
         };
         dispatch(SubscriberManagementdashboard(paramDashboard));
       }
-    } else {
-      console.log("Not Fetch Data");
+    }
+    else{
+      console.log("Not Fetch Data")
     }
   }, [currentUGTGroup, isAssignedPortfolioId]);
 
@@ -919,7 +944,7 @@ const Subscriberlisting = (props) => {
       } else if (
         userData?.userGroup?.id === USER_GROUP_ID.PORTFOLIO_MNG ||
         userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER ||
-        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN
+        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN 
       ) {
         setIsSubscriberGroup(false);
         permissFindUntilyty = { utility: [] };
@@ -1016,7 +1041,7 @@ const Subscriberlisting = (props) => {
       } else if (
         userData?.userGroup?.id === USER_GROUP_ID.PORTFOLIO_MNG ||
         userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER ||
-        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN
+        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN 
       ) {
         permissFindUntilyty = { utility: [] };
         const paramSubscriberUnassign = {
@@ -1770,7 +1795,7 @@ const Subscriberlisting = (props) => {
                       {/* เอา utility ออก ต้องใส่ col-span-2 ไว้ */}
                       <div className="col-span-2 px-2" />
                       <div className="col-span-2 px-2">
-                      <Controller
+                        <Controller
                           name="SearchText"
                           control={control}
                           defaultValue={null}

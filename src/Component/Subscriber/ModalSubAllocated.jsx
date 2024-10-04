@@ -69,18 +69,17 @@ const ModalSubAllocated = (props) => {
     for (let i = 0; i < listData?.length; i++) {
       yearData.push(listData[i]?.year);
     }
-    console.log("Year Data",yearData)
+
     for (let i = yearStart; i <= yearEnd; i++) {
       yearList.push({
         value: Number(i),
         year: i.toString(),
       });
     }
-    console.log("Year List",yearList)
+
     const filteredYearList = yearList.filter(
       (item) => !yearData.includes(item.value)
     );
-    console.log("Year Filter",filteredYearList)
 
     setDropDownListYear(filteredYearList);
 

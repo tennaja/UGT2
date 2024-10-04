@@ -39,7 +39,7 @@ const UploadFileSubscriber = (props) => {
     onClickFile,
     ...inputProps
   } = props;
-  console.log("Nor Input",inputProps)
+  //console.log("Nor Input",inputProps)
 
   // const [percent,setPercent] = useState(0)
   // const [status,setStatus] = useState('')

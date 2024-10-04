@@ -465,6 +465,7 @@ const ModalBeneficiaryEdit = (props) => {
                     control={control}
                     rules={{
                       required: "This field is required",
+                      validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                     }}
                     render={({ field }) => (
                       <Input
@@ -486,6 +487,7 @@ const ModalBeneficiaryEdit = (props) => {
                     control={control}
                     rules={{
                       required: "This field is required",
+                      validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
                     }}
                     render={({ field }) => (
                       <Input

@@ -100,14 +100,14 @@ function App() {
                   path={webURL.SUBSCRIBER_HISTORY_INFO}
                   element={<InfoSubscriberHistory></InfoSubscriberHistory>}
                 ></Route>
-                <Route
+                {/* <Route
                   path={webURL.SUBSCRIBER_RENEW}
                   element={<RenewSubscriber></RenewSubscriber>}
-                ></Route>
-                <Route
+                ></Route> */}
+                {/* <Route
                   path={webURL.SUBSCRIBER_RENEW_EDIT}
                   element={<UpdateSubscriberRenew></UpdateSubscriberRenew>}
-                ></Route>
+                ></Route> */}
                 <Route
                   path={webURL.PORTFOLIO_LIST}
                   element={<Portfoliolisting></Portfoliolisting>}

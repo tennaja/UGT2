@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import AlmostDone from "../assets/done.png";
+import AlmostDone from "../assets/Done.png";
 import { Link, useNavigate } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import { getCookie, removeCookie, setCookie } from "../../Utils/FuncUtils";

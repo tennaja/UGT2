@@ -19,7 +19,6 @@ import * as WEB_URL from "../../Constants/WebURL";
 import ModalComplete from "../Control/Modal/ModalComplete";
 import { SubscriberInfo } from "../../Redux/Subscriber/Action";
 import LoadPage from "../Control/LoadPage";
-import DatePickerSubscriber from "./DayPickerSubscriber";
 
 import {
   FetchCountryList,
@@ -60,6 +59,7 @@ import html2pdf from 'html2pdf.js';
 import CollapsSubscriberEdit from "./CollapsSubscriberEdit";
 import TriWarning from "../assets/TriWarning.png"
 import TextareaNoteSubscriber from "./TextareaNoteSubscriber";
+import DatePickerSubscriber from "./DayPickerSubscriber";
 
 const UpdateSubscriber = () => {
   const {
@@ -94,8 +94,7 @@ const UpdateSubscriber = () => {
     useState(true);
   const addInput = (data) => {
     if (data?.length > 0) {
-      console.log("Data Feeder",data)
-      
+      //console.log("Data",data)
       for (let i = 0; i < data?.length; i++) {
         const filterName = fields.filter((items)=> items.feederName === data[i]?.feederName)
         //console.log("Filter",filterName)
@@ -452,6 +451,7 @@ const UpdateSubscriber = () => {
     });
   };
   const addAllowcated = () => {
+    //setShowModalConfirm(true);
     if(yearStartDate1.current !== null && yearEndDate1.current !== null){
       setShowModalConfirm(true);
     }
@@ -547,7 +547,11 @@ const UpdateSubscriber = () => {
       setValue("note",details?.subscriberDetail?.note)
       // Subscription Information
 
-      setAllowcatedEnergyList(details?.allocateEnergyAmount);
+      //setAllowcatedEnergyList(details?.allocateEnergyAmount);
+      const sortedData = [...details?.allocateEnergyAmount].sort(
+        (a, b) => a.year - b.year
+      );
+      setAllowcatedEnergyList(sortedData);
       const tempStatusFilter = initialvalueForSelectField(
         statusList,
         "id",
@@ -595,7 +599,11 @@ const UpdateSubscriber = () => {
       setValue("note",details?.subscriberDetail?.note)
       // Subscription Information
 
-      setAllowcatedEnergyList(details?.allocateEnergyAmount);
+      //setAllowcatedEnergyList(details?.allocateEnergyAmount);
+      const sortedData = [...details?.allocateEnergyAmount].sort(
+        (a, b) => a.year - b.year
+      );
+      setAllowcatedEnergyList(sortedData);
       const tempStatusFilter = initialvalueForSelectField(
         statusList,
         "id",
@@ -639,6 +647,14 @@ const UpdateSubscriber = () => {
     console.log("Contract Temp",allowcatedEnergyListTemp)
 
     setAllowcatedEnergyList(allowcatedEnergyListTemp);
+    
+    /*if(allowcatedEnergyListTemp.length === 0){
+      console.log("Clear Allow Excel")
+      setAllowcatesExcelfileList([])
+    }
+    else{
+      console.log("Not Clear")
+    }*/
 
     console.log("Contract List",allowcatedEnergyList)
   };
@@ -2111,6 +2127,7 @@ const UpdateSubscriber = () => {
       if(years === yearStart){
         if(yearStart !== yearEnd){
           if(months >= monthStart){
+              console.log("Value",values)
               if(values < 0){
                 return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
               }
@@ -3020,6 +3037,45 @@ const onCloseModalError=()=>{
                 </div>
               </Card>
 
+              {/*<Card
+              shadow="md"
+              radius="lg"
+              className="flex w-full h-full"
+              padding="xl"
+            >
+              <div className="flex flex-col gap-3">
+              <div>
+                  <label className="font-bold text-base">Subscriber Type</label><label className="text-red-600 ml-1 text-sm font-bold">*</label>
+                </div>
+                <div>
+                    {details?.subscriberDetail?.subscriberTypeId == 1 && (
+                      <button
+                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                          isActiveForm1
+                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                        }`}
+                        onClick={handleClickForm1}
+                      >
+                        Subscriber
+                      </button>
+                    )}
+                    {details?.subscriberDetail?.subscriberTypeId == 2 && (
+                      <button
+                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                          isActiveForm2
+                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                        }`}
+                        onClick={handleClickForm2}
+                      >
+                        Aggregate Subscriber
+                      </button>
+                    )}
+                  </div>
+              </div>
+            </Card>*/}
+
               <div>
                 {isActiveForm1 && (
                   <form>
@@ -3036,7 +3092,7 @@ const onCloseModalError=()=>{
                             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
                               <div className="md:col-span-6">
                                 <h6 className="text-PRIMARY_TEXT font-semibold">
-                                  General Information
+                                General Information
                                 </h6>
                               </div>
                               <div className="md:col-span-3">
@@ -3932,7 +3988,7 @@ const onCloseModalError=()=>{
                                 <>
                                   <div className="flex flex-col ml-2 col-span-6">
                                     <label className="mt-3 text-[#6B7280] text-xs">
-                                      Contracted Allocated Energy (kWh)
+                                      Total Allocated Energy (kWh)
                                     </label>
                                     <span className="">
                                       <div className="break-words	font-bold">
@@ -4393,7 +4449,6 @@ const onCloseModalError=()=>{
                                           handleClickDownloadFile(item);
                                         }}
                                         error={errors.uploadFile}
-                                        
                                         // ... other props
                                       />
                                     )}
@@ -4405,7 +4460,7 @@ const onCloseModalError=()=>{
                                     control={control}
                                     rules={{}}
                                     render={({ field }) => (
-                                      <Textarea
+                                      <TextareaNoteSubscriber
                                         {...field}
                                         id={"note"}
                                         type={"text"}
@@ -4674,7 +4729,7 @@ const onCloseModalError=()=>{
                                       isDisable={disableRequestedEffectiveDate}
                                       validate={" *"}
                                       showTooltip = {true}
-                                      textTooltip = {"Please select the Retail ESA Contract Start Date first."}
+                                    textTooltip = {"Please select the Retail ESA Contract Start Date first."}
                                     />
                                   )}
                                 />
@@ -4811,7 +4866,7 @@ const onCloseModalError=()=>{
                                     </div>
                                     <div>
                                       <p className="m-0 p-0">
-                                        Total Contracted Energy Amount (kWh)
+                                        Total Allocated Energy Amount (kWh)
                                       </p>
                                     </div>
                                     <div></div>
@@ -5193,7 +5248,7 @@ const onCloseModalError=()=>{
                                     control={control}
                                     rules={{}}
                                     render={({ field }) => (
-                                      <Textarea
+                                      <TextareaNoteSubscriber
                                         {...field}
                                         id={"note"}
                                         type={"text"}
@@ -5281,55 +5336,48 @@ const onCloseModalError=()=>{
               padding="xl"
             >
               <div className="flex flex-col gap-3">
-                <div className="flex justify-between">
                 <div className="flex gap-3 items-center">
                   <FaChevronCircleLeft
                     className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
                     size="30"
-                    onClick={() => navigate(WEB_URL.SUBSCRIBER_INFO, {
-                      state: { id: state?.code,contract: state?.contract },
-                    })
-                  }
+                    onClick={() =>
+                      navigate(WEB_URL.SUBSCRIBER_INFO, {
+                        state: { id: state?.code },
+                      })
+                    }
                   />
-                  <p className="mb-0 font-semibold text-15 text-md">
-                    Subscribers Info <span style={{ color: "red" }}>*</span>
+                  <p className="mb-0  font-semibold">
+                    Subscribers Type <span style={{ color: "red" }}>*</span>
                   </p>
                 </div>
-                <div><label className="text-xs text-red-500">* Requried field</label></div>
-                </div>
-                  <hr/>
-                  <div className="flex flex-col gap-3">
-              <div>
-                  <label className="font-bold text-base">Subscriber Type</label><label className="text-red-600 ml-1 text-sm font-bold">*</label>
-                </div>
+
                 <div>
-                    {details?.subscriberDetail?.subscriberTypeId == 1 && (
-                      <button
-                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
-                          isActiveForm1
-                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
-                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
-                        }`}
-                        onClick={handleClickForm1}
-                      >
-                        Subscriber
-                      </button>
-                    )}
-                    {details?.subscriberDetail?.subscriberTypeId == 2 && (
-                      <button
-                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
-                          isActiveForm2
-                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
-                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
-                        }`}
-                        onClick={handleClickForm2}
-                      >
-                        Aggregate Subscriber
-                      </button>
-                    )}
-                  </div>
-              </div>
+                  {details?.subscriberDetail?.subscriberTypeId == 1 && (
+                    <button
+                      className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                        isActiveForm1
+                          ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                          : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                      }`}
+                      onClick={handleClickForm1}
+                    >
+                      Subscriber
+                    </button>
+                  )}
+                  {details?.subscriberDetail?.subscriberTypeId == 2 && (
+                    <button
+                      className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                        isActiveForm2
+                          ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                          : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                      }`}
+                      onClick={handleClickForm2}
+                    >
+                      Aggregate Subscriber
+                    </button>
+                  )}
                 </div>
+              </div>
             </Card>
 
             <div>
@@ -5792,7 +5840,7 @@ const onCloseModalError=()=>{
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Allocated Energy (kWh)
+                                    Total Contracted Energy (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -5858,7 +5906,7 @@ const onCloseModalError=()=>{
                                     </div>
                                     <div>
                                       <p className="text-GRAY_BUTTON">
-                                        Allocated Energy amount (kWh)
+                                      Contracted Energy amount (kWh)
                                       </p>
                                       <hr />
                                       <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -6250,7 +6298,7 @@ const onCloseModalError=()=>{
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
-                                <label>{getValues("note")}</label>
+                                <label className="break-all">{getValues("note")}</label>
                               </div>
                             </div>
                           </div>
@@ -6490,7 +6538,7 @@ const onCloseModalError=()=>{
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Allocated Energy (kWh)
+                                    Total Contracted Energy (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -6556,7 +6604,7 @@ const onCloseModalError=()=>{
                                     </div>
                                     <div>
                                       <p className="text-GRAY_BUTTON">
-                                        Allocated Energy amount (kWh)
+                                      Contracted Energy amount (kWh)
                                       </p>
                                       <hr />
                                       <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -6710,7 +6758,7 @@ const onCloseModalError=()=>{
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
-                                <label>{getValues("note")}</label>
+                                <label className="break-all">{getValues("note")}</label>
                               </div>
                             </div>
                           </div>
@@ -6840,7 +6888,7 @@ const onCloseModalError=()=>{
       {/*Modal Create Complete */}
       {isOpen && (
         <ModalCompleteSubscriber
-          title="Done!"
+          title="Edit Complete"
           context="Edit Complete"
           link={WEB_URL.SUBSCRIBER_LIST}
         />
