@@ -17,8 +17,8 @@ import InfoSubscriber from "./Component/Subscriber/InfoSubscriber";
 import AddScriber from "./Component/Subscriber/AddSubscriber";
 import UpdateSubscriber from "./Component/Subscriber/UpdateSubscriber";
 import InfoSubscriberHistory from "./Component/Subscriber/InfoSubscriberHistory";
-import RenewSubscriber from "./Component/Subscriber/RenewSubscriber";
-import UpdateSubscriberRenew from "./Component/Subscriber/UpdateSubscriberRenew";
+// import RenewSubscriber from "./Component/Subscriber/RenewSubscriber";
+// import UpdateSubscriberRenew from "./Component/Subscriber/UpdateSubscriberRenew";
 
 import Portfoliolisting from "./Component/Portfolio/Portfoliolisting";
 import AddPortfolio from "./Component/Portfolio/AddPortfolio";
