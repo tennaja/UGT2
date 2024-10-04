@@ -1168,6 +1168,7 @@ const AddDevice = () => {
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
+                                  
                                   onKeyDown={(e) => {
                                     // Prevent invalid characters like 'e', '+', '-'
                                     if (['e', 'E', '+','-','.'].includes(e.key)) {
