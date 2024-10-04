@@ -1454,7 +1454,7 @@ const RenewDevice = () => {
                                     // Optionally pad the number if needed
                                     
                                     setValue("NumberofGeneratingUnits", value);
-                                  }}
+                                  }} 
                                   // ... other props
                                 />
                               )}
