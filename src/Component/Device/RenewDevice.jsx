@@ -1442,7 +1442,7 @@ const RenewDevice = () => {
                                   min={1}
                                   onKeyDown={(e) => {
                                     // Prevent invalid characters like 'e', '+', '-'
-                                    if (['e', 'E', '+','-','.'].includes(e.key)) {
+                                    if (['e', 'E', '+','-','.','0'].includes(e.key)) {
                                       e.preventDefault();
                                     }
                                   }}
