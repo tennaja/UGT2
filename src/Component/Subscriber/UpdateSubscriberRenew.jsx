@@ -57,6 +57,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import html2pdf from 'html2pdf.js';
 import CollapsSubscriberEdit from "./CollapsSubscriberEdit";
+import DatePickerSubscriber from "./DayPickerSubscriber";
 
 const UpdateSubscriberRenew = () => {
   const {
@@ -2820,7 +2821,7 @@ const onCloseModalError=()=>{
                         }`}
                         onClick={handleClickForm2}
                       >
-                        Aggregate Subscriber
+                        Aggregating Subscriber
                       </button>
                     )}
                   </div>
@@ -3477,7 +3478,7 @@ const onCloseModalError=()=>{
                                     required: "This field is required",
                                   }}
                                   render={({ field }) => (
-                                    <DatePicker
+                                    <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractStartDate"}
                                       label={"Retail ESA Contract Start Date"}
@@ -3498,7 +3499,7 @@ const onCloseModalError=()=>{
                                     required: "This field is required",
                                   }}
                                   render={({ field }) => (
-                                    <DatePicker
+                                    <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractEndDate"}
                                       label={"Retail ESA Contract End Date"}
@@ -3509,6 +3510,8 @@ const onCloseModalError=()=>{
                                       onChangeInput={handleChangeContractEndDate}
                                       isDisable={disableRequestedEffectiveDate}
                                       validate={" *"}
+                                      showTooltip = {true}
+                                      textTooltip = {"Please select the Retail ESA Contract Start Date first."}
                                     />
                                   )}
                                 />
@@ -3560,7 +3563,7 @@ const onCloseModalError=()=>{
                               <div className="flex justify-between mt-2 ml-2 md:col-span-6">
                                 <div>
                                   <strong>
-                                    Feeder Name{" "}
+                                  Feeder/Meter Name{" "}
                                     <span className="text-red-500">*</span>
                                   </strong>
                                 </div>
@@ -3696,6 +3699,7 @@ const onCloseModalError=()=>{
                                     {
                                       label: "Import File",
                                       onClick: addExcelfile,
+                                      disabled: true
                                     },
                                     {
                                       label: "Create New",
@@ -4242,7 +4246,7 @@ const onCloseModalError=()=>{
                       </Card>}
 
                       {/* submit button */}
-                      <div className="text-center my-5">
+                      <div className="text-right my-5">
                         <button
                           onClick={handleSubmit(onSubmitForm1New)}
                           className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
@@ -4431,7 +4435,7 @@ const onCloseModalError=()=>{
                                     required: "This field is required",
                                   }}
                                   render={({ field }) => (
-                                    <DatePicker
+                                    <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractStartDate"}
                                       label={"Retail ESA Contract Start Date"}
@@ -4452,7 +4456,7 @@ const onCloseModalError=()=>{
                                     required: "This field is required",
                                   }}
                                   render={({ field }) => (
-                                    <DatePicker
+                                    <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractEndDate"}
                                       label={"Retail ESA Contract End Date"}
@@ -4463,6 +4467,8 @@ const onCloseModalError=()=>{
                                       onChangeInput={handleChangeContractEndDate}
                                       isDisable={disableRequestedEffectiveDate}
                                       validate={" *"}
+                                      showTooltip = {true}
+                                      textTooltip = {"Please select the Retail ESA Contract Start Date first."}
                                     />
                                   )}
                                 />
@@ -4567,6 +4573,7 @@ const onCloseModalError=()=>{
                                     {
                                       label: "Import File",
                                       onClick: addExcelfile,
+                                      disabled: true
                                     },
                                     {
                                       label: "Create New",
@@ -4843,7 +4850,7 @@ const onCloseModalError=()=>{
                       </Card>}
 
                       {/* submit button */}
-                      <div className="text-center my-5">
+                      <div className="text-right my-5">
                         <button
                           onClick={handleSubmit(onSubmitForm2New)}
                           className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"

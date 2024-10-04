@@ -62,6 +62,7 @@ import CollapsSubscriberEdit from "./CollapsSubscriberEdit";
 import ModalCompleteSubscriberButton from "./ModalCompleteSubscriberButton";
 import TriWarning from "../assets/TriWarning.png"
 import TextareaNoteSubscriber from "./TextareaNoteSubscriber";
+import DatePickerSubscriber from "./DayPickerSubscriber";
 
 const RenewSubscriber = () => {
   const {
@@ -1419,11 +1420,32 @@ const RenewSubscriber = () => {
     //console.log("Day Start",dayStartDate1.current)
   };
   const requestedEffectiveDateDisableDateCal = (day) => {
+    //console.log("Day",day)
     let dateValue = new Date(selectedCommisionDate);
+    let nowDate = new Date()
+    const currDate = new Date(nowDate);
+    currDate.setHours(0,0,0,0)
+    let valueDate = null;
+    //console.log('Now Date',currDate)
+    if(day < currDate){
+      //console.log("Condition 1")
+      valueDate = currDate.getDate()
+    }
+    else if(day >= currDate){
+      //console.log("Condition 3")
+      valueDate = (dateValue.getDate()+1)
+    }
+    /*else {
+      console.log("Condition 2")
+      valueDate = (currDate.getDate() + 1)
+    }*/
+    
+    //console.log('Noew Date',nowDate)
+    //console.log("Curr Date",currDate)
     const previousDate = new Date(dateValue);
     previousDate.setHours(0, 0, 0, 0);
-    previousDate.setDate(dateValue.getDate() + 1);
-
+    previousDate.setDate(/*dateValue.getDate()*/valueDate);
+    //console.log("Previous",previousDate)
     let currentDate = new Date();
     const previousCurrentDate = new Date(currentDate);
     previousCurrentDate.setDate(currentDate.getDate() - 1);
@@ -2261,7 +2283,7 @@ const onCloseModalComplete=()=>{
                         }`}
                         onClick={handleClickForm2}
                       >
-                        Aggregate Subscriber
+                        Aggregating Subscriber
                       </button>
                     )}
                   </div>
@@ -2920,7 +2942,7 @@ const onCloseModalComplete=()=>{
                                     required: "This field is required",
                                   }}
                                   render={({ field }) => (
-                                    <DatePicker
+                                    <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractStartDate"}
                                       label={"Retail ESA Contract Start Date"}
@@ -2941,7 +2963,7 @@ const onCloseModalComplete=()=>{
                                     required: "This field is required",
                                   }}
                                   render={({ field }) => (
-                                    <DatePicker
+                                    <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractEndDate"}
                                       label={"Retail ESA Contract End Date"}
@@ -2952,6 +2974,8 @@ const onCloseModalComplete=()=>{
                                       onChangeInput={handleChangeContractEndDate}
                                       isDisable={disableRequestedEffectiveDate}
                                       validate={" *"}
+                                      showTooltip = {true}
+                                      textTooltip = {"Please select the Retail ESA Contract Start Date first."}
                                     />
                                   )}
                                 />
@@ -3004,7 +3028,7 @@ const onCloseModalComplete=()=>{
                               <div className="flex justify-between mt-2 ml-2 md:col-span-6">
                                 <div>
                                   <strong>
-                                    Feeder Name{" "}
+                                  Feeder/Meter Name{" "}
                                     <span className="text-red-500">*</span>
                                   </strong>
                                 </div>
@@ -3141,6 +3165,7 @@ const onCloseModalComplete=()=>{
                                     {
                                       label: "Import File",
                                       onClick: addExcelfile,
+                                      disabled: true
                                     },
                                     {
                                       label: "Create New",
@@ -3693,7 +3718,7 @@ const onCloseModalComplete=()=>{
                       </div>
                       </Card>}
                       {/* submit button */}
-                      <div className="text-center my-5">
+                      <div className="text-right my-5">
                         <button
                           onClick={handleSubmit(onSubmitForm1New)}
                           className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
@@ -3884,7 +3909,7 @@ const onCloseModalComplete=()=>{
                                     required: "This field is required",
                                   }}
                                   render={({ field }) => (
-                                    <DatePicker
+                                    <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractStartDate"}
                                       label={"Retail ESA Contract Start Date"}
@@ -3905,7 +3930,7 @@ const onCloseModalComplete=()=>{
                                     required: "This field is required",
                                   }}
                                   render={({ field }) => (
-                                    <DatePicker
+                                    <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractEndDate"}
                                       label={"Retail ESA Contract End Date"}
@@ -3916,6 +3941,8 @@ const onCloseModalComplete=()=>{
                                       onChangeInput={handleChangeContractEndDate}
                                       isDisable={disableRequestedEffectiveDate}
                                       validate={" *"}
+                                      showTooltip = {true}
+                                      textTooltip = {"Please select the Retail ESA Contract Start Date first."}
                                     />
                                   )}
                                 />
@@ -4021,6 +4048,7 @@ const onCloseModalComplete=()=>{
                                     {
                                       label: "Import File",
                                       onClick: addExcelfile,
+                                      disabled: true
                                     },
                                     {
                                       label: "Create New",
@@ -4302,7 +4330,7 @@ const onCloseModalComplete=()=>{
                       </div>
                       </Card>}
                       {/* submit button */}
-                      <div className="text-center my-5">
+                      <div className="text-right my-5">
                         <button
                           onClick={handleSubmit(onSubmitForm2New)}
                           className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
@@ -4328,6 +4356,8 @@ const onCloseModalComplete=()=>{
           allowcatedEnergyDataEdit={allowcatedEnergyDataEdit}
           editStatus={isEdit}
           listData={allowcatedEnergyList}
+          yearStart={yearStartDate1.current}
+          yearEnd={yearEndDate1.current}
         />
       )}
       {showModalCreate && (

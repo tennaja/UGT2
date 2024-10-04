@@ -585,7 +585,7 @@ const UploadFileSubscriber = (props) => {
           "You can only upload jpeg, jpg, png, svg file!"
         );
       }
-      else if(accept==="application/pdf"){
+      else if(accept===".pdf"){
         message.error(
           "You can only upload pdf file!"
         );

@@ -377,7 +377,7 @@ const InfoSubscriberHistory = () => {
                         <div className="row-span-3 col-span-12 lg:col-span-3">
                           <div className="shrink-0">
                             <h6 className="text-PRIMARY_TEXT">
-                              <b>Subscriber Details</b>
+                              <b>General Details</b>
                             </h6>
                           </div>
                         </div>

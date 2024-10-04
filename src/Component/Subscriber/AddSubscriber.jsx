@@ -15,6 +15,7 @@ import ModelLoadPage from "../Control/LoadPage";
 import bin from "../assets/bin-3.svg";
 import { Tooltip } from "react-tooltip";
 import DatePicker from "../Control/DayPicker";
+import DatePickerSubscriber from "./DayPickerSubscriber";
 import { useFieldArray } from "react-hook-form";
 import * as WEB_URL from "../../Constants/WebURL";
 import ModalComplete from "../Control/Modal/ModalComplete";
@@ -55,7 +56,7 @@ import ModalCompleteSubscriber from "./ModalCompleteSubscriber";
 import TriWarning from "../assets/TriWarning.png"
 import TextareaNoteSubscriber from "./TextareaNoteSubscriber";
 import FileUpload from "./UploadFileButton";
-
+import Tooltips from '@mui/material/Tooltip';
 
 const AddSubscriber = () => {
   const {
@@ -1780,7 +1781,7 @@ const AddSubscriber = () => {
                     }`}
                     onClick={handleClickForm2}
                   >
-                    Aggregate Subscriber
+                    Aggregating Subscriber
                   </button>
                 </div>
               </div>
@@ -2526,7 +2527,7 @@ const AddSubscriber = () => {
                                   required: "This field is required",
                                 }}
                                 render={({ field }) => (
-                                  <DatePicker
+                                  <DatePickerSubscriber
                                     {...field}
                                     id={"retailESAContractStartDate"}
                                     label={"Retail ESA Contract Start Date"}
@@ -2547,7 +2548,8 @@ const AddSubscriber = () => {
                                   required: "This field is required",
                                 }}
                                 render={({ field }) => (
-                                  <DatePicker
+                                  
+                                  <DatePickerSubscriber
                                     {...field}
                                     id={"retailESAContractEndDate"}
                                     label={"Retail ESA Contract End Date"}
@@ -2558,7 +2560,10 @@ const AddSubscriber = () => {
                                     onChangeInput={handleChangeContractEndDate}
                                     isDisable={disableRequestedEffectiveDate}
                                     validate={" *"}
+                                    showTooltip = {true}
+                                    textTooltip = {"Please select the Retail ESA Contract Start Date first."}
                                   />
+                                  
                                 )}
                               />
                               {disableRequestedEffectiveDate && (
@@ -2609,7 +2614,7 @@ const AddSubscriber = () => {
                             <div className="flex justify-between mt-2 ml-2 md:col-span-6">
                               <div>
                                 <strong>
-                                  Feeder Name{" "}
+                                  Feeder/Meter Name{" "}
                                   <span className="text-red-500">*</span>
                                 </strong>
                               </div>
@@ -3196,7 +3201,7 @@ const AddSubscriber = () => {
                         </Card>
 
                     {/* submit Form1 Subscriber */}
-                    <div className="text-center my-5">
+                    <div className="text-right my-5 ">
                       <button
                         onClick={handleSubmit(onSubmitForm1)}
                         className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
@@ -3429,7 +3434,7 @@ const AddSubscriber = () => {
                                   required: "This field is required",
                                 }}
                                 render={({ field }) => (
-                                  <DatePicker
+                                  <DatePickerSubscriber
                                     {...field}
                                     id={"retailESAContractStartDate"}
                                     label={"Retail ESA Contract Start Date"}
@@ -3450,7 +3455,7 @@ const AddSubscriber = () => {
                                   required: "This field is required",
                                 }}
                                 render={({ field }) => (
-                                  <DatePicker
+                                  <DatePickerSubscriber
                                     {...field}
                                     id={"retailESAContractEndDate"}
                                     label={"Retail ESA Contract End Date"}
@@ -3461,6 +3466,8 @@ const AddSubscriber = () => {
                                     onChangeInput={handleChangeContractEndDate}
                                     isDisable={disableRequestedEffectiveDate}
                                     validate={" *"}
+                                    showTooltip = {true}
+                                    textTooltip = {"Please select the Retail ESA Contract Start Date first."}
                                   />
                                 )}
                               />
@@ -3900,7 +3907,7 @@ const AddSubscriber = () => {
                     </Card>
 
                     {/* submit Form2 Aggregate */}
-                    <div className="text-center my-5">
+                    <div className="text-right my-5">
                       <button
                         onClick={handleSubmit(onSubmitForm2)}
                         className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
