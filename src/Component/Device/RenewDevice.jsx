@@ -1439,7 +1439,7 @@ const RenewDevice = () => {
                                   label={"Number of Generating Units"}
                                   error={errors.NumberofGeneratingUnits}
                                   validate={" *"}
-                                  min={0}
+                                  min={1}
                                   onKeyDown={(e) => {
                                     // Prevent invalid characters like 'e', '+', '-'
                                     if (['e', 'E', '+','-','.'].includes(e.key)) {
