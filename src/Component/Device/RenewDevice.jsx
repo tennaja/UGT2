@@ -131,7 +131,7 @@ const RenewDevice = () => {
   const [deviceTechnoList, setDeviceTechnoList] = React.useState([]);
 
   const deviceobj = useSelector((state) => state.device.deviceobj);
-
+  const [initialNote, setInitialNote] = useState(deviceobj?.notes || "");
   const countryList = useSelector((state) => state.dropdrow.countryList);
   const provinceList = useSelector((state) => state.dropdrow.provinceList);
   const districtList = useSelector((state) => state.dropdrow.districtList);
@@ -208,6 +208,11 @@ const RenewDevice = () => {
       }
     }
   },[deviceobj])
+
+  useEffect(() => {
+    // Ensure initialNote is set once deviceobj is available
+    setInitialNote(deviceobj?.notes || "");
+  }, [deviceobj]);
 
   useEffect(() => {
     if (deviceobj?.publicFunding) {
@@ -1073,7 +1078,7 @@ const RenewDevice = () => {
                                   label={"Default account code"}
                                   
                                   // error={errors.defaultAccountCode}
-                                  validate={" *"}
+                                  
                                   disabled={true}
                                   // ... other props
                                 />
@@ -2042,7 +2047,7 @@ const RenewDevice = () => {
                               {...field}
                               id={"Otherimport"}
                               type={"text"}
-                              label={"Other import eletricity"}
+                              label={"Other import electricity"}
                               validate={" *"}
                               error={errors.Otherimport}
                               iconsid = {"Otherimport-tooltip"}
@@ -2181,7 +2186,16 @@ const RenewDevice = () => {
                         <Controller
                           name="note"
                           control={control}
-                          rules={{}}
+                          rules={{
+                            validate: (value) => {
+                              console.log("Note value on submit:", value);
+                              console.log("Initial note value:", initialNote);
+                              if (value === initialNote) {
+                                return "Please enter a new value for the note.";
+                              }
+                              return true;
+                            },
+                          }}
                           render={({ field }) => (
                             <TextareaNote
                               {...field}

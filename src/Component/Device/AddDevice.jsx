@@ -795,7 +795,7 @@ const AddDevice = () => {
                                   type={"text"}
                                   label={"Default account code"}
                                   // error={errors.defaultAccountCode}
-                                  validate={" *"}
+                                  
                                   disabled={true}
                                   // ... other props
                                 />
@@ -1796,7 +1796,7 @@ const AddDevice = () => {
                               id={"Otherimport"}
                               placeholder={"Please fill the form in English"}
                               type={"text"}
-                              label={"Other import eletricity"}
+                              label={"Other import electricity"}
                               validate={" *"}
                               error={errors.Otherimport}
                               iconsid = {"Otherimport-tooltip"}

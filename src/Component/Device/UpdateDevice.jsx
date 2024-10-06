@@ -1175,7 +1175,7 @@ const handleClickConfirmVerified = () => {
                                   label={"Default account code"}
                                   
                                   // error={errors.defaultAccountCode}
-                                  validate={" *"}
+                                  
                                   disabled={true}
                                   // ... other props
                                 />
@@ -2149,7 +2149,7 @@ const handleClickConfirmVerified = () => {
                               {...field}
                               id={"Otherimport"}
                               type={"text"}
-                              label={"Other import eletricity"}
+                              label={"Other import electricity"}
                               validate={" *"}
                               error={errors.Otherimport}
                               iconsid = {"Otherimport-tooltip"}
