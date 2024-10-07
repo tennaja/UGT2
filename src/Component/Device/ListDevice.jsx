@@ -101,7 +101,7 @@ const ListDevice = (props) => {
   } = useForm();
 
   const [searchQueryAssigned, setSearchQueryAssigned] = useState("");
-  const [searchQueryUnAssigned, setSearchQueryUnAssigned] = useState("");
+  const [searchQueryUnAssigned, setSearchQueryUnAssigned] = React.useState('');
 
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
@@ -596,15 +596,13 @@ const ListDevice = (props) => {
     let fetchParameterForUnAssignedList = null;
     const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
 
-    const currentFilterList = value.map((item) => {
-      return item.id;
-    });
+    const currentFilterList = value.map((item) => item.id);
     if (filterType === "TYPE") {
       const newCurrentUnAssignedFilter = {
         ...currentUnAssignedFilterObj,
-        type: currentFilterList,
+        [filterType.toLowerCase()]: currentFilterList,
       };
-
+      console.log("New Filter State:", newCurrentUnAssignedFilter); // ตรวจสอบค่าที่เก็บ
       setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
       dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
 
@@ -665,6 +663,9 @@ const ListDevice = (props) => {
 
     dispatch(FetchDeviceManagementUnAssigned(fetchParameterForUnAssignedList));
   };
+
+
+
 
   const handleClickDeviceRegistration = () => {
     dispatch(setSelectedSubMenu(SUB_MENU_ID.DEVICE_REGISTRATION));
@@ -834,10 +835,42 @@ const ListDevice = (props) => {
     setSearchQueryAssigned(e.target.value);
   };
 
-  const handleUnAssignedSearchChange = (e) => {
-    setSearchQueryUnAssigned(e.target.value);
+  // ฟังก์ชันสำหรับอัปเดตคำค้นหา
+  const handleUnAssignedSearchChange = (value) => {
+    setSearchQueryUnAssigned(value); // อัปเดตสถานะการค้นหา
   };
 
+  // ค้นหาในข้อมูลทั้งหมด (รวมทั้ง "Withdrawn")
+  const searchResults = unAssignedList.filter(item => {
+    const isMatchingName = item.name.toLowerCase().includes(searchQueryUnAssigned.toLowerCase());
+    const isMatchingStatus = item.statusName.toLowerCase().includes(searchQueryUnAssigned.toLowerCase());
+    return isMatchingName || isMatchingStatus; // ค้นหาทั้งชื่อและสถานะ
+  });
+
+  const filteredSearchResults = searchQueryUnAssigned
+    ? searchResults // แสดงทุกสถานะเมื่อค้นหา
+    : unAssignedList.filter(item => {
+        // ตรวจสอบว่ามีการติ๊กสถานะ Withdrawn
+        const isWithdrawnSelected = currentUnAssignedFilterObj.status?.includes("Withdrawn");
+
+        // ให้แสดงรายการที่มีสถานะ Withdrawn เมื่อมันถูกเลือก
+        if (isWithdrawnSelected) {
+            return true; // โชว์รายการ Withdrawn
+        }
+
+        // ถ้าไม่เลือกสถานะ Withdrawn ให้กรองเฉพาะรายการที่ไม่ใช่ Withdrawn
+        return item.statusName !== "Withdrawn";
+    });
+
+
+
+
+
+    console.log(currentUnAssignedFilterObj)
+console.log("Unassigned List:", unAssignedList);
+console.log("Search Query:", searchQueryUnAssigned);
+console.log("Search Results:", searchResults);
+console.log("Filtered Search Results:", filteredSearchResults);
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
@@ -1385,9 +1418,13 @@ const ListDevice = (props) => {
                           defaultValue={null}
                           render={({ field }) => (
                             <SearchBox
-                              placeholder="Search"
-                              onChange={handleUnAssignedSearchChange}
-                            />
+                placeholder="Search"
+                onChange={(e) => {
+                  field.onChange(e.target.value); // อัปเดตค่าในฟอร์ม
+                  handleUnAssignedSearchChange(e.target.value); // เรียกใช้ฟังก์ชันค้นหา
+                }}
+                value={field.value} // ใช้ค่าจากฟอร์ม
+              />
                           )}
                         />
                       </div>
@@ -1464,7 +1501,7 @@ const ListDevice = (props) => {
                 </div>
                 <div className="relative overflow-x-auto  sm:rounded-lg">
                   <DataTable
-                    data={unAssignedList}
+                    data= {filteredSearchResults}
                     columns={columnsUnAssigned}
                     searchData={searchQueryUnAssigned}
                     checkbox={false}
