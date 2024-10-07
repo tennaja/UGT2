@@ -172,9 +172,9 @@ console.log("Formatted number:", formattedNumber); // Log formatted output
         const pdfFile = new File([pdfBlob], `SF-02v${newVersion}(${data?.Status}).pdf`, { type: 'application/pdf' });
         console.log(pdfFile,data)
         // Open the PDF in a new tab for preview
-        // const url = URL.createObjectURL(pdfBlob);
-        // const pdfWindow = window.open(url, '_blank');
-        // if (pdfWindow) pdfWindow.focus();
+        const url = URL.createObjectURL(pdfBlob);
+        const pdfWindow = window.open(url, '_blank');
+        if (pdfWindow) pdfWindow.focus();
   
         
         // Dispatch the generated PDF Blob for storage
@@ -188,19 +188,19 @@ console.log("Formatted number:", formattedNumber); // Log formatted output
         // setVersion(newVersion);
 
         // Hide the content again
-        // element.style.display = 'none';
+        element.style.display = 'none';
         hideLoading();
         setload(false);
       })
-      // .catch((error) => {
-      //   console.error('Error generating PDF:', error);
-      //   // Hide the content again if there's an error
-      //   element.style.display = 'none';
-      //   setload(false);
-      //   hideLoading();
-      //   // Display an alert to the user (optional)
-      //   alert('An error occurred while generating the PDF. Please try again.');
-      // });
+      .catch((error) => {
+        console.error('Error generating PDF:', error);
+        // Hide the content again if there's an error
+        element.style.display = 'none';
+        setload(false);
+        hideLoading();
+        // Display an alert to the user (optional)
+        alert('An error occurred while generating the PDF. Please try again.');
+      });
   };
  if(load){
   return ""
