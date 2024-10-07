@@ -28,10 +28,6 @@ import {
   GET_HISTORY_LOG_ACTIVE,
   GET_HISTORY_LOG_INACTIVE,
   GTE_BINARY_FILE_HISTORY,
-  RENEW_SUBSCRIBER_STATUS,
-  RENEW_AGGREGATE_STATUS,
-  GET_RENEW_SUBSCRIBER_INFO,
-  GET_RENEW_EDIT_SUBSCRIBER_INFO,
   WITHDRAWN_SUBSCRIBER_STATUS
 } from "../../Redux/ActionType";
 import {
@@ -50,11 +46,7 @@ import {
   POSTCODE_LIST_URL,
   HISTORY_URL,
   BINARY_FILE_HISTORY_URL,
-  WITHDRAWN_SUBSCRIBER_URL,
-  RENEW_SUBSCRIBER_URL,
-  RENEW_AGGREGATE_URL,
-  RENEW_SUBSCRIBER_INFO_URL,
-  RENEW_EDIT_SUBSCRIBER_INFO_URL
+  WITHDRAWN_SUBSCRIBER_URL
 } from "../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../Utils/FuncUtils";
 import { toast } from "react-toastify";
@@ -976,7 +968,7 @@ export const FunctionwithDrawSubscriber = (id, callback) => {
         if (response?.status == 200 || response?.status == 201) {
           console.log("Create Success")
           dispatch(withDrawSubscriber(response?.data));
-          toast.success("Withdraw Subscriber Complete!", {
+          toast.success("Delete Subscriber Complete!", {
             position: "top-right",
             autoClose: 3000,
             style: {
@@ -1000,136 +992,5 @@ export const FunctionwithDrawSubscriber = (id, callback) => {
         callback && callback(error);
       }
     );
-  };
-};
-
-// Renew Subscriber
-export const renewSubscriber = (data) => {
-  return {
-    type: RENEW_SUBSCRIBER_STATUS,
-    data: data,
-  };
-};
-export const FunctionRenewSubscriber = (data, id, callback) => {
-  const param = data;
-  const URL = RENEW_SUBSCRIBER_URL;
-  const renewSubscriberURL = `${URL}/${id}`;
-  return async (dispatch) => {
-    //  await axios.post(URL, param ,getHeaderConfig())
-    await axios.put(renewSubscriberURL, param).then(
-      (response) => {
-        if (response?.status == 200 || response?.status == 201) {
-          dispatch(renewSubscriber(response?.data));
-        } else {
-          dispatch(setOpenFailModal());
-          dispatch(failRequest(error.message));
-        }
-        callback && callback(response?.status);
-      },
-      (error) => {
-        console.log("error>>>>", error);
-
-        // ststus error here
-        // 400
-        // 500
-        dispatch(setOpenFailModal());
-        dispatch(failRequest(error.message));
-        callback && callback(error);
-      }
-    );
-  };
-};
-
-// Renew AggregateSubscriber
-export const renewAggregateSubscriber = (data) => {
-  return {
-    type: RENEW_AGGREGATE_STATUS,
-    data: data,
-  };
-};
-export const FunctionRenewAggregateSubscriber = (data, id, callback) => {
-  const param = data;
-  const URL = RENEW_AGGREGATE_URL;
-  const renewSubscriberURL = `${URL}/${id}`;
-  return async (dispatch) => {
-    await axios.put(renewSubscriberURL, param).then(
-      (response) => {
-        if (response?.status == 200 || response?.status == 201) {
-          dispatch(renewAggregateSubscriber(response?.data));
-        } else {
-          dispatch(setOpenFailModal());
-          dispatch(failRequest(error.message));
-        }
-        callback && callback(response?.status);
-      },
-      (error) => {
-        console.log("error>>>>", error);
-
-        // ststus error here
-        // 400
-        // 500
-        dispatch(setOpenFailModal());
-        dispatch(failRequest(error.message));
-        callback && callback(error);
-      }
-    );
-  };
-};
-//Renew Info
-export const getSubscriberRenewInfo = (data) => {
-  return {
-    type: GET_RENEW_SUBSCRIBER_INFO,
-    payload: data,
-  };
-};
-export const SubscriberRenewInfo = (id, callback) => {
-  
-  const URL = `${RENEW_SUBSCRIBER_INFO_URL}/${id}`;
-  console.log("URL Info",URL)
-  return async (dispatch) => {
-    await axios
-      .get(URL)
-      .then((response) => {
-        if (response?.status == 200) {
-          dispatch(getSubscriberRenewInfo(response.data));
-          callback && callback(response, null);
-          console.log("dddd", response);
-        } else {
-          callback && callback(response, response?.statusText);
-        }
-      })
-      .catch((error) => {
-        dispatch(failRequest(error.message));
-        callback && callback(null, error);
-      });
-  };
-};
-//Renew Edit Info
-export const getSubscriberRenewEditInfo = (data) => {
-  return {
-    type: GET_RENEW_EDIT_SUBSCRIBER_INFO,
-    payload: data,
-  };
-};
-export const SubscriberRenewEditInfo = (id, callback) => {
-  
-  const URL = `${RENEW_EDIT_SUBSCRIBER_INFO_URL}/${id}`;
-  console.log("URL Info",URL)
-  return async (dispatch) => {
-    await axios
-      .get(URL)
-      .then((response) => {
-        if (response?.status == 200) {
-          dispatch(getSubscriberRenewEditInfo(response.data));
-          callback && callback(response, null);
-          console.log("dddd", response);
-        } else {
-          callback && callback(response, response?.statusText);
-        }
-      })
-      .catch((error) => {
-        dispatch(failRequest(error.message));
-        callback && callback(null, error);
-      });
   };
 };

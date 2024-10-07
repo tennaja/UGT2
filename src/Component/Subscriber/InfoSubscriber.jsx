@@ -354,7 +354,7 @@ function CheckActionManageButton(){
             },
             {
               icon: <LuTrash2 />,
-              label: "Withdraw",
+              label: "Delete",
               onClick: deleteSubscriber,
             }]
             return showAction
@@ -368,7 +368,7 @@ function CheckActionManageButton(){
             },
             {
               icon: <LuTrash2 />,
-              label: "Withdraw",
+              label: "Delete",
               onClick: deleteSubscriber,
             }]
             return showAction
@@ -393,7 +393,7 @@ function CheckActionManageButton(){
           },
           {
             icon: <LuTrash2 />,
-            label: "Withdraw",
+            label: "Delete",
             onClick: deleteSubscriber,
           }]
           return showAction
@@ -465,12 +465,12 @@ function CheckActionManageButton(){
             icon: <MdOutlineHistory />,
             label: "History",
             onClick: onClickHistory,
-          },
+          }/*,
           {
             icon: <LuTrash2 />,
-            label: "Withdraw",
+            label: "Delete",
             onClick: deleteSubscriber,
-          }
+          }*/
         ]
         return showAction
       }
@@ -480,11 +480,12 @@ function CheckActionManageButton(){
     }
     else if(userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN){
       if(details?.subscriberDetail?.subscriberStatusId){
-        showAction = [/*{
+        showAction = [{
           icon: <FaRegEdit />,
           label: "Report",
           onClick: onClickReport,
-        }*/,
+          disabled: true
+        },
         {
           icon: <MdOutlineHistory />,
           label: "History",
@@ -1339,7 +1340,7 @@ const action = CheckActionManageButton()
                                       <TableRow>
                                         <TableCell>Year</TableCell>
                                         <TableCell align="right">
-                                          Total Allocated Energy Amount (kWh)
+                                          Total Contracted Energy Amount (kWh)
                                         </TableCell>
                                         <TableCell />
                                       </TableRow>
@@ -1746,12 +1747,12 @@ const action = CheckActionManageButton()
         <ModalConfirmWithdrawn
           onClickConfirmBtn={confirmDeleteSubscriber}
           onCloseModal={closeDeleteSubscriber}
-          title={"Withdraw this Subscriber ?"}
+          title={"Delete this Subscriber ?"}
           content={"Would you like to delete this subscriber? Subscriber will be permanently deleted."}
           buttonTypeColor={"danger"}
           showCheckBox={false}
           sizeModal={"md"}
-          contentButton={"Confirm Withdraw"}
+          contentButton={"Confirm Delete"}
         />
       )}
       {/*Madal Fail Save */}

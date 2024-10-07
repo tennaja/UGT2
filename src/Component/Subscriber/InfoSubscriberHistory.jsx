@@ -1102,7 +1102,7 @@ const InfoSubscriberHistory = () => {
                                       <TableRow>
                                         <TableCell>Year</TableCell>
                                         <TableCell align="right">
-                                          Total Allocated Energy Amount (kWh)
+                                          Total Contracted Energy Amount (kWh)
                                         </TableCell>
                                         <TableCell />
                                       </TableRow>
