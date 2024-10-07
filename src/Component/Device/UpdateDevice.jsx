@@ -748,47 +748,47 @@ const UpdateDevice = () => {
             // Email sent successfully
           })
         );
-
-        // If the status is "Verified", call the function handleClickConfirmVerified
+    
+        // Check the status and handle accordingly
         if (deviceobj?.statusName === "Verified") {
-          navigate(DEVICE_LIST);
-        } else if (deviceobj?.statusName === "Submitted") {
+          handleClickConfirmVerified()
+            .then(() => {
+              // Add a delay for a smooth transition effect before navigation
+              setTimeout(() => {
+                navigate(DEVICE_LIST);
+              }, 500); // 1-second delay
+            })
+            .catch((error) => {
+              console.error("Error during verification:", error);
+              // Handle the error as needed
+            });
+        } else if (["Submitted", "Verifying", "Return"].includes(deviceobj?.statusName)) {
           // Delay navigation by 1 second for transition effect
           
-          navigate(DEVICE_LIST); // Navigate back to the detail page
-          
-        }else if (deviceobj?.statusName === "Verifying") {
-          // Delay navigation by 1 second for transition effect
-          
-          navigate(DEVICE_LIST); // Navigate back to the detail page
-          
-        }
-        else if (deviceobj?.statusName === "Return") {
-          // Delay navigation by 1 second for transition effect
-          
-          navigate(DEVICE_LIST); // Navigate back to the detail page
-          
+            navigate(DEVICE_LIST);
+         
         }
       })
-    );
-};
+    );}
+    
+    
 
 
-const handleClickConfirmVerified = () => {
-    showLoading();
-    const deviceID = deviceobj?.id;
-
-    dispatch(
-      VerifiedDevice(deviceID, test.current, () => {
-        hideLoading(); // Hide loading spinner when the device is verified
-        
-        // Add a delay for smooth transition after the verification is complete
-        
-          handleClickBackToDetail(); // Navigate to the device list page after 1 second delay
-         // Adjust the delay as needed
-      })
-    );
-};
+    const handleClickConfirmVerified = () => {
+      return new Promise((resolve, reject) => {
+        showLoading();
+        const deviceID = deviceobj?.id;
+    
+        dispatch(
+          VerifiedDevice(deviceID, test.current, () => {
+            
+            hideLoading();
+            dispatch(clearModal());
+            resolve(); // Resolve the promise when verification completes
+          })
+        );
+      });
+    };
 
   
   const handleClickBackToEdit = () => {
