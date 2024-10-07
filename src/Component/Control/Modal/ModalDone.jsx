@@ -31,7 +31,7 @@ const ModalDone = (props) => {
 
   const backToHome = () => {
     dispatch(clearModal());
-    navigate(WEB_URL.DEVICE_LIST);
+    navigate(WEB_URL.DEVICE_LIST); 
     dispatch(setSelectedSubMenu(SUB_MENU_ID.DEVICE_LIST_INFO));
   };
 
