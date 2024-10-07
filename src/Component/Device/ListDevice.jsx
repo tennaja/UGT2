@@ -386,7 +386,7 @@ const ListDevice = (props) => {
           state={{ code: row.id }}
           to={WEB_URL.DEVICE_INFO}
           // hover:bg-[#4D6A00] bg-[#87BE33]
-          className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#8FBF57] bg-[#A6D37F]`}
+          className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]`}
         >
           <label className="cursor-pointer text-white font-semibold mr-2">
             {"View"}
