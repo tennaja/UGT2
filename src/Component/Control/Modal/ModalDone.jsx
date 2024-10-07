@@ -115,7 +115,7 @@ const emailBodytoVerifier = `
 `;
 //Call Api Verifying
 const handleClickConfirmVerifying = () => {
-  
+  dispatch(clearModal());
   handleCloseModalConfirm()
   showLoading();
   const titleemail = "[Device Registration] Verify UGT Device Registration"
