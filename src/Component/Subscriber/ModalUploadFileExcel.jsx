@@ -586,7 +586,7 @@ export default function ModalUploadFileExcel(props) {
           onClick={handleSubmit(onClickOk)}
           className={`${getButtonColor()} w-25 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm hover:bg-[#4D6A00] `}
         >
-          Save
+          Import
         </button>
       </div>
     </Modal>

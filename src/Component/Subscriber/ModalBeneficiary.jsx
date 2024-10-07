@@ -677,7 +677,7 @@ const ModalBeneficiary = (props) => {
               className={`${getButtonColor()} w-25 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm hover:bg-[#4D6A00] `}
               disabled={editStatus === true?false:isCheckBoxConfirmAdd?false:true}
             >
-              Save
+              Confirm
             </button>
           </div>
         </form>

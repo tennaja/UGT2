@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card } from "@mantine/core";
 import { Link, useNavigate } from "react-router-dom";
@@ -52,11 +52,15 @@ import { message } from "antd";
 import ModalFail from "../Control/Modal/ModalFail";
 import ModalConfirmCheckBox from "./ModalConfirmCheckBox";
 import ModalCompleteSubscriber from "./ModalCompleteSubscriber";
-import TriWarning from "../assets/TriWarning.png"
+import TriWarning from "../assets/TriWarning.png";
 import TextareaNoteSubscriber from "./TextareaNoteSubscriber";
 import FileUpload from "./UploadFileButton";
 import DatePickerSubscriber from "./DayPickerSubscriber";
-
+import Tooltips from "@mui/material/Tooltip";
+import InfoCircle from "../assets/InfoCircle.svg";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
+import { LiaDownloadSolid } from "react-icons/lia";
 
 const AddSubscriber = () => {
   const {
@@ -73,21 +77,21 @@ const AddSubscriber = () => {
       name: "feeder",
     }
   );
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showModal, setShowModalConfirm] = React.useState(false);
-  const [showUploadExcel,setShowUploadExcel] = React.useState(false);
-  const [showModalBene,setShowModalBene] = React.useState(false);
+  const [showUploadExcel, setShowUploadExcel] = React.useState(false);
+  const [showModalBene, setShowModalBene] = React.useState(false);
   const [showModalCreate, setShowModalCreateConfirm] = React.useState(false);
   const [showModalComplete, setShowModalComplete] = React.useState(false);
-  const [showModalConfirmCheck,setModalConfirmCheck] = React.useState(false);
+  const [showModalConfirmCheck, setModalConfirmCheck] = React.useState(false);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const [isActiveForm1, setIsActiveForm1] = useState(true);
   const [isActiveForm2, setIsActiveForm2] = useState(false);
   const [selectedCommisionDate, setSelectedCommisionDate] = useState(null);
   const [isAllocatedEnergyAmount, setIsAllocatedEnergyAmount] = useState(false);
-  const [isBeneficiary,setIsBeficiary] = useState(false);
+  const [isBeneficiary, setIsBeficiary] = useState(false);
   const [disableRequestedEffectiveDate, setDisableRequestedEffectiveDate] =
     useState(true);
   const [fileList, setFileList] = React.useState([]);
@@ -144,19 +148,19 @@ const AddSubscriber = () => {
     (state) => state.subscriber.postcodeList
   );
 
-  const isError = useSelector((state)=>state.subscriber.isOpenFailModal)
-  const errorMessage = useSelector((state)=>state.subscriber.errmessage)
-  const isOpen = useSelector((state)=>state.subscriber.isOpen)
+  const isError = useSelector((state) => state.subscriber.isOpenFailModal);
+  const errorMessage = useSelector((state) => state.subscriber.errmessage);
+  const isOpen = useSelector((state) => state.subscriber.isOpen);
   //console.log(errorMessage)
   //console.log(isError)
 
   const [allowcatedEnergyList, setAllowcatedEnergyList] = useState([]);
   const [allowcatedEnergyDataEdit, setAllowcatedEnergyDataEdit] = useState({});
-  const [allowcatedExcelFileList,setAllowcatesExcelfileList] = useState([]);
-  const [benefitList,setBenefitList] = useState([]);
-  const [benefitDataEdit,setBenefitDataEdit] = useState({});
+  const [allowcatedExcelFileList, setAllowcatesExcelfileList] = useState([]);
+  const [benefitList, setBenefitList] = useState([]);
+  const [benefitDataEdit, setBenefitDataEdit] = useState({});
   const [isEdit, setIsEdit] = useState(false);
-  const [isEditBene,setIsEditBene] = useState(false);
+  const [isEditBene, setIsEditBene] = useState(false);
   const [FormData1, setFormData1] = useState("");
   const [FormData2, setFormData2] = useState("");
   const [isOpenLoading, setIsOpenLoading] = useState(false);
@@ -183,22 +187,24 @@ const AddSubscriber = () => {
     },
   ];
 
-  const [yearStartDate,setYearStartDate] = useState()
-  const [monthStartDate,setMonthStartDate] = useState()
-  const [dayStartDate,setDayStartDate] = useState()
-  const [yearEndDate,setYearEndDate] = useState()
-  const [monthEndDate,setMonthEndDate] = useState()
-  const [dayEndDate,setDayEndDate] = useState()
-  const yearStartDate1 = useRef(null)
-  const monthStartDate1 = useRef(null)
-  const dayStartDate1 = useRef(null)
-  const yearEndDate1 = useRef(null)
-  const monthEndDate1 = useRef(null)
-  const dayEndDate1 = useRef(null)
+  const [yearStartDate, setYearStartDate] = useState();
+  const [monthStartDate, setMonthStartDate] = useState();
+  const [dayStartDate, setDayStartDate] = useState();
+  const [yearEndDate, setYearEndDate] = useState();
+  const [monthEndDate, setMonthEndDate] = useState();
+  const [dayEndDate, setDayEndDate] = useState();
+  const yearStartDate1 = useRef(null);
+  const monthStartDate1 = useRef(null);
+  const dayStartDate1 = useRef(null);
+  const yearEndDate1 = useRef(null);
+  const monthEndDate1 = useRef(null);
+  const dayEndDate1 = useRef(null);
   const [isShowFailModal, setIsShowFailModal] = useState(false);
   const [messageFailModal, setMessageFailModal] = useState("");
   const [isShowFailError, setIsShowFailError] = useState(false);
-  const [test,setTest] = useState()
+  const [test, setTest] = useState();
+  const [isShowDeleteBene, setIsShowDeleteBene] = useState(false);
+  const [dataBeneDelete, setDataBeneDelete] = useState();
 
   useEffect(() => {
     dispatch(FetchCountryList());
@@ -209,20 +215,19 @@ const AddSubscriber = () => {
     dispatch(FetchPostcodeBeneList());
     addInput();
     autoScroll();
-    
   }, []);
 
-  useEffect(()=>{
-    if(isError){
-      console.log("IsError",isError)
-      setTest(isError)
-      console.log("TEST",test)
+  useEffect(() => {
+    if (isError) {
+      console.log("IsError", isError);
+      setTest(isError);
+      console.log("TEST", test);
     }
-  },[isError])
+  }, [isError]);
 
-  useEffect(()=>{
-    console.log("File Allowcate IN Main Page",allowcatedExcelFileList)
-  },[allowcatedExcelFileList])
+  useEffect(() => {
+    console.log("File Allowcate IN Main Page", allowcatedExcelFileList);
+  }, [allowcatedExcelFileList]);
 
   useEffect(() => {
     permissionAllow();
@@ -265,22 +270,22 @@ const AddSubscriber = () => {
   };
 
   function downloadFileAllowCated() {
-    const base64Data = allowcatedExcelFileList[0].binary//.split(',')[1];
+    const base64Data = allowcatedExcelFileList[0].binary; //.split(',')[1];
     const binaryString = atob(base64Data);
     const binaryLength = binaryString.length;
     const bytes = new Uint8Array(binaryLength);
-  
+
     for (let i = 0; i < binaryLength; i++) {
       bytes[i] = binaryString.charCodeAt(i);
     }
-  
+
     const blob = new Blob([bytes], { type: allowcatedExcelFileList[0].type });
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = allowcatedExcelFileList[0].name;
     link.click();
     URL.revokeObjectURL(link.href);
-  }  
+  }
 
   const permissionAllow = () => {
     if (userData?.userGroup?.id) {
@@ -317,31 +322,33 @@ const AddSubscriber = () => {
     }
   };
   const addAllowcated = () => {
-    if(yearStartDate1.current !== null && yearEndDate1.current !== null){
+    if (yearStartDate1.current !== null && yearEndDate1.current !== null) {
       setShowModalConfirm(true);
+    } else {
+      setIsShowFailModal(true);
+      setMessageFailModal(
+        "Please select Retail ESA Contract Start Date and Retail ESA Contract End Date."
+      );
     }
-    else{
-      setIsShowFailModal(true)
-      setMessageFailModal("Please select Retail ESA Contract Start Date and Retail ESA Contract End Date.")
-    }
-    
   };
 
-  const addBeneficiary =()=>{
+  const addBeneficiary = () => {
     setShowModalBene(true);
-  }
+  };
 
-  const addExcelfile =()=>{
-    if(yearStartDate1.current !== null && yearEndDate1.current !== null){
-      console.log("Open Modal")
-    setShowUploadExcel(true);
+  const addExcelfile = () => {
+    if (yearStartDate1.current !== null && yearEndDate1.current !== null) {
+      console.log("Open Modal");
+      setShowUploadExcel(true);
+    } else {
+      setIsShowFailModal(true);
+      setMessageFailModal(
+        "Please select Retail ESA Contract Start Date and Retail ESA Contract End Date"
+      );
+      message.error(
+        "Please select Retail ESA Contract Start Date and Retail ESA Contract End Date"
+      );
     }
-    else{
-      setIsShowFailModal(true)
-      setMessageFailModal("Please select Retail ESA Contract Start Date and Retail ESA Contract End Date")
-      message.error("Please select Retail ESA Contract Start Date and Retail ESA Contract End Date")
-    }
-    
   };
 
   const addAllowcatedClose = () => {
@@ -352,9 +359,9 @@ const AddSubscriber = () => {
     setIsEditBene(false);
     setShowModalBene(false);
   };
-  const addExcelfileClose=()=>{
-    setShowUploadExcel(false)
-  }
+  const addExcelfileClose = () => {
+    setShowUploadExcel(false);
+  };
   const allowcatedEnergyDataIndex = (obj, index) => {
     const allowcatedEnergyEditTemp = allowcatedEnergyList;
     allowcatedEnergyEditTemp[index] = obj;
@@ -364,32 +371,29 @@ const AddSubscriber = () => {
     );
     setAllowcatedEnergyList(sortedData);
   };
-  const benefitDataIndex = (obj,index)=>{
-    
+  const benefitDataIndex = (obj, index) => {
     const benefitDataEditTemp = benefitList;
-    console.log(benefitDataEditTemp[index])
+    console.log(benefitDataEditTemp[index]);
     benefitDataEditTemp[index] = obj;
     setBenefitList(benefitDataEditTemp);
-    console.log(benefitList)
-  }
+    console.log(benefitList);
+  };
   const onClickEditBtn = (data, index) => {
     data.index = index;
     setAllowcatedEnergyDataEdit(data);
     setIsEdit(true);
     addAllowcated();
   };
-  
-  const onClickEditBeneBtn=(data,index)=>{
+
+  const onClickEditBeneBtn = (data, index) => {
     data.index = index;
-    console.log("Input Data")
-    console.log(data)
+    console.log("Input Data");
+    console.log(data);
     setBenefitDataEdit(data);
-    setIsEditBene(true)
+    setIsEditBene(true);
     addBeneficiary();
-    setTimeout(() => {
-      
-    }, 0);
-  }
+    setTimeout(() => {}, 0);
+  };
 
   const onClickDeleteBtn = (data) => {
     const allowcatedEnergyListTemp = allowcatedEnergyList.filter(
@@ -398,12 +402,13 @@ const AddSubscriber = () => {
 
     setAllowcatedEnergyList(allowcatedEnergyListTemp);
   };
-  const onClickDeleteBeneBtn =(data)=>{
+  const onClickDeleteBeneBtn = (data) => {
     const benefitListTemp = benefitList.filter(
-      (item)=>item.beneficiaryName !== data.beneficiaryName
+      (item) => item.beneficiaryName !== data.beneficiaryName
     );
     setBenefitList(benefitListTemp);
-  }
+    setDataBeneDelete();
+  };
   const sumAllocatedEnergyAmount = (data) => {
     const total =
       data.amount01 +
@@ -439,45 +444,54 @@ const AddSubscriber = () => {
     setAllowcatedEnergyList(sortedData);
   };
 
-  const beneficiaryData =(obj)=>{
+  const beneficiaryData = (obj) => {
     const beneficiaryListTemp = benefitList;
     beneficiaryListTemp.push(obj);
     const sortData = [...benefitList].sort(
-      (a,b) => b.beneficiaryName - a.beneficiaryName
+      (a, b) => b.beneficiaryName - a.beneficiaryName
     );
     setIsBeficiary(false);
-    setBenefitList(sortData)
-    console.log(benefitList)
-  }
+    setBenefitList(sortData);
+    console.log(benefitList);
+  };
   function generateGUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
         const r = (Math.random() * 16) | 0,
-            v = c === 'x' ? r : (r & 0x3) | 0x8;
+          v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
-    });
-}
+      }
+    );
+  }
   const handleUploadfile = async (id, result) => {
-    console.log("Result",result)
+    console.log("Result", result);
     const reader = new FileReader();
-     reader.onload = function(e) {
+    reader.onload = function (e) {
       const arrayBuffer = e.target.result;
-      console.log('Binary data as ArrayBuffer:', arrayBuffer);
+      console.log("Binary data as ArrayBuffer:", arrayBuffer);
       const base64Content = arrayBuffer.split(",")[1];
       setFileList((prevFileList) => {
         console.log("prevFileList", prevFileList);
         let newFileList = [
           ...prevFileList,
-          {guid: "", name: result?.name, size: result?.size,type: result?.type,binary: base64Content },
+          {
+            guid: "",
+            name: result?.name,
+            size: result?.size,
+            type: result?.type,
+            binary: base64Content,
+          },
         ];
         return newFileList;
       });
     };
 
-    let bi = reader.readAsDataURL(result)// Reads the file's binary data as an ArrayBuffer
+    let bi = reader.readAsDataURL(result); // Reads the file's binary data as an ArrayBuffer
     //console.log("---Binary---",bi)
-    
-      //console.log("---File List---",fileList)
-      
+
+    //console.log("---File List---",fileList)
+
     //console.log("New File List",fileList)
     // console.log("fileJaa>>>",file)
 
@@ -515,7 +529,7 @@ const AddSubscriber = () => {
       showLoading();
       const fileID = item?.guid;
       const fileName = item?.name;
-      const binary = item?.binary
+      const binary = item?.binary;
       const requestParameter = {
         fileID: fileID,
         fileName: fileName,
@@ -523,7 +537,7 @@ const AddSubscriber = () => {
       //const response = await FetchDownloadFile(requestParameter);
 
       //const blob = new Blob([response.res.data], {
-        //type: response.res.headers["content-type"],
+      //type: response.res.headers["content-type"],
       //});
       // Create a download link
       //const url = window.URL.createObjectURL(blob);
@@ -535,7 +549,7 @@ const AddSubscriber = () => {
       //document.body.removeChild(a);
       //window.URL.revokeObjectURL(url);
     } catch (error) {
-    //  console.error("Error downloading file:", error);
+      //  console.error("Error downloading file:", error);
     }
     hideLoading();
     // setIsOpenLoading(false);
@@ -543,26 +557,31 @@ const AddSubscriber = () => {
 
   const handleUploadfilePDF = async (id, result) => {
     // console.log("fileJaa>>>",file)
-    console.log("Result",result)
-    console.log("----PDF FIle---",fileListPDF)
-    console.log("Lenght PDF",fileListPDF.length)
+    console.log("Result", result);
+    console.log("----PDF FIle---", fileListPDF);
+    console.log("Lenght PDF", fileListPDF.length);
     const reader = new FileReader();
-     reader.onload = function(e) {
+    reader.onload = function (e) {
       const arrayBuffer = e.target.result;
-      console.log('Binary data as ArrayBuffer:', arrayBuffer);
+      console.log("Binary data as ArrayBuffer:", arrayBuffer);
       const base64Content = arrayBuffer.split(",")[1];
       setFileListPDF((prevFileList) => {
         console.log("prevFileList", prevFileList);
         let newFileList = [
           ...prevFileList,
-          {guid: "", name: result?.name, size: result?.size,type: result?.type,binary: base64Content },
+          {
+            guid: "",
+            name: result?.name,
+            size: result?.size,
+            type: result?.type,
+            binary: base64Content,
+          },
         ];
         return newFileList;
       });
     };
 
-    let bi = reader.readAsDataURL(result)
-
+    let bi = reader.readAsDataURL(result);
 
     /*console.log("id", id);
     console.log("res", result);
@@ -610,7 +629,7 @@ const AddSubscriber = () => {
       showLoading();
       const fileID = item?.guid;
       const fileName = item?.name;
-      const binary = item?.binary
+      const binary = item?.binary;
       const requestParameter = {
         fileID: fileID,
         fileName: fileName,
@@ -618,7 +637,7 @@ const AddSubscriber = () => {
       //const response = await FetchDownloadFile(requestParameter);
 
       //const blob = new Blob([response.res.data], {
-        //type: response.res.headers["content-type"],
+      //type: response.res.headers["content-type"],
       //});
       // Create a download link
       //const url = window.URL.createObjectURL(blob);
@@ -630,7 +649,7 @@ const AddSubscriber = () => {
       //document.body.removeChild(a);
       //window.URL.revokeObjectURL(url);
     } catch (error) {
-    //  console.error("Error downloading file:", error);
+      //  console.error("Error downloading file:", error);
     }
     hideLoading();
     // setIsOpenLoading(false);
@@ -638,25 +657,31 @@ const AddSubscriber = () => {
 
   const handleUploadfileExcel = async (id, result) => {
     // console.log("fileJaa>>>",file)
-    console.log("Result",result)
-    console.log("----Excel FIle---",fileListPDF)
-    console.log("Lenght Excel",fileListPDF.length)
+    console.log("Result", result);
+    console.log("----Excel FIle---", fileListPDF);
+    console.log("Lenght Excel", fileListPDF.length);
     const reader = new FileReader();
-     reader.onload = function(e) {
+    reader.onload = function (e) {
       const arrayBuffer = e.target.result;
-      console.log('Binary data as ArrayBuffer:', arrayBuffer);
+      console.log("Binary data as ArrayBuffer:", arrayBuffer);
       const base64Content = arrayBuffer.split(",")[1];
       setFileListExcel((prevFileList) => {
         console.log("prevFileList", prevFileList);
         let newFileList = [
           ...prevFileList,
-          {guid: "", name: result?.name, size: result?.size,type: result?.type,binary: base64Content },
+          {
+            guid: "",
+            name: result?.name,
+            size: result?.size,
+            type: result?.type,
+            binary: base64Content,
+          },
         ];
         return newFileList;
       });
     };
 
-    let bi = reader.readAsDataURL(result)
+    let bi = reader.readAsDataURL(result);
 
     /*console.log("id", id);
     console.log("res", result);
@@ -686,7 +711,7 @@ const AddSubscriber = () => {
   };
 
   const handleClickDownloadFileExcel = async (item) => {
-     // console.log('item',item)
+    // console.log('item',item)
     // console.log('item evidentFileID',item?.evidentFileID)
     // console.log('item name',item?.name)
     try {
@@ -694,7 +719,7 @@ const AddSubscriber = () => {
       showLoading();
       const fileID = item?.guid;
       const fileName = item?.name;
-      const binary = item?.binary
+      const binary = item?.binary;
       const requestParameter = {
         fileID: fileID,
         fileName: fileName,
@@ -702,7 +727,7 @@ const AddSubscriber = () => {
       //const response = await FetchDownloadFile(requestParameter);
 
       //const blob = new Blob([response.res.data], {
-        //type: response.res.headers["content-type"],
+      //type: response.res.headers["content-type"],
       //});
       // Create a download link
       //const url = window.URL.createObjectURL(blob);
@@ -714,7 +739,7 @@ const AddSubscriber = () => {
       //document.body.removeChild(a);
       //window.URL.revokeObjectURL(url);
     } catch (error) {
-    //  console.error("Error downloading file:", error);
+      //  console.error("Error downloading file:", error);
     }
     hideLoading();
     // setIsOpenLoading(false);
@@ -723,210 +748,274 @@ const AddSubscriber = () => {
   const onSubmitForm1 = (formData) => {
     if (allowcatedEnergyList.length <= 0) {
       setIsAllocatedEnergyAmount(true);
-    } 
-    else if(benefitList.length <= 0){
+    } else if (benefitList.length <= 0) {
       setIsBeficiary(true);
-    }
-    else {
-      let errorCheckContractEnnergy = null
-      let errorYear = null
-      let errorMonth = null
-      let isError = false
-      const yearStart = parseInt(yearStartDate1.current)
-      const yearEnd = parseInt(yearEndDate1.current)
-      const diffYear = (yearEnd-yearStart)+1
-      console.log("Diff Year",diffYear)
-      console.log("Length Contract Amount",allowcatedEnergyList.length)
-      const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
-      const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
-      console.log("Year Start",yearStart)
-      console.log("Aloow List",allowcatedEnergyList)
-      if(lengthCreateStartyear.length !== 0){
-          if(lenghtCreateEndyear.length !== 0){
-            for(let i = yearStart+1;i < yearEnd;i++){
-              const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
-              if(checkDisappearData.length === 0){
-                errorYear = i;
-                isError = true
+    } else {
+      let errorCheckContractEnnergy = null;
+      let errorYear = null;
+      let errorMonth = null;
+      let isError = false;
+      const yearStart = parseInt(yearStartDate1.current);
+      const yearEnd = parseInt(yearEndDate1.current);
+      const diffYear = yearEnd - yearStart + 1;
+      console.log("Diff Year", diffYear);
+      console.log("Length Contract Amount", allowcatedEnergyList.length);
+      const lengthCreateStartyear = allowcatedEnergyList.filter(
+        (items) => items.year === yearStart
+      );
+      const lenghtCreateEndyear = allowcatedEnergyList.filter(
+        (items) => items.year === yearEnd
+      );
+      console.log("Year Start", yearStart);
+      console.log("Aloow List", allowcatedEnergyList);
+      if (lengthCreateStartyear.length !== 0) {
+        if (lenghtCreateEndyear.length !== 0) {
+          for (let i = yearStart + 1; i < yearEnd; i++) {
+            const checkDisappearData = allowcatedEnergyList.filter(
+              (items) => items.year === i
+            );
+            if (checkDisappearData.length === 0) {
+              errorYear = i;
+              isError = true;
+              break;
+            }
+          }
+          if (isError === false) {
+            for (let i = 0; i < allowcatedEnergyList.length; i++) {
+              if (
+                onCheckErrorSubmit(
+                  allowcatedEnergyList[i].year,
+                  1,
+                  allowcatedEnergyList[i].amount01
+                ) === false
+              ) {
+                //console.log("Month 1 is not error")
+                if (
+                  onCheckErrorSubmit(
+                    allowcatedEnergyList[i].year,
+                    2,
+                    allowcatedEnergyList[i].amount02
+                  ) === false
+                ) {
+                  //console.log("Month 2 is not error")
+                  if (
+                    onCheckErrorSubmit(
+                      allowcatedEnergyList[i].year,
+                      3,
+                      allowcatedEnergyList[i].amount03
+                    ) === false
+                  ) {
+                    //console.log("Month 3 is not error")
+                    if (
+                      onCheckErrorSubmit(
+                        allowcatedEnergyList[i].year,
+                        4,
+                        allowcatedEnergyList[i].amount04
+                      ) === false
+                    ) {
+                      //console.log("Month 4 is not error")
+                      if (
+                        onCheckErrorSubmit(
+                          allowcatedEnergyList[i].year,
+                          5,
+                          allowcatedEnergyList[i].amount05
+                        ) === false
+                      ) {
+                        //console.log("Month 5 is not error")
+                        if (
+                          onCheckErrorSubmit(
+                            allowcatedEnergyList[i].year,
+                            6,
+                            allowcatedEnergyList[i].amount06
+                          ) === false
+                        ) {
+                          //console.log("Month 6 is not error")
+                          if (
+                            onCheckErrorSubmit(
+                              allowcatedEnergyList[i].year,
+                              7,
+                              allowcatedEnergyList[i].amount07
+                            ) === false
+                          ) {
+                            // console.log("Month 7 is not error")
+                            if (
+                              onCheckErrorSubmit(
+                                allowcatedEnergyList[i].year,
+                                8,
+                                allowcatedEnergyList[i].amount08
+                              ) === false
+                            ) {
+                              // console.log("Month 8 is not error")
+                              if (
+                                onCheckErrorSubmit(
+                                  allowcatedEnergyList[i].year,
+                                  9,
+                                  allowcatedEnergyList[i].amount09
+                                ) === false
+                              ) {
+                                //  console.log("Month 9 is not error")
+                                if (
+                                  onCheckErrorSubmit(
+                                    allowcatedEnergyList[i].year,
+                                    10,
+                                    allowcatedEnergyList[i].amount10
+                                  ) === false
+                                ) {
+                                  //   console.log("Month 10 is not error")
+                                  if (
+                                    onCheckErrorSubmit(
+                                      allowcatedEnergyList[i].year,
+                                      11,
+                                      allowcatedEnergyList[i].amount11
+                                    ) === false
+                                  ) {
+                                    //     console.log("Month 11 is not error")
+                                    if (
+                                      onCheckErrorSubmit(
+                                        allowcatedEnergyList[i].year,
+                                        12,
+                                        allowcatedEnergyList[i].amount12
+                                      ) === false
+                                    ) {
+                                      //console.log("Month 12 is not error")
+                                      errorCheckContractEnnergy = false;
+                                    } else {
+                                      //console.log("Month 12 is error")
+                                      errorCheckContractEnnergy = true;
+                                      errorYear = allowcatedEnergyList[i].year;
+                                      errorMonth = "Dec";
+                                      break;
+                                    }
+                                  } else {
+                                    //console.log("Month 11 is error")
+                                    errorCheckContractEnnergy = true;
+                                    errorYear = allowcatedEnergyList[i].year;
+                                    errorMonth = "Nov";
+                                    break;
+                                  }
+                                } else {
+                                  //console.log("Month 10 is error")
+                                  errorCheckContractEnnergy = true;
+                                  errorYear = allowcatedEnergyList[i].year;
+                                  errorMonth = "Oct";
+                                  break;
+                                }
+                              } else {
+                                //console.log("Month 9 is error")
+                                errorCheckContractEnnergy = true;
+                                errorYear = allowcatedEnergyList[i].year;
+                                errorMonth = "Sep";
+                                break;
+                              }
+                            } else {
+                              //console.log("Month 8 is error")
+                              errorCheckContractEnnergy = true;
+                              errorYear = allowcatedEnergyList[i].year;
+                              errorMonth = "Aug";
+                              break;
+                            }
+                          } else {
+                            //console.log("Month 7 is error")
+                            errorCheckContractEnnergy = true;
+                            errorYear = allowcatedEnergyList[i].year;
+                            errorMonth = "Jul";
+                            break;
+                          }
+                        } else {
+                          //console.log("Month 6 is error")
+                          errorCheckContractEnnergy = true;
+                          errorYear = allowcatedEnergyList[i].year;
+                          errorMonth = "Jun";
+                          break;
+                        }
+                      } else {
+                        //console.log("Month 5 is error")
+                        errorCheckContractEnnergy = true;
+                        errorYear = allowcatedEnergyList[i].year;
+                        errorMonth = "May";
+                        break;
+                      }
+                    } else {
+                      //console.log("Month 4 is error")
+                      errorCheckContractEnnergy = true;
+                      errorYear = allowcatedEnergyList[i].year;
+                      errorMonth = "Apr";
+                      break;
+                    }
+                  } else {
+                    //console.log("Month 3 is error")
+                    errorCheckContractEnnergy = true;
+                    errorYear = allowcatedEnergyList[i].year;
+                    errorMonth = "Mar";
+                    break;
+                  }
+                } else {
+                  //console.log("Month 2 is error")
+                  errorCheckContractEnnergy = true;
+                  errorYear = allowcatedEnergyList[i].year;
+                  errorMonth = "Feb";
+                  break;
+                }
+              } else {
+                //console.log("Month 1 is error")
+                errorCheckContractEnnergy = true;
+                errorYear = allowcatedEnergyList[i].year;
+                errorMonth = "Jan";
                 break;
               }
             }
-              if(isError === false){
-                  for(let i = 0;i < allowcatedEnergyList.length;i++){
-                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
-                        //console.log("Month 1 is not error")
-                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
-                          //console.log("Month 2 is not error")
-                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
-                              //console.log("Month 3 is not error")
-                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
-                                //console.log("Month 4 is not error")
-                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
-                                    //console.log("Month 5 is not error")
-                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
-                                        //console.log("Month 6 is not error")
-                                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
-                                         // console.log("Month 7 is not error")
-                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
-                                           // console.log("Month 8 is not error")
-                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
-                                            //  console.log("Month 9 is not error")
-                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
-                                             //   console.log("Month 10 is not error")
-                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
-                                             //     console.log("Month 11 is not error")
-                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
-                                                  {
-                                                    //console.log("Month 12 is not error")
-                                                    errorCheckContractEnnergy = false                                            
-                                                  }
-                                                  else{
-                                                    //console.log("Month 12 is error")
-                                                    errorCheckContractEnnergy = true;
-                                                    errorYear = allowcatedEnergyList[i].year;
-                                                    errorMonth = "Dec";
-                                                    break;
-                                                  }
-                                                }
-                                                else{
-                                                  //console.log("Month 11 is error")
-                                                  errorCheckContractEnnergy = true;
-                                                  errorYear = allowcatedEnergyList[i].year;
-                                                  errorMonth = "Nov";
-                                                  break;
-                                                }
-                                              }
-                                              else{
-                                                //console.log("Month 10 is error")
-                                                errorCheckContractEnnergy = true;
-                                                errorYear = allowcatedEnergyList[i].year;
-                                                errorMonth = "Oct";
-                                                break;
-                                              }
-                                            }
-                                            else{
-                                              //console.log("Month 9 is error")
-                                              errorCheckContractEnnergy = true;
-                                              errorYear = allowcatedEnergyList[i].year;
-                                              errorMonth = "Sep";
-                                              break;
-                                            }
-                                          }
-                                          else{
-                                            //console.log("Month 8 is error")
-                                            errorCheckContractEnnergy = true;
-                                            errorYear = allowcatedEnergyList[i].year;
-                                            errorMonth = "Aug";
-                                            break;
-                                          }
-                                        }
-                                        else{
-                                          //console.log("Month 7 is error")
-                                          errorCheckContractEnnergy = true;
-                                          errorYear = allowcatedEnergyList[i].year;
-                                          errorMonth = "Jul";
-                                          break;
-                                        }
-                                      }
-                                      else{
-                                        //console.log("Month 6 is error")
-                                        errorCheckContractEnnergy = true;
-                                        errorYear = allowcatedEnergyList[i].year;
-                                        errorMonth = "Jun";
-                                        break;
-                                      }
-                                  }
-                                  else{
-                                    //console.log("Month 5 is error")
-                                    errorCheckContractEnnergy = true;
-                                    errorYear = allowcatedEnergyList[i].year;
-                                    errorMonth = "May";
-                                    break;
-                                  }
-                              }
-                              else{
-                                //console.log("Month 4 is error")
-                                errorCheckContractEnnergy = true;
-                                errorYear = allowcatedEnergyList[i].year;
-                                errorMonth = "Apr";
-                                break;
-                              }
-                            }
-                            else{
-                              //console.log("Month 3 is error")
-                              errorCheckContractEnnergy = true;
-                              errorYear = allowcatedEnergyList[i].year;
-                              errorMonth = "Mar";
-                              break;
-                            }
-                        }
-                        else{
-                          //console.log("Month 2 is error")
-                          errorCheckContractEnnergy = true;
-                          errorYear = allowcatedEnergyList[i].year;
-                          errorMonth = "Feb";
-                          break;
-                        }
-                    }
-                    else{
-                      //console.log("Month 1 is error")
-                      errorCheckContractEnnergy = true;
-                      errorYear = allowcatedEnergyList[i].year;
-                      errorMonth = "Jan";
-                      break;
-                    }
-                }
-              const param = {
-                    ugtGroupId: currentUGTGroup?.id,
-                    subscriberTypeId: 1,
-                    //General Information
-                    assignedUtilityId: formData.assignUtil.id,
-                    //subscriberCode: formData.subscriberCode,
-                    tradeAccount: formData.tradeAccountName,
-                    tradeAccountCode: formData.tradeAccountCode,
-                    redemptionAccountCode: formData.redemptionAccountCode,
-                    redemptionAccount: formData.redemptionAccountName,
-                    //tradeAccount: formData.tradeAccount,
-                    //retailESANo: formData.retailESANo,
-                    //retailESAContractStartDate: formData.retailESAContractStartDate,
-                    //retailESAContractEndDate: formData.retailESAContractEndDate,
-                    //retailESAContractDuration: formData?.retailESAContractDuration || "",
-                    //redemptionAccount: formData.redemptionAccount,
-                    subscriberStatusId: 1,
-                    //Organization Information
-                    organizationName: formData.organizationName,
-                    businessRegistrationNo: formData.businessRegistrationNo,
-                    address: formData.address,
-                    subdistrictCode: formData.subdistrictCode.subdistrictCode,
-                    subdistrictName: formData.subdistrictCode.subdistrictNameEn,
-                    districtCode: formData.districtCode.districtCode,
-                    districtName: formData.districtCode.districtNameEn,
-                    provinceCode: formData.stateCode.provinceCode,
-                    provinceName: formData.stateCode.provinceNameEn,
-                    countryCode: formData.countryCode.alpha2.toUpperCase(),
-                    countryName: formData.countryCode.name,
-                    postCode: formData.postCode.postalCode.toString(),
-                    //Personal Information
-                    title: formData.title?.value,
-                    name: formData.name,
-                    lastname: formData.lastname,
-                    email: formData.email,
-                    mobilePhone: formData.mobilePhone,
-                    officePhone: formData.officePhone,
-                    attorney: formData.attorney,
-                    //Subscription Information
-                    retailESANo: formData.retailESANo,
-                    retailESAContractStartDate: formData.retailESAContractStartDate,
-                    retailESAContractEndDate: formData.retailESAContractEndDate,
-                    retailESAContractDuration: formData?.retailESAContractDuration || "",
-                    portfolioAssignment: formData.portfolioAssignment,
-                    optForUp: formData.optGreen?"Active":"Inactive",
-                    optForExcess: formData.optContract?"Active":"Inactive",
-                    feeder: formData.feeder,
-                    allocateEnergyAmount: allowcatedEnergyList,
-                    fileUploadContract: allowcatedExcelFileList,
-                    //Beneficiary Information
-                    beneficiaryInfo:benefitList /*{
+            const param = {
+              ugtGroupId: currentUGTGroup?.id,
+              subscriberTypeId: 1,
+              //General Information
+              assignedUtilityId: formData.assignUtil.id,
+              //subscriberCode: formData.subscriberCode,
+              tradeAccount: formData.tradeAccountName,
+              tradeAccountCode: formData.tradeAccountCode,
+              redemptionAccountCode: formData.redemptionAccountCode,
+              redemptionAccount: formData.redemptionAccountName,
+              //tradeAccount: formData.tradeAccount,
+              //retailESANo: formData.retailESANo,
+              //retailESAContractStartDate: formData.retailESAContractStartDate,
+              //retailESAContractEndDate: formData.retailESAContractEndDate,
+              //retailESAContractDuration: formData?.retailESAContractDuration || "",
+              //redemptionAccount: formData.redemptionAccount,
+              subscriberStatusId: 1,
+              //Organization Information
+              organizationName: formData.organizationName,
+              businessRegistrationNo: formData.businessRegistrationNo,
+              address: formData.address,
+              subdistrictCode: formData.subdistrictCode.subdistrictCode,
+              subdistrictName: formData.subdistrictCode.subdistrictNameEn,
+              districtCode: formData.districtCode.districtCode,
+              districtName: formData.districtCode.districtNameEn,
+              provinceCode: formData.stateCode.provinceCode,
+              provinceName: formData.stateCode.provinceNameEn,
+              countryCode: formData.countryCode.alpha2.toUpperCase(),
+              countryName: formData.countryCode.name,
+              postCode: formData.postCode.postalCode.toString(),
+              //Personal Information
+              title: formData.title?.value,
+              name: formData.name,
+              lastname: formData.lastname,
+              email: formData.email,
+              mobilePhone: formData.mobilePhone,
+              officePhone: formData.officePhone,
+              attorney: formData.attorney,
+              //Subscription Information
+              retailESANo: formData.retailESANo,
+              retailESAContractStartDate: formData.retailESAContractStartDate,
+              retailESAContractEndDate: formData.retailESAContractEndDate,
+              retailESAContractDuration:
+                formData?.retailESAContractDuration || "",
+              portfolioAssignment: formData.portfolioAssignment,
+              optForUp: formData.optGreen ? "Active" : "Inactive",
+              optForExcess: formData.optContract ? "Active" : "Inactive",
+              feeder: formData.feeder,
+              allocateEnergyAmount: allowcatedEnergyList,
+              fileUploadContract: allowcatedExcelFileList,
+              //Beneficiary Information
+              beneficiaryInfo: benefitList /*{
                       beneficiaryName: formData.beneficiaryName,
                       beneficiaryStatus: "Active",
                       beneficiaryCountry: formData.beneficiaryCountryCode.name,
@@ -948,93 +1037,99 @@ const AddSubscriber = () => {
                       beneficiaryPostcode:
                         formData.beneficiaryPostcode.postalCode.toString(),
                     }*/,
-                    //Attach File
-                    fileUpload:fileList,
-                    note:formData.note
-                  };
-              if(errorCheckContractEnnergy === false){
-                console.log("Contract Amount is not Error")
-                  setIsAllocatedEnergyAmount(false);
-                  setIsBeficiary(false)
-                  setFormData1(param);
-                  console.log(param)
-                  setShowModalCreateConfirm(true);
-              }
-              else{
-                setIsShowFailModal(true)
-                setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
-                console.log("Contract Amount Error",errorYear+" "+errorMonth)
-              }
-              }
-              else{
-                setIsShowFailModal(true)
-                setMessageFailModal("Contract energy amount is not create in " + errorYear)
-                console.log("Error create ContractEnergy is not match select Date")
-              }
+              //Attach File
+              fileUpload: fileList,
+              note: formData.note,
+            };
+            if (errorCheckContractEnnergy === false) {
+              console.log("Contract Amount is not Error");
+              setIsAllocatedEnergyAmount(false);
+              setIsBeficiary(false);
+              setFormData1(param);
+              console.log(param);
+              setShowModalCreateConfirm(true);
+            } else {
+              setIsShowFailModal(true);
+              setMessageFailModal(
+                "Contract Energy Amount error in year " +
+                  errorYear +
+                  " on " +
+                  errorMonth
+              );
+              console.log(
+                "Contract Amount Error",
+                errorYear + " " + errorMonth
+              );
             }
-            else{
-              setIsShowFailModal(true)
-              setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-              console.log("Error is not Create Allowcated End Year")
-            }
+          } else {
+            setIsShowFailModal(true);
+            setMessageFailModal(
+              "Contract energy amount is not create in " + errorYear
+            );
+            console.log("Error create ContractEnergy is not match select Date");
+          }
+        } else {
+          setIsShowFailModal(true);
+          setMessageFailModal(
+            "Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date"
+          );
+          console.log("Error is not Create Allowcated End Year");
         }
-        else{
-          setIsShowFailModal(true)
-          setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-          console.log("Error is not Create Allowcated Start Year")
-        }
-      
-      
+      } else {
+        setIsShowFailModal(true);
+        setMessageFailModal(
+          "Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date"
+        );
+        console.log("Error is not Create Allowcated Start Year");
+      }
     }
   };
   const handleClickConfirm = () => {
-   
     setShowModalCreateConfirm(false);
     // setIsOpenLoading(true);
     showLoading();
     if (isActiveForm1 == true) {
-      console.log("Form 1")
-      console.log(isError)
+      console.log("Form 1");
+      console.log(isError);
       dispatch(
         FunctionCreateSubscriber(FormData1, () => {
           //const isFailError = useSelector((state)=>state.subscriber.isOpenFailModal)
           if (isError === false) {
-            console.log("Create Form 1 success")
-          // setIsOpenLoading(false);
+            console.log("Create Form 1 success");
+            // setIsOpenLoading(false);
             hideLoading();
-            setShowModalComplete(true);}
-          else{
-            console.log("Create form 1 error")
+            setShowModalComplete(true);
+          } else {
+            console.log("Create form 1 error");
             hideLoading();
-            setIsShowFailError(true)
-            setMessageFailModal(errorMessage)
+            setIsShowFailError(true);
+            setMessageFailModal(errorMessage);
           }
         })
       );
     } else {
-      console.log("Create form 2")
+      console.log("Create form 2");
       dispatch(
         FunctionCreateAggregateSubscriber(FormData2, () => {
-          
           // setIsOpenLoading(false);
           //hideLoading();
           //setShowModalComplete(true);
           if (isError === false) {
-            console.log("Create form 2 success")
+            console.log("Create form 2 success");
             // setIsOpenLoading(false);
-              hideLoading();
-              setShowModalComplete(true);}
-            else{
-              console.log("Create form 2 error")
-              hideLoading();
-              setIsShowFailError(true)
-              setMessageFailModal(errorMessage)
-            }
+            hideLoading();
+            setShowModalComplete(true);
+          } else {
+            console.log("Create form 2 error");
+            hideLoading();
+            setIsShowFailError(true);
+            setMessageFailModal(errorMessage);
+          }
         })
       );
     }
   };
-  
+
   const handleCloseModalConfirm = (val) => {
     setShowModalCreateConfirm(false);
   };
@@ -1043,204 +1138,280 @@ const AddSubscriber = () => {
     if (allowcatedEnergyList.length <= 0) {
       setIsAllocatedEnergyAmount(true);
     } else {
-      let errorCheckContractEnnergy = null
-      let errorYear = null
-      let errorMonth = null
-      let isError = false
-      const yearStart = parseInt(yearStartDate1.current)
-      const yearEnd = parseInt(yearEndDate1.current)
-      const diffYear = (yearEnd-yearStart)+1
-      console.log("Diff Year",diffYear)
-      console.log("Length Contract Amount",allowcatedEnergyList.length)
-      const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
-      const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
-      if(lengthCreateStartyear.length !== 0){
-          if(lenghtCreateEndyear.length !== 0){
-            for(let i = yearStart+1;i < yearEnd;i++){
-              const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
-              if(checkDisappearData.length === 0){
-                errorYear = i;
-                isError = true
+      let errorCheckContractEnnergy = null;
+      let errorYear = null;
+      let errorMonth = null;
+      let isError = false;
+      const yearStart = parseInt(yearStartDate1.current);
+      const yearEnd = parseInt(yearEndDate1.current);
+      const diffYear = yearEnd - yearStart + 1;
+      console.log("Diff Year", diffYear);
+      console.log("Length Contract Amount", allowcatedEnergyList.length);
+      const lengthCreateStartyear = allowcatedEnergyList.filter(
+        (items) => items.year === yearStart
+      );
+      const lenghtCreateEndyear = allowcatedEnergyList.filter(
+        (items) => items.year === yearEnd
+      );
+      if (lengthCreateStartyear.length !== 0) {
+        if (lenghtCreateEndyear.length !== 0) {
+          for (let i = yearStart + 1; i < yearEnd; i++) {
+            const checkDisappearData = allowcatedEnergyList.filter(
+              (items) => items.year === i
+            );
+            if (checkDisappearData.length === 0) {
+              errorYear = i;
+              isError = true;
+              break;
+            }
+          }
+
+          if (isError === false) {
+            for (let i = 0; i < allowcatedEnergyList.length; i++) {
+              if (
+                onCheckErrorSubmit(
+                  allowcatedEnergyList[i].year,
+                  1,
+                  allowcatedEnergyList[i].amount01
+                ) === false
+              ) {
+                console.log("Month 1 is not error");
+                if (
+                  onCheckErrorSubmit(
+                    allowcatedEnergyList[i].year,
+                    2,
+                    allowcatedEnergyList[i].amount02
+                  ) === false
+                ) {
+                  console.log("Month 2 is not error");
+                  if (
+                    onCheckErrorSubmit(
+                      allowcatedEnergyList[i].year,
+                      3,
+                      allowcatedEnergyList[i].amount03
+                    ) === false
+                  ) {
+                    console.log("Month 3 is not error");
+                    if (
+                      onCheckErrorSubmit(
+                        allowcatedEnergyList[i].year,
+                        4,
+                        allowcatedEnergyList[i].amount04
+                      ) === false
+                    ) {
+                      console.log("Month 4 is not error");
+                      if (
+                        onCheckErrorSubmit(
+                          allowcatedEnergyList[i].year,
+                          5,
+                          allowcatedEnergyList[i].amount05
+                        ) === false
+                      ) {
+                        console.log("Month 5 is not error");
+                        if (
+                          onCheckErrorSubmit(
+                            allowcatedEnergyList[i].year,
+                            6,
+                            allowcatedEnergyList[i].amount06
+                          ) === false
+                        ) {
+                          console.log("Month 6 is not error");
+                          if (
+                            onCheckErrorSubmit(
+                              allowcatedEnergyList[i].year,
+                              7,
+                              allowcatedEnergyList[i].amount07
+                            ) === false
+                          ) {
+                            console.log("Month 7 is not error");
+                            if (
+                              onCheckErrorSubmit(
+                                allowcatedEnergyList[i].year,
+                                8,
+                                allowcatedEnergyList[i].amount08
+                              ) === false
+                            ) {
+                              console.log("Month 8 is not error");
+                              if (
+                                onCheckErrorSubmit(
+                                  allowcatedEnergyList[i].year,
+                                  9,
+                                  allowcatedEnergyList[i].amount09
+                                ) === false
+                              ) {
+                                console.log("Month 9 is not error");
+                                if (
+                                  onCheckErrorSubmit(
+                                    allowcatedEnergyList[i].year,
+                                    10,
+                                    allowcatedEnergyList[i].amount10
+                                  ) === false
+                                ) {
+                                  console.log("Month 10 is not error");
+                                  if (
+                                    onCheckErrorSubmit(
+                                      allowcatedEnergyList[i].year,
+                                      11,
+                                      allowcatedEnergyList[i].amount11
+                                    ) === false
+                                  ) {
+                                    console.log("Month 11 is not error");
+                                    if (
+                                      onCheckErrorSubmit(
+                                        allowcatedEnergyList[i].year,
+                                        12,
+                                        allowcatedEnergyList[i].amount12
+                                      ) === false
+                                    ) {
+                                      console.log("Month 12 is not error");
+                                      errorCheckContractEnnergy = false;
+                                    } else {
+                                      console.log("Month 12 is error");
+                                      errorCheckContractEnnergy = true;
+                                      errorYear = allowcatedEnergyList[i].year;
+                                      errorMonth = "Dec";
+                                      break;
+                                    }
+                                  } else {
+                                    console.log("Month 11 is error");
+                                    errorCheckContractEnnergy = true;
+                                    errorYear = allowcatedEnergyList[i].year;
+                                    errorMonth = "Nov";
+                                    break;
+                                  }
+                                } else {
+                                  console.log("Month 10 is error");
+                                  errorCheckContractEnnergy = true;
+                                  errorYear = allowcatedEnergyList[i].year;
+                                  errorMonth = "Oct";
+                                  break;
+                                }
+                              } else {
+                                console.log("Month 9 is error");
+                                errorCheckContractEnnergy = true;
+                                errorYear = allowcatedEnergyList[i].year;
+                                errorMonth = "Sep";
+                                break;
+                              }
+                            } else {
+                              console.log("Month 8 is error");
+                              errorCheckContractEnnergy = true;
+                              errorYear = allowcatedEnergyList[i].year;
+                              errorMonth = "Aug";
+                              break;
+                            }
+                          } else {
+                            console.log("Month 7 is error");
+                            errorCheckContractEnnergy = true;
+                            errorYear = allowcatedEnergyList[i].year;
+                            errorMonth = "Jul";
+                            break;
+                          }
+                        } else {
+                          console.log("Month 6 is error");
+                          errorCheckContractEnnergy = true;
+                          errorYear = allowcatedEnergyList[i].year;
+                          errorMonth = "Jun";
+                          break;
+                        }
+                      } else {
+                        console.log("Month 5 is error");
+                        errorCheckContractEnnergy = true;
+                        errorYear = allowcatedEnergyList[i].year;
+                        errorMonth = "May";
+                        break;
+                      }
+                    } else {
+                      console.log("Month 4 is error");
+                      errorCheckContractEnnergy = true;
+                      errorYear = allowcatedEnergyList[i].year;
+                      errorMonth = "Apr";
+                      break;
+                    }
+                  } else {
+                    console.log("Month 3 is error");
+                    errorCheckContractEnnergy = true;
+                    errorYear = allowcatedEnergyList[i].year;
+                    errorMonth = "Mar";
+                    break;
+                  }
+                } else {
+                  console.log("Month 2 is error");
+                  errorCheckContractEnnergy = true;
+                  errorYear = allowcatedEnergyList[i].year;
+                  errorMonth = "Feb";
+                  break;
+                }
+              } else {
+                console.log("Month 1 is error");
+                errorCheckContractEnnergy = true;
+                errorYear = allowcatedEnergyList[i].year;
+                errorMonth = "Jan";
                 break;
               }
             }
-              
-              if(isError === false){
-                  for(let i = 0;i < allowcatedEnergyList.length;i++){
-                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
-                        console.log("Month 1 is not error")
-                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
-                          console.log("Month 2 is not error")
-                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
-                              console.log("Month 3 is not error")
-                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
-                                console.log("Month 4 is not error")
-                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
-                                    console.log("Month 5 is not error")
-                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
-                                        console.log("Month 6 is not error")
-                                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
-                                          console.log("Month 7 is not error")
-                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
-                                            console.log("Month 8 is not error")
-                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
-                                              console.log("Month 9 is not error")
-                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
-                                                console.log("Month 10 is not error")
-                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
-                                                  console.log("Month 11 is not error")
-                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
-                                                  {
-                                                    console.log("Month 12 is not error")
-                                                    errorCheckContractEnnergy = false                                            
-                                                  }
-                                                  else{
-                                                    console.log("Month 12 is error")
-                                                    errorCheckContractEnnergy = true;
-                                                    errorYear = allowcatedEnergyList[i].year;
-                                                    errorMonth = "Dec";
-                                                    break;
-                                                  }
-                                                }
-                                                else{
-                                                  console.log("Month 11 is error")
-                                                  errorCheckContractEnnergy = true;
-                                                  errorYear = allowcatedEnergyList[i].year;
-                                                  errorMonth = "Nov";
-                                                  break;
-                                                }
-                                              }
-                                              else{
-                                                console.log("Month 10 is error")
-                                                errorCheckContractEnnergy = true;
-                                                errorYear = allowcatedEnergyList[i].year;
-                                                errorMonth = "Oct";
-                                                break;
-                                              }
-                                            }
-                                            else{
-                                              console.log("Month 9 is error")
-                                              errorCheckContractEnnergy = true;
-                                              errorYear = allowcatedEnergyList[i].year;
-                                              errorMonth = "Sep";
-                                              break;
-                                            }
-                                          }
-                                          else{
-                                            console.log("Month 8 is error")
-                                            errorCheckContractEnnergy = true;
-                                            errorYear = allowcatedEnergyList[i].year;
-                                            errorMonth = "Aug";
-                                            break;
-                                          }
-                                        }
-                                        else{
-                                          console.log("Month 7 is error")
-                                          errorCheckContractEnnergy = true;
-                                          errorYear = allowcatedEnergyList[i].year;
-                                          errorMonth = "Jul";
-                                          break;
-                                        }
-                                      }
-                                      else{
-                                        console.log("Month 6 is error")
-                                        errorCheckContractEnnergy = true;
-                                        errorYear = allowcatedEnergyList[i].year;
-                                        errorMonth = "Jun";
-                                        break;
-                                      }
-                                  }
-                                  else{
-                                    console.log("Month 5 is error")
-                                    errorCheckContractEnnergy = true;
-                                    errorYear = allowcatedEnergyList[i].year;
-                                    errorMonth = "May";
-                                    break;
-                                  }
-                              }
-                              else{
-                                console.log("Month 4 is error")
-                                errorCheckContractEnnergy = true;
-                                errorYear = allowcatedEnergyList[i].year;
-                                errorMonth = "Apr";
-                                break;
-                              }
-                            }
-                            else{
-                              console.log("Month 3 is error")
-                              errorCheckContractEnnergy = true;
-                              errorYear = allowcatedEnergyList[i].year;
-                              errorMonth = "Mar";
-                              break;
-                            }
-                        }
-                        else{
-                          console.log("Month 2 is error")
-                          errorCheckContractEnnergy = true;
-                          errorYear = allowcatedEnergyList[i].year;
-                          errorMonth = "Feb";
-                          break;
-                        }
-                    }
-                    else{
-                      console.log("Month 1 is error")
-                      errorCheckContractEnnergy = true;
-                      errorYear = allowcatedEnergyList[i].year;
-                      errorMonth = "Jan";
-                      break;
-                    }
-                }
-                  const param = {
-                    ugtGroupId: currentUGTGroup?.id,
-                    subscriberTypeId: 2,
-                    assignedUtilityId: formData.assignUtil.id,
-                    //tradeAccount: formData.tradeAccount,
-                    name: formData.name,
-                    tradeAccount:formData.tradeAccountName,
-                    tradeAccountCode:formData.tradeAccountCode,
-                    retailESAContractStartDate: formData.retailESAContractStartDate,
-                    retailESAContractEndDate: formData.retailESAContractEndDate,
-                    retailESAContractDuration: formData?.retailESAContractDuration || "",
-                    portfolioAssignment: formData.portfolioAssignment,
-                    optForUp: formData.optGreen?"Active":"Inactive",
-                    optForExcess: formData.optContract?"Active":"Inactive",
-                    subscribersFilePdf:fileListPDF,
-                    subscribersFileXls:fileListExcel,
-                    note:formData.note,
-                    subscriberStatusId: 1,
-                    //aggregateAllocatedEnergy: parseInt(formData.aggregateAllocatedEnergy),
-                    allocateEnergyAmount: allowcatedEnergyList,
-                    fileUploadContract: allowcatedExcelFileList,
-                      };
-                  if(errorCheckContractEnnergy === false){
-                    console.log("Contract Amount is not Error")
-                    console.log("param",param)
-                    setFormData2(param);
-                    setShowModalCreateConfirm(true);
-                  }
-                  else{
-                    setIsShowFailModal(true)
-                    setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
-                    console.log("Contract Amount Error",errorYear+" "+errorMonth)
-                  }
-              }
-              else{
-                setIsShowFailModal(true)
-                setMessageFailModal("Contract energy amount is not create in " + errorYear)
-                console.log("Error create ContractEnergy is not match select Date")
-              }
+            const param = {
+              ugtGroupId: currentUGTGroup?.id,
+              subscriberTypeId: 2,
+              assignedUtilityId: formData.assignUtil.id,
+              //tradeAccount: formData.tradeAccount,
+              name: formData.name,
+              tradeAccount: formData.tradeAccountName,
+              tradeAccountCode: formData.tradeAccountCode,
+              retailESAContractStartDate: formData.retailESAContractStartDate,
+              retailESAContractEndDate: formData.retailESAContractEndDate,
+              retailESAContractDuration:
+                formData?.retailESAContractDuration || "",
+              portfolioAssignment: formData.portfolioAssignment,
+              optForUp: formData.optGreen ? "Active" : "Inactive",
+              optForExcess: formData.optContract ? "Active" : "Inactive",
+              subscribersFilePdf: fileListPDF,
+              subscribersFileXls: fileListExcel,
+              note: formData.note,
+              subscriberStatusId: 1,
+              //aggregateAllocatedEnergy: parseInt(formData.aggregateAllocatedEnergy),
+              allocateEnergyAmount: allowcatedEnergyList,
+              fileUploadContract: allowcatedExcelFileList,
+            };
+            if (errorCheckContractEnnergy === false) {
+              console.log("Contract Amount is not Error");
+              console.log("param", param);
+              setFormData2(param);
+              setShowModalCreateConfirm(true);
+            } else {
+              setIsShowFailModal(true);
+              setMessageFailModal(
+                "Contract Energy Amount error in year " +
+                  errorYear +
+                  " on " +
+                  errorMonth
+              );
+              console.log(
+                "Contract Amount Error",
+                errorYear + " " + errorMonth
+              );
             }
-            else{
-              setIsShowFailModal(true)
-              setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-              console.log("Error is not Create Allowcated End Year")
-            }
+          } else {
+            setIsShowFailModal(true);
+            setMessageFailModal(
+              "Contract energy amount is not create in " + errorYear
+            );
+            console.log("Error create ContractEnergy is not match select Date");
+          }
+        } else {
+          setIsShowFailModal(true);
+          setMessageFailModal(
+            "Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date"
+          );
+          console.log("Error is not Create Allowcated End Year");
         }
-        else{
-          setIsShowFailModal(true)
-          setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-          console.log("Error is not Create Allowcated Start Year")
-        }
+      } else {
+        setIsShowFailModal(true);
+        setMessageFailModal(
+          "Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date"
+        );
+        console.log("Error is not Create Allowcated Start Year");
+      }
     }
   };
 
@@ -1248,9 +1419,8 @@ const AddSubscriber = () => {
     setSelectedCommisionDate(date);
     setValue("retailESAContractEndDate", "");
     setValue("retailESAContractDuration", "");
-    splitStartDate(getValues("retailESAContractStartDate"))
-    
-    
+    splitStartDate(getValues("retailESAContractStartDate"));
+
     if (date) {
       setDisableRequestedEffectiveDate(false);
     } else {
@@ -1259,16 +1429,16 @@ const AddSubscriber = () => {
   };
 
   const splitStartDate = (dateString) => {
-    const [year, month, day] = dateString.split('-');
+    const [year, month, day] = dateString.split("-");
     setYearStartDate(year);
-    yearStartDate1.current = year
+    yearStartDate1.current = year;
     setMonthStartDate(month);
-    monthStartDate1.current = month
+    monthStartDate1.current = month;
     setDayStartDate(day);
-    dayStartDate1.current = day
-    console.log("Year Start",yearStartDate1.current)
-    console.log("Month Start",monthStartDate1.current)
-    console.log("Day Start",dayStartDate1.current)
+    dayStartDate1.current = day;
+    console.log("Year Start", yearStartDate1.current);
+    console.log("Month Start", monthStartDate1.current);
+    console.log("Day Start", dayStartDate1.current);
   };
 
   const requestedEffectiveDateDisableDateCal = (day) => {
@@ -1305,22 +1475,22 @@ const AddSubscriber = () => {
     if (days > 0) durationString += `${days} Day(s)`;
 
     setValue("retailESAContractDuration", durationString.trim());
-    splitEndDate(getValues("retailESAContractEndDate"))
+    splitEndDate(getValues("retailESAContractEndDate"));
   };
   const splitEndDate = (dateString) => {
-    const [year, month, day] = dateString.split('-');
+    const [year, month, day] = dateString.split("-");
     setYearEndDate(year);
-    yearEndDate1.current = year
+    yearEndDate1.current = year;
     setMonthEndDate(month);
-    monthEndDate1.current = month
+    monthEndDate1.current = month;
     setDayEndDate(day);
-    dayEndDate1.current = day
-    console.log("Year End",yearEndDate)
-    console.log(yearEndDate1.current)
-    console.log("Month End",monthEndDate)
-    console.log(monthEndDate1.current)
-    console.log("Day End",dayEndDate)
-    console.log(dayEndDate1.current)
+    dayEndDate1.current = day;
+    console.log("Year End", yearEndDate);
+    console.log(yearEndDate1.current);
+    console.log("Month End", monthEndDate);
+    console.log(monthEndDate1.current);
+    console.log("Day End", dayEndDate);
+    console.log(dayEndDate1.current);
   };
 
   // --------- Country, Province,District,Subdistrict,Postcode Process ---------- //
@@ -1443,13 +1613,13 @@ const AddSubscriber = () => {
       setIsActiveForm1(!isActiveForm1);
       setIsActiveForm2(!isActiveForm2);
       setAllowcatedEnergyList([]);
-      setBenefitList([])
-      setAllowcatesExcelfileList([])
-      setValue("optGreen",false)
-      setValue("optContract",false)
-      setFileListExcel([])
-      setFileListPDF([])
-      setFileList([])
+      setBenefitList([]);
+      setAllowcatesExcelfileList([]);
+      setValue("optGreen", false);
+      setValue("optContract", false);
+      setFileListExcel([]);
+      setFileListPDF([]);
+      setFileList([]);
     }
   };
   const handleClickForm2 = () => {
@@ -1457,267 +1627,391 @@ const AddSubscriber = () => {
       setIsActiveForm1(!isActiveForm1);
       setIsActiveForm2(!isActiveForm2);
       setAllowcatedEnergyList([]);
-      setAllowcatesExcelfileList([])
-      setValue("optGreen",false)
-      setValue("optContract",false)
-      setFileListExcel([])
-      setFileListPDF([])
-      setFileList([])
+      setAllowcatesExcelfileList([]);
+      setValue("optGreen", false);
+      setValue("optContract", false);
+      setFileListExcel([]);
+      setFileListPDF([]);
+      setFileList([]);
     }
   };
 
-  const getStyleContractAllowcated=(year,month,value,isWarning = false)=>{
-    const years = parseInt(year)
-    const months = parseInt(month)
-    const values = parseInt(value)
-    const yearStart = parseInt(yearStartDate1.current)
-    const yearEnd = parseInt(yearEndDate1.current)  
-    const monthStart = parseInt(monthStartDate1.current)
-    const monthEnd = parseInt(monthEndDate1.current)
+  const getStyleContractAllowcated = (
+    year,
+    month,
+    value,
+    isWarning = false
+  ) => {
+    const years = parseInt(year);
+    const months = parseInt(month);
+    const values = parseInt(value);
+    const yearStart = parseInt(yearStartDate1.current);
+    const yearEnd = parseInt(yearEndDate1.current);
+    const monthStart = parseInt(monthStartDate1.current);
+    const monthEnd = parseInt(monthEndDate1.current);
     //console.log("Value : ",values)
-    if(years >= yearStart && years <= yearEnd){
-      
-      if(years === yearStart){
-        if(yearStart !== yearEnd){
-          if(months >= monthStart){
-            
-              if(values < 0){
-                return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
-              }
-              else{
-                return isWarning?"text-white":undefined
-              }   
-          }
-          else{
-            
-            if(values !== 0){
-              return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
+    if (years >= yearStart && years <= yearEnd) {
+      if (years === yearStart) {
+        if (yearStart !== yearEnd) {
+          if (months >= monthStart) {
+            if (values < 0) {
+              return isWarning
+                ? "bg-[#F4433614] text-[#F4433614]"
+                : "bg-[#F4433614] text-[#F44336]";
+            } else {
+              return isWarning ? "text-white" : undefined;
             }
-            else{
-              return isWarning?"text-white":undefined
-            } 
+          } else {
+            if (values !== 0) {
+              return isWarning
+                ? "bg-[#F4433614] text-[#F4433614]"
+                : "bg-[#F4433614] text-[#F44336]";
+            } else {
+              return isWarning ? "text-white" : undefined;
+            }
+          }
+        } else {
+          if (months >= monthStart && months <= monthEnd) {
+            if (values < 0) {
+              return isWarning
+                ? "bg-[#F4433614] text-[#F4433614]"
+                : "bg-[#F4433614] text-[#F44336]";
+            } else {
+              return isWarning ? "text-white" : undefined;
+            }
+          } else {
+            if (values !== 0) {
+              return isWarning
+                ? "bg-[#F4433614] text-[#F4433614]"
+                : "bg-[#F4433614] text-[#F44336]";
+            } else {
+              return isWarning ? "text-white" : undefined;
+            }
           }
         }
-        else{
-          if(months >= monthStart && months <= monthEnd){
-            if(values < 0){
-              return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
-            }
-            else{
-              return isWarning?"text-white":undefined
-            } 
+      } else if (years === yearEnd) {
+        if (months <= monthEnd) {
+          if (values < 0) {
+            return isWarning
+              ? "bg-[#F4433614] text-[#F4433614]"
+              : "bg-[#F4433614] text-[#F44336]";
+          } else {
+            return isWarning ? "text-white" : undefined;
           }
-          else{
-            if(values !== 0){
-              return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
-            }
-            else{
-              return isWarning?"text-white":undefined
-            } 
+        } else {
+          if (values !== 0) {
+            return isWarning
+              ? "bg-[#F4433614] text-[#F4433614]"
+              : "bg-[#F4433614] text-[#F44336]";
+          } else {
+            return isWarning ? "text-white" : undefined;
           }
+        }
+      } else {
+        if (values < 0) {
+          return isWarning
+            ? "bg-[#F4433614] text-[#F4433614]"
+            : "bg-[#F4433614] text-[#F44336]";
+        } else {
+          return isWarning ? "text-white" : undefined;
         }
       }
-      else if(years === yearEnd){
-        if(months <= monthEnd){
-          if(values < 0){
-            return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
-          }
-          else{
-            return isWarning?"text-white":undefined
-          }   
-        }
-        else{
-          if(values !== 0){
-            return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
-          }
-          else{
-            return isWarning?"text-white":undefined
-          } 
-        }
-      }
-      else{
-        if(values < 0){
-          return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
-        }
-        else{
-          return isWarning?"text-white":undefined
-        } 
-      }
+    } else {
+      return isWarning
+        ? "bg-[#F4433614] text-[#F4433614]"
+        : "bg-[#F4433614] text-[#F44336]";
     }
-    else{
-      return isWarning?"bg-[#F4433614] text-[#F4433614]":"bg-[#F4433614] text-[#F44336]"
-    }
+  };
 
+  const getWarningAssign = (year, month, value) => {
+    const years = parseInt(year);
+    const months = parseInt(month);
+    const values = parseInt(value);
+    const yearStart = parseInt(yearStartDate);
+    const yearEnd = parseInt(yearEndDate);
+    const monthStart = parseInt(monthStartDate);
+    const monthEnd = parseInt(monthEndDate);
+    if (years >= yearStart && years <= yearEnd) {
+      if (years === yearStart) {
+        if (yearStart !== yearEnd) {
+          if (months >= monthStart) {
+            if (values < 0) {
+              return (
+                <img
+                  src={TriWarning}
+                  alt="React Logo"
+                  width={15}
+                  height={15}
+                  className="inline-block"
+                />
+              );
+            } else {
+              return "...";
+            }
+          } else {
+            if (values !== 0) {
+              return (
+                <img
+                  src={TriWarning}
+                  alt="React Logo"
+                  width={15}
+                  height={15}
+                  className="inline-block"
+                />
+              );
+            } else {
+              return "...";
+            }
+          }
+        } else {
+          if (months >= monthStart && months <= monthEnd) {
+            if (values < 0) {
+              return (
+                <img
+                  src={TriWarning}
+                  alt="React Logo"
+                  width={15}
+                  height={15}
+                  className="inline-block"
+                />
+              );
+            } else {
+              return "...";
+            }
+          } else {
+            if (values !== 0) {
+              return (
+                <img
+                  src={TriWarning}
+                  alt="React Logo"
+                  width={15}
+                  height={15}
+                  className="inline-block"
+                />
+              );
+            } else {
+              return "...";
+            }
+          }
+        }
+      } else if (years === yearEnd) {
+        if (months <= monthEnd) {
+          if (values < 0) {
+            return (
+              <img
+                src={TriWarning}
+                alt="React Logo"
+                width={15}
+                height={15}
+                className="inline-block"
+              />
+            );
+          } else {
+            return "...";
+          }
+        } else {
+          if (values !== 0) {
+            return (
+              <img
+                src={TriWarning}
+                alt="React Logo"
+                width={15}
+                height={15}
+                className="inline-block"
+              />
+            );
+          } else {
+            return "...";
+          }
+        }
+      } else {
+        if (values < 0) {
+          return (
+            <img
+              src={TriWarning}
+              alt="React Logo"
+              width={15}
+              height={15}
+              className="inline-block"
+            />
+          );
+        } else {
+          return "...";
+        }
+      }
+    } else {
+      return (
+        <img
+          src={TriWarning}
+          alt="React Logo"
+          width={15}
+          height={15}
+          className="inline-block"
+        />
+      );
+    }
+  };
+
+  const onCheckErrorSubmit = (year, month, value) => {
+    const years = parseInt(year);
+    const months = parseInt(month);
+    const values = parseInt(value);
+    const yearStart = parseInt(yearStartDate);
+    const yearEnd = parseInt(yearEndDate);
+    const monthStart = parseInt(monthStartDate);
+    const monthEnd = parseInt(monthEndDate);
+    if (years >= yearStart && years <= yearEnd) {
+      if (years === yearStart) {
+        if (yearStart !== yearEnd) {
+          if (months >= monthStart) {
+            if (values < 0) {
+              return true;
+            } else {
+              return false;
+            }
+          } else {
+            if (values !== 0) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        } else {
+          if (months >= monthStart && months <= monthEnd) {
+            if (values < 0) {
+              return true;
+            } else {
+              return false;
+            }
+          } else {
+            if (values !== 0) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      } else if (years === yearEnd) {
+        if (months <= monthEnd) {
+          if (values < 0) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          if (values !== 0) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      } else {
+        if (values < 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } else {
+      return true;
+    }
+  };
+
+  const handleDeleteBene = (data) => {
+    setIsShowDeleteBene(true);
+    setDataBeneDelete(data);
+  };
+
+  const handleCloseDeleteBene = () => {
+    setIsShowDeleteBene(false);
+  };
+
+  const onClickDelBene = () => {
+    onClickDeleteBeneBtn(dataBeneDelete);
+    setIsShowDeleteBene(false);
+  };
+
+  function downloadZip(filesData, outputZipFilename) {
+    const zip = new JSZip();
+    const now = new Date();
+    const formattedDateTime = `${now.getDate().toString().padStart(2, "0")}_${(
+      now.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}_${now.getFullYear()}_${now
+      .getHours()
+      .toString()
+      .padStart(2, "0")}_${now.getMinutes().toString().padStart(2, "0")}_${now
+      .getSeconds()
+      .toString()
+      .padStart(2, "0")}`;
+    const zipfilename = "Download_All_" + formattedDateTime;
+
+    // Add each file to the ZIP
+    filesData.forEach((file) => {
+      const { name, binary } = file;
+
+      // Decode the Base64 string and convert it to binary data
+      const binaryData = atob(binary);
+      const arrayBuffer = new Uint8Array(binaryData.length);
+
+      for (let i = 0; i < binaryData.length; i++) {
+        arrayBuffer[i] = binaryData.charCodeAt(i);
+      }
+
+      // Add the binary data as a file to the ZIP
+      zip.file(name, arrayBuffer);
+      console.log("Zip", zip);
+    });
+
+    // Generate the ZIP file and trigger the download
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      saveAs(content, zipfilename);
+    });
   }
 
-  const getWarningAssign=(year,month,value,)=>{
-    const years = parseInt(year)
-    const months = parseInt(month)
-    const values = parseInt(value)
-    const yearStart = parseInt(yearStartDate)
-    const yearEnd = parseInt(yearEndDate)  
-    const monthStart = parseInt(monthStartDate)
-    const monthEnd = parseInt(monthEndDate)
-    if(years >= yearStart && years <= yearEnd){
-      
-      if(years === yearStart){
-        if(yearStart !== yearEnd){
-          if(months >= monthStart){
-            if(values < 0){
-              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
-            }
-            else{
-              return "..."
-            }          
-          }
-          else{
-            if(values !== 0){
-              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
-            }
-            else{
-              return "..."
-            } 
-            
-            
-          }
-        }
-        else{
-          if(months >= monthStart && months <= monthEnd){
-            if(values < 0){
-              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
-            }
-            else{
-              return "..."
-            } 
-          }
-          else{
-            if(values !== 0){
-              return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
-            }
-            else{
-              return "..."
-            } 
-          }
-        }
-      }
-      else if(years === yearEnd){
-        if(months <= monthEnd){
-          if(values < 0){
-            return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
-          }
-          else{
-            return "..."
-          }   
-        }
-        else{
-          if(values !== 0){
-            return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
-          }
-          else{
-            return "..."
-          } 
-          
-        }
-      }
-      else{
-        if(values < 0){
-          return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
-        }
-        else{
-          return "..."
-        } 
-      }
-    }
-    else{
-      
-      return <img src={TriWarning} alt="React Logo" width={15} height={15} className="inline-block"/>
-    }
+  function downloadAllFileAggregate(outputZipFilename) {
+    const zip = new JSZip();
+    const now = new Date();
+    const formattedDateTime = `${now.getDate().toString().padStart(2, "0")}_${(
+      now.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}_${now.getFullYear()}_${now
+      .getHours()
+      .toString()
+      .padStart(2, "0")}_${now.getMinutes().toString().padStart(2, "0")}_${now
+      .getSeconds()
+      .toString()
+      .padStart(2, "0")}`;
+    const zipfilename = "Download_All_" + formattedDateTime;
+    const PDFFile = fileListPDF;
+    const ExcelFile = fileListExcel;
+    const FileBinary = [];
+    FileBinary.push(PDFFile[0]);
+    FileBinary.push(ExcelFile[0]);
+    console.log(FileBinary);
+    // Add each file to the ZIP
+    FileBinary.forEach((file) => {
+      const { name, binary } = file;
 
-  }
+      // Decode the Base64 string and convert it to binary data
+      const binaryData = atob(binary);
+      const arrayBuffer = new Uint8Array(binaryData.length);
 
-  const onCheckErrorSubmit=(year,month,value,)=>{
-    const years = parseInt(year)
-    const months = parseInt(month)
-    const values = parseInt(value)
-    const yearStart = parseInt(yearStartDate)
-    const yearEnd = parseInt(yearEndDate)  
-    const monthStart = parseInt(monthStartDate)
-    const monthEnd = parseInt(monthEndDate)
-    if(years >= yearStart && years <= yearEnd){
-      
-      if(years === yearStart){
-        if(yearStart !== yearEnd){
-          if(months >= monthStart){
-            if(values < 0){
-              return true
-            }
-            else{
-              return false
-            }          
-          }
-          else{
-            if(values !== 0){
-              return true
-            }
-            else{
-              return false
-            } 
-            
-            
-          }
-        }
-        else{
-          if(months >= monthStart && months <= monthEnd){
-            if(values < 0){
-              return true
-            }
-            else{
-              return false
-            } 
-          }
-          else{
-            if(values !== 0){
-              return true
-            }
-            else{
-              return false
-            } 
-          }
-        }
+      for (let i = 0; i < binaryData.length; i++) {
+        arrayBuffer[i] = binaryData.charCodeAt(i);
       }
-      else if(years === yearEnd){
-        if(months <= monthEnd){
-          if(values < 0){
-            return true
-          }
-          else{
-            return false
-          }   
-        }
-        else{
-          if(values !== 0){
-            return true
-          }
-          else{
-            return false
-          } 
-          
-        }
-      }
-      else{
-        if(values < 0){
-          return true
-        }
-        else{
-          return false
-        } 
-      }
-    }
-    else{
-      
-      return true
-    }
 
+      // Add the binary data as a file to the ZIP
+      zip.file(name, arrayBuffer);
+      console.log("Zip", zip);
+    });
+
+    // Generate the ZIP file and trigger the download
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      saveAs(content, zipfilename);
+    });
   }
 
   return (
@@ -1743,50 +2037,62 @@ const AddSubscriber = () => {
             >
               <div className="flex flex-col gap-3">
                 <div className="flex justify-between">
-                <div className="flex gap-3 items-center">
-                  <FaChevronCircleLeft
-                    className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
-                    size="30"
-                    onClick={() => (navigate(WEB_URL.SUBSCRIBER_LIST)/*,window.location.reload()*/) }
-                  />
-                  <p className="mb-0 font-semibold text-15 text-md">
-                    Subscribers Info <span style={{ color: "red" }}>*</span>
-                  </p>
+                  <div className="flex gap-3 items-center">
+                    <FaChevronCircleLeft
+                      className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
+                      size="30"
+                      onClick={
+                        (/*,window.location.reload()*/) =>
+                          navigate(WEB_URL.SUBSCRIBER_LIST)
+                      }
+                    />
+                    <p className="mb-0 font-semibold text-15 text-md">
+                      Subscribers Info <span style={{ color: "red" }}>*</span>
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-xs text-red-500">
+                      * Requried field
+                    </label>
+                  </div>
                 </div>
-                <div><label className="text-xs text-red-500">* Requried field</label></div>
-                </div>
-                
-               <hr/>
+
+                <hr />
                 <div className="flex flex-col gap-3">
-                <div>
-                  <label className="font-bold text-base">Subscriber Type</label><label className="text-red-600 ml-1 text-sm font-bold">*</label>
-                </div>
-                <div>
-                  {permission === "EGAT Subscriber Manager" && (
+                  <div>
+                    <label className="font-bold text-base">
+                      Subscriber Type
+                    </label>
+                    <label className="text-red-600 ml-1 text-sm font-bold">
+                      *
+                    </label>
+                  </div>
+                  <div>
+                    {permission === "EGAT Subscriber Manager" && (
+                      <button
+                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                          isActiveForm1
+                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                        }`}
+                        onClick={handleClickForm1}
+                      >
+                        Subscriber
+                      </button>
+                    )}
+
                     <button
                       className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
-                        isActiveForm1
+                        isActiveForm2
                           ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
                           : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
                       }`}
-                      onClick={handleClickForm1}
+                      onClick={handleClickForm2}
                     >
-                      Subscriber
+                      Aggregating Subscriber
                     </button>
-                  )}
-
-                  <button
-                    className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
-                      isActiveForm2
-                        ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
-                        : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
-                    }`}
-                    onClick={handleClickForm2}
-                  >
-                    Aggregating Subscriber
-                  </button>
+                  </div>
                 </div>
-              </div>
               </div>
             </Card>
             {/*<Card
@@ -1892,16 +2198,17 @@ const AddSubscriber = () => {
                                 )}
                               />
                             </div>*/}
-                            <div className="md:col-span-3">
-                            </div>
-                            
+                            <div className="md:col-span-3"></div>
+
                             <div className="md:col-span-3">
                               <Controller
                                 name="tradeAccountName"
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -1916,14 +2223,16 @@ const AddSubscriber = () => {
                                 )}
                               />
                             </div>
-                            
+
                             <div className="md:col-span-3">
                               <Controller
                                 name="tradeAccountCode"
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -1945,7 +2254,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -1967,7 +2278,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -1982,7 +2295,7 @@ const AddSubscriber = () => {
                                 )}
                               />
                             </div>
-                           {/*<div className="md:col-span-3">
+                            {/*<div className="md:col-span-3">
                               <Controller
                                 name="tradeAccount"
                                 control={control}
@@ -2106,7 +2419,6 @@ const AddSubscriber = () => {
                                 )}
                               />
                             </div>*/}
-
                           </div>
                         </div>
                       </div>
@@ -2133,7 +2445,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2154,7 +2468,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2175,7 +2491,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2354,7 +2672,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2375,7 +2695,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2396,11 +2718,14 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                   pattern: {
-                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                    message: "Invalid email format"
-                                  }
+                                    value:
+                                      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                    message: "Invalid email format",
+                                  },
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2421,7 +2746,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2442,7 +2769,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2464,7 +2793,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2506,7 +2837,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2561,8 +2894,10 @@ const AddSubscriber = () => {
                                     onChangeInput={handleChangeContractEndDate}
                                     isDisable={disableRequestedEffectiveDate}
                                     validate={" *"}
-                                    showTooltip = {true}
-                                    textTooltip = {"Please select the Retail ESA Contract Start Date first."}
+                                    showTooltip={true}
+                                    textTooltip={
+                                      "Please select the Retail ESA Contract Start Date first."
+                                    }
                                   />
                                 )}
                               />
@@ -2595,7 +2930,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2614,7 +2951,7 @@ const AddSubscriber = () => {
                             <div className="flex justify-between mt-2 ml-2 md:col-span-6">
                               <div>
                                 <strong>
-                                Feeder/Meter Name{" "}
+                                  Feeder/Meter Name{" "}
                                   <span className="text-red-500">*</span>
                                 </strong>
                               </div>
@@ -2645,7 +2982,9 @@ const AddSubscriber = () => {
                                       control={control}
                                       rules={{
                                         required: "This field is required",
-                                        validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                        validate: (value) =>
+                                          value.trim() !== "" ||
+                                          "Input cannot be just spaces",
                                       }}
                                       render={({ field }) => (
                                         <Input
@@ -2679,54 +3018,63 @@ const AddSubscriber = () => {
                             </div>
                             {/*Check Box*/}
                             <div className="mt-3 ml-2 mb-4 md:col-span-6">
-                              <div className="font-bold col-span-3">Additional Contract Condition</div>
+                              <div className="font-bold col-span-3">
+                                Additional Contract Condition
+                              </div>
                               <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-
-                              <div className="mt-2">
-                              <Controller
-                                name="optGreen"
-                                control={control}
-                                
-                                render={({ field }) => (
-                                  <CheckBox
-                                    {...field}
-                                    id={"optGreen"}
-                                    type={"checkbox"}
-                                    label={"Opt for up to 15% green electricity from UGT1"}
-                                    error={errors.optGreen}
-                                    validate={" *"}
-                                    value={field.value === undefined?false:field.value}
+                                <div className="mt-2">
+                                  <Controller
+                                    name="optGreen"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <CheckBox
+                                        {...field}
+                                        id={"optGreen"}
+                                        type={"checkbox"}
+                                        label={
+                                          "Opt for up to 15% green electricity from UGT1"
+                                        }
+                                        error={errors.optGreen}
+                                        validate={" *"}
+                                        value={
+                                          field.value === undefined
+                                            ? false
+                                            : field.value
+                                        }
+                                      />
+                                    )}
                                   />
-                                )}
-                              />
-                              </div>
-                              <div className="mt-2">
-                              <Controller
-                                name="optContract"
-                                control={control}
-                                
-                                render={({ field }) => (
-                                  <CheckBox
-                                    {...field}
-                                    id={"optContract"}
-                                    type={"checkbox"}
-                                    label={"Opt for excess UGT beyond contract"}
-                                    error={errors.optContract}
-                                    validate={" *"}
-                                    value={field.value === undefined?false:field.value}
-                                    
+                                </div>
+                                <div className="mt-2">
+                                  <Controller
+                                    name="optContract"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <CheckBox
+                                        {...field}
+                                        id={"optContract"}
+                                        type={"checkbox"}
+                                        label={
+                                          "Opt for excess UGT beyond contract"
+                                        }
+                                        error={errors.optContract}
+                                        validate={" *"}
+                                        value={
+                                          field.value === undefined
+                                            ? false
+                                            : field.value
+                                        }
+                                      />
+                                    )}
                                   />
-                                )}
-                              />
+                                </div>
                               </div>
-                              </div>
-                              
                             </div>
                             {/*Contract Energy Amount */}
                             <div className="flex justify-between ml-2 md:col-span-6">
                               <div>
                                 <strong>
-                                Contracted Energy Amount
+                                  Contracted Energy Amount
                                   <span className="text-red-500"> *</span>
                                 </strong>
                               </div>
@@ -2789,83 +3137,475 @@ const AddSubscriber = () => {
                               </>
                             )}
                             {/*Collaps Contract Energy Amount */}
-                            {allowcatedEnergyList.length > 0 ?allowcatedEnergyList.map((item, index) => (
-                              <div
-                                key={index}
-                                className="px-4 md:col-span-6 text-sm"
-                              >
-                                <Collaps
-                                  onClickEditBtn={() => {
-                                    onClickEditBtn(item, index);
-                                  }}
-                                  title={item.year}
-                                  total={sumAllocatedEnergyAmount(
-                                    item
-                                  ).toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                  })}
-                                  onClickDeleteBtn={() => {
-                                    onClickDeleteBtn(item);
-                                  }}
+                            {allowcatedEnergyList.length > 0 ? (
+                              allowcatedEnergyList.map((item, index) => (
+                                <div
+                                  key={index}
+                                  className="px-4 md:col-span-6 text-sm"
                                 >
-                                  <div className="grid grid-cols-3 text-center font-semibold">
-                                    <div>
-                                      <p className="text-GRAY_BUTTON">Month</p>
-                                      <hr />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>JAN</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02)}>FEB</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03)}>MAR</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04)}>APR</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05)}>MAY</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06)}>JUN</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07)}>JUL</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08)}>AUG</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09)}>SEP</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10)}>OCT</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11)}>NOV</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12)}>DEC</p>
-                                      
+                                  <Collaps
+                                    onClickEditBtn={() => {
+                                      onClickEditBtn(item, index);
+                                    }}
+                                    title={item.year}
+                                    total={sumAllocatedEnergyAmount(
+                                      item
+                                    ).toLocaleString(undefined, {
+                                      minimumFractionDigits: 2,
+                                    })}
+                                    onClickDeleteBtn={() => {
+                                      onClickDeleteBtn(item);
+                                    }}
+                                  >
+                                    <div className="grid grid-cols-3 text-center font-semibold">
+                                      <div>
+                                        <p className="text-GRAY_BUTTON">
+                                          Month
+                                        </p>
+                                        <hr />
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            1,
+                                            item.amount01
+                                          )}
+                                        >
+                                          JAN
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            2,
+                                            item.amount02
+                                          )}
+                                        >
+                                          FEB
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            3,
+                                            item.amount03
+                                          )}
+                                        >
+                                          MAR
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            4,
+                                            item.amount04
+                                          )}
+                                        >
+                                          APR
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            5,
+                                            item.amount05
+                                          )}
+                                        >
+                                          MAY
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            6,
+                                            item.amount06
+                                          )}
+                                        >
+                                          JUN
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            7,
+                                            item.amount07
+                                          )}
+                                        >
+                                          JUL
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            8,
+                                            item.amount08
+                                          )}
+                                        >
+                                          AUG
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            9,
+                                            item.amount09
+                                          )}
+                                        >
+                                          SEP
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            10,
+                                            item.amount10
+                                          )}
+                                        >
+                                          OCT
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            11,
+                                            item.amount11
+                                          )}
+                                        >
+                                          NOV
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            12,
+                                            item.amount12
+                                          )}
+                                        >
+                                          DEC
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <p className="text-GRAY_BUTTON">
+                                          Contracted Energy amount (kWh)
+                                        </p>
+                                        <hr />
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            1,
+                                            item.amount01
+                                          )}
+                                        >
+                                          {item.amount01?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            2,
+                                            item.amount02
+                                          )}
+                                        >
+                                          {item.amount02?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            3,
+                                            item.amount03
+                                          )}
+                                        >
+                                          {item.amount03?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            4,
+                                            item.amount04
+                                          )}
+                                        >
+                                          {item.amount04?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            5,
+                                            item.amount05
+                                          )}
+                                        >
+                                          {item.amount05?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            6,
+                                            item.amount06
+                                          )}
+                                        >
+                                          {item.amount06?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            7,
+                                            item.amount07
+                                          )}
+                                        >
+                                          {item.amount07?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            8,
+                                            item.amount08
+                                          )}
+                                        >
+                                          {item.amount08?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            9,
+                                            item.amount09
+                                          )}
+                                        >
+                                          {item.amount09?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            10,
+                                            item.amount10
+                                          )}
+                                        >
+                                          {item.amount10?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            11,
+                                            item.amount11
+                                          )}
+                                        >
+                                          {item.amount11?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            12,
+                                            item.amount12
+                                          )}
+                                        >
+                                          {item.amount12?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <hr
+                                          style={{ "margin-top": "2.25rem" }}
+                                        />
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            1,
+                                            item.amount01,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            1,
+                                            item.amount01
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            2,
+                                            item.amount02,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            2,
+                                            item.amount02
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            3,
+                                            item.amount03,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            3,
+                                            item.amount03
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            4,
+                                            item.amount04,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            4,
+                                            item.amount04
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            5,
+                                            item.amount05,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            5,
+                                            item.amount05
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            6,
+                                            item.amount06,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            6,
+                                            item.amount06
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            7,
+                                            item.amount07,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            7,
+                                            item.amount07
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            8,
+                                            item.amount08,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            8,
+                                            item.amount08
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            9,
+                                            item.amount09,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            9,
+                                            item.amount09
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            10,
+                                            item.amount10,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            10,
+                                            item.amount10
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            11,
+                                            item.amount11,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            11,
+                                            item.amount11
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            12,
+                                            item.amount12,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            12,
+                                            item.amount12
+                                          )}
+                                        </p>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <p className="text-GRAY_BUTTON">
-                                      Contracted Energy amount (kWh)
-                                      </p>
-                                      <hr />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02)}>{item.amount02?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03)}>{item.amount03?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04)}>{item.amount04?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05)}>{item.amount05?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06)}>{item.amount06?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07)}>{item.amount07?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08)}>{item.amount08?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09)}>{item.amount09?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10)}>{item.amount10?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11)}>{item.amount11?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12)}>{item.amount12?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                    </div>
-                                    <div>
-                                    <hr style={{ "margin-top": "2.25rem" }} />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01,true)}>{getWarningAssign(item.year,1,item.amount01)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02,true)}>{getWarningAssign(item.year,2,item.amount02)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03,true)}>{getWarningAssign(item.year,3,item.amount03)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04,true)}>{getWarningAssign(item.year,4,item.amount04)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05,true)}>{getWarningAssign(item.year,5,item.amount05)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06,true)}>{getWarningAssign(item.year,6,item.amount06)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07,true)}>{getWarningAssign(item.year,7,item.amount07)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08,true)}>{getWarningAssign(item.year,8,item.amount08)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09,true)}>{getWarningAssign(item.year,9,item.amount09)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10,true)}>{getWarningAssign(item.year,10,item.amount10)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11,true)}>{getWarningAssign(item.year,11,item.amount11)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12,true)}>{getWarningAssign(item.year,12,item.amount12)}</p>
-                                    </div>
-                                  </div>
-                                </Collaps>
+                                  </Collaps>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                                <label className="text-gray-400">
+                                  There is no data to display.
+                                </label>
                               </div>
-                            )):
-                            <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
-                              <label className="text-gray-400">There is no data to display.</label>
-                            </div>}
+                            )}
                             {/*Error */}
                             {isAllocatedEnergyAmount && (
                               <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
@@ -2880,21 +3620,25 @@ const AddSubscriber = () => {
                         </div>
                       </div>
                       {/*Download File import Contract Energy Amount */}
-                      {allowcatedExcelFileList.length !== 0?
-                      <div className="grow bg-lime-200 mt-2 w-full p-2">
-                        <div className="flex justify-content items-center">
-                            <div className="mr-8">
-                             </div>
-                              <label className="text-sm font-normal">
-                                Download Import File : 
-                              </label>
-                              <div>
-                              <label style={{ cursor: 'pointer', color: 'blue' }} className="text-sm font-normal ml-1" onClick={downloadFileAllowCated}>
-                              {allowcatedExcelFileList[0].name}
+                      {allowcatedExcelFileList.length !== 0 ? (
+                        <div className="grow bg-lime-200 mt-2 w-full p-2">
+                          <div className="flex justify-content items-center">
+                            <div className="mr-8"></div>
+                            <label className="text-sm font-normal">
+                              Download Import File :
+                            </label>
+                            <div>
+                              <label
+                                style={{ cursor: "pointer", color: "blue" }}
+                                className="text-sm font-normal ml-1"
+                                onClick={downloadFileAllowCated}
+                              >
+                                {allowcatedExcelFileList[0].name}
                               </label>
                             </div>
+                          </div>
                         </div>
-                       </div>:undefined}
+                      ) : undefined}
                     </Card>
 
                     {/* Beneficiary Information*/}
@@ -2908,10 +3652,19 @@ const AddSubscriber = () => {
                         <div className="lg:col-span-2">
                           <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
                             <div className="md:col-span-6 flex justify-between">
-                              <div>
+                              <div className="flex">
                                 <h6 className="text-PRIMARY_TEXT font-semibold">
                                   Beneficiary Information
                                 </h6>
+                                <div className="inline-block ml-2">
+                                  <Tooltips title="Physical Address Only" arrow>
+                                    <img
+                                      src={InfoCircle}
+                                      width={20}
+                                      height={20}
+                                    />
+                                  </Tooltips>
+                                </div>
                               </div>
                               <div>
                                 <button
@@ -2932,41 +3685,49 @@ const AddSubscriber = () => {
                             </div>
 
                             <div className="mt-3 mb-4 md:col-span-6">
-                            {benefitList.length > 0? benefitList.map((item, index) => (
-                              <div
-                                key={index}
-                                className="px-4 md:col-span-6 text-sm"
-                              >
-                                <Collaps
-                                  onClickEditBtn={() => {
-                                    onClickEditBeneBtn(item, index);
-                                  }}
-                                  title={item.beneficiaryName}
-                                  total={item.beneficiaryStatus}
-                                  onClickDeleteBtn={() => {
-                                    onClickDeleteBeneBtn(item);
-                                  }}
-                                >
-                                  <Beneficiary beneficiaryDataEdit={item} editStatus={true}/>
-                                </Collaps>
-                              </div>
-                            )):
-                            <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
-                              <label className="text-gray-400">There is no data to display.</label>
-                            </div>}
-                              {isBeneficiary && (
-                              <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                <div>
-                                  <h6 className="text-red-500 font-semibold">
-                                    * This field is required.
-                                  </h6>
+                              {benefitList.length > 0 ? (
+                                benefitList.map((item, index) => (
+                                  <div
+                                    key={index}
+                                    className="px-4 md:col-span-6 text-sm"
+                                  >
+                                    <Collaps
+                                      onClickEditBtn={() => {
+                                        onClickEditBeneBtn(item, index);
+                                      }}
+                                      title={item.beneficiaryName}
+                                      total={item.beneficiaryStatus}
+                                      onClickDeleteBtn={() => {
+                                        handleDeleteBene(item);
+                                      }}
+                                    >
+                                      <Beneficiary
+                                        beneficiaryDataEdit={item}
+                                        editStatus={true}
+                                      />
+                                    </Collaps>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                                  <label className="text-gray-400">
+                                    There is no data to display.
+                                  </label>
                                 </div>
-                              </div>
-                            )}
+                              )}
+                              {isBeneficiary && (
+                                <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
+                                  <div>
+                                    <h6 className="text-red-500 font-semibold">
+                                      * This field is required.
+                                    </h6>
+                                  </div>
+                                </div>
+                              )}
                             </div>
 
                             <>
-                            {/*<div className="md:col-span-3">
+                              {/*<div className="md:col-span-3">
 
                               <Controller
                                 name="beneficiaryName"
@@ -3133,72 +3894,89 @@ const AddSubscriber = () => {
                               </label>
                             </div>*/}
                             </>
-
                           </div>
                         </div>
                       </div>
                     </Card>
 
                     {/*Documents Information Attachments*/}
-                        <Card 
-                          shadow="md"
-                          radius="lg"
-                          className="flex w-full h-full overflow-visible"
-                          padding="xl">
-                          <div className="md:col-span-6 mt-4">
-                            <h6 className="text-PRIMARY_TEXT">
-                              <b>Documents Information Attachments</b>
-                            </h6>
-                          </div>
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
-                              <div className="md:col-span-3">
-                                <Controller
-                                  name="uploadFile"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <UploadFileSubscriber
-                                      {...field}
-                                      id={"uploadFile"}
-                                      type={"file"}
-                                      multiple
-                                      label={"File upload"}
-                                      onChngeInput={(id, res) => {
-                                        handleUploadfile(id, res);
-                                      }}
-                                      onDeleteFile={(id, evidentFileID, fileName) => {
-                                        handleDeleteFile(id, evidentFileID, fileName);
-                                      }}
-                                      onClickFile={(item) => {
-                                        handleClickDownloadFile(item);
-                                      }}
-                                      error={errors.uploadFile}
-                                      //validate={" *"}
-                                      // ... other props
-                                    />
-                                  )}
-                                />
-                              </div>
-                              <div className="md:col-span-3">
-                                <Controller
-                                  name="note"
-                                  control={control}
-                                  rules={{}}
-                                  render={({ field }) => (
-                                    <TextareaNoteSubscriber
-                                      {...field}
-                                      id={"note"}
-                                      type={"text"}
-                                      label={"Note"}
-                                      error={errors.note}
-                                      // ... other props
-                                    />
-                                  )}
-                                />
-                              </div>
-                          </div>
-                          
-                          <div className="mt-3 mb-4 md:col-span-3"></div>
-                        </Card>
+                    <Card
+                      shadow="md"
+                      radius="lg"
+                      className="flex w-full h-full overflow-visible"
+                      padding="xl"
+                    >
+                      <div className="md:col-span-6 mt-4">
+                        <h6 className="text-PRIMARY_TEXT">
+                          <b>Documents Information Attachments</b>
+                        </h6>
+                      </div>
+                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
+                        <div className="md:col-span-3">
+                          <Controller
+                            name="uploadFile"
+                            control={control}
+                            render={({ field }) => (
+                              <UploadFileSubscriber
+                                {...field}
+                                id={"uploadFile"}
+                                type={"file"}
+                                multiple
+                                label={"File upload"}
+                                onChngeInput={(id, res) => {
+                                  handleUploadfile(id, res);
+                                }}
+                                onDeleteFile={(id, evidentFileID, fileName) => {
+                                  handleDeleteFile(id, evidentFileID, fileName);
+                                }}
+                                onClickFile={(item) => {
+                                  handleClickDownloadFile(item);
+                                }}
+                                error={errors.uploadFile}
+                                //validate={" *"}
+                                // ... other props
+                              />
+                            )}
+                          />
+                          {fileList.length !== 0 && (
+                            <div className="mt-3">
+                              <button
+                                className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center "
+                                onClick={() =>
+                                  downloadZip(fileList, "TestDownloadFileZip")
+                                }
+                              >
+                                <div className="flex items-center justify-center ">
+                                  <LiaDownloadSolid className=" w-5 h-5 text-PRIMARY_TEXT cursor-pointer" />
+                                  <label className="text-PRIMARY_TEXT ml-2 font-semibold cursor-pointer">
+                                    Download All file in (.zip)
+                                  </label>
+                                </div>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                        <div className="md:col-span-3">
+                          <Controller
+                            name="note"
+                            control={control}
+                            rules={{}}
+                            render={({ field }) => (
+                              <TextareaNoteSubscriber
+                                {...field}
+                                id={"note"}
+                                type={"text"}
+                                label={"Note"}
+                                error={errors.note}
+                                // ... other props
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-3 mb-4 md:col-span-3"></div>
+                    </Card>
 
                     {/* submit Form1 Subscriber */}
                     <div className="text-right my-5">
@@ -3256,14 +4034,16 @@ const AddSubscriber = () => {
                               />
                             </div>
                             <div className="md:col-span-3">
-                                <Controller
-                                  name="name"
-                                  control={control}
-                                  rules={{
-                                    required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
-                                  }}
-                                  render={({ field }) => (
+                              <Controller
+                                name="name"
+                                control={control}
+                                rules={{
+                                  required: "This field is required",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
+                                }}
+                                render={({ field }) => (
                                   <Input
                                     {...field}
                                     id={"name"}
@@ -3274,8 +4054,8 @@ const AddSubscriber = () => {
                                     placeholder="Please fill the form in English"
                                     // ... other props
                                   />
-                                  )}
-                                />
+                                )}
+                              />
                             </div>
                             <div className="md:col-span-3">
                               <Controller
@@ -3283,7 +4063,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -3305,7 +4087,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -3466,8 +4250,10 @@ const AddSubscriber = () => {
                                     onChangeInput={handleChangeContractEndDate}
                                     isDisable={disableRequestedEffectiveDate}
                                     validate={" *"}
-                                    showTooltip = {true}
-                                    textTooltip = {"Please select the Retail ESA Contract Start Date first."}
+                                    showTooltip={true}
+                                    textTooltip={
+                                      "Please select the Retail ESA Contract Start Date first."
+                                    }
                                   />
                                 )}
                               />
@@ -3501,7 +4287,9 @@ const AddSubscriber = () => {
                                 control={control}
                                 rules={{
                                   required: "This field is required",
-                                  validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                  validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -3585,54 +4373,63 @@ const AddSubscriber = () => {
                             </div>*/}
 
                             <div className="mt-3 ml-2 mb-4 md:col-span-6">
-                              <div className="font-bold col-span-3">Additional Contract Condition</div>
+                              <div className="font-bold col-span-3">
+                                Additional Contract Condition
+                              </div>
                               <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
-
-                              <div className="mt-2">
-                              <Controller
-                                name="optGreen"
-                                control={control}
-                                
-                                render={({ field }) => (
-                                  <CheckBox
-                                    {...field}
-                                    id={"optGreen"}
-                                    type={"checkbox"}
-                                    label={"Opt for up to 15% green electricity from UGT1"}
-                                    error={errors.optGreen}
-                                    validate={" *"}
-                                    value={field.value === undefined?false:field.value}
+                                <div className="mt-2">
+                                  <Controller
+                                    name="optGreen"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <CheckBox
+                                        {...field}
+                                        id={"optGreen"}
+                                        type={"checkbox"}
+                                        label={
+                                          "Opt for up to 15% green electricity from UGT1"
+                                        }
+                                        error={errors.optGreen}
+                                        validate={" *"}
+                                        value={
+                                          field.value === undefined
+                                            ? false
+                                            : field.value
+                                        }
+                                      />
+                                    )}
                                   />
-                                )}
-                              />
-                              </div>
-                              <div className="mt-2">
-                              <Controller
-                                name="optContract"
-                                control={control}
-                                
-                                render={({ field }) => (
-                                  <CheckBox
-                                    {...field}
-                                    id={"optContract"}
-                                    type={"checkbox"}
-                                    label={"Opt for excess UGT beyond contract"}
-                                    error={errors.optContract}
-                                    validate={" *"}
-                                    value={field.value === undefined?false:field.value}
-                                    
+                                </div>
+                                <div className="mt-2">
+                                  <Controller
+                                    name="optContract"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <CheckBox
+                                        {...field}
+                                        id={"optContract"}
+                                        type={"checkbox"}
+                                        label={
+                                          "Opt for excess UGT beyond contract"
+                                        }
+                                        error={errors.optContract}
+                                        validate={" *"}
+                                        value={
+                                          field.value === undefined
+                                            ? false
+                                            : field.value
+                                        }
+                                      />
+                                    )}
                                   />
-                                )}
-                              />
+                                </div>
                               </div>
-                              </div>
-                              
                             </div>
-                            
+
                             <div className="flex justify-between ml-2 md:col-span-6">
                               <div>
                                 <strong>
-                                Contracted Energy Amount
+                                  Contracted Energy Amount
                                   <span className="text-red-500"> *</span>
                                 </strong>
                               </div>
@@ -3694,83 +4491,475 @@ const AddSubscriber = () => {
                               </>
                             )}
                             {/*Collaps Contract Energy Amount Form 2*/}
-                            {allowcatedEnergyList.length > 0? allowcatedEnergyList.map((item, index) => (
-                              <div
-                                key={index}
-                                className="px-4 md:col-span-6 text-sm"
-                              >
-                                <Collaps
-                                  onClickEditBtn={() => {
-                                    onClickEditBtn(item, index);
-                                  }}
-                                  title={item.year}
-                                  total={sumAllocatedEnergyAmount(
-                                    item
-                                  ).toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                  })}
-                                  onClickDeleteBtn={() => {
-                                    onClickDeleteBtn(item);
-                                  }}
+                            {allowcatedEnergyList.length > 0 ? (
+                              allowcatedEnergyList.map((item, index) => (
+                                <div
+                                  key={index}
+                                  className="px-4 md:col-span-6 text-sm"
                                 >
-                                  <div className="grid grid-cols-3 text-center font-semibold">
-                                    <div>
-                                      <p className="text-GRAY_BUTTON">Month</p>
-                                      <hr />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>JAN</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02)}>FEB</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03)}>MAR</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04)}>APR</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05)}>MAY</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06)}>JUN</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07)}>JUL</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08)}>AUG</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09)}>SEP</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10)}>OCT</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11)}>NOV</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12)}>DEC</p>
-                                      
+                                  <Collaps
+                                    onClickEditBtn={() => {
+                                      onClickEditBtn(item, index);
+                                    }}
+                                    title={item.year}
+                                    total={sumAllocatedEnergyAmount(
+                                      item
+                                    ).toLocaleString(undefined, {
+                                      minimumFractionDigits: 2,
+                                    })}
+                                    onClickDeleteBtn={() => {
+                                      onClickDeleteBtn(item);
+                                    }}
+                                  >
+                                    <div className="grid grid-cols-3 text-center font-semibold">
+                                      <div>
+                                        <p className="text-GRAY_BUTTON">
+                                          Month
+                                        </p>
+                                        <hr />
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            1,
+                                            item.amount01
+                                          )}
+                                        >
+                                          JAN
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            2,
+                                            item.amount02
+                                          )}
+                                        >
+                                          FEB
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            3,
+                                            item.amount03
+                                          )}
+                                        >
+                                          MAR
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            4,
+                                            item.amount04
+                                          )}
+                                        >
+                                          APR
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            5,
+                                            item.amount05
+                                          )}
+                                        >
+                                          MAY
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            6,
+                                            item.amount06
+                                          )}
+                                        >
+                                          JUN
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            7,
+                                            item.amount07
+                                          )}
+                                        >
+                                          JUL
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            8,
+                                            item.amount08
+                                          )}
+                                        >
+                                          AUG
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            9,
+                                            item.amount09
+                                          )}
+                                        >
+                                          SEP
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            10,
+                                            item.amount10
+                                          )}
+                                        >
+                                          OCT
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            11,
+                                            item.amount11
+                                          )}
+                                        >
+                                          NOV
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            12,
+                                            item.amount12
+                                          )}
+                                        >
+                                          DEC
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <p className="text-GRAY_BUTTON">
+                                          Contracted Energy amount (kWh)
+                                        </p>
+                                        <hr />
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            1,
+                                            item.amount01
+                                          )}
+                                        >
+                                          {item.amount01?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            2,
+                                            item.amount02
+                                          )}
+                                        >
+                                          {item.amount02?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            3,
+                                            item.amount03
+                                          )}
+                                        >
+                                          {item.amount03?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            4,
+                                            item.amount04
+                                          )}
+                                        >
+                                          {item.amount04?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            5,
+                                            item.amount05
+                                          )}
+                                        >
+                                          {item.amount05?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            6,
+                                            item.amount06
+                                          )}
+                                        >
+                                          {item.amount06?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            7,
+                                            item.amount07
+                                          )}
+                                        >
+                                          {item.amount07?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            8,
+                                            item.amount08
+                                          )}
+                                        >
+                                          {item.amount08?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            9,
+                                            item.amount09
+                                          )}
+                                        >
+                                          {item.amount09?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            10,
+                                            item.amount10
+                                          )}
+                                        >
+                                          {item.amount10?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            11,
+                                            item.amount11
+                                          )}
+                                        >
+                                          {item.amount11?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            12,
+                                            item.amount12
+                                          )}
+                                        >
+                                          {item.amount12?.toLocaleString(
+                                            undefined,
+                                            { minimumFractionDigits: 2 }
+                                          )}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <hr
+                                          style={{ "margin-top": "2.25rem" }}
+                                        />
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            1,
+                                            item.amount01,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            1,
+                                            item.amount01
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            2,
+                                            item.amount02,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            2,
+                                            item.amount02
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            3,
+                                            item.amount03,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            3,
+                                            item.amount03
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            4,
+                                            item.amount04,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            4,
+                                            item.amount04
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            5,
+                                            item.amount05,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            5,
+                                            item.amount05
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            6,
+                                            item.amount06,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            6,
+                                            item.amount06
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            7,
+                                            item.amount07,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            7,
+                                            item.amount07
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            8,
+                                            item.amount08,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            8,
+                                            item.amount08
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            9,
+                                            item.amount09,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            9,
+                                            item.amount09
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            10,
+                                            item.amount10,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            10,
+                                            item.amount10
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            11,
+                                            item.amount11,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            11,
+                                            item.amount11
+                                          )}
+                                        </p>
+                                        <p
+                                          className={getStyleContractAllowcated(
+                                            item.year,
+                                            12,
+                                            item.amount12,
+                                            true
+                                          )}
+                                        >
+                                          {getWarningAssign(
+                                            item.year,
+                                            12,
+                                            item.amount12
+                                          )}
+                                        </p>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <p className="text-GRAY_BUTTON">
-                                      Contracted Energy amount (kWh)
-                                      </p>
-                                      <hr />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02)}>{item.amount02?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03)}>{item.amount03?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04)}>{item.amount04?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05)}>{item.amount05?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06)}>{item.amount06?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07)}>{item.amount07?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08)}>{item.amount08?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09)}>{item.amount09?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10)}>{item.amount10?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11)}>{item.amount11?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12)}>{item.amount12?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
-                                    </div>
-                                    <div>
-                                    <hr style={{ "margin-top": "2.25rem" }} />
-                                      <p className={getStyleContractAllowcated(item.year,1,item.amount01,true)}>{getWarningAssign(item.year,1,item.amount01)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,2,item.amount02,true)}>{getWarningAssign(item.year,2,item.amount02)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,3,item.amount03,true)}>{getWarningAssign(item.year,3,item.amount03)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,4,item.amount04,true)}>{getWarningAssign(item.year,4,item.amount04)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,5,item.amount05,true)}>{getWarningAssign(item.year,5,item.amount05)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,6,item.amount06,true)}>{getWarningAssign(item.year,6,item.amount06)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,7,item.amount07,true)}>{getWarningAssign(item.year,7,item.amount07)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,8,item.amount08,true)}>{getWarningAssign(item.year,8,item.amount08)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,9,item.amount09,true)}>{getWarningAssign(item.year,9,item.amount09)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,10,item.amount10,true)}>{getWarningAssign(item.year,10,item.amount10)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,11,item.amount11,true)}>{getWarningAssign(item.year,11,item.amount11)}</p>
-                                      <p className={getStyleContractAllowcated(item.year,12,item.amount12,true)}>{getWarningAssign(item.year,12,item.amount12)}</p>
-                                    </div>
-                                  </div>
-                                </Collaps>
+                                  </Collaps>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                                <label className="text-gray-400">
+                                  There is no data to display.
+                                </label>
                               </div>
-                            )):
-                            <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
-                              <label className="text-gray-400">There is no data to display.</label>
-                            </div>}
+                            )}
                             {isAllocatedEnergyAmount && (
                               <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
                                 <div>
@@ -3780,130 +4969,172 @@ const AddSubscriber = () => {
                                 </div>
                               </div>
                             )}
-                            
                           </div>
                         </div>
                       </div>
-                      {allowcatedExcelFileList.length !== 0?
-                      <div className="grow bg-lime-200 mt-2 w-full">
-                        <div className="flex justify-content items-center">
-                            <div className="mr-8">
-                             </div>
-                              <label className="text-sm font-normal">
-                                Download Import File : 
-                              </label>
-                              <div>
-                              <label style={{ cursor: 'pointer', color: 'blue' }} className="text-sm font-normal ml-1" onClick={downloadFileAllowCated}>
-                              {allowcatedExcelFileList[0].name}
+                      {allowcatedExcelFileList.length !== 0 ? (
+                        <div className="grow bg-lime-200 mt-2 w-full">
+                          <div className="flex justify-content items-center">
+                            <div className="mr-8"></div>
+                            <label className="text-sm font-normal">
+                              Download Import File :
+                            </label>
+                            <div>
+                              <label
+                                style={{ cursor: "pointer", color: "blue" }}
+                                className="text-sm font-normal ml-1"
+                                onClick={downloadFileAllowCated}
+                              >
+                                {allowcatedExcelFileList[0].name}
                               </label>
                             </div>
+                          </div>
                         </div>
-                       </div>:undefined}
+                      ) : undefined}
                     </Card>
-                    
-                    {/*Documents Information Attachments*/}                 
-                    <Card 
-                          shadow="md"
-                          radius="lg"
-                          className="flex w-full h-full overflow-visible"
-                          padding="xl">
-                          <div className="md:col-span-6 mt-4">
-                            <h6 className="text-PRIMARY_TEXT">
-                              <b>Documents Information Attachments</b>
-                            </h6>
-                          </div>
-                          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
-                              <div className="md:col-span-3">
-                                <div>
-                                <Controller
-                                  name="uploadFilePDF"
-                                  control={control}
-                                  rules={{
-                                    required: "This field is required",
+
+                    {/*Documents Information Attachments*/}
+                    <Card
+                      shadow="md"
+                      radius="lg"
+                      className="flex w-full h-full overflow-visible"
+                      padding="xl"
+                    >
+                      <div className="md:col-span-6 mt-4">
+                        <h6 className="text-PRIMARY_TEXT">
+                          <b>Documents Information Attachments</b>
+                        </h6>
+                      </div>
+                      <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
+                        <div className="md:col-span-3">
+                          <div>
+                            <Controller
+                              name="uploadFilePDF"
+                              control={control}
+                              rules={{
+                                required: "This field is required",
+                              }}
+                              render={({ field }) => (
+                                <UploadFileSubscriber
+                                  {...field}
+                                  id={"uploadFilePDF"}
+                                  type={"file"}
+                                  multiple={false}
+                                  maxFiles={1}
+                                  accept={".pdf"}
+                                  label={"หนังสือยืนยันหน่วย (.pdf)"}
+                                  disabled={
+                                    fileListPDF.length === 0 ? false : true
+                                  }
+                                  onChngeInput={(id, res) => {
+                                    handleUploadfilePDF(id, res);
                                   }}
-                                  render={({ field }) => (
-                                    <UploadFileSubscriber
-                                      {...field}
-                                      id={"uploadFilePDF"}
-                                      type={"file"}
-                                      multiple = {false}
-                                      maxFiles={1}
-                                      accept = {".pdf"}
-                                      label={"หนังสือยืนยันหน่วย (.pdf)"}
-                                      disabled = {fileListPDF.length === 0?false:true}
-                                      onChngeInput={(id, res) => {
-                                        handleUploadfilePDF(id, res);
-                                      }}
-                                      onDeleteFile={(id, evidentFileID, fileName) => {
-                                        handleDeleteFilePDF(id, evidentFileID, fileName);
-                                      }}
-                                      onClickFile={(item) => {
-                                        handleClickDownloadFilePDF(item);
-                                      }}
-                                      error={errors.uploadFilePDF}
-                                      validate={" *"}
-                                      filesData = {fileListPDF}
-                                      setFilesData={setFileListPDF}
-                                      // ... other props
-                                    />
-                                  )}
-                                />
-                                </div>
-                                <div className="mt-5">
-                                <Controller
-                                  name="uploadFileExcel"
-                                  control={control}
-                                  rules={{
-                                    required: "This field is required",
+                                  onDeleteFile={(
+                                    id,
+                                    evidentFileID,
+                                    fileName
+                                  ) => {
+                                    handleDeleteFilePDF(
+                                      id,
+                                      evidentFileID,
+                                      fileName
+                                    );
                                   }}
-                                  render={({ field }) => (
-                                    <UploadFileSubscriber
-                                      {...field}
-                                      id={"uploadFileExcel"}
-                                      type={"file"}
-                                      multiple = {false}
-                                      maxFiles={1}
-                                      accept = {".xls,.xlsx"}
-                                      disabled = {fileListExcel.length === 0?false:true}
-                                      label={"ข้อมูลหน่วยแยกผู้รับ (blinded) in detail (.xls)"}
-                                      onChngeInput={(id, res) => {
-                                        handleUploadfileExcel(id, res);
-                                      }}
-                                      onDeleteFile={(id, evidentFileID, fileName) => {
-                                        handleDeleteFileExcel(id, evidentFileID, fileName);
-                                      }}
-                                      onClickFile={(item) => {
-                                        handleClickDownloadFileExcel(item);
-                                      }}
-                                      error={errors.uploadFileExcel}
-                                      validate={" *"}
-                                      // ... other props
-                                    />
-                                  )}
+                                  onClickFile={(item) => {
+                                    handleClickDownloadFilePDF(item);
+                                  }}
+                                  error={errors.uploadFilePDF}
+                                  validate={" *"}
+                                  filesData={fileListPDF}
+                                  setFilesData={setFileListPDF}
+                                  // ... other props
                                 />
-                                </div>
-                                
-                              </div>
-                              <div className="md:col-span-3">
-                                <Controller
-                                  name="note"
-                                  control={control}
-                                  rules={{}}
-                                  render={({ field }) => (
-                                    <TextareaNoteSubscriber
-                                      {...field}
-                                      id={"note"}
-                                      type={"text"}
-                                      label={"Note"}
-                                      error={errors.note}
-                                      // ... other props
-                                    />
-                                  )}
-                                />
-                              </div>
+                              )}
+                            />
                           </div>
-                          
-                          <div className="mt-3 mb-4 md:col-span-3"></div>
+                          <div className="mt-5">
+                            <Controller
+                              name="uploadFileExcel"
+                              control={control}
+                              rules={{
+                                required: "This field is required",
+                              }}
+                              render={({ field }) => (
+                                <UploadFileSubscriber
+                                  {...field}
+                                  id={"uploadFileExcel"}
+                                  type={"file"}
+                                  multiple={false}
+                                  maxFiles={1}
+                                  accept={".xls,.xlsx"}
+                                  disabled={
+                                    fileListExcel.length === 0 ? false : true
+                                  }
+                                  label={
+                                    "ข้อมูลหน่วยแยกผู้รับ (blinded) in detail (.xls)"
+                                  }
+                                  onChngeInput={(id, res) => {
+                                    handleUploadfileExcel(id, res);
+                                  }}
+                                  onDeleteFile={(
+                                    id,
+                                    evidentFileID,
+                                    fileName
+                                  ) => {
+                                    handleDeleteFileExcel(
+                                      id,
+                                      evidentFileID,
+                                      fileName
+                                    );
+                                  }}
+                                  onClickFile={(item) => {
+                                    handleClickDownloadFileExcel(item);
+                                  }}
+                                  error={errors.uploadFileExcel}
+                                  validate={" *"}
+                                  // ... other props
+                                />
+                              )}
+                            />
+                          </div>
+                          {fileListExcel.length !== 0 && fileListPDF.length !== 0?<div className="mt-3">
+                            <button
+                              className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center"
+                              onClick={() =>
+                                downloadAllFileAggregate(
+                                  "TestDownloadAggregateFileZip"
+                                )
+                              }
+                            >
+                              <div className="flex items-center justify-center cursor-pointer">
+                                <LiaDownloadSolid className=" w-5 h-5 text-PRIMARY_TEXT" />
+                                <label className="text-PRIMARY_TEXT ml-2 font-semibold cursor-pointer">
+                                  Download All file in (.zip)
+                                </label>
+                              </div>
+                            </button>
+                          </div>:undefined}
+                        </div>
+                        <div className="md:col-span-3">
+                          <Controller
+                            name="note"
+                            control={control}
+                            rules={{}}
+                            render={({ field }) => (
+                              <TextareaNoteSubscriber
+                                {...field}
+                                id={"note"}
+                                type={"text"}
+                                label={"Note"}
+                                error={errors.note}
+                                // ... other props
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-3 mb-4 md:col-span-3"></div>
                     </Card>
 
                     {/* submit Form2 Aggregate */}
@@ -3937,7 +5168,7 @@ const AddSubscriber = () => {
         />
       )}
       {/*Modal Create Beneficiary */}
-      {showModalBene &&(
+      {showModalBene && (
         <ModalBeneficiary
           onClickConfirmBtn={addBeneficiary}
           onCloseModal={addBeneficiaryClose}
@@ -3949,20 +5180,19 @@ const AddSubscriber = () => {
         />
       )}
       {/*Modal Create Upload File Contract Energy Amount */}
-      {showUploadExcel&&(
+      {showUploadExcel && (
         <ModalUploadFileExcel
-        allowcatedExcelFileList = {allowcatedExcelFileList}
-        setAllowcatesExcelfileList = {setAllowcatesExcelfileList}
-        setAllowcatedEnergyList={setAllowcatedEnergyList}
-        onClickConfirmBtn={addExcelfile}
-        onCloseModal={addExcelfileClose}
-        listData={allowcatedEnergyList}
-        yearStart={parseInt(yearStartDate1.current)}
-        yearEnd={parseInt(yearEndDate1.current)}
-        setIsShowFailModal={setIsShowFailModal}
-        setMessageFailModal={setMessageFailModal}
+          allowcatedExcelFileList={allowcatedExcelFileList}
+          setAllowcatesExcelfileList={setAllowcatesExcelfileList}
+          setAllowcatedEnergyList={setAllowcatedEnergyList}
+          onClickConfirmBtn={addExcelfile}
+          onCloseModal={addExcelfileClose}
+          listData={allowcatedEnergyList}
+          yearStart={parseInt(yearStartDate1.current)}
+          yearEnd={parseInt(yearEndDate1.current)}
+          setIsShowFailModal={setIsShowFailModal}
+          setMessageFailModal={setMessageFailModal}
         />
-        
       )}
       {/*Modal Confirm Create Subscriber */}
       {showModalCreate && (
@@ -3970,9 +5200,32 @@ const AddSubscriber = () => {
           onClickConfirmBtn={handleClickConfirm}
           onCloseModal={handleCloseModalConfirm}
           title={"Save this Subscriber?"}
-          content={"You confirm all the information is completed with accuracy and conforms to the evidence(s) attached."}
-          content2={"By providing your consent, you agree to take full responsibility for any effects resulting from this information. Would you like to save this subscriber?"}
-          textCheckBox={"I consent and confirm the accuracy of the information and attached evidences"}
+          content={
+            "You confirm all the information is completed with accuracy and conforms to the evidence(s) attached."
+          }
+          content2={
+            "By providing your consent, you agree to take full responsibility for any effects resulting from this information. Would you like to save this subscriber?"
+          }
+          textCheckBox={
+            "I consent and confirm the accuracy of the information and attached evidences"
+          }
+          sizeModal="md"
+        />
+      )}
+      {/*Modal Confirm Delete Beneficiary */}
+      {isShowDeleteBene && (
+        <ModalConfirmCheckBox
+          onClickConfirmBtn={onClickDelBene}
+          onCloseModal={handleCloseDeleteBene}
+          title={"Delete Beneficiary ?"}
+          content={
+            "This Beneficiary information hasn't been saved in the system yet. Do you confirm to delete it?"
+          }
+          //content2={"By providing your consent, you agree to take full responsibility for any effects resulting from this information. Would you like to save this subscriber?"}
+          //textCheckBox={"I consent and confirm the accuracy of the information and attached evidences"}
+          showCheckBox={false}
+          textButton={"Delete"}
+          buttonTypeColor={"danger"}
           sizeModal="md"
         />
       )}
@@ -3995,8 +5248,7 @@ const AddSubscriber = () => {
         />
       )}
       {/*Madal Fail Save */}
-      {isError &&
-      (
+      {isError && (
         <ModalFail
           onClickOk={() => {
             dispatch(clearModal());

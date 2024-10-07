@@ -105,7 +105,7 @@ const ModalSubAllocated = (props) => {
   const [selectedOption, setSelectedOption] = useState("MONTHLY");
   const handleRadioChange = (e) => {
     if (e.target.value === "CUSTOM") {
-      setValue("MONTHLY", "");
+      /*setValue("MONTHLY", "");
       setValue("month0", "");
       setValue("month1", "");
       setValue("month2", "");
@@ -117,20 +117,22 @@ const ModalSubAllocated = (props) => {
       setValue("month8", "");
       setValue("month9", "");
       setValue("month10", "");
-      setValue("month11", "");
+      setValue("month11", "");*/
     } else {
-      setValue("month0", "");
-      setValue("month1", "");
-      setValue("month2", "");
-      setValue("month3", "");
-      setValue("month4", "");
-      setValue("month5", "");
-      setValue("month6", "");
-      setValue("month7", "");
-      setValue("month8", "");
-      setValue("month9", "");
-      setValue("month10", "");
-      setValue("month11", "");
+      const monthlyValue = getValues("MONTHLY") ?? 0;
+      setValue("MONTHLY", monthlyValue);
+      setValue("month0", monthlyValue);
+      setValue("month1", monthlyValue);
+      setValue("month2", monthlyValue);
+      setValue("month3", monthlyValue);
+      setValue("month4", monthlyValue);
+      setValue("month5", monthlyValue);
+      setValue("month6", monthlyValue);
+      setValue("month7", monthlyValue);
+      setValue("month8", monthlyValue);
+      setValue("month9", monthlyValue);
+      setValue("month10", monthlyValue);
+      setValue("month11", monthlyValue);
     }
     setSelectedOption(e.target.value);
   };

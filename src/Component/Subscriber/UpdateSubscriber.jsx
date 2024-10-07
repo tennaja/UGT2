@@ -60,6 +60,9 @@ import CollapsSubscriberEdit from "./CollapsSubscriberEdit";
 import TriWarning from "../assets/TriWarning.png"
 import TextareaNoteSubscriber from "./TextareaNoteSubscriber";
 import DatePickerSubscriber from "./DayPickerSubscriber";
+import Tooltips from '@mui/material/Tooltip';
+import InfoCircle from "../assets/InfoCircle.svg"
+import { LiaDownloadSolid } from "react-icons/lia";
 
 const UpdateSubscriber = () => {
   const {
@@ -227,6 +230,8 @@ const UpdateSubscriber = () => {
   const RefRemark = useRef({})
   const [isDefaultShow,setDefaultShow] = useState(false)
   const [isShownSnap,setIsShowSnap] = useState(false)
+  const [isShowDeleteBene,setIsShowDeleteBene] = useState(false);
+  const [dataBeneDelete,setDataBeneDelete] = useState()
 
   const isError = useSelector((state)=>state.subscriber.isOpenFailModal)
   const errorMessage = useSelector((state)=>state.subscriber.errmessage)
@@ -2954,6 +2959,83 @@ const onCloseModalError=()=>{
   dispatch(clearModal())
 }
 
+const handleDeleteBene=(data)=>{
+  setIsShowDeleteBene(true);
+  setDataBeneDelete(data)
+}
+
+const handleCloseDeleteBene=()=>{
+  setIsShowDeleteBene(false)
+}
+
+const onClickDelBene =()=>{
+  onClickDeleteBeneBtn(dataBeneDelete)
+  setIsShowDeleteBene(false)
+}
+
+function downloadZip(filesData, outputZipFilename) {
+  const zip = new JSZip();
+  const now = new Date();
+  const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
+  const zipfilename = "Download_All_"+formattedDateTime
+
+  // Add each file to the ZIP
+  filesData.forEach(file => {
+    const { name, binary } = file;
+    
+    // Decode the Base64 string and convert it to binary data
+    const binaryData = atob(binary);
+    const arrayBuffer = new Uint8Array(binaryData.length);
+    
+    for (let i = 0; i < binaryData.length; i++) {
+      arrayBuffer[i] = binaryData.charCodeAt(i);
+    }
+
+    // Add the binary data as a file to the ZIP
+    zip.file(name, arrayBuffer);
+    console.log("Zip",zip)
+  });
+
+  // Generate the ZIP file and trigger the download
+  zip.generateAsync({ type: 'blob' }).then(content => {
+    saveAs(content, zipfilename);
+  });
+}
+
+function downloadAllFileAggregate(outputZipFilename) {
+  const zip = new JSZip();
+  const now = new Date();
+  const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
+  const zipfilename = "Download_All_"+formattedDateTime
+  const PDFFile = fileListPDF
+  const ExcelFile = fileListExcel
+  const FileBinary = []
+  FileBinary.push(PDFFile[0]);
+  FileBinary.push(ExcelFile[0])
+  console.log(FileBinary)
+   // Add each file to the ZIP
+   FileBinary.forEach(file => {
+    const { name, binary } = file;
+    
+    // Decode the Base64 string and convert it to binary data
+    const binaryData = atob(binary);
+    const arrayBuffer = new Uint8Array(binaryData.length);
+    
+    for (let i = 0; i < binaryData.length; i++) {
+      arrayBuffer[i] = binaryData.charCodeAt(i);
+    }
+
+    // Add the binary data as a file to the ZIP
+    zip.file(name, arrayBuffer);
+    console.log("Zip",zip)
+  });
+
+  // Generate the ZIP file and trigger the download
+  zip.generateAsync({ type: 'blob' }).then(content => {
+    saveAs(content, zipfilename);
+  });
+}
+
 
   return (
     <div ref={contentRef} style={{ width: '100%', padding: '20px', background: '#f5f5f5' }}>
@@ -4133,11 +4215,17 @@ const onCloseModalError=()=>{
                           <div className="lg:col-span-2">
                             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
                               <div className="md:col-span-6 flex justify-between">
-                                <div>
-                                  <h6 className="text-PRIMARY_TEXT font-semibold">
-                                    Beneficiary Information
-                                  </h6>
+                              <div className="flex">
+                                <h6 className="text-PRIMARY_TEXT font-semibold">
+                                  Beneficiary Information
+                                  
+                                </h6>
+                                <div className="inline-block ml-2">
+                                  <Tooltips title="Physical Address Only" arrow>
+                                    <img src={InfoCircle} width={20} height={20}/>
+                                  </Tooltips>
                                 </div>
+                              </div>
                                 <div>
                                   <div className="flex items-center">
                                     <div className="col-span-2 px-2 border-2 mr-2 rounded-[10px]">
@@ -4197,7 +4285,7 @@ const onCloseModalError=()=>{
                                     title={item.beneficiaryName}
                                     total={item.status}
                                     onClickDeleteBtn={() => {
-                                      onClickDeleteBeneBtn(item);
+                                      handleDeleteBene(item);
                                     }}
                                     isDefaultShow={isDefaultShow}
                                     isShowDelete={item.id === 0 ?true:false}
@@ -4217,7 +4305,7 @@ const onCloseModalError=()=>{
                                   title={item.beneficiaryName}
                                   total={item.status}
                                   onClickDeleteBtn={() => {
-                                    onClickDeleteBeneBtn(item);
+                                    handleDeleteBene(item);
                                   }}
                                   isDefaultShow={isDefaultShow}
                                   isShowDelete={item.id === 0 ?true:false}
@@ -4453,6 +4541,15 @@ const onCloseModalError=()=>{
                                       />
                                     )}
                                   />
+                                  {fileList.length !== 0 &&<div className="mt-3">
+                                <button className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center " onClick={()=>downloadZip(fileList,"TestDownloadFileZip")}>
+                                  <div className="flex items-center justify-center " >
+                                    <LiaDownloadSolid className=" w-5 h-5 text-PRIMARY_TEXT cursor-pointer"/>
+                                    <label className="text-PRIMARY_TEXT ml-2 font-semibold cursor-pointer">Download All file in (.zip)</label>
+                                  </div>
+                                    
+                                  </button>
+                              </div>}
                                 </div>
                                 <div className="md:col-span-3">
                                   <Controller
@@ -5239,7 +5336,23 @@ const onCloseModalError=()=>{
                                     )}
                                   />
                                   </div>
-                                  
+                                  {fileListExcel.length !== 0 && fileListPDF.length !== 0?<div className="mt-3">
+                            <button
+                              className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center"
+                              onClick={() =>
+                                downloadAllFileAggregate(
+                                  "TestDownloadAggregateFileZip"
+                                )
+                              }
+                            >
+                              <div className="flex items-center justify-center cursor-pointer">
+                                <LiaDownloadSolid className=" w-5 h-5 text-PRIMARY_TEXT" />
+                                <label className="text-PRIMARY_TEXT ml-2 font-semibold cursor-pointer">
+                                  Download All file in (.zip)
+                                </label>
+                              </div>
+                            </button>
+                          </div>:undefined}
                                 </div>
                                 {/*Note */}
                                 <div className="md:col-span-3">
@@ -6883,6 +6996,21 @@ const onCloseModalError=()=>{
           editStatus={isEditBene}
           listData={benefitList}
           editPageStatus = {true}
+        />
+      )}
+      {/*Modal Confirm Delete Beneficiary */}
+      {isShowDeleteBene && (
+        <ModalConfirmCheckBox
+          onClickConfirmBtn={onClickDelBene}
+          onCloseModal={handleCloseDeleteBene}
+          title={"Delete Beneficiary ?"}
+          content={"This Beneficiary information hasn't been saved in the system yet. Do you confirm to delete it?"}
+          //content2={"By providing your consent, you agree to take full responsibility for any effects resulting from this information. Would you like to save this subscriber?"}
+          //textCheckBox={"I consent and confirm the accuracy of the information and attached evidences"}
+          showCheckBox ={false}
+          textButton={"Delete"}
+          buttonTypeColor={"danger"}
+          sizeModal="md"
         />
       )}
       {/*Modal Create Complete */}

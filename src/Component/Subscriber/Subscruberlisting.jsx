@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import Calendar from "../assets/calendars.svg";
 import User from "../assets/3 User.svg";
 import Clock from "../assets/Clock.svg";
@@ -467,7 +467,7 @@ const Subscriberlisting = (props) => {
     },
     {
       id: "contractedEnergy",
-      label: "Allocated Energy Amount (kWh)",
+      label: "Contracted Energy Amount (kWh)",
       align: "right",
       render: (row) => (
         <span>
@@ -509,7 +509,7 @@ const Subscriberlisting = (props) => {
               textToHighlight={row.portfolio}
             />
           </div>
-          {row?.portfolioCode !== null && 
+          
           <div>
           <label
             className={`${"bg-[#FFDAE1] text-[#FE3C90]"} rounded w-max px-3 py-1 mt-1 text-xs font-bold`}
@@ -519,15 +519,15 @@ const Subscriberlisting = (props) => {
               highlightTag={Highlight}
               searchWords={[searchQueryAssigned]}
               autoEscape={true}
-              textToHighlight={row?.portfolioCode || ""}
+              textToHighlight={/*row?.portfolioCode ||*/ "xxx"}
             />
             
             
           </label>
           <button>
-              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.utilityContractAbbr)}/>
+              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard("xxx"/*row?.portfolioCode == null?"xxx":row?.portfolioCode*/)}/>
             </button>
-          </div>}
+          </div>
         </div>
       ),
     },
@@ -647,7 +647,7 @@ const Subscriberlisting = (props) => {
     },
     {
       id: "contractedEnergy",
-      label: "Allocated Energy Amount (kWh)",
+      label: "Contracted Energy Amount (kWh)",
       align: "right",
       render: (row) => (
         <span>
@@ -705,7 +705,7 @@ const Subscriberlisting = (props) => {
               
             </label>
             <button>
-              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.utilityContractAbbr)}/>
+              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.portfolioCode == null?"":row?.portfolioCode)}/>
             </button>
           </div>}
         </div>
@@ -833,7 +833,9 @@ const Subscriberlisting = (props) => {
       } else if (
         userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER ||
-        userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN
+        userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
+        userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+        userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
       ) {
         let permissFindUntilyty = { utility: [UTILITY_GROUP_ID.ALL] };
         const paramDashboard = {
@@ -944,7 +946,9 @@ const Subscriberlisting = (props) => {
       } else if (
         userData?.userGroup?.id === USER_GROUP_ID.PORTFOLIO_MNG ||
         userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER ||
-        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN 
+        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
+        userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+        userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
       ) {
         setIsSubscriberGroup(false);
         permissFindUntilyty = { utility: [] };
@@ -1041,7 +1045,9 @@ const Subscriberlisting = (props) => {
       } else if (
         userData?.userGroup?.id === USER_GROUP_ID.PORTFOLIO_MNG ||
         userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER ||
-        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN 
+        userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
+        userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+        userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
       ) {
         permissFindUntilyty = { utility: [] };
         const paramSubscriberUnassign = {
@@ -1389,7 +1395,7 @@ const Subscriberlisting = (props) => {
                         </label>
                       </div>
                     </div>
-                    <div className="font-bold mt-2">Total Subscriber</div>
+                    <div className="font-bold mt-2">Total Active Subscriber</div>
                     <div className="text-gray-500 text-xs">
                       Keep track of all your devices at a glance.
                     </div>
@@ -1656,7 +1662,7 @@ const Subscriberlisting = (props) => {
                 <div className="grid gap-4 gap-y-2 text-sm  lg:grid-cols-6">
                   <div className="lg:col-span-2 2xl:col-span-3 mb-4">
                     <span className="font-bold text-lg">
-                      Assigned Subscriber
+                    Active Subscriber
                       <br />
                       <label
                         className={`font-sm font-normal text-sm text-BREAD_CRUMB`}
@@ -1777,7 +1783,7 @@ const Subscriberlisting = (props) => {
                 <div className="grid gap-4 gap-y-2 text-sm  lg:grid-cols-6">
                   <div className="lg:col-span-2 2xl:col-span-3 mb-4">
                     <span className="font-bold text-lg">
-                      Unassigned Subscriber
+                    Inactive Subscriber
                       <br />
                       <label
                         className={`font-sm font-normal text-sm text-BREAD_CRUMB`}

@@ -684,7 +684,7 @@ const action = CheckActionManageButton()
                               </label>
                               <div className="break-words	font-bold">
                                 {renderData(
-                                  details?.subscriberDetail?.subscribercode
+                                  details?.subscriberDetail?.subscriberCode
                                 )}
                               </div>
                             </div>
