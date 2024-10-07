@@ -14,7 +14,8 @@ const ModalConfirmWithdrawn = (props) => {
     buttonTypeColor = "primary",
     showCheckBox = true,
     sizeModal="lg",
-    contentButton = "Confirm"
+    contentButton = "Confirm",
+    content2 =""
   } = props;
 
   const [isCheckBox,setIsCheckBox] = useState(false)
@@ -78,12 +79,19 @@ const ModalConfirmWithdrawn = (props) => {
             >
               {title}
             </h6>
-            <div className="mt-4">
-              <p className="text-base text-gray-600">{content}</p>
+            
+            <div className="mt-3">
+              <p className="text-base text-gray-600">{content}
+              {content2 !== "" &&
+              <p className="text-base text-gray-600">{content2}</p>
+            }
+              </p>
+              
             </div>
+            
           </div>
         </div>
-        <div className="flex justify-center gap-3 pb-2 mt-3">
+        <div className="flex justify-center gap-3 pb-2 mt-2">
           <button
             onClick={onCloseModal}
             className="w-50 rounded shadow-sm px-4 py-2 font-normal bg-[#EFEFEF] hover:bg-[#78829D] hover:text-white"
