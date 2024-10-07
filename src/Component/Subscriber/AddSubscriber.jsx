@@ -61,6 +61,7 @@ import InfoCircle from "../assets/InfoCircle.svg";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { LiaDownloadSolid } from "react-icons/lia";
+import { BiErrorCircle } from "react-icons/bi";
 
 const AddSubscriber = () => {
   const {
@@ -3110,7 +3111,7 @@ const AddSubscriber = () => {
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Allocated Energy (kWh)
+                                    Total Contracted Energy (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -3942,9 +3943,7 @@ const AddSubscriber = () => {
                             <div className="mt-3">
                               <button
                                 className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center "
-                                onClick={() =>
-                                  downloadZip(fileList, "TestDownloadFileZip")
-                                }
+                                onClick={(e) => {e.preventDefault(); downloadZip(fileList, 'output.zip');}}
                               >
                                 <div className="flex items-center justify-center ">
                                   <LiaDownloadSolid className=" w-5 h-5 text-PRIMARY_TEXT cursor-pointer" />
@@ -3979,10 +3978,24 @@ const AddSubscriber = () => {
                     </Card>
 
                     {/* submit Form1 Subscriber */}
-                    <div className="text-right my-5">
+                    <div className="flex flex-col items-end mt-3 mb-5">
+                          {Object.keys(errors).length !== 0 && (
+                            
+                            <div className="justify-items-end">
+                              <div className="font-medium text-lg flex items-center w-96 justify-center border-solid bg-[#fdeeee] border-red-300 border-3   my-2 p-4 text-red-400 ">
+                              <div className="mr-2">
+                                <BiErrorCircle className="w-[25px] h-[25px] text-red-600" />
+                              </div>
+                              <div className="">
+                                One of fields is incorrect or invalid
+                              </div>
+                            </div>
+                            </div>
+                            
+                          )}
                       <button
                         onClick={handleSubmit(onSubmitForm1)}
-                        className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
+                        className="w-96 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
                       >
                         <b>Save</b>
                       </button>
@@ -4483,7 +4496,7 @@ const AddSubscriber = () => {
                                   </div>
                                   <div>
                                     <p className="m-0 p-0">
-                                      Total Allocated Energy Amount (kWh)
+                                      Total Contracted Energy Amount (kWh)
                                     </p>
                                   </div>
                                   <div></div>
@@ -5097,7 +5110,7 @@ const AddSubscriber = () => {
                               )}
                             />
                           </div>
-                          {fileListExcel.length !== 0 && fileListPDF.length !== 0?<div className="mt-3">
+                          {/*fileListExcel.length !== 0 && fileListPDF.length !== 0?<div className="mt-3">
                             <button
                               className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center"
                               onClick={() =>
@@ -5113,7 +5126,7 @@ const AddSubscriber = () => {
                                 </label>
                               </div>
                             </button>
-                          </div>:undefined}
+                          </div>:undefined*/}
                         </div>
                         <div className="md:col-span-3">
                           <Controller
@@ -5138,10 +5151,24 @@ const AddSubscriber = () => {
                     </Card>
 
                     {/* submit Form2 Aggregate */}
-                    <div className="text-right my-5">
+                    <div className="flex flex-col items-end mt-3 mb-5">
+                    {Object.keys(errors).length !== 0 && (
+                            
+                            <div className="justify-items-end">
+                              <div className="font-medium text-lg flex items-center w-96 justify-center border-solid bg-[#fdeeee] border-red-300 border-3   my-2 p-4 text-red-400 ">
+                              <div className="mr-2">
+                                <BiErrorCircle className="w-[25px] h-[25px] text-red-600" />
+                              </div>
+                              <div className="">
+                                One of fields is incorrect or invalid
+                              </div>
+                            </div>
+                            </div>
+                            
+                          )}
                       <button
                         onClick={handleSubmit(onSubmitForm2)}
-                        className="w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
+                        className="w-96 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB"
                       >
                         <b>Save</b>
                       </button>

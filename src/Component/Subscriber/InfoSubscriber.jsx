@@ -305,9 +305,10 @@ const confirmDeleteSubscriber=()=>{
   setIsOpenConfirmDel(false)
   //showLoading()
   dispatch(FunctionwithDrawSubscriber(state.id))
-  setTimeout(()=>{
+  navigate(WEB_URL.SUBSCRIBER_LIST)
+  /*setTimeout(()=>{
     dispatch(SubscriberInfo(state.id,0))
-  },500)
+  },500)*/
   //dispatch(SubscriberInfo(state.id,0))
   //message.success(`Withdraw Subscriber Complete!`);
   //setIsOpenConfirmDel(false)

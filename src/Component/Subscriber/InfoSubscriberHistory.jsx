@@ -269,8 +269,7 @@ const InfoSubscriberHistory = () => {
                   : details?.subscriberDetail?.name}
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                {currentUGTGroup?.name} / Subscriber Management / Subscriber
-                Info /{" "}
+                {currentUGTGroup?.name} / Subscriber Management / History Log /{" "}
                 <span className="truncate">
                   {details?.subscriberDetail?.organizationName !== ""
                     ? details?.subscriberDetail?.organizationName
@@ -298,7 +297,7 @@ const InfoSubscriberHistory = () => {
                         onClick={() => navigate(`${WEB_URL.SUBSCRIBER_HISTORY}`, { state: { code: state?.id ,contract: state?.contract } })}
                       />
                       <span className="text-xl	mr-14 	leading-tight">
-                        <b> Subscriber Info</b>
+                        <b> History Log</b>
                       </span>
                       {/* <span>
                         {StatusLabel(

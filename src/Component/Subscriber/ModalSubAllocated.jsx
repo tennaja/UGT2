@@ -13,6 +13,7 @@ const ModalSubAllocated = (props) => {
     resetField,
     setValue,
     control,
+    getValues,
     formState: { errors },
   } = useForm();
 

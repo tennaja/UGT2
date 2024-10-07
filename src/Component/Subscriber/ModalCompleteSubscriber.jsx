@@ -6,7 +6,7 @@ import { getCookie, removeCookie, setCookie } from "../../Utils/FuncUtils";
 import { setSelectedSubMenu } from "../../Redux/Menu/Action";
 import { useDispatch, useSelector } from "react-redux";
 import { clearModal } from "../../Redux/Subscriber/Action";
-import ImgDone from "../assets/AlmosttDone.png"
+import ImgDone from "../assets/Imgdone.png"
 
 const ModalCompleteSubscriber = (props) => {
   const dispatch = useDispatch();
@@ -45,7 +45,7 @@ const ModalCompleteSubscriber = (props) => {
                     id="preview_img"
                     className="h-16 w-56 object-cover rounded-full flex items-center justify-center"
                     src={ImgDone}
-                    alt="Current profile photo"
+                    alt="done photo"
                   />
                 </div>
 
