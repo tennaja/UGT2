@@ -1932,6 +1932,7 @@ const AddSubscriber = () => {
     setIsShowDeleteBene(false);
   };
 
+
   function downloadZip(filesData, outputZipFilename) {
     const zip = new JSZip();
     const now = new Date();
@@ -3658,7 +3659,7 @@ const AddSubscriber = () => {
                                   Beneficiary Information
                                 </h6>
                                 <div className="inline-block ml-2">
-                                  <Tooltips title="Physical Address Only" arrow>
+                                  <Tooltips title="Physical Address Only" placement="top" arrow >
                                     <img
                                       src={InfoCircle}
                                       width={20}

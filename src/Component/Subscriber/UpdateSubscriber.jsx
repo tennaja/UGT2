@@ -4228,7 +4228,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                   
                                 </h6>
                                 <div className="inline-block ml-2">
-                                  <Tooltips title="Physical Address Only" arrow>
+                                  <Tooltips title="Physical Address Only" placement="top" arrow>
                                     <img src={InfoCircle} width={20} height={20}/>
                                   </Tooltips>
                                 </div>
@@ -6130,10 +6130,19 @@ function downloadAllFileAggregate(outputZipFilename) {
                         <div className="lg:col-span-2">
                           <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
                             <div className="md:col-span-6 flex justify-between">
-                              <div>
+                            <div className="flex">
                                 <h6 className="text-PRIMARY_TEXT font-semibold">
                                   Beneficiary Information
                                 </h6>
+                                <div className="inline-block ml-2">
+                                  <Tooltips title="Physical Address Only" placement="top" arrow>
+                                    <img
+                                      src={InfoCircle}
+                                      width={20}
+                                      height={20}
+                                    />
+                                  </Tooltips>
+                                </div>
                               </div>
                               <div>
                                 <div className="flex items-center">
