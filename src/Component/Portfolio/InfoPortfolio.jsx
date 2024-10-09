@@ -29,13 +29,15 @@ const InfoPortfolio = () => {
   const [isEdit, setIsEdit] = useState(true);
   const [isStartPort, setIsStartPort] = useState(false);
   const details = useSelector((state) => state.portfolio.detailInfoList);
+  console.log(details)
   const [searchDevice, setSearchDevice] = useState("");
   const [searchSubscriber, setSearchSubscriber] = useState("");
   const [deviceList, setDeviceList] = useState([]);
   const [subscriberList, setSubscriberList] = useState([]);
   const [showModalDelete, setShowModalDeleteConfirm] = React.useState(false);
   const [showModalComplete, setShowModalComplete] = React.useState(false);
-
+  console.log(deviceList)
+  console.log(subscriberList)
   const checkCanEdit = () => {
     let isEdit = false;
 

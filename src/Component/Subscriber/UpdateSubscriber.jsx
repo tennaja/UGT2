@@ -770,449 +770,456 @@ const UpdateSubscriber = () => {
   };
 
   const onSubmitForm1New = (formData) => {
-    if (allowcatedEnergyList.length > 0) {      
-      if(details?.subscriberDetail.activePortfolioStatus === "N"){
-        //Not assign to portfolio or inactive
-        let errorCheckContractEnnergy = null
-        let errorYear = null
-        let errorMonth = null
-        let isErrorAllow = false
-        const yearStart = parseInt(yearStartDate1.current)
-        const yearEnd = parseInt(yearEndDate1.current)
-        const diffYear = (yearEnd-yearStart)+1
-        console.log("Diff Year",diffYear)
-        console.log("Length Contract Amount",allowcatedEnergyList.length)
-        const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
-        const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
-        if(lengthCreateStartyear.length !== 0){
-            if(lenghtCreateEndyear.length !== 0){
-              for(let i = yearStart+1;i < yearEnd;i++){
-                const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
-                if(checkDisappearData.length === 0){
-                  errorYear = i;
-                  isErrorAllow = true
-                  break;
+    const filterBeneActive = benefitList.filter((items)=>items.beneficiaryStatus === "Active")
+    if(filterBeneActive.length > 0){
+      if (allowcatedEnergyList.length > 0) {      
+        if(details?.subscriberDetail.activePortfolioStatus === "N"){
+          //Not assign to portfolio or inactive
+          let errorCheckContractEnnergy = null
+          let errorYear = null
+          let errorMonth = null
+          let isErrorAllow = false
+          const yearStart = parseInt(yearStartDate1.current)
+          const yearEnd = parseInt(yearEndDate1.current)
+          const diffYear = (yearEnd-yearStart)+1
+          console.log("Diff Year",diffYear)
+          console.log("Length Contract Amount",allowcatedEnergyList.length)
+          const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
+          const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
+          if(lengthCreateStartyear.length !== 0){
+              if(lenghtCreateEndyear.length !== 0){
+                for(let i = yearStart+1;i < yearEnd;i++){
+                  const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
+                  if(checkDisappearData.length === 0){
+                    errorYear = i;
+                    isErrorAllow = true
+                    break;
+                  }
                 }
-              }
-                if(isErrorAllow === false){
-                    for(let i = 0;i < allowcatedEnergyList.length;i++){
-                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
-                          //console.log("Month 1 is not error")
-                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
-                            //console.log("Month 2 is not error")
-                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
-                                //console.log("Month 3 is not error")
-                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
-                                  //console.log("Month 4 is not error")
-                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
-                                      //console.log("Month 5 is not error")
-                                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
-                                          //console.log("Month 6 is not error")
-                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
-                                          // console.log("Month 7 is not error")
-                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
-                                            // console.log("Month 8 is not error")
-                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
-                                              //  console.log("Month 9 is not error")
-                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
-                                              //   console.log("Month 10 is not error")
-                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
-                                              //     console.log("Month 11 is not error")
-                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
-                                                    {
-                                                      //console.log("Month 12 is not error")
-                                                      errorCheckContractEnnergy = false                                            
+                  if(isErrorAllow === false){
+                      for(let i = 0;i < allowcatedEnergyList.length;i++){
+                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
+                            //console.log("Month 1 is not error")
+                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
+                              //console.log("Month 2 is not error")
+                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
+                                  //console.log("Month 3 is not error")
+                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
+                                    //console.log("Month 4 is not error")
+                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
+                                        //console.log("Month 5 is not error")
+                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
+                                            //console.log("Month 6 is not error")
+                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
+                                            // console.log("Month 7 is not error")
+                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
+                                              // console.log("Month 8 is not error")
+                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
+                                                //  console.log("Month 9 is not error")
+                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
+                                                //   console.log("Month 10 is not error")
+                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
+                                                //     console.log("Month 11 is not error")
+                                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
+                                                      {
+                                                        //console.log("Month 12 is not error")
+                                                        errorCheckContractEnnergy = false                                            
+                                                      }
+                                                      else{
+                                                        //console.log("Month 12 is error")
+                                                        errorCheckContractEnnergy = true;
+                                                        errorYear = allowcatedEnergyList[i].year;
+                                                        errorMonth = "Dec";
+                                                        break;
+                                                      }
                                                     }
                                                     else{
-                                                      //console.log("Month 12 is error")
+                                                      //console.log("Month 11 is error")
                                                       errorCheckContractEnnergy = true;
                                                       errorYear = allowcatedEnergyList[i].year;
-                                                      errorMonth = "Dec";
+                                                      errorMonth = "Nov";
                                                       break;
                                                     }
                                                   }
                                                   else{
-                                                    //console.log("Month 11 is error")
+                                                    //console.log("Month 10 is error")
                                                     errorCheckContractEnnergy = true;
                                                     errorYear = allowcatedEnergyList[i].year;
-                                                    errorMonth = "Nov";
+                                                    errorMonth = "Oct";
                                                     break;
                                                   }
                                                 }
                                                 else{
-                                                  //console.log("Month 10 is error")
+                                                  //console.log("Month 9 is error")
                                                   errorCheckContractEnnergy = true;
                                                   errorYear = allowcatedEnergyList[i].year;
-                                                  errorMonth = "Oct";
+                                                  errorMonth = "Sep";
                                                   break;
                                                 }
                                               }
                                               else{
-                                                //console.log("Month 9 is error")
+                                                //console.log("Month 8 is error")
                                                 errorCheckContractEnnergy = true;
                                                 errorYear = allowcatedEnergyList[i].year;
-                                                errorMonth = "Sep";
+                                                errorMonth = "Aug";
                                                 break;
                                               }
                                             }
                                             else{
-                                              //console.log("Month 8 is error")
+                                              //console.log("Month 7 is error")
                                               errorCheckContractEnnergy = true;
                                               errorYear = allowcatedEnergyList[i].year;
-                                              errorMonth = "Aug";
+                                              errorMonth = "Jul";
                                               break;
                                             }
                                           }
                                           else{
-                                            //console.log("Month 7 is error")
+                                            //console.log("Month 6 is error")
                                             errorCheckContractEnnergy = true;
                                             errorYear = allowcatedEnergyList[i].year;
-                                            errorMonth = "Jul";
+                                            errorMonth = "Jun";
                                             break;
                                           }
-                                        }
-                                        else{
-                                          //console.log("Month 6 is error")
-                                          errorCheckContractEnnergy = true;
-                                          errorYear = allowcatedEnergyList[i].year;
-                                          errorMonth = "Jun";
-                                          break;
-                                        }
-                                    }
-                                    else{
-                                      //console.log("Month 5 is error")
-                                      errorCheckContractEnnergy = true;
-                                      errorYear = allowcatedEnergyList[i].year;
-                                      errorMonth = "May";
-                                      break;
-                                    }
+                                      }
+                                      else{
+                                        //console.log("Month 5 is error")
+                                        errorCheckContractEnnergy = true;
+                                        errorYear = allowcatedEnergyList[i].year;
+                                        errorMonth = "May";
+                                        break;
+                                      }
+                                  }
+                                  else{
+                                    //console.log("Month 4 is error")
+                                    errorCheckContractEnnergy = true;
+                                    errorYear = allowcatedEnergyList[i].year;
+                                    errorMonth = "Apr";
+                                    break;
+                                  }
                                 }
                                 else{
-                                  //console.log("Month 4 is error")
+                                  //console.log("Month 3 is error")
                                   errorCheckContractEnnergy = true;
                                   errorYear = allowcatedEnergyList[i].year;
-                                  errorMonth = "Apr";
+                                  errorMonth = "Mar";
                                   break;
                                 }
-                              }
-                              else{
-                                //console.log("Month 3 is error")
-                                errorCheckContractEnnergy = true;
-                                errorYear = allowcatedEnergyList[i].year;
-                                errorMonth = "Mar";
-                                break;
-                              }
-                          }
-                          else{
-                            //console.log("Month 2 is error")
-                            errorCheckContractEnnergy = true;
-                            errorYear = allowcatedEnergyList[i].year;
-                            errorMonth = "Feb";
-                            break;
-                          }
-                      }
-                      else{
-                        //console.log("Month 1 is error")
-                        errorCheckContractEnnergy = true;
-                        errorYear = allowcatedEnergyList[i].year;
-                        errorMonth = "Jan";
-                        break;
-                      }
+                            }
+                            else{
+                              //console.log("Month 2 is error")
+                              errorCheckContractEnnergy = true;
+                              errorYear = allowcatedEnergyList[i].year;
+                              errorMonth = "Feb";
+                              break;
+                            }
+                        }
+                        else{
+                          //console.log("Month 1 is error")
+                          errorCheckContractEnnergy = true;
+                          errorYear = allowcatedEnergyList[i].year;
+                          errorMonth = "Jan";
+                          break;
+                        }
+                    }
+                  const param = {
+                        subscriberId: details?.subscriberDetail?.subscriberId,
+                        subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
+                        ugtGroupId: currentUGTGroup?.id,
+                        subscriberTypeId: 1,
+                        //General Information
+                        assignedUtilityId: formData.assignUtil.id,
+                        //subscriberCode: formData.subscriberCode,
+                        tradeAccount: formData.tradeAccount,
+                        tradeAccountCode: formData.tradeAccountCode,
+                        redemptionAccountCode: formData.redemptionAccountCode,
+                        redemptionAccount: formData.redemptionAccount,
+                        //tradeAccount: formData.tradeAccount,
+                        //retailESANo: formData.retailESANo,
+                        //retailESAContractStartDate: formData.retailESAContractStartDate,
+                        //retailESAContractEndDate: formData.retailESAContractEndDate,
+                        //retailESAContractDuration: formData?.retailESAContractDuration || "",
+                        //redemptionAccount: formData.redemptionAccount,
+                        subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
+                        //Organization Information
+                        organizationName: formData.organizationName,
+                        businessRegistrationNo: formData.businessRegistrationNo,
+                        address: formData.address,
+                        subdistrictCode: formData.subdistrictCode.subdistrictCode,
+                        subdistrictName: formData.subdistrictCode.subdistrictNameEn,
+                        districtCode: formData.districtCode.districtCode,
+                        districtName: formData.districtCode.districtNameEn,
+                        provinceCode: formData.stateCode.provinceCode,
+                        provinceName: formData.stateCode.provinceNameEn,
+                        countryCode: formData.countryCode.alpha2.toUpperCase(),
+                        countryName: formData.countryCode.name,
+                        postCode: formData.postCode.postalCode.toString(),
+                        //Personal Information
+                        title: formData.title?.value,
+                        name: formData.name,
+                        lastname: formData.lastname,
+                        email: formData.email,
+                        mobilePhone: formData.mobilePhone,
+                        officePhone: formData.officePhone,
+                        attorney: formData.attorney,
+                        //Subscription Information
+                        retailESANo: formData.retailESANo,
+                        retailESAContractStartDate: formData.retailESAContractStartDate,
+                        retailESAContractEndDate: formData.retailESAContractEndDate,
+                        retailESAContractDuration: formData?.retailESAContractDuration || "",
+                        portfolioAssignment: formData.portfolioAssignment,
+                        optForUp: formData.optGreen?"Active":"Inactive",
+                        optForExcess: formData.optContract?"Active":"Inactive",
+                        feeder: formData.feeder,
+                        allocateEnergyAmount: allowcatedEnergyList,
+                        fileUploadContract: allowcatedExcelFileList,
+                        //Beneficiary Information
+                        beneficiaryInfo:benefitList,
+                        subscriberRemark:null /*{
+                          beneficiaryName: formData.beneficiaryName,
+                          beneficiaryStatus: "Active",
+                          beneficiaryCountry: formData.beneficiaryCountryCode.name,
+                          beneficiaryAddress: formData.beneficiaryAddress,
+                          beneficiarySubdistrictCode:
+                            formData.beneficiarySubdistrictCode.subdistrictCode,
+                          beneficiarySubdistrictName:
+                            formData.beneficiarySubdistrictCode.subdistrictNameEn,
+                          beneficiaryDistrictCode:
+                            formData.beneficiaryDistrictCode.districtCode,
+                          beneficiaryDistrictName:
+                            formData.beneficiaryDistrictCode.districtNameEn,
+                          beneficiaryProviceCode: formData.beneficiaryProviceCode.provinceCode,
+                          beneficiaryProviceName:
+                            formData.beneficiaryProviceCode.provinceNameEn,
+                          beneficiaryCountryCode:
+                            formData.beneficiaryCountryCode.alpha2.toUpperCase(),
+                          beneficiaryCountryName: formData.beneficiaryCountryCode.name,
+                          beneficiaryPostcode:
+                            formData.beneficiaryPostcode.postalCode.toString(),
+                        }*/,
+                        //Attach File
+                        fileUpload:fileList,
+                        note:formData.note,
+                        fileUploadSubscriberContractHistoryLog:[],
+                        subscriberContractHistoryLog:{action:"Edit",createBy: (userDetail.firstName+" "+userDetail.lastName)}
+                      };
+                  if(errorCheckContractEnnergy === false){
+                  // console.log("Contract Amount is not Error")
+                      //setIsAllocatedEnergyAmount(false);
+                      setIsBeficiary(false)
+                      setFormData1(param);
+                      console.log(param)
+                      setShowModalCreateConfirm(true);
                   }
-                const param = {
-                      subscriberId: details?.subscriberDetail?.subscriberId,
-                      subscribersContractInformationId: details?.subscriberDetail.subscribersContractInformationId,
-                      ugtGroupId: currentUGTGroup?.id,
-                      subscriberTypeId: 1,
-                      //General Information
-                      assignedUtilityId: formData.assignUtil.id,
-                      //subscriberCode: formData.subscriberCode,
-                      tradeAccount: formData.tradeAccount,
-                      tradeAccountCode: formData.tradeAccountCode,
-                      redemptionAccountCode: formData.redemptionAccountCode,
-                      redemptionAccount: formData.redemptionAccount,
-                      //tradeAccount: formData.tradeAccount,
-                      //retailESANo: formData.retailESANo,
-                      //retailESAContractStartDate: formData.retailESAContractStartDate,
-                      //retailESAContractEndDate: formData.retailESAContractEndDate,
-                      //retailESAContractDuration: formData?.retailESAContractDuration || "",
-                      //redemptionAccount: formData.redemptionAccount,
-                      subscriberStatusId: details?.subscriberDetail.subscriberStatusId,
-                      //Organization Information
-                      organizationName: formData.organizationName,
-                      businessRegistrationNo: formData.businessRegistrationNo,
-                      address: formData.address,
-                      subdistrictCode: formData.subdistrictCode.subdistrictCode,
-                      subdistrictName: formData.subdistrictCode.subdistrictNameEn,
-                      districtCode: formData.districtCode.districtCode,
-                      districtName: formData.districtCode.districtNameEn,
-                      provinceCode: formData.stateCode.provinceCode,
-                      provinceName: formData.stateCode.provinceNameEn,
-                      countryCode: formData.countryCode.alpha2.toUpperCase(),
-                      countryName: formData.countryCode.name,
-                      postCode: formData.postCode.postalCode.toString(),
-                      //Personal Information
-                      title: formData.title?.value,
-                      name: formData.name,
-                      lastname: formData.lastname,
-                      email: formData.email,
-                      mobilePhone: formData.mobilePhone,
-                      officePhone: formData.officePhone,
-                      attorney: formData.attorney,
-                      //Subscription Information
-                      retailESANo: formData.retailESANo,
-                      retailESAContractStartDate: formData.retailESAContractStartDate,
-                      retailESAContractEndDate: formData.retailESAContractEndDate,
-                      retailESAContractDuration: formData?.retailESAContractDuration || "",
-                      portfolioAssignment: formData.portfolioAssignment,
-                      optForUp: formData.optGreen?"Active":"Inactive",
-                      optForExcess: formData.optContract?"Active":"Inactive",
-                      feeder: formData.feeder,
-                      allocateEnergyAmount: allowcatedEnergyList,
-                      fileUploadContract: allowcatedExcelFileList,
-                      //Beneficiary Information
-                      beneficiaryInfo:benefitList,
-                      subscriberRemark:null /*{
-                        beneficiaryName: formData.beneficiaryName,
-                        beneficiaryStatus: "Active",
-                        beneficiaryCountry: formData.beneficiaryCountryCode.name,
-                        beneficiaryAddress: formData.beneficiaryAddress,
-                        beneficiarySubdistrictCode:
-                          formData.beneficiarySubdistrictCode.subdistrictCode,
-                        beneficiarySubdistrictName:
-                          formData.beneficiarySubdistrictCode.subdistrictNameEn,
-                        beneficiaryDistrictCode:
-                          formData.beneficiaryDistrictCode.districtCode,
-                        beneficiaryDistrictName:
-                          formData.beneficiaryDistrictCode.districtNameEn,
-                        beneficiaryProviceCode: formData.beneficiaryProviceCode.provinceCode,
-                        beneficiaryProviceName:
-                          formData.beneficiaryProviceCode.provinceNameEn,
-                        beneficiaryCountryCode:
-                          formData.beneficiaryCountryCode.alpha2.toUpperCase(),
-                        beneficiaryCountryName: formData.beneficiaryCountryCode.name,
-                        beneficiaryPostcode:
-                          formData.beneficiaryPostcode.postalCode.toString(),
-                      }*/,
-                      //Attach File
-                      fileUpload:fileList,
-                      note:formData.note,
-                      fileUploadSubscriberContractHistoryLog:[],
-                      subscriberContractHistoryLog:{action:"Edit",createBy: (userDetail.firstName+" "+userDetail.lastName)}
-                    };
-                if(errorCheckContractEnnergy === false){
-                 // console.log("Contract Amount is not Error")
-                    //setIsAllocatedEnergyAmount(false);
-                    setIsBeficiary(false)
-                    setFormData1(param);
-                    console.log(param)
-                    setShowModalCreateConfirm(true);
+                  else{
+                    setIsShowFailModal(true)
+                    setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
+                    console.log("Contract Amount Error",errorYear+" "+errorMonth)
+                  }
+                  }
+                  else{
+                    setIsShowFailModal(true)
+                    setMessageFailModal("Contract energy amount is not create in " + errorYear)
+                    console.log("Error create ContractEnergy is not match select Date")
+                  }
                 }
                 else{
                   setIsShowFailModal(true)
-                  setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
-                  console.log("Contract Amount Error",errorYear+" "+errorMonth)
+                  setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
+                  console.log("Error is not Create Allowcated End Year")
                 }
+            }
+            else{
+              setIsShowFailModal(true)
+              setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
+              console.log("Error is not Create Allowcated Start Year")
+            }
+        }
+        else{
+          //Assign to Portfolio and Active
+          let errorCheckContractEnnergy = null
+          let errorYear = null
+          let errorMonth = null
+          let isErrorAllow = false
+          const yearStart = parseInt(yearStartDate1.current)
+          const yearEnd = parseInt(yearEndDate1.current)
+          const diffYear = (yearEnd-yearStart)+1
+          console.log("Diff Year",diffYear)
+          console.log("Length Contract Amount",allowcatedEnergyList.length)
+          const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
+          const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
+          if(lengthCreateStartyear.length !== 0){
+              if(lenghtCreateEndyear.length !== 0){
+                for(let i = yearStart+1;i < yearEnd;i++){
+                  const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
+                  if(checkDisappearData.length === 0){
+                    errorYear = i;
+                    isErrorAllow = true
+                    break;
+                  }
                 }
-                else{
-                  setIsShowFailModal(true)
-                  setMessageFailModal("Contract energy amount is not create in " + errorYear)
-                  console.log("Error create ContractEnergy is not match select Date")
-                }
-              }
-              else{
-                setIsShowFailModal(true)
-                setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-                console.log("Error is not Create Allowcated End Year")
-              }
-          }
-          else{
-            setIsShowFailModal(true)
-            setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-            console.log("Error is not Create Allowcated Start Year")
-          }
-      }
-      else{
-        //Assign to Portfolio and Active
-        let errorCheckContractEnnergy = null
-        let errorYear = null
-        let errorMonth = null
-        let isErrorAllow = false
-        const yearStart = parseInt(yearStartDate1.current)
-        const yearEnd = parseInt(yearEndDate1.current)
-        const diffYear = (yearEnd-yearStart)+1
-        console.log("Diff Year",diffYear)
-        console.log("Length Contract Amount",allowcatedEnergyList.length)
-        const lengthCreateStartyear = allowcatedEnergyList.filter((items)=> items.year === yearStart)
-        const lenghtCreateEndyear = allowcatedEnergyList.filter((items)=>items.year === yearEnd)
-        if(lengthCreateStartyear.length !== 0){
-            if(lenghtCreateEndyear.length !== 0){
-              for(let i = yearStart+1;i < yearEnd;i++){
-                const checkDisappearData = allowcatedEnergyList.filter((items)=> items.year === i)
-                if(checkDisappearData.length === 0){
-                  errorYear = i;
-                  isErrorAllow = true
-                  break;
-                }
-              }
-                if(isErrorAllow === false){
-                    for(let i = 0;i < allowcatedEnergyList.length;i++){
-                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
-                          //console.log("Month 1 is not error")
-                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
-                            //console.log("Month 2 is not error")
-                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
-                                //console.log("Month 3 is not error")
-                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
-                                  //console.log("Month 4 is not error")
-                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
-                                      //console.log("Month 5 is not error")
-                                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
-                                          //console.log("Month 6 is not error")
-                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
-                                          // console.log("Month 7 is not error")
-                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
-                                            // console.log("Month 8 is not error")
-                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
-                                              //  console.log("Month 9 is not error")
-                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
-                                              //   console.log("Month 10 is not error")
-                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
-                                              //     console.log("Month 11 is not error")
-                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
-                                                    {
-                                                      //console.log("Month 12 is not error")
-                                                      errorCheckContractEnnergy = false                                            
+                  if(isErrorAllow === false){
+                      for(let i = 0;i < allowcatedEnergyList.length;i++){
+                        if(onCheckErrorSubmit(allowcatedEnergyList[i].year,1,allowcatedEnergyList[i].amount01) === false){
+                            //console.log("Month 1 is not error")
+                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,2,allowcatedEnergyList[i].amount02) === false){
+                              //console.log("Month 2 is not error")
+                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,3,allowcatedEnergyList[i].amount03) === false){
+                                  //console.log("Month 3 is not error")
+                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,4,allowcatedEnergyList[i].amount04) === false){
+                                    //console.log("Month 4 is not error")
+                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,5,allowcatedEnergyList[i].amount05) === false){
+                                        //console.log("Month 5 is not error")
+                                          if(onCheckErrorSubmit(allowcatedEnergyList[i].year,6,allowcatedEnergyList[i].amount06) === false){
+                                            //console.log("Month 6 is not error")
+                                            if(onCheckErrorSubmit(allowcatedEnergyList[i].year,7,allowcatedEnergyList[i].amount07) === false){
+                                            // console.log("Month 7 is not error")
+                                              if(onCheckErrorSubmit(allowcatedEnergyList[i].year,8,allowcatedEnergyList[i].amount08) === false){
+                                              // console.log("Month 8 is not error")
+                                                if(onCheckErrorSubmit(allowcatedEnergyList[i].year,9,allowcatedEnergyList[i].amount09) === false){
+                                                //  console.log("Month 9 is not error")
+                                                  if(onCheckErrorSubmit(allowcatedEnergyList[i].year,10,allowcatedEnergyList[i].amount10) === false){
+                                                //   console.log("Month 10 is not error")
+                                                    if(onCheckErrorSubmit(allowcatedEnergyList[i].year,11,allowcatedEnergyList[i].amount11) === false){
+                                                //     console.log("Month 11 is not error")
+                                                      if(onCheckErrorSubmit(allowcatedEnergyList[i].year,12,allowcatedEnergyList[i].amount12) === false)
+                                                      {
+                                                        //console.log("Month 12 is not error")
+                                                        errorCheckContractEnnergy = false                                            
+                                                      }
+                                                      else{
+                                                        //console.log("Month 12 is error")
+                                                        errorCheckContractEnnergy = true;
+                                                        errorYear = allowcatedEnergyList[i].year;
+                                                        errorMonth = "Dec";
+                                                        break;
+                                                      }
                                                     }
                                                     else{
-                                                      //console.log("Month 12 is error")
+                                                      //console.log("Month 11 is error")
                                                       errorCheckContractEnnergy = true;
                                                       errorYear = allowcatedEnergyList[i].year;
-                                                      errorMonth = "Dec";
+                                                      errorMonth = "Nov";
                                                       break;
                                                     }
                                                   }
                                                   else{
-                                                    //console.log("Month 11 is error")
+                                                    //console.log("Month 10 is error")
                                                     errorCheckContractEnnergy = true;
                                                     errorYear = allowcatedEnergyList[i].year;
-                                                    errorMonth = "Nov";
+                                                    errorMonth = "Oct";
                                                     break;
                                                   }
                                                 }
                                                 else{
-                                                  //console.log("Month 10 is error")
+                                                  //console.log("Month 9 is error")
                                                   errorCheckContractEnnergy = true;
                                                   errorYear = allowcatedEnergyList[i].year;
-                                                  errorMonth = "Oct";
+                                                  errorMonth = "Sep";
                                                   break;
                                                 }
                                               }
                                               else{
-                                                //console.log("Month 9 is error")
+                                                //console.log("Month 8 is error")
                                                 errorCheckContractEnnergy = true;
                                                 errorYear = allowcatedEnergyList[i].year;
-                                                errorMonth = "Sep";
+                                                errorMonth = "Aug";
                                                 break;
                                               }
                                             }
                                             else{
-                                              //console.log("Month 8 is error")
+                                              //console.log("Month 7 is error")
                                               errorCheckContractEnnergy = true;
                                               errorYear = allowcatedEnergyList[i].year;
-                                              errorMonth = "Aug";
+                                              errorMonth = "Jul";
                                               break;
                                             }
                                           }
                                           else{
-                                            //console.log("Month 7 is error")
+                                            //console.log("Month 6 is error")
                                             errorCheckContractEnnergy = true;
                                             errorYear = allowcatedEnergyList[i].year;
-                                            errorMonth = "Jul";
+                                            errorMonth = "Jun";
                                             break;
                                           }
-                                        }
-                                        else{
-                                          //console.log("Month 6 is error")
-                                          errorCheckContractEnnergy = true;
-                                          errorYear = allowcatedEnergyList[i].year;
-                                          errorMonth = "Jun";
-                                          break;
-                                        }
-                                    }
-                                    else{
-                                      //console.log("Month 5 is error")
-                                      errorCheckContractEnnergy = true;
-                                      errorYear = allowcatedEnergyList[i].year;
-                                      errorMonth = "May";
-                                      break;
-                                    }
+                                      }
+                                      else{
+                                        //console.log("Month 5 is error")
+                                        errorCheckContractEnnergy = true;
+                                        errorYear = allowcatedEnergyList[i].year;
+                                        errorMonth = "May";
+                                        break;
+                                      }
+                                  }
+                                  else{
+                                    //console.log("Month 4 is error")
+                                    errorCheckContractEnnergy = true;
+                                    errorYear = allowcatedEnergyList[i].year;
+                                    errorMonth = "Apr";
+                                    break;
+                                  }
                                 }
                                 else{
-                                  //console.log("Month 4 is error")
+                                  //console.log("Month 3 is error")
                                   errorCheckContractEnnergy = true;
                                   errorYear = allowcatedEnergyList[i].year;
-                                  errorMonth = "Apr";
+                                  errorMonth = "Mar";
                                   break;
                                 }
-                              }
-                              else{
-                                //console.log("Month 3 is error")
-                                errorCheckContractEnnergy = true;
-                                errorYear = allowcatedEnergyList[i].year;
-                                errorMonth = "Mar";
-                                break;
-                              }
-                          }
-                          else{
-                            //console.log("Month 2 is error")
-                            errorCheckContractEnnergy = true;
-                            errorYear = allowcatedEnergyList[i].year;
-                            errorMonth = "Feb";
-                            break;
-                          }
-                      }
-                      else{
-                        //console.log("Month 1 is error")
-                        errorCheckContractEnnergy = true;
-                        errorYear = allowcatedEnergyList[i].year;
-                        errorMonth = "Jan";
-                        break;
-                      }
+                            }
+                            else{
+                              //console.log("Month 2 is error")
+                              errorCheckContractEnnergy = true;
+                              errorYear = allowcatedEnergyList[i].year;
+                              errorMonth = "Feb";
+                              break;
+                            }
+                        }
+                        else{
+                          //console.log("Month 1 is error")
+                          errorCheckContractEnnergy = true;
+                          errorYear = allowcatedEnergyList[i].year;
+                          errorMonth = "Jan";
+                          break;
+                        }
+                    }
+                  
+                  if(errorCheckContractEnnergy === false){
+                  // console.log("Contract Amount is not Error")
+                      //setIsAllocatedEnergyAmount(false);
+                      setIsBeficiary(false)
+                      //setFormData1(param);
+                      //console.log(param)
+                      setShowMadalCreateRemark(true);
                   }
-                
-                if(errorCheckContractEnnergy === false){
-                 // console.log("Contract Amount is not Error")
-                    //setIsAllocatedEnergyAmount(false);
-                    setIsBeficiary(false)
-                    //setFormData1(param);
-                    //console.log(param)
-                    setShowMadalCreateRemark(true);
+                  else{
+                    setIsShowFailModal(true)
+                    setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
+                    console.log("Contract Amount Error",errorYear+" "+errorMonth)
+                  }
+                  }
+                  else{
+                    setIsShowFailModal(true)
+                    setMessageFailModal("Contract energy amount is not create in " + errorYear)
+                    console.log("Error create ContractEnergy is not match select Date")
+                  }
                 }
                 else{
                   setIsShowFailModal(true)
-                  setMessageFailModal("Contract Energy Amount error in year "+errorYear+" on "+errorMonth)
-                  console.log("Contract Amount Error",errorYear+" "+errorMonth)
+                  setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
+                  console.log("Error is not Create Allowcated End Year")
                 }
-                }
-                else{
-                  setIsShowFailModal(true)
-                  setMessageFailModal("Contract energy amount is not create in " + errorYear)
-                  console.log("Error create ContractEnergy is not match select Date")
-                }
-              }
-              else{
-                setIsShowFailModal(true)
-                setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-                console.log("Error is not Create Allowcated End Year")
-              }
-          }
-          else{
-            setIsShowFailModal(true)
-            setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
-            console.log("Error is not Create Allowcated Start Year")
-          }
+            }
+            else{
+              setIsShowFailModal(true)
+              setMessageFailModal("Contract energy amount is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")
+              console.log("Error is not Create Allowcated Start Year")
+            }
+        }
       }
+    }
+    else{
+      setIsShowFailModal(true)
+      setMessageFailModal("Please create active beneficiary one or more.")
     }
   };
 

@@ -67,7 +67,14 @@ const ModalAddPort = (props) => {
         item?.id != "retailESAContractEndDate"
     );
   }; */
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
 
+    return `${day}/${month}/${year}`;
+  }
   const columnsDevice = [
     {
       id: "deviceName",
@@ -139,6 +146,18 @@ const ModalAddPort = (props) => {
           searchWords={[searchDevice]}
           autoEscape={true}
           textToHighlight={row.startDate}
+        />
+      ),
+    },
+    {
+      id: "EndDate",
+      label: "Expire Date",
+      render: (row) => (
+        <Highlighter
+          highlightTag={Highlight}
+          searchWords={[searchDevice]}
+          autoEscape={true}
+          textToHighlight={formatDate(row.expiryDate)}
         />
       ),
     },

@@ -240,6 +240,7 @@ const AddPortfolio = () => {
   const [showModalComplete, setShowModalComplete] = React.useState(false);
   const [deviceList, setDeviceList] = useState([]);
   const [deviceListSelected, setDeviceListSelected] = useState([]);
+  
   const [subscriberList, setSubscriberList] = useState([]);
   const [subscriberListSelected, setSubscriberListSelected] = useState([]);
   const [showModalAdd, setShowModalAdd] = useState(false);
@@ -306,13 +307,15 @@ const AddPortfolio = () => {
         .map((item) => ({
           ...item,
           startDate: formatDate(item.registrationDate),
-          endDate: formatDate(item.registrationDate),
+          endDate: formatDate(item.expiryDate),
         }));
       setDeviceList(formattedDataArray);
+      console.log(formattedDataArray)
     }
   }, [portfolioDeviceList]);
 
   useEffect(() => {
+    
     // console.log("portfolioSubscriberList == ", portfolioSubscriberList);
     if (portfolioSubscriberList?.length > 0) {
       const sDate = watch("startDate");
@@ -325,7 +328,7 @@ const AddPortfolio = () => {
             (new Date(eDate).setHours(0, 0, 0, 0) >=
               convertToDate(formatDate(item?.retailESAContractStartDate)) &&
               new Date(sDate).setHours(0, 0, 0, 0) <=
-                convertToDate(formatDate(item?.retailESAContractEndDate)))
+              convertToDate(formatDate(item?.retailESAContractEndDate)))
         )
         .map((item) => ({
           ...item,
@@ -337,6 +340,7 @@ const AddPortfolio = () => {
           subEndDate: formatDate(item?.retailESAContractEndDate),
         }));
       setSubscriberList(formattedDataArray);
+      console.log(subscriberList)
     }
   }, [portfolioSubscriberList]);
 
@@ -641,6 +645,7 @@ const AddPortfolio = () => {
       } else {
         setDeviceListSelected(data);
       }
+      console.log(deviceListSelected)
     } else if (titleAddModal == "Add Subscriber") {
       if (defualtStartDate) {
         const newDateSubscriber = data?.map((item) => {

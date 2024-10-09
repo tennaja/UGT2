@@ -61,6 +61,7 @@ const UpdatePortfolio = () => {
   const onlyPositiveNum = /^[+]?\d+([.]\d+)?$/;
   const [isStartDate, setIsStartDate] = useState(false);
   const [isEndDate, setIsEndDate] = useState(false);
+  const [isClearData, setIsClearData] = useState(false);
 
   useEffect(() => {
     autoScroll();
@@ -155,58 +156,75 @@ const UpdatePortfolio = () => {
     const startDatePort = watch("startDate");
     // console.log("startDatePort ==== ", new Date(startDatePort));
     // console.log("endDatePort === ", date);
-    if (date) {
-      // device
-      let newDateDeviceList = deviceListSelected
-        .filter((item) => {
-          const startDevice = new Date(item?.registrationDate);
-          const endDevice = date;
-          return endDevice > startDevice;
-        })
-        .map((item) => ({
-          ...item,
-          startDate:
-            new Date(startDatePort).setHours(0, 0, 0, 0) >=
-            new Date(item?.registrationDate)
-              ? format(new Date(startDatePort), "dd/MM/yyyy")
-              : format(new Date(item?.registrationDate), "dd/MM/yyyy"),
-          endDate: format(date, "dd/MM/yyyy"),
-        }));
-      setDeviceListSelected(newDateDeviceList);
 
-      // subscriber
-      console.log("subscriberListSelected ===>>> ", subscriberListSelected);
-      let newSuscriberList = subscriberListSelected
-        .filter((item) => {
-          const partStartTemp = item?.retailESAContractStartDate.split("/");
-          const startSub = new Date(
-            `${partStartTemp[2]}-${partStartTemp[1]}-${partStartTemp[0]}`
-          );
-          const partEndTemp = item?.retailESAContractEndDate.split("/");
-          const endSub = new Date(
-            `${partEndTemp[2]}-${partEndTemp[1]}-${partEndTemp[0]}`
-          );
-          const startPort = new Date(startDatePort).setHours(0, 0, 0, 0);
-          const endPort = date;
-          return startSub < endPort && endSub > startPort;
-        })
-        .map((item) => {
-          const startSub = new Date(item?.ugtStartDate);
-          const endSub = new Date(item?.ugtEndDate);
-          return {
+    if (date) {
+      if (!isStartPort) {
+        if (isClearData) {
+          setDeviceListSelected([]);
+          setSubscriberListSelected([]);
+        }
+      } else {
+        // device
+
+        let newDateDeviceList = deviceListSelected
+          .filter((item) => {
+            const startDevice = dayjs(item?.startDate, [
+              "DD/MM/YYYY",
+              "YYYY-MM-DD",
+            ]);
+            const endDevice = dayjs(date).startOf("day");
+            return endDevice >= startDevice;
+          })
+          .map((item) => ({
             ...item,
-            retailESAContractStartDate:
-              new Date(startDatePort).setHours(0, 0, 0, 0) >= startSub
-                ? format(new Date(startDatePort), "dd/MM/yyyy")
-                : format(startSub, "dd/MM/yyyy"),
-            retailESAContractEndDate:
-              date <= endSub
-                ? format(date, "dd/MM/yyyy")
-                : format(endSub, "dd/MM/yyyy"),
-          };
-        });
-      console.log("newSuscriberList >>>>>>> ", newSuscriberList);
-      setSubscriberListSelected(newSuscriberList);
+            endDate: dayjs(date).format("DD/MM/YYYY"),
+          }));
+        setDeviceListSelected(newDateDeviceList);
+
+        // subscriber
+
+        let newSuscriberList = subscriberListSelected
+          .filter((item) => {
+            /* const partStartTemp = item?.retailESAContractStartDate.split("/");
+            const startSub = new Date(
+              `${partStartTemp[2]}-${partStartTemp[1]}-${partStartTemp[0]}`
+            );
+            const partEndTemp = item?.retailESAContractEndDate.split("/");
+            const endSub = new Date(
+              `${partEndTemp[2]}-${partEndTemp[1]}-${partEndTemp[0]}`
+            ); */
+            const startSub = dayjs(item?.startDate, [
+              "DD/MM/YYYY",
+              "YYYY-MM-DD",
+            ]);
+            const endSub = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
+            const startPort = new Date(startDatePort).setHours(0, 0, 0, 0);
+            const endPort = dayjs(date).startOf("day");
+            return startSub <= endPort && endSub >= startPort;
+          })
+          .map((item) => {
+            const endSub = dayjs(item?.retailESAContractEndDate, [
+              "DD/MM/YYYY",
+              "YYYY-MM-DD",
+            ]);
+
+            let endDateValue;
+            console.log("endSub", endSub);
+            console.log("date", date);
+            if (date < endSub) {
+              endDateValue = dayjs(date);
+            } else {
+              endDateValue = endSub;
+            }
+            return {
+              ...item,
+              endDate: endDateValue.format("DD/MM/YYYY"),
+            };
+          });
+
+        setSubscriberListSelected(newSuscriberList);
+      }
+      setIsClearData(true);
     }
   };
   const disableStartDateCal = (day) => {
@@ -217,14 +235,13 @@ const UpdatePortfolio = () => {
 
     // กำหนดวันแรกของ port ตาม ugtGroup ที่เลือกอยู่ ถ้าไม่เจอวันแรกของ port ให้ใช้เป็นวันปัจจุบันไปก่อน
     const ugtGroupStartDate = currentUgtGroupData[0]?.startDate
-      ? dayjs(currentUgtGroupData[0]?.startDate).endOf("day")
+      ? dayjs(currentUgtGroupData[0]?.startDate).startOf("day")
       : dayjs().startOf("day");
 
-    console.log("ugtGroupStartDate", ugtGroupStartDate);
     // กำหนดวันสุดท้ายของ port ตาม ugtGroup ที่เลือกอยู่ ถ้าไม่เจอวันสุดท้ายของ port ให้ใช้เป็นวันถัดมาจากวันที่เริ่มต้นไปก่อน
     const ugtGroupStopDate = currentUgtGroupData[0]?.stopDate
-      ? dayjs(currentUgtGroupData[0]?.stopDate).endOf("day")
-      : dayjs(selectedCommisionDate).endOf("day").add(1, "day");
+      ? dayjs(currentUgtGroupData[0]?.stopDate).startOf("day")
+      : dayjs(selectedCommisionDate).startOf("day").add(1, "day");
 
     const condition1 = day < ugtGroupStartDate || day > ugtGroupStopDate;
     const disable = condition1;
@@ -249,8 +266,8 @@ const UpdatePortfolio = () => {
     );
     // กำหนดวันสุดท้ายของ port ตาม ugtGroup ที่เลือกอยู่ ถ้าไม่เจอวันสุดท้ายของ port ให้ใช้เป็นวันถัดมาจากวันที่เริ่มต้นไปก่อน
     const ugtGroupStopDate = currentUgtGroupData[0]?.stopDate
-      ? dayjs(currentUgtGroupData[0]?.stopDate).endOf("day")
-      : dayjs(selectedCommisionDate).endOf("day").add(1, "day");
+      ? dayjs(currentUgtGroupData[0]?.stopDate).startOf("day")
+      : dayjs(selectedCommisionDate).startOf("day").add(1, "day");
 
     const condition1 = day < previousDate || day > ugtGroupStopDate;
     const disable = condition1;
@@ -346,7 +363,7 @@ const UpdatePortfolio = () => {
   };
   useEffect(() => {
     autoScroll();
-    console.log("portfolioDeviceList == ", portfolioDeviceList);
+
     if (portfolioDeviceList?.length > 0) {
       const eDate = watch("endDate");
 
@@ -531,7 +548,7 @@ const UpdatePortfolio = () => {
     },
     {
       id: "allocateEnergyAmount",
-      label: "Allocated Energy Amount (kWh)",
+      label: "Contracted Energy Amount (kWh)",
       align: "right",
       render: (row) => (
         <Highlighter
@@ -576,15 +593,12 @@ const UpdatePortfolio = () => {
   const [searchSubscriber, setSearchSubscriber] = useState("");
 
   const setDefualtData = () => {
-    console.log("detailPortfolio == ", detailPortfolio);
+    console.log("run setDefaultData");
     setValue(
       "portfolioName",
       detailPortfolio?.portfolioInfo?.portfolioName || "-"
     );
-    console.log(
-      "detailPortfolio?.portfolioInfo?.startDate ==",
-      detailPortfolio?.portfolioInfo?.startDate
-    );
+
     setValue("startDate", detailPortfolio?.portfolioInfo?.startDate);
     setValue("endDate", detailPortfolio?.portfolioInfo?.endDate);
     const tempMechanism = initialvalueForSelectField(
@@ -606,7 +620,9 @@ const UpdatePortfolio = () => {
             : format(new Date(item?.ugtEndDate), "dd/MM/yyyy"),
       };
     });
+
     setDeviceListSelected(tempDevice);
+    console.log("tempDevice ==", tempDevice);
 
     const tempSubscriber = detailPortfolio?.subscriber.map((item) => {
       return {
@@ -714,10 +730,11 @@ const UpdatePortfolio = () => {
       if (defualtStartDate) {
         const remainingData = data.filter(
           (item) =>
-            !detailPortfolio?.device.find(
+            !deviceListSelected?.find(
               (selectedItem) => selectedItem.id === item.id
             )
         );
+
         const newDateDevice = remainingData.map((item) => {
           // device ที่ add เข้ามาใหม่ ถ้าวัน registrationDate น้อยกว่า startDate ของ port ให้ใช้วันของ portfolio
           let itemStartDate = dayjs(item?.registrationDate);
@@ -747,16 +764,20 @@ const UpdatePortfolio = () => {
               endDate: format(new Date(defualtEndDate), "dd/MM/yyyy"),
             }; */
         });
-        const currentDateDevice = detailPortfolio?.device.map((item) => {
+        const currentDateDevice = deviceListSelected?.map((item) => {
           //  device ที่มีอยู่แล้วใน portfolio ใช้วัน ugtStartDate ของ Device
+          //  เปลี่ยนไปใช้ device ที่อยู่ในตารางที่เลือกมาแล้ว
           let itemStartDate = dayjs(item?.ugtStartDate);
+          let itemEndDate = dayjs(item?.ugtEndDate);
 
-          // เอา enddate ของ device หลังจากที่ edit ไปแล้วมาใช้
+          // เอา startdate และ enddate ของ device หลังจากที่ edit ไปแล้วมาใช้
           let deviceDataTable = deviceListSelected.filter((row) => {
             return row.id === item.id;
           });
-
-          let itemEndDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
+          if (deviceDataTable.length > 0) {
+            itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
+            itemEndDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
+          }
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
@@ -773,7 +794,7 @@ const UpdatePortfolio = () => {
       if (defualtStartDate) {
         const remainingData = data.filter(
           (item) =>
-            !detailPortfolio?.subscriber.find(
+            !subscriberListSelected.find(
               (selectedItem) => selectedItem.id === item.id
             )
         );
@@ -787,13 +808,16 @@ const UpdatePortfolio = () => {
             itemStartDate = dayjs(defualtStartDate);
           }
 
+          // subscriber ที่ add เข้ามาใหม่ ถ้าวัน endDate ของ port น้อยกว่า retailESAContractEndDate ให้ใช้วันของ portfolio
+          let itemEndDate = dayjs(item?.retailESAContractEndDate, "DD/MM/YYYY");
+          if (dayjs(defualtEndDate) < itemEndDate) {
+            itemEndDate = dayjs(defualtEndDate);
+          }
+
           // เอา startdate และ enddate ของ subscriber หลังจากที่ edit ไปแล้วมาใช้
           let subscriberDataTable = subscriberListSelected.filter((row) => {
             return row.id === item.id;
           });
-
-          let itemEndDate = dayjs(defualtEndDate);
-
           if (subscriberDataTable.length > 0) {
             itemStartDate = dayjs(
               subscriberDataTable[0]?.startDate,
@@ -812,27 +836,28 @@ const UpdatePortfolio = () => {
               endDate: format(new Date(defualtEndDate), "dd/MM/yyyy"),
             }; */
         });
-        const currentDateSubscriber = detailPortfolio?.subscriber.map(
-          (item) => {
-            //  subscriber ที่มีอยู่แล้วใน portfolio ใช้วัน ugtStartDate ของ subscriber
-            let itemStartDate = dayjs(item?.ugtStartDate);
+        const currentDateSubscriber = subscriberListSelected?.map((item) => {
+          //  subscriber ที่มีอยู่แล้วใน portfolio ใช้วัน ugtStartDate และ ugtEndDate ของ subscriber
+          let itemStartDate = dayjs(item?.ugtStartDate);
+          let itemEndDate = dayjs(item?.ugtEndDate);
 
-            // เอา enddate ของ device หลังจากที่ edit ไปแล้วมาใช้
-            let subscriberDataTable = subscriberListSelected.filter((row) => {
-              return row.id === item.id;
-            });
-
-            let itemEndDate = dayjs(
-              subscriberDataTable[0]?.endDate,
+          // เอา startdate และ enddate ของ subscriber หลังจากที่ edit ไปแล้วมาใช้
+          let subscriberDataTable = subscriberListSelected.filter((row) => {
+            return row.id === item.id;
+          });
+          if (subscriberDataTable.length > 0) {
+            itemStartDate = dayjs(
+              subscriberDataTable[0]?.startDate,
               "DD/MM/YYYY"
             );
-            return {
-              ...item,
-              startDate: itemStartDate.format("DD/MM/YYYY"),
-              endDate: itemEndDate.format("DD/MM/YYYY"),
-            };
+            itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
           }
-        );
+          return {
+            ...item,
+            startDate: itemStartDate.format("DD/MM/YYYY"),
+            endDate: itemEndDate.format("DD/MM/YYYY"),
+          };
+        });
 
         const concatArray = [...currentDateSubscriber, ...newDateSubscriber];
         console.log("concatArray", concatArray);
@@ -919,6 +944,16 @@ const UpdatePortfolio = () => {
         deviceListSelectedTemp.splice(index, 1);
       }
     });
+    for (const item of deviceListSelectedTemp) {
+      // check end date ของ device ที่ค้างไว้มากกว่า port end date หรือไม่
+      const portEndDate = dayjs(getValues("endDate"));
+      let itemEndDate = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
+      if (itemEndDate > portEndDate) {
+        console.log("item enddate > portenddate");
+        item.endDate = portEndDate.format("DD/MM/YYYY");
+      }
+    }
+
     setDeviceListSelected(deviceListSelectedTemp);
     setOnEditDevice(false);
     setOnEditDatetimeDevice(false);
@@ -937,6 +972,16 @@ const UpdatePortfolio = () => {
         subscriberListSelectedTemp.splice(index, 1);
       }
     });
+    for (const item of subscriberListSelectedTemp) {
+      // check end date ของ subscriber ที่ค้างไว้มากกว่า port end date หรือไม่
+      const portEndDate = dayjs(getValues("endDate"));
+      let itemEndDate = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
+      if (itemEndDate > portEndDate) {
+        console.log("item enddate > portenddate");
+        item.endDate = portEndDate.format("DD/MM/YYYY");
+      }
+    }
+
     setSubscriberListSelected(subscriberListSelectedTemp);
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
@@ -1029,6 +1074,9 @@ const UpdatePortfolio = () => {
                                 id={"startDate"}
                                 label={"Start Date"}
                                 error={errors.startDate}
+                                defaultValue={
+                                  detailPortfolio?.portfolioInfo?.startDate
+                                }
                                 onChangeInput={handleChangeCommissioningDate}
                                 onCalDisableDate={disableStartDateCal}
                                 isDisable={isStartPort}
@@ -1051,6 +1099,9 @@ const UpdatePortfolio = () => {
                                 id={"endDate"}
                                 label={"End Date"}
                                 error={errors.endDate}
+                                defaultValue={
+                                  detailPortfolio?.portfolioInfo?.endDate
+                                }
                                 onChangeInput={handleChangeEndDate}
                                 onCalDisableDate={
                                   requestedEffectiveDateDisableDateCal
@@ -1449,7 +1500,7 @@ const UpdatePortfolio = () => {
                           onSelectedRowsChange={selectedSubscriberChange}
                           dateChange={handleSubscriberDateChange}
                           isStartPort={isStartPort}
-                          isTotal={"Total Allocated Energy Amount"}
+                          isTotal={"Total Contracted Energy Amount"}
                           portfolioStartDate={getValues("startDate")}
                           portfolioEndDate={getValues("endDate")}
                         />
@@ -1472,6 +1523,7 @@ const UpdatePortfolio = () => {
                   </button>
                   {!onEditSubscriber && !onEditDevice ? (
                     <button
+                      type="button"
                       onClick={handleSubmit(onSubmitForm1)}
                       className="ml-4 w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg focus:shadow-outline hover:bg-BREAD_CRUMB font-semibold"
                     >
@@ -1479,6 +1531,7 @@ const UpdatePortfolio = () => {
                     </button>
                   ) : (
                     <button
+                      type="button"
                       disabled={true}
                       className="ml-4 w-1/4 rounded h-12 px-6 text-white transition-colors duration-150 bg-PRIMARY_BUTTON rounded-lg opacity-50"
                     >

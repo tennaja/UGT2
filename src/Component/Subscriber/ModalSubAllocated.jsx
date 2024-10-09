@@ -5,6 +5,8 @@ import MySelect from "../Control/Select";
 import { initialvalueForSelectField } from "../../Utils/FuncUtils";
 import { Modal, ScrollArea } from "@mantine/core";
 import InputSubAllow from "./InputSubAllow";
+import { RiContactsBookLine } from "react-icons/ri";
+import ModalConfirmCheckBox from "./ModalConfirmCheckBox";
 
 const ModalSubAllocated = (props) => {
   const {
@@ -30,6 +32,8 @@ const ModalSubAllocated = (props) => {
   } = props;
 
   const [dropDownListYear, setDropDownListYear] = useState([]);
+  const [showModalCreate, setShowModalCreateConfirm] = React.useState(false);
+  const [paramData,setparamData] = useState();
 
   const onlyPositiveNum = /^[+]?\d+([.]\d+)?$/;
 
@@ -138,9 +142,10 @@ const ModalSubAllocated = (props) => {
     setSelectedOption(e.target.value);
   };
   const onClickOk = (data) => {
+    console.log("Save")
     let allocateEnergyAmount = {};
     if (selectedOption == "CUSTOM") {
-      allocateEnergyAmount = {
+      /*allocateEnergyAmount = {
         year: parseInt(data?.year?.value),
         amount01: Number(data?.month0),
         amount02: Number(data?.month1),
@@ -155,22 +160,38 @@ const ModalSubAllocated = (props) => {
         amount11: Number(data?.month10),
         amount12: Number(data?.month11),
         allocateType: selectedOption,
+      };*/
+      allocateEnergyAmount = {
+        year: parseInt(getValues("year")?.value),
+        amount01: Number(getValues("month0")),
+        amount02: Number(getValues("month1")),
+        amount03: Number(getValues("month2")),
+        amount04: Number(getValues("month3")),
+        amount05: Number(getValues("month4")),
+        amount06: Number(getValues("month5")),
+        amount07: Number(getValues("month6")),
+        amount08: Number(getValues("month7")),
+        amount09: Number(getValues("month8")),
+        amount10: Number(getValues("month9")),
+        amount11: Number(getValues("month10")),
+        amount12: Number(getValues("month11")),
+        allocateType: selectedOption,
       };
     } else {
       allocateEnergyAmount = {
-        year: parseInt(data?.year?.value),
-        amount01: Number(data?.MONTHLY),
-        amount02: Number(data?.MONTHLY),
-        amount03: Number(data?.MONTHLY),
-        amount04: Number(data?.MONTHLY),
-        amount05: Number(data?.MONTHLY),
-        amount06: Number(data?.MONTHLY),
-        amount07: Number(data?.MONTHLY),
-        amount08: Number(data?.MONTHLY),
-        amount09: Number(data?.MONTHLY),
-        amount10: Number(data?.MONTHLY),
-        amount11: Number(data?.MONTHLY),
-        amount12: Number(data?.MONTHLY),
+        year: parseInt(getValues("year")?.value),
+        amount01: Number(getValues("MONTHLY")),
+        amount02: Number(getValues("MONTHLY")),
+        amount03: Number(getValues("MONTHLY")),
+        amount04: Number(getValues("MONTHLY")),
+        amount05: Number(getValues("MONTHLY")),
+        amount06: Number(getValues("MONTHLY")),
+        amount07: Number(getValues("MONTHLY")),
+        amount08: Number(getValues("MONTHLY")),
+        amount09: Number(getValues("MONTHLY")),
+        amount10: Number(getValues("MONTHLY")),
+        amount11: Number(getValues("MONTHLY")),
+        amount12: Number(getValues("MONTHLY")),
         allocateType: selectedOption,
       };
     }
@@ -210,6 +231,67 @@ const ModalSubAllocated = (props) => {
         return "bg-[#87BE33]";
     }
   };
+
+  const checkdisable=(month)=>{
+    const today = new Date();
+    const currentDate = today.toLocaleDateString();
+    const [months,day , year] = currentDate.split("/")
+    const intYear = Number(year)
+    console.log(today)
+    console.log(currentDate)
+    console.log(months)
+    console.log(month)
+    console.log(getValues("year")?.value)
+    //console.log(currMonth)
+    if(selectedOption === "CUSTOM") { 
+      if(yearStart === yearEnd){
+        if(month <= months){
+          return true
+        }
+        else{
+          return false
+        }
+      }
+      else if(yearEnd > yearStart){
+        console.log("End > Start")
+        if(getValues("year")?.value !== undefined){
+          console.log("Have Select")
+          console.log(year)
+          if(getValues("year")?.value === intYear){
+            console.log("Select =  CurrYaer")
+            if(month <= months){
+              return true
+            }
+            else{
+              return false
+            }
+          }
+          else if(getValues("year")?.value < intYear){
+            console.log("Select < CurrYear")
+            return true
+          }
+          else if(getValues("year")?.value > intYear){
+            console.log("Select > CurrYear")
+            return false
+          }
+        }
+      }
+    } 
+    else{
+      return true
+    }
+    
+  }
+
+  const handleCloseModalConfirm=()=>{
+    setShowModalCreateConfirm(false)
+  }
+
+  const handleOpenModalConfirm=()=>{
+    console.log("Open Modal")
+    setShowModalCreateConfirm(true)
+    //setparamData(formdata)
+  }
 
   return (
     <Modal
@@ -369,7 +451,7 @@ const ModalSubAllocated = (props) => {
                             label={""}
                             placeholder={"0"}
                             disabled={
-                              selectedOption === "CUSTOM" ? false : true
+                              /*checkdisable(index+1)*/selectedOption === "CUSTOM" ? false : true
                             }
                             onKeyDown={(e) => {
                               // Prevent invalid characters like 'e', '+', '-'
@@ -406,7 +488,7 @@ const ModalSubAllocated = (props) => {
               Cancel
             </button>
             <button
-              onClick={handleSubmit(onClickOk)}
+              onClick={handleSubmit(handleOpenModalConfirm)}
               className={`${getButtonColor()} w-25 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm hover:bg-[#4D6A00] `}
             >
               Save
@@ -414,6 +496,20 @@ const ModalSubAllocated = (props) => {
           </div>
         </form>
       </div>
+      {showModalCreate && (
+        <ModalConfirmCheckBox
+          onClickConfirmBtn={onClickOk}
+          onCloseModal={handleCloseModalConfirm}
+          title={"Save this contracted energy?"}
+          content={
+            "You confirm all the information is completed."
+          }
+          textCheckBox={
+            "I confirm the accuracy of the information."
+          }
+          sizeModal="md"
+        />
+      )}
     </Modal>
   );
 };
