@@ -237,12 +237,13 @@ const ListDevice = (props) => {
           type="button"
           state={{ code: row.id }}
           to={WEB_URL.DEVICE_INFO}
-          className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#4D6A00] bg-[#87BE33]`}
+          // hover:bg-[#4D6A00] bg-[#87BE33]
+          className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]`}
         >
-          <MdOutlineRemoveRedEye/>
-          <label className="m-auto cursor-pointer text-white font-semibold">
-          {"View"}
+          <label className="cursor-pointer text-white font-semibold mr-2">
+            {"View"}
           </label>
+          <MdOutlineRemoveRedEye className="text-white" />
         </Link>
       ),
     },

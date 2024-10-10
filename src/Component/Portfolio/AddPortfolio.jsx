@@ -544,6 +544,14 @@ const AddPortfolio = () => {
           ? null
           : format(convertToDate(item?.endDate), "yyyy-MM-dd"),
     }));
+    
+    const portfoliosHistoryLogList = [{
+      deviceId : 0,
+      subscriberId: 0,
+      subscribersContractInformationId: 0,
+      action: "Create",
+      createBy: "string" 
+    }]
     console.log("deviceList == ", deviceList);
     console.log("subscriberList == ", subscriberList);
     const params = {
@@ -554,6 +562,7 @@ const AddPortfolio = () => {
       ugtGroupId: currentUGTGroup?.id,
       device: deviceList,
       subscriber: subscriberList,
+      portfoliosHistoryLog : portfoliosHistoryLogList,
     };
     console.log("params ===", params);
     setParamsCreate(params);

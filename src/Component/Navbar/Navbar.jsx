@@ -27,7 +27,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const userObj = useSelector((state) => state?.login?.userobj);
   const ugtGroups = useSelector((state) => state?.login?.userobj?.ugtGroups);
-  console.log(ugtGroups)
+  
   const openMenu = useSelector((state) => state?.menu.openMenu);
   const currentAssignedFilter = useSelector(
     (state) => state?.device.currentAssignedFilterObj

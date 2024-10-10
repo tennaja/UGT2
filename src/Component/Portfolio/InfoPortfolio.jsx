@@ -569,6 +569,8 @@ const InfoPortfolio = () => {
                           </span>
                         </div>
                       </div>
+                      
+
                       <div className=" md:col-span-6">
                         <div>
                           <label className="mt-3 text-[#6B7280] text-xs">
@@ -619,8 +621,6 @@ const InfoPortfolio = () => {
                           </span>
                         </div>
                       </div>
-                    </div>
-                    <div className="md:col-span-2">
                       <div className=" md:col-span-6">
                         <div>
                           <label className="mt-3 text-[#6B7280] text-xs">
@@ -639,6 +639,23 @@ const InfoPortfolio = () => {
                           </span>
                         </div>
                       </div>
+                    </div>
+                    <div className="md:col-span-2">
+                    <div className=" md:col-span-6">
+                        <div>
+                          <label className="mt-3 text-[#6B7280] text-xs">
+                            Portfolio Code
+                          </label>
+                        </div>
+                        <div>
+                          <span className="">
+                            <div className="break-words	font-bold">
+                              {details?.portfolioInfo?.portfolioCode || "-"}
+                            </div>
+                          </span>
+                        </div>
+                      </div>
+                      
                       <div className=" md:col-span-6">
                         <div>
                           <label className="mt-3 text-[#6B7280] text-xs">
