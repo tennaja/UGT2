@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-User.svg";
+import SubscriberLOGO01 from "../assets/3-user.svg";
 import Calendar from "../assets/calendars.svg";
 import User from "../assets/3 user.svg";
 import Clock from "../assets/Clock.svg";
