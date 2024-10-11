@@ -3,7 +3,7 @@ import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import SubscriberLOGO01 from "../assets/3-user.svg";
 import Calendar from "../assets/calendars.svg";
-import User from "../assets/3 user.svg";
+import User from "../assets/3 User.svg";
 import Clock from "../assets/Clock.svg";
 import Graph from "../assets/graphNew.svg";
 import SubscriberLOGO02 from "../assets/contractenergy.svg";
