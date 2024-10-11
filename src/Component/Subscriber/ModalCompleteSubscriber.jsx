@@ -6,7 +6,7 @@ import { getCookie, removeCookie, setCookie } from "../../Utils/FuncUtils";
 import { setSelectedSubMenu } from "../../Redux/Menu/Action";
 import { useDispatch, useSelector } from "react-redux";
 import { clearModal } from "../../Redux/Subscriber/Action";
-import ImgDone from "../assets/AlmosttDone.png"
+import ImgDone from "../assets/AlmosttDone.png.png"
 
 const ModalCompleteSubscriber = (props) => {
   const dispatch = useDispatch();
