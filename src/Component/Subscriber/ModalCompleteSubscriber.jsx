@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import AlmostDone from "../assets/done.png";
+import AlmostDone from "../assets/Done.png";
 import { Link, useNavigate } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import { getCookie, removeCookie, setCookie } from "../../Utils/FuncUtils";
 import { setSelectedSubMenu } from "../../Redux/Menu/Action";
 import { useDispatch, useSelector } from "react-redux";
 import { clearModal } from "../../Redux/Subscriber/Action";
-import ImgDone from "../assets/AlmosttDone.png"
+import ImgDone from "../assets/ImgDone.png"
 
 const ModalCompleteSubscriber = (props) => {
   const dispatch = useDispatch();

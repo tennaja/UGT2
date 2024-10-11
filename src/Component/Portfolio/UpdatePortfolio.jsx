@@ -54,6 +54,7 @@ const UpdatePortfolio = () => {
   const navigate = useNavigate();
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const [selectedCommisionDate, setSelectedCommisionDate] = useState(null);
+  const [selectedCommisionDateCheck, setSelectedCommisionDateCheck] = useState(null);
   const [disableRequestedEffectiveDate, setDisableRequestedEffectiveDate] =
     useState(true);
   const userData = useSelector((state) => state.login.userobj);
@@ -84,6 +85,11 @@ const UpdatePortfolio = () => {
     });
   };
   const handleChangeCommissioningDate = (date) => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
     setValue("endDate", "");
     // If date has a value that is considered truthy (like a valid date object, a non-empty string, etc.), !!date will be true, and setIsStartDate will be called with true. If date is falsy (like null, undefined, an empty string, etc.), !!date will be false
     setIsStartDate(!!date);
@@ -93,7 +99,7 @@ const UpdatePortfolio = () => {
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
     setSelectedCommisionDate(date);
-
+    setSelectedCommisionDateCheck(formattedDate)
     setValue("retailESAContractEndDate", "");
     if (date) {
       setDisableRequestedEffectiveDate(false);
@@ -144,16 +150,22 @@ const UpdatePortfolio = () => {
     // }
   };
   const handleChangeEndDate = (date) => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
     setOnEditDevice(false);
     setOnEditDatetimeDevice(false);
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
-    dispatch(PortfolioManagementDevice(currentUGTGroup?.id, state?.code));
+    dispatch(PortfolioManagementDevice(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code));
     dispatch(
-      PortfolioManagementSubscriber(currentUGTGroup?.id, state?.code, true)
+      PortfolioManagementSubscriber(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code, true)
     );
     setIsEndDate(!!date);
     const startDatePort = watch("startDate");
+    
     // console.log("startDatePort ==== ", new Date(startDatePort));
     // console.log("endDatePort === ", date);
 
@@ -288,6 +300,7 @@ const UpdatePortfolio = () => {
   const detailPortfolio = useSelector(
     (state) => state.portfolio.getOnePortfolio
   );
+  console.log(detailPortfolio?.portfolioInfo?.startDate)
   const { state } = useLocation();
   const [showModal, setShowModalConfirm] = React.useState(false);
   const [showModalCreate, setShowModalCreateConfirm] = React.useState(false);
@@ -322,6 +335,7 @@ const UpdatePortfolio = () => {
   }, []);
 
   useEffect(() => {
+    if (state?.code) {
     console.log("state?.code", state?.code);
     showLoading();
     dispatch(
@@ -329,12 +343,22 @@ const UpdatePortfolio = () => {
         hideLoading();
       })
     );
-    // dispatch(PortfolioManagementDevice(currentUGTGroup?.id, state?.code));
-    // dispatch(
-    //   PortfolioManagementSubscriber(currentUGTGroup?.id, state?.code, true)
-    // );
+    dispatch(PortfolioManagementDevice(
+      currentUGTGroup?.id,
+      detailPortfolio?.portfolioInfo?.startDate,
+      detailPortfolio?.portfolioInfo?.endDate,
+      state?.code));
+    dispatch(
+      PortfolioManagementSubscriber(
+        currentUGTGroup?.id,
+        detailPortfolio?.portfolioInfo?.startDate,
+        detailPortfolio?.portfolioInfo?.endDate,
+        state?.code, 
+        true)
+    );
+  }
     dispatch(PortfolioMechanismList());
-  }, [state?.code]);
+  }, [state?.code,detailPortfolio?.portfolioInfo?.startDate,detailPortfolio?.portfolioInfo?.endDate]);
 
   useEffect(() => {
     if (
@@ -361,6 +385,7 @@ const UpdatePortfolio = () => {
     const year = dateObject.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
   useEffect(() => {
     autoScroll();
 

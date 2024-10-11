@@ -57,6 +57,7 @@ const AddPortfolio = () => {
   const navigate = useNavigate();
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const [selectedCommisionDate, setSelectedCommisionDate] = useState(null);
+  const [selectedCommisionDateCheck, setSelectedCommisionDateCheck] = useState(null);
   const [disableRequestedEffectiveDate, setDisableRequestedEffectiveDate] =
     useState(true);
   const dropDrowList = useSelector((state) => state.dropdrow.dropDrowList);
@@ -137,6 +138,11 @@ const AddPortfolio = () => {
   };
 
   const handleChangeCommissioningDate = (date) => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
     setValue("endDate", "");
     setIsStartDate(!!date);
     setIsEndDate(false);
@@ -149,7 +155,7 @@ const AddPortfolio = () => {
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
     setSelectedCommisionDate(date);
-
+    setSelectedCommisionDateCheck(formattedDate)
     setValue("retailESAContractEndDate", "");
     if (date) {
       setDisableRequestedEffectiveDate(false);
@@ -158,6 +164,11 @@ const AddPortfolio = () => {
     }
   };
   const handleChangeEndDate = (date) => {
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
     setIsEndDate(!!date);
 
     setDeviceListSelected([]);
@@ -169,8 +180,8 @@ const AddPortfolio = () => {
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
 
-    dispatch(PortfolioManagementDevice(currentUGTGroup?.id));
-    dispatch(PortfolioManagementSubscriber(currentUGTGroup?.id));
+    dispatch(PortfolioManagementDevice(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate));
+    dispatch(PortfolioManagementSubscriber(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate));
   };
 
   const disableStartDateCal = (day) => {
@@ -251,8 +262,7 @@ const AddPortfolio = () => {
   const [onEditDevice, setOnEditDevice] = useState(false);
   const [onEditSubscriber, setOnEditSubscriber] = useState(false);
   const [onEditDatetimeDevice, setOnEditDatetimeDevice] = useState(false);
-  const [onEditDatetimeSubscriber, setOnEditDatetimeSubscriber] =
-    useState(false);
+  const [onEditDatetimeSubscriber, setOnEditDatetimeSubscriber] =useState(false);
   const [selectDeviceChange, setSelectDeviceChange] = useState([]);
   const [selectSubscriberChange, setSelectSubscriberChange] = useState([]);
   const [paramsCreate, setParamsCreate] = useState("");
@@ -535,6 +545,7 @@ const AddPortfolio = () => {
     }));
     const subscriberList = subscriberListSelected.map((item) => ({
       subscriberId: item?.id,
+      subscribersContractInformationId : item?.subscribersContractInformationId,
       ugtStartDate:
         item?.startDate == null || item?.startDate == "-"
           ? null

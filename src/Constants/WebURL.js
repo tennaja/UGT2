@@ -18,6 +18,7 @@ export const PORTFOLIO_LIST = "/portfolio";
 export const PORTFOLIO_ADD = "/portfolio/add";
 export const PORTFOLIO_EDIT = "/portfolio/edit";
 export const PORTFOLIO_INFO = "/portfolio/info";
+export const PORTFOLIO_HISTORY ="/portfolio/history"
 
 export const USER_LIST = "/user";
 export const USER_ADD = "/user/add";

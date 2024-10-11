@@ -86,7 +86,7 @@ const Sidebar2 = ({ children }) => {
   const [defaultSubMenuID, setDefaultSubMenuID] = useState(1);
   const [submenu, setSubmenu] = useState([]);
   const [mainMenu, setMainMenu] = useState([]);
-
+console.log(currentSubMenuList)
   const setDefaultMenu = (userData) => {
     let userGroupID = userData?.userGroup?.id;
     let defaultMenu = null;
@@ -182,27 +182,28 @@ const Sidebar2 = ({ children }) => {
     // subscriber = menuID [2,3]
     // module viewer = menuID [2,3,4]
     // portfolio = menuID [2,3,4,5]
-
+  
     if (menuList?.length > 0) {
       let data = menuList;
+  
       if (
         userData?.userGroup?.id !== USER_GROUP_ID?.PORTFOLIO_MNG &&
         userData?.userGroup?.id !== USER_GROUP_ID?.ALL_MODULE_VIEWER
       ) {
-        data = data.filter(
-          (item) => item.menuId !== "4" && item.menuId !== "5"
-        );
-        setMainMenu(data);
-      } else {
-        if (userData?.userGroup?.id == USER_GROUP_ID?.ALL_MODULE_VIEWER) {
-          data = data.filter((item) => item.menuId !== "5");
-          setMainMenu(data);
-        } else {
-          setMainMenu(menuList);
-        }
+        data = data.filter((item) => item.menuId !== "4" && item.menuId !== "5");
+      } else if (userData?.userGroup?.id === USER_GROUP_ID?.ALL_MODULE_VIEWER) {
+        data = data.filter((item) => item.menuId !== "5");
       }
+      
+      // Additional condition for EGAT_DEVICE_MNG user group
+      if (userData?.userGroup?.id === USER_GROUP_ID?.EGAT_DEVICE_MNG) {
+        data = data.filter((item) => item.menuId !== "3");
+      }
+  
+      setMainMenu(data);
     }
-  }, [menuList]);
+  }, [menuList, userData]);
+  
 
   useEffect(() => {
     if (currentSubMenuList?.length > 0) {

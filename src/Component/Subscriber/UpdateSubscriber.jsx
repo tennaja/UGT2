@@ -770,7 +770,7 @@ const UpdateSubscriber = () => {
   };
 
   const onSubmitForm1New = (formData) => {
-    const filterBeneActive = benefitList.filter((items)=>items.beneficiaryStatus === "Active")
+    const filterBeneActive = benefitList.filter((items)=>items.status === "Active")
     if(filterBeneActive.length > 0){
       if (allowcatedEnergyList.length > 0) {      
         if(details?.subscriberDetail.activePortfolioStatus === "N"){

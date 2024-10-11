@@ -19,7 +19,7 @@ import { FaChevronCircleLeft, FaRegEdit, FaTrashAlt } from "react-icons/fa";
 import ManageBtn from "../Control/ManageBtn";
 import Highlighter from "react-highlight-words";
 import { USER_GROUP_ID } from "../../Constants/Constants";
-
+import { MdOutlineHistory } from "react-icons/md";
 const InfoPortfolio = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -352,6 +352,9 @@ const InfoPortfolio = () => {
   const onClickDelete = () => {
     setShowModalDeleteConfirm(true);
   };
+  const onClickHistory = () => {
+    navigate(`${WEB_URL.PORTFOLIO_HISTORY}`, { state: { code: state?.id } });
+  };
   const handleClickConfirm = () => {
     setShowModalDeleteConfirm(false);
     console.log("Confirm Delete");
@@ -518,7 +521,13 @@ const InfoPortfolio = () => {
                               label: "Delete",
                               onClick: onClickDelete,
                               disabled: isStartPort,
-                            },
+                            }
+                            ,
+                            {
+                              icon: <MdOutlineHistory />,
+                              label: "History",
+                              onClick: onClickHistory,
+                            }
                           ]}
                         />
 

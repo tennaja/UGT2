@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import SubscriberLOGO02 from "../assets/contractenergy.svg";
 import SubscriberLOGO03 from "../assets/accumconsum.svg";
 import { useForm, Controller } from "react-hook-form";
@@ -76,6 +76,7 @@ const HistorySubscriber = (props) => {
   const fileHistory = useSelector((state)=> state.subscriber.binaryFileHistory)
   const isPreview = useRef(false)
   const isDownload = useRef(false)
+  console.log("History",historyActiveList,historyInactiveList)
 
   const totalAssigned = useSelector((state) => state.subscriber?.totalAssigned);
   const filterList = useSelector((state) => state.subscriber?.filterList);

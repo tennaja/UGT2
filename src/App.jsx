@@ -49,7 +49,7 @@ import TransferInfo from "./Component/EAC/Transfer/TransferInfo";
 import Redemption from "./Component/EAC/Redemption/Redemption";
 import RedemptionInfo from "./Component/EAC/Redemption/RedemptionInfo";
 import RenewDevice from "./Component/Device/RenewDevice";
-
+import HistoryPortfolio from "./Component/Portfolio/HistoryPortfolio";
 
 function App() {
   return (
@@ -123,6 +123,10 @@ function App() {
                 <Route
                   path={webURL.PORTFOLIO_EDIT}
                   element={<UpdatePortfolio></UpdatePortfolio>}
+                ></Route>
+                <Route
+                  path={webURL.PORTFOLIO_HISTORY}
+                  element={<HistoryPortfolio></HistoryPortfolio>}
                 ></Route>
                 <Route path={webURL.SETTLEMENT} element={<Settlement />} />
                 <Route

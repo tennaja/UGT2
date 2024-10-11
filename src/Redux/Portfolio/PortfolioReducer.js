@@ -1,3 +1,4 @@
+import { getConfirmLocale } from "antd/es/modal/locale"
 import { GET_PORTFOLIO_DASHBOARD_OBJ,
     GET_PORTFOLIO_DEVICE_OBJ,
     GET_PORTFOLIO_SUBSCRIBER_OBJ,
@@ -10,7 +11,8 @@ import { GET_PORTFOLIO_DASHBOARD_OBJ,
     EDIT_PORTFOLIO_STATUS,
     EDIT_PORTFOLIO_DEVICE_STATUS,
     EDIT_PORTFOLIO_SUBSCRIBER_STATUS,
-    RESET_STATE } from "../ActionType"
+    RESET_STATE,
+    GET_HISTORY_PORTFOLIO } from "../ActionType"
 
 const initialstate = {
     loading: true,
@@ -27,12 +29,16 @@ const initialstate = {
     editStatus: {},
     editSubscriberStatus: {},
     editDeviceStatus: {},
+    historyPort:{}
 }
 
 export const PortfolioReducer = (state = initialstate, action) => {
-
+    
     switch (action.type) {
-        
+            case GET_HISTORY_PORTFOLIO:return{
+                ...state,
+                historyPort: action.payload
+            }
             case GET_PORTFOLIO_DASHBOARD_OBJ:return{
                 ...state,
                 portfolioDashboard: action.payload

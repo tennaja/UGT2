@@ -13,6 +13,7 @@ import {
   EDIT_PORTFOLIO_STATUS,
   EDIT_PORTFOLIO_DEVICE_STATUS,
   EDIT_PORTFOLIO_SUBSCRIBER_STATUS,
+  GET_HISTORY_PORTFOLIO
 } from "../../Redux/ActionType";
 
 import {
@@ -27,6 +28,7 @@ import {
   DELETE_PORTFOLIO_URL,
   PORTFOLIO_UPDATE_URL,
   PORTFOLIO_UPDATE_LIST_URL,
+  PORTFOLIO_HISTORY_LOG,
 } from "../../Constants/ServiceURL";
 
 import { getHeaderConfig } from "../../Utils/FuncUtils";
@@ -43,13 +45,13 @@ export const getPortfolioManagementDevice = (data) => {
     payload: data,
   };
 };
-export const PortfolioManagementDevice = (param, portId) => {
+export const PortfolioManagementDevice = (param,startDate,endate,portId) => {
   const findUgtGroupId = param;
   let URL = "";
   if (!portId) {
-    URL = `${PORTFOLIO_DEVICE_LIST_URL}?findUgtGroupId=${findUgtGroupId}`;
+    URL = `${PORTFOLIO_DEVICE_LIST_URL}?findUgtGroupId=${findUgtGroupId}&portfolioStartDate=${startDate}&portfolioEndDate=${endate}`;
   } else {
-    URL = `${PORTFOLIO_DEVICE_LIST_URL}?findUgtGroupId=${findUgtGroupId}&portfolioId=${portId}`;
+    URL = `${PORTFOLIO_DEVICE_LIST_URL}?findUgtGroupId=${findUgtGroupId}&portfolioStartDate=${startDate}&portfolioEndDate=${endate}&portfolioId=${portId}`;
   }
   return async (dispatch) => {
     await axios.get(URL).then(
@@ -69,13 +71,13 @@ export const getPortfolioManagementSubscriber = (data) => {
     payload: data,
   };
 };
-export const PortfolioManagementSubscriber = (param, portId, isEdit) => {
+export const PortfolioManagementSubscriber = (param,startDate,endate,portId, isEdit) => {
   const findUgtGroupId = param;
   let URL = "";
   if (!portId) {
-    URL = `${PORTFOLIO_SUBSCRIBER_LIST_URL}?findUgtGroupId=${findUgtGroupId}`;
+    URL = `${PORTFOLIO_SUBSCRIBER_LIST_URL}?findUgtGroupId=${findUgtGroupId}&portfolioStartDate=${startDate}&portfolioEndDate=${endate}`;
   } else {
-    URL = `${PORTFOLIO_SUBSCRIBER_LIST_URL}?findUgtGroupId=${findUgtGroupId}&portfolioId=${portId}&isEdit=${isEdit}`;
+    URL = `${PORTFOLIO_SUBSCRIBER_LIST_URL}?findUgtGroupId=${findUgtGroupId}&portfolioStartDate=${startDate}&portfolioEndDate=${endate}&portfolioId=${portId}&isEdit=${isEdit}`;
   }
 
   console.log("URLSub ==", URL);
@@ -332,5 +334,32 @@ export const PortfolioManagementUpdate = (params, callback) => {
       dispatch(setOpenFailModal());
       // dispatch(failRequest(error.message));
     }
+  };
+};
+
+export const getPortfolioHistory = (data) => {
+  return {
+    type: GET_HISTORY_PORTFOLIO,
+    payload: data,
+  };
+};
+export const PortfolioHistory = (id, callback = null) => {
+  const URL = `${PORTFOLIO_HISTORY_LOG}/${id}`;
+  console.log("URL History",URL)
+  return async (dispatch) => {
+    await axios
+      .get(URL)
+      .then((response) => {
+        if (response?.status == 200) {
+          dispatch(getPortfolioHistory(response.data));
+        } else {
+          dispatch(failRequest(error.message));
+        }
+        console.log("run callback");
+        callback && callback();
+      })
+      .catch((error) => {
+        dispatch(failRequest(error.message));
+      });
   };
 };
