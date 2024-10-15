@@ -640,8 +640,10 @@ const AddPortfolio = () => {
         const newDateDevice = data?.map((item) => {
           // device ที่ add เข้ามาใหม่ ถ้าวัน registrationDate น้อยกว่า startDate ของ port ให้ใช้วันของ portfolio
           let itemStartDate = dayjs(item?.registrationDate);
-          if (itemStartDate < dayjs(defualtStartDate)) {
+          if (dayjs(defualtStartDate) >= itemStartDate ) {
             itemStartDate = dayjs(defualtStartDate);
+          } else if (itemStartDate >= dayjs(defualtStartDate)){
+            itemStartDate = dayjs(item?.registrationDate)
           }
 
           // เอา enddate ของ device หลังจากที่ edit ไปแล้วมาใช้
@@ -649,11 +651,16 @@ const AddPortfolio = () => {
             return row.id === item.id;
           });
 
-          let itemEndDate = dayjs(defualtEndDate);
+          let itemEndDate = dayjs(item?.endDate,"DD/MM/YYYY");
 
           if (deviceDataTable.length > 0) {
-            itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
-            itemEndDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
+            // itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
+            // itemEndDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
+            if (dayjs(defualtEndDate,"DD/MM/YYYY") <= itemEndDate ) {
+              itemEndDate = dayjs(defualtEndDate,"DD/MM/YYYY");
+            } else if (itemEndDate <= dayjs(defualtEndDate,"DD/MM/YYYY")) {
+              itemEndDate = dayjs(item?.endDate,"DD/MM/YYYY")
+            }
           }
           return {
             ...item,
@@ -662,10 +669,12 @@ const AddPortfolio = () => {
           };
         });
         setDeviceListSelected(newDateDevice);
+        console.log(newDateDevice)
       } else {
         setDeviceListSelected(data);
+        console.log(data)
       }
-      console.log(deviceListSelected)
+      
     } else if (titleAddModal == "Add Subscriber") {
       if (defualtStartDate) {
         const newDateSubscriber = data?.map((item) => {
@@ -675,8 +684,11 @@ const AddPortfolio = () => {
             "DD/MM/YYYY"
           );
 
-          if (itemStartDate < dayjs(defualtStartDate)) {
+          if (dayjs(defualtStartDate) >= itemStartDate ) {
             itemStartDate = dayjs(defualtStartDate);
+          } else if (itemStartDate >= dayjs(defualtStartDate)){
+            itemStartDate = dayjs(item?.retailESAContractStartDate,
+              "DD/MM/YYYY")
           }
 
           // เอา startdate และ enddate ของ subscriber หลังจากที่ edit ไปแล้วมาใช้
@@ -684,15 +696,20 @@ const AddPortfolio = () => {
             return row.id === item.id;
           });
 
-          let itemEndDate = dayjs(defualtEndDate);
+          let itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY");
 
           console.log("subscriberDataTable", subscriberDataTable);
           if (subscriberDataTable.length > 0) {
-            itemStartDate = dayjs(
-              subscriberDataTable[0]?.startDate,
-              "DD/MM/YYYY"
-            );
-            itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
+            // itemStartDate = dayjs(
+            //   subscriberDataTable[0]?.startDate,
+            //   "DD/MM/YYYY"
+            // );
+            // itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
+            if (dayjs(defualtEndDate) <= itemEndDate ) {
+              itemEndDate = dayjs(defualtEndDate);
+            } else if (itemEndDate <= dayjs(defualtEndDate)) {
+              itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY")
+            }
           }
 
           return {

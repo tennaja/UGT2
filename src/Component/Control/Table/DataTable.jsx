@@ -307,7 +307,7 @@ const DataTable = ({
     previousDateEnd.setDate(dateValueEnd.getDate());
 
     const checkEndDate =
-      data.find((item) => item.id === index)?.registrationDate ||
+      // data.find((item) => item.id === index)?.registrationDate ||
       data.find((item) => item.id === index)?.subEndDate;
 
     let tempDateEndDate;

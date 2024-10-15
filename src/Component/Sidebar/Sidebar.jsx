@@ -196,7 +196,10 @@ console.log(currentSubMenuList)
       }
       
       // Additional condition for EGAT_DEVICE_MNG user group
-      if (userData?.userGroup?.id === USER_GROUP_ID?.EGAT_DEVICE_MNG) {
+      if (userData?.userGroup?.id === USER_GROUP_ID?.EGAT_DEVICE_MNG ||
+          userData?.userGroup?.id === USER_GROUP_ID?.MEA_DEVICE_MNG ||
+          userData?.userGroup?.id === USER_GROUP_ID?.PEA_DEVICE_MNG
+        ) {
         data = data.filter((item) => item.menuId !== "3");
       }
   
