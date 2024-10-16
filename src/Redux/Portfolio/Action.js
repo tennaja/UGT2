@@ -29,6 +29,7 @@ import {
   PORTFOLIO_UPDATE_URL,
   PORTFOLIO_UPDATE_LIST_URL,
   PORTFOLIO_HISTORY_LOG,
+  PORTFOLIO_CREATE_HISTORY_LOG
 } from "../../Constants/ServiceURL";
 
 import { getHeaderConfig } from "../../Utils/FuncUtils";
@@ -289,7 +290,8 @@ export const PortfolioManagementUpdate = (params, callback) => {
   const URL = `${PORTFOLIO_UPDATE_URL}/${param.id}`;
   const URL_DEVICE = `${PORTFOLIO_UPDATE_LIST_URL}/${param.id}/portfoliodetaildevice`;
   const URL_SUBSCRIBER = `${PORTFOLIO_UPDATE_LIST_URL}/${param.id}/portfoliodetailSubscriber`;
-
+  const URL_CREATE_HISTORY = `${PORTFOLIO_CREATE_HISTORY_LOG}/${param.id}`
+  
   return async (dispatch) => {
     const updatePortfolioRequest = axios.put(URL, param);
     const updateDeviceListRequest = axios.post(URL_DEVICE, param.device);
@@ -297,12 +299,13 @@ export const PortfolioManagementUpdate = (params, callback) => {
       URL_SUBSCRIBER,
       param.subscriber
     );
-
+    const updateHistorylog = axios.post(URL_CREATE_HISTORY,param.portfoliosHistoryLog)
     try {
       const responses = await Promise.all([
         updatePortfolioRequest,
         updateDeviceListRequest,
         updateSubscriberListRequest,
+        updateHistorylog
       ]);
 
       if (

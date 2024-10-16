@@ -58,6 +58,7 @@ const AddPortfolio = () => {
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const [selectedCommisionDate, setSelectedCommisionDate] = useState(null);
   const [selectedCommisionDateCheck, setSelectedCommisionDateCheck] = useState(null);
+  const [deviceChanges, setDeviceChanges] = useState([]);
   const [disableRequestedEffectiveDate, setDisableRequestedEffectiveDate] =
     useState(true);
   const dropDrowList = useSelector((state) => state.dropdrow.dropDrowList);
@@ -573,7 +574,7 @@ const AddPortfolio = () => {
       ugtGroupId: currentUGTGroup?.id,
       device: deviceList,
       subscriber: subscriberList,
-      portfoliosHistoryLog : portfoliosHistoryLogList,
+      portfoliosHistoryLog : portfoliosHistoryLogList
     };
     console.log("params ===", params);
     setParamsCreate(params);
@@ -651,17 +652,14 @@ const AddPortfolio = () => {
             return row.id === item.id;
           });
 
-          let itemEndDate = dayjs(item?.endDate,"DD/MM/YYYY");
-
-          if (deviceDataTable.length > 0) {
-            // itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
-            // itemEndDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
-            if (dayjs(defualtEndDate,"DD/MM/YYYY") <= itemEndDate ) {
-              itemEndDate = dayjs(defualtEndDate,"DD/MM/YYYY");
-            } else if (itemEndDate <= dayjs(defualtEndDate,"DD/MM/YYYY")) {
-              itemEndDate = dayjs(item?.endDate,"DD/MM/YYYY")
+          let itemEndDate = dayjs(item?.expiryDate);
+          
+            if (dayjs(defualtEndDate) <= itemEndDate) {
+              itemEndDate = dayjs(defualtEndDate);
+            } else if (itemEndDate <= dayjs(defualtEndDate)) {
+              itemEndDate = dayjs(item?.expiryDate);
             }
-          }
+          
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
@@ -699,7 +697,7 @@ const AddPortfolio = () => {
           let itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY");
 
           console.log("subscriberDataTable", subscriberDataTable);
-          if (subscriberDataTable.length > 0) {
+          
             // itemStartDate = dayjs(
             //   subscriberDataTable[0]?.startDate,
             //   "DD/MM/YYYY"
@@ -710,7 +708,7 @@ const AddPortfolio = () => {
             } else if (itemEndDate <= dayjs(defualtEndDate)) {
               itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY")
             }
-          }
+          
 
           return {
             ...item,
@@ -775,17 +773,20 @@ const AddPortfolio = () => {
   };
   const onApplyChangeDevice = () => {
     const deviceListSelectedTemp = [...deviceListSelected];
+    
     selectDeviceChange.forEach((id) => {
       const index = deviceListSelectedTemp.findIndex((row) => row.id === id);
       if (index !== -1) {
+
         deviceListSelectedTemp.splice(index, 1);
+        
       }
     });
     setDeviceListSelected(deviceListSelectedTemp);
     setOnEditDevice(false);
     setOnEditDatetimeDevice(false);
-    setSelectDeviceChange([]);
-  };
+    setSelectDeviceChange([]);}
+    
 
   const onApplyChangeSubscriber = () => {
     const subscriberListSelectedTemp = [...subscriberListSelected];

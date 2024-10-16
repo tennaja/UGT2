@@ -55,6 +55,8 @@ const UpdatePortfolio = () => {
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const [selectedCommisionDate, setSelectedCommisionDate] = useState(null);
   const [selectedCommisionDateCheck, setSelectedCommisionDateCheck] = useState(null);
+  const [deviceChanges, setDeviceChanges] = useState([]);
+  const [subChanges, setSubChanges] = useState([]);
   const [disableRequestedEffectiveDate, setDisableRequestedEffectiveDate] =
     useState(true);
   const userData = useSelector((state) => state.login.userobj);
@@ -101,6 +103,8 @@ const UpdatePortfolio = () => {
     setSelectedCommisionDate(date);
     setSelectedCommisionDateCheck(formattedDate)
     setValue("retailESAContractEndDate", "");
+    setDeviceListSelected([]);
+    setSubscriberListSelected([]);
     if (date) {
       setDisableRequestedEffectiveDate(false);
     } else {
@@ -159,10 +163,13 @@ const UpdatePortfolio = () => {
     setOnEditDatetimeDevice(false);
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
+    console.log("Onchange End Date",selectedCommisionDateCheck)
+    if(date !== undefined && selectedCommisionDateCheck !== null){
     dispatch(PortfolioManagementDevice(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code));
     dispatch(
       PortfolioManagementSubscriber(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code, true)
     );
+  }
     setIsEndDate(!!date);
     const startDatePort = watch("startDate");
     
@@ -177,7 +184,6 @@ const UpdatePortfolio = () => {
         }
       } else {
         // device
-
         let newDateDeviceList = deviceListSelected
           .filter((item) => {
             const startDevice = dayjs(item?.startDate, [
@@ -194,7 +200,7 @@ const UpdatePortfolio = () => {
         setDeviceListSelected(newDateDeviceList);
 
         // subscriber
-
+          
         let newSuscriberList = subscriberListSelected
           .filter((item) => {
             /* const partStartTemp = item?.retailESAContractStartDate.split("/");
@@ -215,7 +221,8 @@ const UpdatePortfolio = () => {
             return startSub <= endPort && endSub >= startPort;
           })
           .map((item) => {
-            const endSub = dayjs(item?.retailESAContractEndDate, [
+            console.log("Date End",item)
+            const endSub = dayjs(item?.ugtEndDate, [
               "DD/MM/YYYY",
               "YYYY-MM-DD",
             ]);
@@ -343,6 +350,10 @@ const UpdatePortfolio = () => {
         hideLoading();
       })
     );
+    if(detailPortfolio?.portfolioInfo){
+      setSelectedCommisionDateCheck(detailPortfolio?.portfolioInfo?.startDate)
+      console.log("Start Date",detailPortfolio?.portfolioInfo?.startDate)
+      console.log("End Date",detailPortfolio?.portfolioInfo?.endDate)
     dispatch(PortfolioManagementDevice(
       currentUGTGroup?.id,
       detailPortfolio?.portfolioInfo?.startDate,
@@ -356,6 +367,7 @@ const UpdatePortfolio = () => {
         state?.code, 
         true)
     );
+  }
   }
     dispatch(PortfolioMechanismList());
   }, [state?.code,detailPortfolio?.portfolioInfo?.startDate,detailPortfolio?.portfolioInfo?.endDate]);
@@ -626,6 +638,7 @@ const UpdatePortfolio = () => {
 
     setValue("startDate", detailPortfolio?.portfolioInfo?.startDate);
     setValue("endDate", detailPortfolio?.portfolioInfo?.endDate);
+    setSelectedCommisionDate(detailPortfolio?.portfolioInfo?.startDate)
     const tempMechanism = initialvalueForSelectField(
       portfolioMechanismList,
       "id",
@@ -690,6 +703,18 @@ const UpdatePortfolio = () => {
           ? null
           : format(convertToDate(item?.endDate), "yyyy-MM-dd"),
     }));
+    const portfoliosHistoryLogList = [{
+      deviceId : 0,
+      subscriberId: 0,
+      subscribersContractInformationId: 0,
+      action: "Edit",
+      createBy: "string" 
+    }]
+    const updatedPortfoliosHistoryLogList = [
+      ...portfoliosHistoryLogList,
+      ...deviceChanges,
+      ...subChanges
+    ];
     const params = {
       id: state?.code,
       portfolioName: formData?.portfolioName,
@@ -698,6 +723,7 @@ const UpdatePortfolio = () => {
       endDate: formData?.endDate,
       device: deviceList,
       subscriber: subscriberList,
+      portfoliosHistoryLog : updatedPortfoliosHistoryLogList
     };
     console.log("params ===", params);
     setParamsCreate(params);
@@ -752,6 +778,7 @@ const UpdatePortfolio = () => {
     const defualtStartDate = watch("startDate");
     const defualtEndDate = watch("endDate");
     if (titleAddModal == "Add Device") {
+      const newDeviceChanges = [];
       if (defualtStartDate) {
         const remainingData = data.filter(
           (item) =>
@@ -778,6 +805,15 @@ const UpdatePortfolio = () => {
             itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
             itemEndDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
           }
+          const newDeviceChange = {
+            deviceId: item.id, // Capture the device ID
+            subscriberId:  0, // Use actual value or a default
+            subscribersContractInformationId: 0, // Use actual value or a default
+            action: "Add Device", // Specify the action
+            createBy: "string" // Replace with the actual creator's information
+          };
+          console.log(newDeviceChange)
+          newDeviceChanges.push(newDeviceChange);
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
@@ -789,9 +825,11 @@ const UpdatePortfolio = () => {
               endDate: format(new Date(defualtEndDate), "dd/MM/yyyy"),
             }; */
         });
+        
         const currentDateDevice = deviceListSelected?.map((item) => {
           //  device ที่มีอยู่แล้วใน portfolio ใช้วัน ugtStartDate ของ Device
           //  เปลี่ยนไปใช้ device ที่อยู่ในตารางที่เลือกมาแล้ว
+          
           let itemStartDate = dayjs(item?.ugtStartDate);
           let itemEndDate = dayjs(item?.ugtEndDate);
 
@@ -810,12 +848,16 @@ const UpdatePortfolio = () => {
           };
         });
 
+
         const concatArray = [...currentDateDevice, ...newDateDevice];
+        console.log("concatArray", concatArray);
         setDeviceListSelected(concatArray);
+        setDeviceChanges((prevChanges) => [...prevChanges, ...newDeviceChanges]);
       } else {
         setDeviceListSelected(data);
       }
     } else if (titleAddModal == "Add Subscriber") {
+      const newSubChanges = [];
       if (defualtStartDate) {
         const remainingData = data.filter(
           (item) =>
@@ -850,11 +892,21 @@ const UpdatePortfolio = () => {
             );
             itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
           }
+          const newSubChange = {
+            deviceId:  0, // Capture the device ID
+            subscriberId: item.id || 0, // Use actual value or a default
+            subscribersContractInformationId: item.subscribersContractInformationId || 0, // Use actual value or a default
+            action: "Add Subscriber", // Specify the action
+            createBy: "string" // Replace with the actual creator's information
+          };
+          console.log(newSubChange)
+          newSubChanges.push(newSubChange);
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
             endDate: itemEndDate.format("DD/MM/YYYY"),
           };
+          
           /*  return {
               ...item,
               startDate: format(new Date(item?.registrationDate), "dd/MM/yyyy"),
@@ -887,7 +939,7 @@ const UpdatePortfolio = () => {
         const concatArray = [...currentDateSubscriber, ...newDateSubscriber];
         console.log("concatArray", concatArray);
         setSubscriberListSelected(concatArray);
-
+        setSubChanges((prevChanges) => [...prevChanges, ...newSubChanges]);
         /*   const newDateSubscriber = data?.map((item) => {
           const startOverlap =
             new Date(defualtStartDate) < convertToDate(item?.subStartDate)
@@ -963,9 +1015,21 @@ const UpdatePortfolio = () => {
   };
   const onApplyChangeDevice = () => {
     const deviceListSelectedTemp = [...deviceListSelected];
+    const newDeviceChanges = [];
     selectDeviceChange.forEach((id) => {
       const index = deviceListSelectedTemp.findIndex((row) => row.id === id);
       if (index !== -1) {
+        const deviceToRemove = deviceListSelectedTemp[index];
+      // Prepare new device change object
+      const newDeviceChange = {
+        deviceId: deviceToRemove.id, // Capture the device ID
+        subscriberId: deviceToRemove.subscriberId || 0, // Use actual value or a default
+        subscribersContractInformationId: deviceToRemove.subscribersContractInformationId || 0, // Use actual value or a default
+        action: "Discontinue - Device", // Specify the action
+        createBy: "string" // Replace with the actual creator's information
+      };
+        console.log(newDeviceChange)
+        newDeviceChanges.push(newDeviceChange);
         deviceListSelectedTemp.splice(index, 1);
       }
     });
@@ -983,17 +1047,29 @@ const UpdatePortfolio = () => {
     setOnEditDevice(false);
     setOnEditDatetimeDevice(false);
     setSelectDeviceChange([]);
+    setDeviceChanges((prevChanges) => [...prevChanges, ...newDeviceChanges]);
     console.log("deviceListSelected === ", deviceListSelected);
   };
 
   const onApplyChangeSubscriber = () => {
     const subscriberListSelectedTemp = [...subscriberListSelected];
-
+    const newSubChanges = [];
     selectSubscriberChange.forEach((id) => {
       const index = subscriberListSelectedTemp.findIndex(
         (row) => row.id === id
       );
       if (index !== -1) {
+        const SubToRemove = subscriberListSelectedTemp[index];
+      // Prepare new device change object
+      const newSubChange = {
+        deviceId:  0, // Capture the device ID
+        subscriberId: SubToRemove.id || 0, // Use actual value or a default
+        subscribersContractInformationId: SubToRemove.subscribersContractInformationId || 0, // Use actual value or a default
+        action: "Discontinue -  Subscriber", // Specify the action
+        createBy: "string" // Replace with the actual creator's information
+      };
+        console.log(newSubChange)
+        newSubChanges.push(newSubChange);
         subscriberListSelectedTemp.splice(index, 1);
       }
     });
@@ -1011,6 +1087,7 @@ const UpdatePortfolio = () => {
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
     setSelectSubscriberChange([]);
+    setSubChanges((prevChanges) => [...prevChanges, ...newSubChanges]);
     console.log("subscriberListSelected === ", subscriberListSelected);
   };
   const selectedDeviceChange = (selected) => {

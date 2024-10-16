@@ -77,6 +77,7 @@ export const DELETE_PORTFOLIO_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/p
 export const PORTFOLIO_UPDATE_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/edit`;
 export const PORTFOLIO_UPDATE_LIST_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/portfolio-management`;
 export const PORTFOLIO_HISTORY_LOG = `${DOMAIN_URL}/ugt/v1/portfolio-management/GetPortfoliosHistory`;
+export const PORTFOLIO_CREATE_HISTORY_LOG = `${DOMAIN_URL}/ugt/v1/portfolio-management/CreatePortfoliosHistoryDevicesAndSubscribers`;
 
 // EAC
 export const EAC_PORTFOLIO_YEAR_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/portfolioYearList`;

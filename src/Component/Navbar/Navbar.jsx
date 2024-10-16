@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { removeCookie } from "../../Utils/FuncUtils";
+import { useLocation } from 'react-router-dom';
 import { ImLeaf } from "react-icons/im";
 import messageIcon from "../assets/message.svg";
 import notificationIcon from "../assets/notification.svg";
@@ -27,7 +28,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const userObj = useSelector((state) => state?.login?.userobj);
   const ugtGroups = useSelector((state) => state?.login?.userobj?.ugtGroups);
-  
+  const currentPage = WEB_URL.DEVICE_LIST; // Example current page
   const openMenu = useSelector((state) => state?.menu.openMenu);
   const currentAssignedFilter = useSelector(
     (state) => state?.device.currentAssignedFilterObj
@@ -40,6 +41,8 @@ const Navbar = () => {
     control,
     formState: { errors },
   } = useForm();
+  const location = useLocation(); // Get current location
+  const isDeviceListPage = location.pathname === WEB_URL.DEVICE_LIST; // Check if current page is DEVICE_LIST
 
   useEffect(() => {
     // const ugtGroup = [{
@@ -65,6 +68,11 @@ const Navbar = () => {
     dispatch(setCurrentUgtGroup(defaultUgtGroup)); //setDefaultValue ugtgroup
     setValue("ugtGroup", defaultUgtGroup); //setDefaultValue ugtgroup
   }, [ugtGroups]);
+  
+  const modifiedUgtGroupList = isDeviceListPage 
+  ? ugtGroupList.filter(option => option.name !== 'UGT-2') // Omit UGT-2 if on DEVICE_LIST
+  : ugtGroupList; // Keep all options if not on DEVICE_LIST
+
 
   const handleChangeUGTGroup = (val) => {
     console.log(val)
@@ -161,13 +169,14 @@ const Navbar = () => {
                   render={({ field }) => (
                     <MySelect
                       {...field}
-                      options={ugtGroupList}
+                      options={modifiedUgtGroupList}
                       displayProp={"name"}
                       valueProp={"id"}
                       fontSize={"16px"}
                       onChangeInput={handleChangeUGTGroup}
                       bgColor={"#bcdb8d"}
                       searchable={false}
+                      currentPage={currentPage}
                     />
                   )}
                 />
