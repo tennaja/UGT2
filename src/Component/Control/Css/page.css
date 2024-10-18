@@ -88,3 +88,13 @@
   font-size: 10px;
 }
 
+@media print {
+  .page-break {
+    page-break-before: always; /* Force a page break before this element */
+    page-break-after: always;  /* Force a page break after this element */
+  }
+  .fixed-height {
+    height: 500; /* Allow height to adjust for content */
+    overflow: hidden; /* Prevent overflow */
+  }
+}

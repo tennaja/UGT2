@@ -22,17 +22,24 @@ import { useFieldArray } from "react-hook-form";
 import * as WEB_URL from "../../Constants/WebURL";
 import { USER_GROUP_ID, UTILITY_GROUP_ID } from "../../Constants/Constants";
 import { format } from "date-fns";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"; 
+import WarningIcon from '@mui/icons-material/Warning';
 import {
   PortfolioManagementDevice,
   PortfolioManagementSubscriber,
   PortfolioMechanismList,
   PortfolioManagementCreate,
+  PortfolioManagementForVailidation,
+  PortfolioValidationDevicePopup,
+  PortfolioValidationSubPopup
 } from "../../Redux/Portfolio/Action";
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import Highlighter from "react-highlight-words";
 import numeral from "numeral";
 import dayjs from "dayjs";
 import { IoInformationCircleSharp } from "react-icons/io5";
+import ModalValidation from "./Modalpopupvalidation";
+import { BiErrorCircle } from "react-icons/bi";
 
 const AddPortfolio = () => {
   const {
@@ -58,7 +65,9 @@ const AddPortfolio = () => {
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const [selectedCommisionDate, setSelectedCommisionDate] = useState(null);
   const [selectedCommisionDateCheck, setSelectedCommisionDateCheck] = useState(null);
+  
   const [deviceChanges, setDeviceChanges] = useState([]);
+  const [subChanges, setSubChanges] = useState([]);
   const [disableRequestedEffectiveDate, setDisableRequestedEffectiveDate] =
     useState(true);
   const dropDrowList = useSelector((state) => state.dropdrow.dropDrowList);
@@ -68,11 +77,15 @@ const AddPortfolio = () => {
   const [permission, checkPermission] = useState("");
   const [disableUtility, setDisableUtility] = useState(false);
   const onlyPositiveNum = /^[+]?\d+([.]\d+)?$/;
-
+  const portfolioValidateStatus = useSelector((state) => state.portfolio.portfolioValidateStatus)
+  const getValidationDevicePopup = useSelector((state) => state.portfolio.getValidationDevicePopup)  
+  const getValidationSubPopup = useSelector((state) => state.portfolio.getValidationSubPopup)
+  
+  
   useEffect(() => {
     autoScroll();
   }, []);
-
+console.log(getValidationDevicePopup)
   useEffect(() => {
     permissionAllow();
     // if (userData?.userGroup?.name !== "EGAT Subscriber Manager") {
@@ -267,14 +280,63 @@ const AddPortfolio = () => {
   const [selectDeviceChange, setSelectDeviceChange] = useState([]);
   const [selectSubscriberChange, setSelectSubscriberChange] = useState([]);
   const [paramsCreate, setParamsCreate] = useState("");
+  const [paramsForValidation, setParamsForValidation] = useState("");
   const [failedModal, setFailedModal] = useState("");
   const [isStartDate, setIsStartDate] = useState(false);
   const [isEndDate, setIsEndDate] = useState(false);
-
+  const [openpopupDeviceError,setopenpopupDeviceError] = useState(false)
   const [tempDeviceListSelected, setTempDeviceListSelected] = useState([]);
+  const [IsError,setIsError] = useState(false)
   const [tempSubscriberListSelected, setTempSubscriberListSelected] = useState(
     []
   );
+  const [isAddDevice, setisAddDevice] = useState(false);
+  const [isAddSub, setisAddSub] = useState(false);
+  const [IsRemovedDevice,setIsRemovedDevice] = useState(false);
+  const [IsRemovedSub,setIsRemovedSub] = useState(false);
+console.log(listTable)
+// State to hold filtered device list
+const [filteredDeviceList, setFilteredDeviceList] = useState(deviceListSelected);
+
+useEffect(() => {
+  if (Array.isArray(portfolioValidateStatus.device)) {
+    const devicesWithError = portfolioValidateStatus.device.filter(device => device.isError === true);
+
+    // Map over deviceListSelected to add isError flag
+    const updatedDeviceList = deviceListSelected.map(device => {
+      const errorDevice = devicesWithError.find(errorDevice => errorDevice.deviceId === device.id);
+      return {
+        ...device,
+        isError: errorDevice ? true : false,
+      };
+    });
+
+    setFilteredDeviceList(updatedDeviceList);
+  } else {
+    setFilteredDeviceList(deviceListSelected)
+  }
+}, [portfolioValidateStatus, deviceListSelected]);
+
+const [filteredSubList, setFilteredSubList] = useState(subscriberListSelected);
+
+useEffect(() => {
+  if (Array.isArray(portfolioValidateStatus.subscriber)) {
+    const subWithError = portfolioValidateStatus.subscriber.filter(sub => sub.isError === true);
+
+    // Map over deviceListSelected to add isError flag
+    const updatedSubList = subscriberListSelected.map(sub => {
+      const errorSub = subWithError.find(errorSub => errorSub.subscriberId === sub.id);
+      return {
+        ...sub,
+        isError: errorSub ? true : false,
+      };
+    });
+
+    setFilteredSubList(updatedSubList);
+  } else {
+    setFilteredSubList(subscriberListSelected)
+  }
+}, [portfolioValidateStatus, subscriberListSelected]);
 
   useEffect(() => {
     if (currentUGTGroup?.id) {
@@ -354,7 +416,72 @@ const AddPortfolio = () => {
       console.log(subscriberList)
     }
   }, [portfolioSubscriberList]);
+  
+  const handleErrorDevicepopup = (id,name,stDate,enDate) => {
+    setColumnsTable("device");
+    // Function to parse DD/MM/YYYY and return a Date object
+    const parseDate = (dateString) => {
+      const [day, month, year] = dateString.split('/').map(Number);
+      return new Date(year, month - 1, day); // month is 0-based in Date
+  };
 
+  // Parse and format the start and end dates
+  const formattedStDate = parseDate(stDate);
+  const formattedEnDate = parseDate(enDate);
+
+  // Format the dates to a more human-readable format
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Customize as needed
+  const formattedStDateString = new Intl.DateTimeFormat('en-US', options).format(formattedStDate);
+  const formattedEnDateString = new Intl.DateTimeFormat('en-US', options).format(formattedEnDate);
+
+    dispatch(
+      PortfolioValidationDevicePopup(0,id,formattedStDateString,formattedEnDateString, (res) => {
+        console.log("res === ", res);
+        if (res !== null) {
+          
+          setopenpopupDeviceError(true)
+        } else {
+          setFailedModal(true);
+        }
+        hideLoading();
+      })
+    );
+    console.log("Error details for row:", id,name,formattedStDateString,formattedEnDateString);
+   
+  };
+  const handleErrorSubpopup = (id,stDate,enDate,subcon) => {
+    setColumnsTable("subscriber");
+    // Function to parse DD/MM/YYYY and return a Date object
+    const parseDate = (dateString) => {
+      const [day, month, year] = dateString.split('/').map(Number);
+      return new Date(year, month - 1, day); // month is 0-based in Date
+  };
+
+  // Parse and format the start and end dates
+  const formattedStDate = parseDate(stDate);
+  const formattedEnDate = parseDate(enDate);
+
+  // Format the dates to a more human-readable format
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Customize as needed
+  const formattedStDateString = new Intl.DateTimeFormat('en-US', options).format(formattedStDate);
+  const formattedEnDateString = new Intl.DateTimeFormat('en-US', options).format(formattedEnDate);
+
+    dispatch(
+      PortfolioValidationSubPopup(0,id,formattedStDateString,formattedEnDateString,subcon, (res) => {
+        console.log("res === ", res);
+        if (res !== null) {
+          
+          setopenpopupDeviceError(true)
+        } else {
+          setFailedModal(true);
+        }
+        hideLoading();
+      })
+    );
+    console.log("Error details for row:", id,formattedStDateString,formattedEnDateString);
+   
+  };
+  
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
   );
@@ -439,6 +566,33 @@ const AddPortfolio = () => {
         />
       ),
     },
+    {
+      id: "errorDevice",
+      label: "",
+      align: "center",
+      render: (row) => {
+        // Display error icon if isError is true for this row
+        return row.isError ? (
+          <div
+        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
+      >
+        <WarningIcon
+          style={{ color: "red", marginLeft: 4 }}
+          titleAccess="Error" // Tooltip text
+        />
+        <div
+         type="button"
+         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+         onClick={() => handleErrorDevicepopup(row)}
+        >
+          Error Detail
+        </div>
+      </div>
+
+      
+        ) : null;
+      },
+    },
   ];
   const columnsSubscriber = [
     {
@@ -506,6 +660,31 @@ const AddPortfolio = () => {
         />
       ),
     },
+    {
+      id: "errorSub",
+      label: "",
+      align: "center",
+      render: (row) => {
+        // Display error icon if isError is true for this row
+        return row.isError ? (
+          <div
+        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
+      >
+        <WarningIcon
+          style={{ color: "red", marginLeft: 4 }}
+          titleAccess="Error" // Tooltip text
+        />
+        <div
+         type="button"
+         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+         onClick={() => handleErrorSubpopup(row)}
+        >
+          Error Detail
+        </div>
+      </div>
+        ) : null;
+      },
+    },
   ];
 
   const [searchDevice, setSearchDevice] = useState("");
@@ -555,6 +734,7 @@ const AddPortfolio = () => {
         item?.endDate == null || item?.endDate == "-"
           ? null
           : format(convertToDate(item?.endDate), "yyyy-MM-dd"),
+      subscribersContractInformationId : item.subscribersContractInformationId
     }));
     
     const portfoliosHistoryLogList = [{
@@ -564,6 +744,29 @@ const AddPortfolio = () => {
       action: "Create",
       createBy: "string" 
     }]
+    const portfoliosHistoryLogListWhenaddNewItemDevice = [{
+      deviceId : 0,
+      subscriberId: 0,
+      subscribersContractInformationId: 0,
+      action: "Add Device",
+      createBy: "string" 
+    }]
+    const portfoliosHistoryLogListWhenaddNewItemSub = [{
+      deviceId : 0,
+      subscriberId: 0,
+      subscribersContractInformationId: 0,
+      action: "Add Subscriber",
+      createBy: "string" 
+    }]
+    const updatedPortfoliosHistoryLogList = [
+      ...portfoliosHistoryLogList,
+      ...(isAddDevice? [...portfoliosHistoryLogListWhenaddNewItemDevice] : []),
+      ...(isAddSub? [...portfoliosHistoryLogListWhenaddNewItemSub] : []),
+      // ...(IsRemovedDevice? [...portfoliosHistoryLogListWhenaddRemovedItemDevice] : []),
+      // ...(IsRemovedSub? [...portfoliosHistoryLogListWhenaddRemovedItemSub] : []),
+      ...deviceChanges,
+      ...subChanges
+    ];
     console.log("deviceList == ", deviceList);
     console.log("subscriberList == ", subscriberList);
     const params = {
@@ -574,29 +777,62 @@ const AddPortfolio = () => {
       ugtGroupId: currentUGTGroup?.id,
       device: deviceList,
       subscriber: subscriberList,
-      portfoliosHistoryLog : portfoliosHistoryLogList
+      portfoliosHistoryLog : updatedPortfoliosHistoryLogList
     };
+    const paramsforvalidation = {
+      portfolioName: formData?.portfolioName,
+      merchanismId: formData?.mechanism?.id,
+      startDate: formData?.startDate,
+      endDate: formData?.endDate,
+      ugtGroupId: currentUGTGroup?.id,
+      device: deviceList,
+      subscriber: subscriberList,
+    };
+    console.log("params Validate ===", paramsforvalidation);
+    setParamsForValidation(paramsforvalidation)
     console.log("params ===", params);
     setParamsCreate(params);
-    setShowModalCreateConfirm(true);
+    
+    if (deviceListSelected?.length === 0 || subscriberListSelected?.length === 0) {
+      setIsError(true); // Set isError to true if either list is empty
+      return; // Exit the function if there is an error
+    } else {
+      setIsError(false);
+      setShowModalCreateConfirm(true);
+      return;
+    }
+    
   };
   const handleClickConfirm = () => {
     setShowModalCreateConfirm(false);
     showLoading();
+    
     dispatch(
-      PortfolioManagementCreate(paramsCreate, (res) => {
-        console.log("res === ", res);
-        if (res?.portfolioInfo !== null) {
-          setShowModalComplete(true);
+      PortfolioManagementForVailidation(paramsForValidation, (res) => {
+        console.log(res);
+        if (res?.isPass) { // Check validation status from response
+          dispatch(
+            PortfolioManagementCreate(paramsCreate, (createRes) => {
+              console.log("res === ", createRes);
+              if (createRes?.portfolioInfo) {
+                setShowModalComplete(true);
+              } else {
+                setFailedModal(true);
+              }
+              hideLoading();
+            })
+          );
         } else {
-          setFailedModal(true);
+          
+          console.log("Not yet Pass");
+          hideLoading();
         }
-        hideLoading();
       })
     );
-  };
+};
   const clearModal = (data) => {
     setFailedModal(data);
+    setIsError(false)
   };
   const handleCloseModalConfirm = (val) => {
     setShowModalCreateConfirm(false);
@@ -637,8 +873,10 @@ const AddPortfolio = () => {
     const defualtStartDate = watch("startDate");
     const defualtEndDate = watch("endDate");
     if (titleAddModal == "Add Device") {
+      const newDeviceChanges = [];
       if (defualtStartDate) {
         const newDateDevice = data?.map((item) => {
+          setisAddDevice(true)
           // device ที่ add เข้ามาใหม่ ถ้าวัน registrationDate น้อยกว่า startDate ของ port ให้ใช้วันของ portfolio
           let itemStartDate = dayjs(item?.registrationDate);
           if (dayjs(defualtStartDate) >= itemStartDate ) {
@@ -659,7 +897,15 @@ const AddPortfolio = () => {
             } else if (itemEndDate <= dayjs(defualtEndDate)) {
               itemEndDate = dayjs(item?.expiryDate);
             }
-          
+            const newDeviceChange = {
+              deviceId: item.id, // Capture the device ID
+              subscriberId:  0, // Use actual value or a default
+              subscribersContractInformationId: 0, // Use actual value or a default
+              action: "Add", // Specify the action
+              createBy: "string" // Replace with the actual creator's information
+            };
+            console.log(newDeviceChange)
+            newDeviceChanges.push(newDeviceChange);
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
@@ -668,14 +914,17 @@ const AddPortfolio = () => {
         });
         setDeviceListSelected(newDateDevice);
         console.log(newDateDevice)
+        setDeviceChanges((prevChanges) => [...prevChanges, ...newDeviceChanges]);
       } else {
         setDeviceListSelected(data);
         console.log(data)
       }
       
     } else if (titleAddModal == "Add Subscriber") {
+      const newSubChanges = [];
       if (defualtStartDate) {
         const newDateSubscriber = data?.map((item) => {
+          
           // subscriber ที่ add เข้ามาใหม่ ถ้าวัน retailESAContractStartDate น้อยกว่า startDate ของ port ให้ใช้วันของ portfolio
           let itemStartDate = dayjs(
             item?.retailESAContractStartDate,
@@ -708,15 +957,25 @@ const AddPortfolio = () => {
             } else if (itemEndDate <= dayjs(defualtEndDate)) {
               itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY")
             }
-          
-
+            const newSubChange = {
+              deviceId:  0, // Capture the device ID
+              subscriberId: item.id || 0, // Use actual value or a default
+              subscribersContractInformationId: item.subscribersContractInformationId || 0, // Use actual value or a default
+              action: "Add", // Specify the action
+              createBy: "string" // Replace with the actual creator's information
+            };
+            console.log(newSubChange)
+            newSubChanges.push(newSubChange);
+            setisAddSub(true)
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
             endDate: itemEndDate.format("DD/MM/YYYY"),
           };
+        
         });
         // console.log("newDateSubscriber == ", newDateSubscriber);
+        setSubChanges((prevChanges) => [...prevChanges, ...newSubChanges]);
         setSubscriberListSelected(newDateSubscriber);
       } else {
         setSubscriberListSelected(data);
@@ -727,6 +986,9 @@ const AddPortfolio = () => {
     setShowModalAdd(false);
   };
 
+  const oncloseValidationModal = () =>{
+    setopenpopupDeviceError(false)
+  }
   const editDevice = () => {
     if (deviceListSelected?.length > 0) {
       setTempDeviceListSelected(structuredClone(deviceListSelected));
@@ -773,11 +1035,22 @@ const AddPortfolio = () => {
   };
   const onApplyChangeDevice = () => {
     const deviceListSelectedTemp = [...deviceListSelected];
-    
+    const newDeviceChanges = [];
     selectDeviceChange.forEach((id) => {
       const index = deviceListSelectedTemp.findIndex((row) => row.id === id);
       if (index !== -1) {
+        const deviceToRemove = deviceListSelectedTemp[index];
 
+        // Prepare new device change object for removal
+        const newDeviceChange = {
+            deviceId: deviceToRemove.id, // Capture the device ID
+            subscriberId: deviceToRemove.subscriberId || 0,
+            subscribersContractInformationId: deviceToRemove.subscribersContractInformationId || 0,
+            action: "Remove", // Specify the action
+            createBy: "string" // Replace with the actual creator's information
+        };
+        console.log(newDeviceChange);
+        newDeviceChanges.push(newDeviceChange);
         deviceListSelectedTemp.splice(index, 1);
         
       }
@@ -785,17 +1058,75 @@ const AddPortfolio = () => {
     setDeviceListSelected(deviceListSelectedTemp);
     setOnEditDevice(false);
     setOnEditDatetimeDevice(false);
-    setSelectDeviceChange([]);}
+    setSelectDeviceChange([]);
+    const newDeviceIds = new Set(newDeviceChanges.map(change => change.deviceId));
+
+    setDeviceChanges((prevChanges) => {
+     // Create a new list to store updated deviceChanges
+     const updatedChanges = [...prevChanges];
+ 
+     newDeviceIds.forEach(newId => {
+         // Find the existing index where the deviceId matches
+         const existingIndex = updatedChanges.findIndex(change => change.deviceId === newId);
+ 
+         if (existingIndex !== -1) {
+             // If the ID already exists, check the action
+             const existingChange = updatedChanges[existingIndex];
+             if (existingChange.action === "Add") {
+                 // If the action is "Add", remove it from the list
+                 updatedChanges.splice(existingIndex, 1);
+                 setisAddDevice(false);
+                 setIsRemovedDevice(false);
+             } else if (existingChange.action === "Edit") {
+                 // If the action is "Edit", change it to "Remove"
+                 updatedChanges[existingIndex].action = "Remove";
+                 console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
+             }
+             // If the action is "Remove", do nothing (keep it in the list)
+         } else {
+             // If the ID does not exist, find the new change
+             const newChange = newDeviceChanges.find(change => change.deviceId === newId);
+             if (newChange) {
+                 // Check the action of the new change
+                 if (newChange.action === "Add") {
+                     // Only add if the action is "Add"
+                     updatedChanges.push(newChange);
+                     setIsRemovedDevice(true);
+                 } 
+                 // else if (newChange.action === "Edit" || newChange.action === "Remove") {
+                 //     // Add "Edit" and "Remove" actions to the list as well
+                 //     updatedChanges.push(newChange);
+                 //     console.log(`${newChange.action} action for device ID:`, newId); // Example logging
+                 // }
+             }
+         }
+     });
+ 
+     return updatedChanges; // Return the updated list
+ });
+  }
+    
     
 
   const onApplyChangeSubscriber = () => {
     const subscriberListSelectedTemp = [...subscriberListSelected];
-
+    const newSubChanges = [];
     selectSubscriberChange.forEach((id) => {
       const index = subscriberListSelectedTemp.findIndex(
         (row) => row.id === id
       );
       if (index !== -1) {
+        const SubToRemove = subscriberListSelectedTemp[index];
+      // Prepare new device change object
+      const newSubChange = {
+        deviceId:  0, // Capture the device ID
+        subscriberId: SubToRemove.id , // Use actual value or a default
+        subscribersContractInformationId: SubToRemove.subscribersContractInformationId , // Use actual value or a default
+        action: "Remove", // Specify the action
+        createBy: "string" // Replace with the actual creator's information
+      };
+        console.log(newSubChange)
+        newSubChanges.push(newSubChange);
         subscriberListSelectedTemp.splice(index, 1);
       }
     });
@@ -804,6 +1135,49 @@ const AddPortfolio = () => {
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
     setSelectSubscriberChange([]);
+    const newSubIds = new Set(newSubChanges.map(change => change.subscriberId));
+
+   // Update deviceChanges
+   setSubChanges((prevChanges) => {
+       // Create a new list to store updated deviceChanges
+       const updatedChanges = [...prevChanges];
+
+       newSubIds.forEach(newId => {
+           const existingIndex = updatedChanges.findIndex(change => change.subscriberId === newId);
+           if (existingIndex !== -1) {
+            const existingChange = updatedChanges[existingIndex];
+            if (existingChange.action === "Add") {
+               updatedChanges.splice(existingIndex, 1);
+               setisAddSub(false)
+               setIsRemovedSub(false);
+            } else if (existingChange.action === "Edit") {
+              // If the action is "Edit", change it to "Remove"
+              updatedChanges[existingIndex].action = "Remove";
+              console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
+            }
+
+
+           } else {
+               // If the ID does not exist, add it to the list
+               const newChange = newSubChanges.find(change => change.subscriberId === newId);
+               if (newChange) {
+                // Check the action of the new change
+                if (newChange.action === "Add") {
+                    // Only add if the action is "Add"
+                    updatedChanges.push(newChange);
+                    setIsRemovedSub(true);
+                } 
+                // else if (newChange.action === "Edit" || newChange.action === "Remove") {
+                //     // Add "Edit" and "Remove" actions to the list as well
+                //     updatedChanges.push(newChange);
+                //     console.log(`${newChange.action} action for device ID:`, newId); // Example logging
+                // }
+            }
+           }
+       });
+
+       return updatedChanges; // Return the updated list
+   });
   };
   const selectedDeviceChange = (selected) => {
     setSelectDeviceChange(selected);
@@ -1109,16 +1483,18 @@ const AddPortfolio = () => {
                     {deviceListSelected?.length > 0 ? (
                       <div>
                         <DataTable
-                          data={deviceListSelected}
+                          data={filteredDeviceList}
                           columns={columnsDevice}
                           searchData={searchDevice}
                           checkbox={onEditDevice}
                           editDatetime={onEditDatetimeDevice}
                           onSelectedRowsChange={selectedDeviceChange}
                           dateChange={handleDeviceDateChange}
+                          error = {portfolioValidateStatus }
                           isTotal={"Total Capacity"}
                           portfolioStartDate={getValues("startDate")}
                           portfolioEndDate={getValues("endDate")}
+                          openpopupDeviceError={handleErrorDevicepopup}
                         />
                       </div>
                     ) : (
@@ -1291,16 +1667,18 @@ const AddPortfolio = () => {
                     {subscriberListSelected?.length > 0 ? (
                       <div>
                         <DataTable
-                          data={subscriberListSelected}
+                          data={filteredSubList}
                           columns={columnsSubscriber}
                           searchData={searchSubscriber}
                           checkbox={onEditSubscriber}
                           editDatetime={onEditDatetimeSubscriber}
                           onSelectedRowsChange={selectedSubscriberChange}
                           dateChange={handleSubscriberDateChange}
+                          error = {portfolioValidateStatus }
                           isTotal={"Total Allocated Energy Amount"}
                           portfolioStartDate={getValues("startDate")}
                           portfolioEndDate={getValues("endDate")}
+                          openpopupSubError={handleErrorSubpopup}
                         />
                       </div>
                     ) : (
@@ -1313,6 +1691,16 @@ const AddPortfolio = () => {
 
                 {/* submit button */}
                 <div className="text-center my-5">
+                {IsError && (
+                            <div className="font-normaltext-lg flex items-center justify-center border-solid bg-[#fdeeee] border-red-300 border-3   my-2 p-4 text-red-400 ">
+                              <div className="mr-2">
+                                <BiErrorCircle className="w-[25px] h-[25px] text-red-600" />
+                              </div>
+                              <div className="">
+                              Device Assignment and Subscriber Assignment must have at least 1 item.
+                              </div>
+                            </div>
+                          )}
                   <button
                     onClick={backtoPortfolioListPage}
                     className="mr-4 w-1/4 rounded h-12 px-6 text-gray transition-colors duration-150 rounded-lg focus:shadow-outline bg-[#CBD0D5] hover:bg-[#78829D] text-[#78829D] hover:text-white font-semibold"
@@ -1365,7 +1753,16 @@ const AddPortfolio = () => {
             closeModal={onCloseAddModal}
           />
         )}
-        {failedModal && (
+        
+        {openpopupDeviceError && (
+          <ModalValidation
+            columns={columnsTable}
+            dataList={columnsTable == "device" ? getValidationDevicePopup : getValidationSubPopup}
+            onClickConfirmBtn={oncloseValidationModal}
+            closeModal={oncloseValidationModal}
+          />
+        )}
+        {failedModal &&(
           <ModalFail
             onClickOk={clearModal}
             content="Your Portfolio Name is the same as in the database"

@@ -468,7 +468,7 @@ const Subscriberlisting = (props) => {
     {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
-      align: "left",
+      align: "right",
       render: (row) => (
         <span>
           <Highlighter
@@ -648,7 +648,7 @@ const Subscriberlisting = (props) => {
     {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
-      align: "left",
+      align: "right",
       render: (row) => (
         <span>
           <Highlighter
@@ -844,7 +844,7 @@ const Subscriberlisting = (props) => {
     {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
-      align: "left",
+      align: "right",
       render: (row) => (
         <span>
           <Highlighter
@@ -1015,7 +1015,7 @@ const Subscriberlisting = (props) => {
     {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
-      align: "left",
+      align: "right",
       render: (row) => (
         <span>
           <Highlighter

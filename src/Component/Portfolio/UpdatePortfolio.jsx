@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useRef } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -28,6 +28,9 @@ import {
   PortfolioMechanismList,
   PortfolioManagementUpdate,
   PortfolioGetOne,
+  PortfolioManagementForVailidation,
+  PortfolioValidationDevicePopup,
+  PortfolioValidationSubPopup
 } from "../../Redux/Portfolio/Action";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { hideLoading, showLoading } from "../../Utils/Utils";
@@ -37,7 +40,14 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 import { IoInformationCircleSharp } from "react-icons/io5";
-
+import DataTableForCaptures from "../Control/Table/DataTableForCapture";
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import html2pdf from 'html2pdf.js';
+import '../Control/Css/page.css'
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import ModalValidation from "./Modalpopupvalidation";
+import { BiErrorCircle } from "react-icons/bi";
 const UpdatePortfolio = () => {
   const {
     // register,
@@ -49,7 +59,7 @@ const UpdatePortfolio = () => {
     getValues,
     formState: { errors },
   } = useForm();
-
+  const cardRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
@@ -65,6 +75,9 @@ const UpdatePortfolio = () => {
   const [isStartDate, setIsStartDate] = useState(false);
   const [isEndDate, setIsEndDate] = useState(false);
   const [isClearData, setIsClearData] = useState(false);
+  const portfolioValidateStatus = useSelector((state) => state.portfolio.portfolioValidateStatus)
+  const getValidationDevicePopup = useSelector((state) => state.portfolio.getValidationDevicePopup)
+  const getValidationSubPopup = useSelector((state) => state.portfolio.getValidationSubPopup)
 
   useEffect(() => {
     autoScroll();
@@ -327,6 +340,7 @@ const UpdatePortfolio = () => {
   const [onEditDatetimeSubscriber, setOnEditDatetimeSubscriber] =
     useState(false);
   const [selectDeviceChange, setSelectDeviceChange] = useState([]);
+  const [paramsForValidation, setParamsForValidation] = useState("");
   const [selectSubscriberChange, setSelectSubscriberChange] = useState([]);
   const [paramsCreate, setParamsCreate] = useState("");
   const [failedModal, setFailedModal] = useState("");
@@ -334,8 +348,55 @@ const UpdatePortfolio = () => {
   const [tempSubscriberListSelected, setTempSubscriberListSelected] = useState(
     []
   );
+ 
   const [isStartPort, setIsStartPort] = useState(false);
   const [formattedCurrentDate, setformattedCurrentDate] = useState("");
+  const [openpopupDeviceError,setopenpopupDeviceError] = useState(false)
+  const [filteredDeviceList, setFilteredDeviceList] = useState(deviceListSelected);
+  const [isAddDevice, setisAddDevice] = useState(false);
+  const [isAddSub, setisAddSub] = useState(false);
+  const [IsRemovedDevice,setIsRemovedDevice] = useState(false);
+  const [IsRemovedSub,setIsRemovedSub] = useState(false);
+  const [IsError,setIsError] = useState(false)
+  useEffect(() => {
+    if (Array.isArray(portfolioValidateStatus.device)) {
+      const devicesWithError = portfolioValidateStatus.device.filter(device => device.isError === true);
+  
+      // Map over deviceListSelected to add isError flag
+      const updatedDeviceList = deviceListSelected.map(device => {
+        const errorDevice = devicesWithError.find(errorDevice => errorDevice.deviceId === device.id);
+        return {
+          ...device,
+          isError: errorDevice ? true : false,
+        };
+      });
+  
+      setFilteredDeviceList(updatedDeviceList);
+    } else {
+      setFilteredDeviceList(deviceListSelected)
+    }
+  }, [portfolioValidateStatus, deviceListSelected]);
+  
+  const [filteredSubList, setFilteredSubList] = useState(subscriberListSelected);
+  
+  useEffect(() => {
+    if (Array.isArray(portfolioValidateStatus.subscriber)) {
+      const subWithError = portfolioValidateStatus.subscriber.filter(sub => sub.isError === true);
+  
+      // Map over deviceListSelected to add isError flag
+      const updatedSubList = subscriberListSelected.map(sub => {
+        const errorSub = subWithError.find(errorSub => errorSub.subscriberId === sub.id);
+        return {
+          ...sub,
+          isError: errorSub ? true : false,
+        };
+      });
+  
+      setFilteredSubList(updatedSubList);
+    } else {
+      setFilteredSubList(subscriberListSelected)
+    }
+  }, [portfolioValidateStatus, subscriberListSelected]);
 
   useEffect(() => {
     return () => dispatch({ type: "RESET_STATE" });
@@ -469,7 +530,70 @@ const UpdatePortfolio = () => {
     const year = parseInt(parts[2], 10);
     return new Date(year, month, day);
   }
+  const handleErrorDevicepopup = (id,name,stDate,enDate) => {
+    setColumnsTable("device");
+    // Function to parse DD/MM/YYYY and return a Date object
+    const parseDate = (dateString) => {
+      const [day, month, year] = dateString.split('/').map(Number);
+      return new Date(year, month - 1, day); // month is 0-based in Date
+  };
 
+  // Parse and format the start and end dates
+  const formattedStDate = parseDate(stDate);
+  const formattedEnDate = parseDate(enDate);
+
+  // Format the dates to a more human-readable format
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Customize as needed
+  const formattedStDateString = new Intl.DateTimeFormat('en-US', options).format(formattedStDate);
+  const formattedEnDateString = new Intl.DateTimeFormat('en-US', options).format(formattedEnDate);
+
+    dispatch(
+      PortfolioValidationDevicePopup(state?.code,id,formattedStDateString,formattedEnDateString, (res) => {
+        console.log("res === ", res);
+        if (res !== null) {
+          
+          setopenpopupDeviceError(true)
+        } else {
+          setFailedModal(true);
+        }
+        hideLoading();
+      })
+    );
+    console.log("Error details for row:", id,name,formattedStDateString,formattedEnDateString);
+   
+  };
+  const handleErrorSubpopup = (id,stDate,enDate,subcon) => {
+    setColumnsTable("subscriber");
+    // Function to parse DD/MM/YYYY and return a Date object
+    const parseDate = (dateString) => {
+      const [day, month, year] = dateString.split('/').map(Number);
+      return new Date(year, month - 1, day); // month is 0-based in Date
+  };
+
+  // Parse and format the start and end dates
+  const formattedStDate = parseDate(stDate);
+  const formattedEnDate = parseDate(enDate);
+
+  // Format the dates to a more human-readable format
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }; // Customize as needed
+  const formattedStDateString = new Intl.DateTimeFormat('en-US', options).format(formattedStDate);
+  const formattedEnDateString = new Intl.DateTimeFormat('en-US', options).format(formattedEnDate);
+
+    dispatch(
+      PortfolioValidationSubPopup(state?.code,id,formattedStDateString,formattedEnDateString,subcon, (res) => {
+        console.log("res === ", res);
+        if (res !== null) {
+          
+          setopenpopupDeviceError(true)
+        } else {
+          setFailedModal(true);
+        }
+        hideLoading();
+      })
+    );
+    console.log("Error details for row:", id,formattedStDateString,formattedEnDateString);
+   
+  };
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
   );
@@ -554,6 +678,31 @@ const UpdatePortfolio = () => {
         />
       ),
     },
+    {
+      id: "errorDevice",
+      label: "",
+      align: "center",
+      render: (row) => {
+        // Display error icon if isError is true for this row
+        return row.isError ? (
+          <div
+        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
+      >
+        <WarningIcon
+          style={{ color: "red", marginLeft: 4 }}
+          titleAccess="Error" // Tooltip text
+        />
+        <div
+         type="button"
+         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+         onClick={() => handleErrorDevicepopup(row)}
+        >
+          Error Detail
+        </div>
+      </div>
+        ) : null;
+      },
+    },
   ];
 
   const columnsSubscriber = [
@@ -624,6 +773,31 @@ const UpdatePortfolio = () => {
         />
       ),
     },
+    {
+      id: "errorSub",
+      label: "",
+      align: "center",
+      render: (row) => {
+        // Display error icon if isError is true for this row
+        return row.isError ? (
+          <div
+        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
+      >
+        <WarningIcon
+          style={{ color: "red", marginLeft: 4 }}
+          titleAccess="Error" // Tooltip text
+        />
+        <div
+         type="button"
+         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+         onClick={() => handleErrorSubpopup(row)}
+        >
+          Error Detail
+        </div>
+      </div>
+        ) : null;
+      },
+    },
   ];
 
   const [searchDevice, setSearchDevice] = useState("");
@@ -680,6 +854,46 @@ const UpdatePortfolio = () => {
   };
 
   const onSubmitForm1 = (formData) => {
+    console.log("deviceListSelected", deviceListSelected);
+    const element = cardRef.current//document.getElementById('pdf-content');
+    element.style.display = 'block';
+  // กำหนดตัวเลือกสำหรับ html2pdf
+  const options = {
+    margin: 0,
+    filename: 'webscreen.pdf',
+    image: { type: 'jpeg', quality: 50 },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+    html2canvas: { scale: 2}, // เพิ่ม scale เพื่อเพิ่มความละเอียด
+    jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait'},
+  };
+
+  // สร้าง PDF ด้วย html2pdf และดึง base64 string
+  html2pdf()
+    .from(element)
+    .set(options)
+    .outputPdf('datauristring') // ดึงข้อมูลออกมาเป็น Base64 string
+    .then((pdfBase64) => {
+      console.log(pdfBase64); // แสดง base64 string ใน console
+      const base64Content = pdfBase64.split(",")[1];
+      const now = new Date();
+      const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
+      const structrueSend =[{
+        id:0,
+        guid:"",
+        name: formattedDateTime+".pdf",
+        binary: base64Content,
+        type: "application/pdf"
+      }]
+    
+    // const blob = new Blob([Uint8Array.from(atob(base64Content), c => c.charCodeAt(0))], { type: "application/pdf" });
+    // const link = document.createElement('a');
+    // link.href = URL.createObjectURL(blob);
+    // link.download = `${formattedDateTime}.pdf`;
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link); 
+    element.style.display = 'none';
+  
     console.log("deviceListSelected == ", deviceListSelected);
     const deviceList = deviceListSelected.map((item) => ({
       deviceId: item?.id,
@@ -702,6 +916,8 @@ const UpdatePortfolio = () => {
         item?.endDate == null || item?.endDate == "-"
           ? null
           : format(convertToDate(item?.endDate), "yyyy-MM-dd"),
+      subscribersContractInformationId : item.subscribersContractInformationId
+ 
     }));
     const portfoliosHistoryLogList = [{
       deviceId : 0,
@@ -710,8 +926,40 @@ const UpdatePortfolio = () => {
       action: "Edit",
       createBy: "string" 
     }]
+    const portfoliosHistoryLogListWhenaddNewItemDevice = [{
+      deviceId : 0,
+      subscriberId: 0,
+      subscribersContractInformationId: 0,
+      action: "Add Device",
+      createBy: "string" 
+    }]
+    const portfoliosHistoryLogListWhenaddNewItemSub = [{
+      deviceId : 0,
+      subscriberId: 0,
+      subscribersContractInformationId: 0,
+      action: "Add Subscriber",
+      createBy: "string" 
+    }]
+    const portfoliosHistoryLogListWhenaddRemovedItemDevice = [{
+      deviceId : 0,
+      subscriberId: 0,
+      subscribersContractInformationId: 0,
+      action: "Discontinue - Device",
+      createBy: "string" 
+    }]
+    const portfoliosHistoryLogListWhenaddRemovedItemSub = [{
+      deviceId : 0,
+      subscriberId: 0,
+      subscribersContractInformationId: 0,
+      action: "Discontinue - Subscriber",
+      createBy: "string" 
+    }]
     const updatedPortfoliosHistoryLogList = [
       ...portfoliosHistoryLogList,
+      ...(isAddDevice? [...portfoliosHistoryLogListWhenaddNewItemDevice] : []),
+      ...(isAddSub? [...portfoliosHistoryLogListWhenaddNewItemSub] : []),
+      ...(IsRemovedDevice? [...portfoliosHistoryLogListWhenaddRemovedItemDevice] : []),
+      ...(IsRemovedSub? [...portfoliosHistoryLogListWhenaddRemovedItemSub] : []),
       ...deviceChanges,
       ...subChanges
     ];
@@ -723,26 +971,75 @@ const UpdatePortfolio = () => {
       endDate: formData?.endDate,
       device: deviceList,
       subscriber: subscriberList,
-      portfoliosHistoryLog : updatedPortfoliosHistoryLogList
+      fileUploadPortfoliosHistoryLog: structrueSend,
+      portfoliosHistoryLog : updatedPortfoliosHistoryLogList,
+    };
+    const paramsforvalidation = {
+      portfolioName: formData?.portfolioName,
+      merchanismId: formData?.mechanism?.id,
+      startDate: formData?.startDate,
+      endDate: formData?.endDate,
+      PortfolioId : state?.code,
+      ugtGroupId: currentUGTGroup?.id,
+      device: deviceList,
+      subscriber: subscriberList,
     };
     console.log("params ===", params);
+    setParamsForValidation(paramsforvalidation)
     setParamsCreate(params);
+    return structrueSend
+  })
+  .catch((error) => {
+    console.error('Error generating PDF:', error);
+    element.style.display = 'none';
+  });
+  if (deviceListSelected?.length === 0 || subscriberListSelected?.length === 0) {
+    setIsError(true); // Set isError to true if either list is empty
+    return; // Exit the function if there is an error
+  } else {
+    setIsError(false);
     setShowModalCreateConfirm(true);
+    return;
+  }
+
   };
   const handleClickConfirm = () => {
     setShowModalCreateConfirm(false);
     showLoading();
     dispatch(
-      PortfolioManagementUpdate(paramsCreate, (res) => {
-        console.log("res === ", res);
-        if (res?.portfolioInfo !== null) {
-          setShowModalComplete(true);
+      PortfolioManagementForVailidation(paramsForValidation, (res) => {
+        console.log(res);
+        if (res?.isPass) { // Check validation status from response
+          dispatch(
+            PortfolioManagementUpdate(paramsCreate, (createRes) => {
+              console.log("res === ", createRes);
+              if (res?.portfolioInfo !== null) {
+                setShowModalComplete(true);
+              } else {
+                setFailedModal(true);
+              }
+              hideLoading();
+            })
+          );
         } else {
-          setFailedModal(true);
+          
+          console.log("Not yet Pass");
+          hideLoading();
         }
-        hideLoading();
       })
     );
+
+    // dispatch(
+    //   PortfolioManagementUpdate(paramsCreate, (res) => {
+    //     console.log("res === ", res);
+    //     if (res?.portfolioInfo !== null) {
+    //       setShowModalComplete(true);
+    //     } else {
+    //       setFailedModal(true);
+    //     }
+    //     hideLoading();
+    //   })
+    // );
   };
   const clearModal = (data) => {
     setFailedModal(data);
@@ -788,6 +1085,7 @@ const UpdatePortfolio = () => {
         );
 
         const newDateDevice = remainingData.map((item) => {
+          setisAddDevice(true)
           // device ที่ add เข้ามาใหม่ ถ้าวัน registrationDate น้อยกว่า startDate ของ port ให้ใช้วันของ portfolio
           let itemStartDate = dayjs(item?.registrationDate);
           if (itemStartDate < dayjs(defualtStartDate)) {
@@ -809,7 +1107,7 @@ const UpdatePortfolio = () => {
             deviceId: item.id, // Capture the device ID
             subscriberId:  0, // Use actual value or a default
             subscribersContractInformationId: 0, // Use actual value or a default
-            action: "Add Device", // Specify the action
+            action: "Add", // Specify the action
             createBy: "string" // Replace with the actual creator's information
           };
           console.log(newDeviceChange)
@@ -852,6 +1150,7 @@ const UpdatePortfolio = () => {
         const concatArray = [...currentDateDevice, ...newDateDevice];
         console.log("concatArray", concatArray);
         setDeviceListSelected(concatArray);
+        
         setDeviceChanges((prevChanges) => [...prevChanges, ...newDeviceChanges]);
       } else {
         setDeviceListSelected(data);
@@ -866,6 +1165,7 @@ const UpdatePortfolio = () => {
             )
         );
         const newDateSubscriber = remainingData.map((item) => {
+          setisAddSub(true)
           // subscriber ที่ add เข้ามาใหม่ ถ้าวัน retailESAContractStartDate น้อยกว่า startDate ของ port ให้ใช้วันของ portfolio
           let itemStartDate = dayjs(
             item?.retailESAContractStartDate,
@@ -896,7 +1196,7 @@ const UpdatePortfolio = () => {
             deviceId:  0, // Capture the device ID
             subscriberId: item.id || 0, // Use actual value or a default
             subscribersContractInformationId: item.subscribersContractInformationId || 0, // Use actual value or a default
-            action: "Add Subscriber", // Specify the action
+            action: "Add", // Specify the action
             createBy: "string" // Replace with the actual creator's information
           };
           console.log(newSubChange)
@@ -967,7 +1267,9 @@ const UpdatePortfolio = () => {
   const onCloseAddModal = () => {
     setShowModalAdd(false);
   };
-
+  const oncloseValidationModal = () =>{
+    setopenpopupDeviceError(false)
+  }
   const editDevice = () => {
     if (deviceListSelected?.length > 0) {
       console.log("deviceListSelected ===", deviceListSelected);
@@ -1016,41 +1318,109 @@ const UpdatePortfolio = () => {
   const onApplyChangeDevice = () => {
     const deviceListSelectedTemp = [...deviceListSelected];
     const newDeviceChanges = [];
+    let isChanged = false;
+    
     selectDeviceChange.forEach((id) => {
-      const index = deviceListSelectedTemp.findIndex((row) => row.id === id);
-      if (index !== -1) {
-        const deviceToRemove = deviceListSelectedTemp[index];
-      // Prepare new device change object
-      const newDeviceChange = {
-        deviceId: deviceToRemove.id, // Capture the device ID
-        subscriberId: deviceToRemove.subscriberId || 0, // Use actual value or a default
-        subscribersContractInformationId: deviceToRemove.subscribersContractInformationId || 0, // Use actual value or a default
-        action: "Discontinue - Device", // Specify the action
-        createBy: "string" // Replace with the actual creator's information
-      };
-        console.log(newDeviceChange)
-        newDeviceChanges.push(newDeviceChange);
-        deviceListSelectedTemp.splice(index, 1);
-      }
+        const index = deviceListSelectedTemp.findIndex((row) => row.id === id);
+        if (index !== -1) {
+            const deviceToRemove = deviceListSelectedTemp[index];
+
+            // Prepare new device change object for removal
+            const newDeviceChange = {
+                deviceId: deviceToRemove.id, // Capture the device ID
+                subscriberId: deviceToRemove.subscriberId || 0,
+                subscribersContractInformationId: deviceToRemove.subscribersContractInformationId || 0,
+                action: "Remove", // Specify the action
+                createBy: "string" // Replace with the actual creator's information
+            };
+            console.log(newDeviceChange);
+            newDeviceChanges.push(newDeviceChange);
+            deviceListSelectedTemp.splice(index, 1);
+            setIsRemovedDevice(true);
+           
+        }
     });
+
     for (const item of deviceListSelectedTemp) {
-      // check end date ของ device ที่ค้างไว้มากกว่า port end date หรือไม่
-      const portEndDate = dayjs(getValues("endDate"));
-      let itemEndDate = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
-      if (itemEndDate > portEndDate) {
-        console.log("item enddate > portenddate");
-        item.endDate = portEndDate.format("DD/MM/YYYY");
-      }
+        // Check if the device's end date is greater than the port end date
+        const portEndDate = dayjs(getValues("endDate"));
+        let itemEndDate = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
+
+        // If the item's endDate is after portEndDate, adjust it
+        if (itemEndDate < portEndDate) {
+            console.log("item enddate > portenddate");
+            item.endDate = portEndDate.format("DD/MM/YYYY");
+
+            // Prepare new device change object for date changes
+            const newDeviceChangeDate = {
+                deviceId: item.id,
+                subscriberId: item.subscriberId || 0,
+                subscribersContractInformationId: item.subscribersContractInformationId || 0,
+                action: "Edit", // Specify the action as end date update
+                createBy: "string"
+            };
+            console.log(newDeviceChangeDate);
+            newDeviceChanges.push(newDeviceChangeDate); // Add to the changes list
+            isChanged = true; // Mark as changed because endDate was modified
+        }
     }
+   // Create a Set of deviceIds from newDeviceChanges for quick lookup
+   const newDeviceIds = new Set(newDeviceChanges.map(change => change.deviceId));
+
+   setDeviceChanges((prevChanges) => {
+    // Create a new list to store updated deviceChanges
+    const updatedChanges = [...prevChanges];
+
+    newDeviceIds.forEach(newId => {
+        // Find the existing index where the deviceId matches
+        const existingIndex = updatedChanges.findIndex(change => change.deviceId === newId);
+
+        if (existingIndex !== -1) {
+            // If the ID already exists, check the action
+            const existingChange = updatedChanges[existingIndex];
+            if (existingChange.action === "Add") {
+                // If the action is "Add", remove it from the list
+                updatedChanges.splice(existingIndex, 1);
+                setisAddDevice(false);
+                setIsRemovedDevice(false);
+            } else if (existingChange.action === "Edit") {
+                // If the action is "Edit", change it to "Remove"
+                updatedChanges[existingIndex].action = "Remove";
+                console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
+            }
+            // If the action is "Remove", do nothing (keep it in the list)
+        } else {
+            // If the ID does not exist, find the new change
+            const newChange = newDeviceChanges.find(change => change.deviceId === newId);
+            if (newChange) {
+                // Check the action of the new change
+                if (newChange.action === "Add") {
+                    // Only add if the action is "Add"
+                    updatedChanges.push(newChange);
+                    setIsRemovedDevice(true);
+                } else if (newChange.action === "Edit" || newChange.action === "Remove") {
+                    // Add "Edit" and "Remove" actions to the list as well
+                    updatedChanges.push(newChange);
+                    console.log(`${newChange.action} action for device ID:`, newId); // Example logging
+                }
+            }
+        }
+    });
+
+    return updatedChanges; // Return the updated list
+});
+
+
 
     setDeviceListSelected(deviceListSelectedTemp);
     setOnEditDevice(false);
     setOnEditDatetimeDevice(false);
     setSelectDeviceChange([]);
-    setDeviceChanges((prevChanges) => [...prevChanges, ...newDeviceChanges]);
+    
     console.log("deviceListSelected === ", deviceListSelected);
-  };
+};
 
+  
   const onApplyChangeSubscriber = () => {
     const subscriberListSelectedTemp = [...subscriberListSelected];
     const newSubChanges = [];
@@ -1063,31 +1433,84 @@ const UpdatePortfolio = () => {
       // Prepare new device change object
       const newSubChange = {
         deviceId:  0, // Capture the device ID
-        subscriberId: SubToRemove.id || 0, // Use actual value or a default
-        subscribersContractInformationId: SubToRemove.subscribersContractInformationId || 0, // Use actual value or a default
-        action: "Discontinue -  Subscriber", // Specify the action
+        subscriberId: SubToRemove.id , // Use actual value or a default
+        subscribersContractInformationId: SubToRemove.subscribersContractInformationId , // Use actual value or a default
+        action: "Remove", // Specify the action
         createBy: "string" // Replace with the actual creator's information
       };
         console.log(newSubChange)
         newSubChanges.push(newSubChange);
         subscriberListSelectedTemp.splice(index, 1);
+        setIsRemovedSub(true);
       }
     });
     for (const item of subscriberListSelectedTemp) {
       // check end date ของ subscriber ที่ค้างไว้มากกว่า port end date หรือไม่
       const portEndDate = dayjs(getValues("endDate"));
       let itemEndDate = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
-      if (itemEndDate > portEndDate) {
+      if (itemEndDate < portEndDate) {
         console.log("item enddate > portenddate");
         item.endDate = portEndDate.format("DD/MM/YYYY");
+        const newSubChangeDate = {
+        deviceId:  0, // Capture the device ID
+        subscriberId: item.id , // Use actual value or a default
+        subscribersContractInformationId: item.subscribersContractInformationId , // Use actual value or a default
+        action: "Edit", // Specify the action
+        createBy: "string" // Replace with the actual creator's information
+      };
+      console.log(newSubChangeDate);
+      newSubChanges.push(newSubChangeDate);
       }
     }
 
-    setSubscriberListSelected(subscriberListSelectedTemp);
+    
+    // Create a Set of deviceIds from newDeviceChanges for quick lookup
+   const newSubIds = new Set(newSubChanges.map(change => change.subscriberId));
+
+   // Update deviceChanges
+   setSubChanges((prevChanges) => {
+       // Create a new list to store updated deviceChanges
+       const updatedChanges = [...prevChanges];
+
+       newSubIds.forEach(newId => {
+           const existingIndex = updatedChanges.findIndex(change => change.subscriberId === newId);
+           if (existingIndex !== -1) {
+            const existingChange = updatedChanges[existingIndex];
+            if (existingChange.action === "Add") {
+               updatedChanges.splice(existingIndex, 1);
+               setisAddSub(false)
+               setIsRemovedSub(false);
+            } else if (existingChange.action === "Edit") {
+              // If the action is "Edit", change it to "Remove"
+              updatedChanges[existingIndex].action = "Remove";
+              console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
+            }
+
+
+           } else {
+               // If the ID does not exist, add it to the list
+               const newChange = newSubChanges.find(change => change.subscriberId === newId);
+               if (newChange) {
+                // Check the action of the new change
+                if (newChange.action === "Add") {
+                    // Only add if the action is "Add"
+                    updatedChanges.push(newChange);
+                    setIsRemovedSub(true);
+                } else if (newChange.action === "Edit" || newChange.action === "Remove") {
+                    // Add "Edit" and "Remove" actions to the list as well
+                    updatedChanges.push(newChange);
+                    console.log(`${newChange.action} action for device ID:`, newId); // Example logging
+                }
+            }
+           }
+       });
+
+       return updatedChanges; // Return the updated list
+   });
+   setSubscriberListSelected(subscriberListSelectedTemp);
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
     setSelectSubscriberChange([]);
-    setSubChanges((prevChanges) => [...prevChanges, ...newSubChanges]);
     console.log("subscriberListSelected === ", subscriberListSelected);
   };
   const selectedDeviceChange = (selected) => {
@@ -1099,7 +1522,62 @@ const UpdatePortfolio = () => {
   const backtoPortfolioListPage = () => {
     navigate(WEB_URL.PORTFOLIO_LIST);
   };
+  const totalAllocateEnergyAmount = subscriberListSelected.reduce((sum, subscriber) => {
+    return sum + (subscriber.allocateEnergyAmount || 0);
+  }, 0);
+
+  const TotalCapacityAmount = deviceListSelected.reduce((sum, device) => {
+    return sum + (device.capacity || 0);
+  }, 0);
+  // const handleCaptureToPDF = async () => {
+  //   const element = cardRef.current//document.getElementById('pdf-content');
+  //   element.style.display = 'block';
+  // // กำหนดตัวเลือกสำหรับ html2pdf
+  // const options = {
+  //   margin: 0,
+  //   filename: 'webscreen.pdf',
+  //   image: { type: 'jpeg', quality: 50 },
+  //   pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+  //   html2canvas: { scale: 2}, // เพิ่ม scale เพื่อเพิ่มความละเอียด
+  //   jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait'},
+  // };
+
+  // // สร้าง PDF ด้วย html2pdf และดึง base64 string
+  // html2pdf()
+  //   .from(element)
+  //   .set(options)
+  //   .outputPdf('datauristring') // ดึงข้อมูลออกมาเป็น Base64 string
+  //   .then((pdfBase64) => {
+  //     console.log(pdfBase64); // แสดง base64 string ใน console
+  //     const base64Content = pdfBase64.split(",")[1];
+  //     const now = new Date();
+  //     const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
+  //     const structrueSend =[{
+  //       id:0,
+  //       guid:"",
+  //       name: formattedDateTime+".pdf",
+  //       binary: base64Content,
+  //       type: "application/pdf"
+  //     }]
+  //   // Create a Blob from the base64 string and trigger the download
+  //   const blob = new Blob([Uint8Array.from(atob(base64Content), c => c.charCodeAt(0))], { type: "application/pdf" });
+  //   const link = document.createElement('a');
+  //   link.href = URL.createObjectURL(blob);
+  //   link.download = `${formattedDateTime}.pdf`;
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link); // Cleanup the DOM by removing the link
+  //   element.style.display = 'none';
+  // })
+  // .catch((error) => {
+  //   console.error('Error generating PDF:', error);
+  //   element.style.display = 'none';
+  // });
+      
+  // };
   return (
+    <>
+   
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
         <div className="container max-w-screen-lg mx-auto text-left">
@@ -1115,12 +1593,14 @@ const UpdatePortfolio = () => {
                   {detailPortfolio?.portfolioInfo?.portfolioName || "-"}
                 </span>
               </p>
+              
             </div>
 
             <form>
               <div className="flex flex-col gap-3">
                 {/* Portfolio Information */}
                 <Card
+                
                   shadow="md"
                   radius="lg"
                   className="flex w-full h-full overflow-visible"
@@ -1414,7 +1894,7 @@ const UpdatePortfolio = () => {
                     {deviceListSelected?.length > 0 ? (
                       <div>
                         <DataTablePortfolio
-                          data={deviceListSelected}
+                          data={filteredDeviceList}
                           columns={columnsDevice}
                           searchData={searchDevice}
                           checkbox={onEditDevice}
@@ -1422,9 +1902,11 @@ const UpdatePortfolio = () => {
                           onSelectedRowsChange={selectedDeviceChange}
                           dateChange={handleDeviceDateChange}
                           isStartPort={isStartPort}
+                          error = {portfolioValidateStatus }
                           isTotal={"Total Capacity"}
                           portfolioStartDate={getValues("startDate")}
                           portfolioEndDate={getValues("endDate")}
+                          openpopupDeviceError={handleErrorDevicepopup}
                         />
                       </div>
                     ) : (
@@ -1594,7 +2076,7 @@ const UpdatePortfolio = () => {
                     {subscriberListSelected?.length > 0 ? (
                       <div>
                         <DataTablePortfolio
-                          data={subscriberListSelected}
+                          data={filteredSubList}
                           columns={columnsSubscriber}
                           searchData={searchSubscriber}
                           checkbox={onEditSubscriber}
@@ -1602,9 +2084,11 @@ const UpdatePortfolio = () => {
                           onSelectedRowsChange={selectedSubscriberChange}
                           dateChange={handleSubscriberDateChange}
                           isStartPort={isStartPort}
+                          error = {portfolioValidateStatus }
                           isTotal={"Total Contracted Energy Amount"}
                           portfolioStartDate={getValues("startDate")}
                           portfolioEndDate={getValues("endDate")}
+                          openpopupSubError={handleErrorSubpopup}
                         />
                       </div>
                     ) : (
@@ -1617,13 +2101,25 @@ const UpdatePortfolio = () => {
 
                 {/* submit button */}
                 <div className="text-center my-5">
+                {IsError && (
+                            <div className="font-normaltext-lg flex items-center justify-center border-solid bg-[#fdeeee] border-red-300 border-3   my-2 p-4 text-red-400 ">
+                              <div className="mr-2">
+                                <BiErrorCircle className="w-[25px] h-[25px] text-red-600" />
+                              </div>
+                              <div className="">
+                              Device Assignment and Subscriber Assignment must have at least 1 item.
+                              </div>
+                            </div>
+                          )}
                   <button
                     onClick={backtoPortfolioListPage}
                     className="mr-4 w-1/4 rounded h-12 px-6 text-gray transition-colors duration-150 rounded-lg focus:shadow-outline bg-[#CBD0D5] hover:bg-[#78829D] text-[#78829D] hover:text-white font-semibold"
                   >
                     Back
                   </button>
+                  
                   {!onEditSubscriber && !onEditDevice ? (
+                    
                     <button
                       type="button"
                       onClick={handleSubmit(onSubmitForm1)}
@@ -1632,6 +2128,7 @@ const UpdatePortfolio = () => {
                       <b>Save</b>
                     </button>
                   ) : (
+                    
                     <button
                       type="button"
                       disabled={true}
@@ -1661,6 +2158,14 @@ const UpdatePortfolio = () => {
             link={WEB_URL.PORTFOLIO_LIST}
           />
         )}
+        {openpopupDeviceError && (
+          <ModalValidation
+            dataList={columnsTable == "device" ? getValidationDevicePopup : getValidationSubPopup}
+            onClickConfirmBtn={oncloseValidationModal}
+            closeModal={oncloseValidationModal}
+            columns={columnsTable}
+          />
+        )}
         {showModalAdd && (
           <ModalAddPort
             title={titleAddModal}
@@ -1678,8 +2183,365 @@ const UpdatePortfolio = () => {
           />
         )}
       </div>
+  
+  
+  {/* For Capture */}
+  <div  ref={cardRef} className="min-h-screen p-6 items-center justify-center hidden">
+  <div className="container max-w-screen-lg mx-auto" id="page-1">
+    <div className="text-left flex flex-col gap-3">
+      <div className="grid gap-4 gap-y-2 grid-cols-1 md:grid-cols-6 ">
+        <div className="md:col-span-3">
+          <h2 className="font-semibold text-xl text-black truncate">
+          {detailPortfolio?.portfolioInfo?.portfolioName || "-"}
+          </h2>
+          <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
+            {currentUGTGroup?.name} / Portfolio & Settlement Management /
+            Portfolio Info /{" "}
+            <span className="truncate">
+            {detailPortfolio?.portfolioInfo?.portfolioName || "-"}
+            </span>
+          </p>
+        </div>
+      </div>
+      
+      <Card
+        shadow="md"
+        radius="lg"
+        className="flex w-full h-full"
+        padding="0"
+      >
+        <div className="p-4">
+          <div className=" lg:col-span-2 ">
+            <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
+              <div
+                id="top-div"
+                className="md:col-span-6  lg:col-span-4 flex   items-center gap-3"
+              >
+                <FaChevronCircleLeft
+                  className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
+                  size="30"
+                  onClick={() => navigate(WEB_URL.PORTFOLIO_LIST)}
+                />
+                <span className="text-xl	mr-14 	leading-tight">
+                  <b> Portfolio Info </b>
+                </span>
+              </div>
+
+              
+
+              {/* Button Section */}
+            </div>
+          </div>
+        </div>
+        <div className="  p-0 px-0 md:p-0 mb-0 border-1 align-top" />
+
+        {/* information */}
+        <div className="p-6 px-8 md:p-8 mb-0 ">
+          <div className="lg:col-span-2">
+            <div className="grid gap-2 gap-y-2 text-sm grid-cols-1 md:grid-cols-6 ">
+              <div className="md:col-span-2">
+                <h6 className="text-PRIMARY_TEXT mt-3">
+                  <b>Portfolio Information</b>
+                </h6>
+              </div>
+              <div className="md:col-span-2">
+                <div className=" md:col-span-6">
+                  <div>
+                    <label className="mt-3 text-[#6B7280] text-xs">
+                      Portfolio Name
+                    </label>
+                  </div>
+                  <div>
+                    <span className="">
+                      <div className="break-words	font-bold">
+                      {watch("portfolioName")}
+                      
+                      </div>
+                    </span>
+                  </div>
+                </div>
+                
+
+                <div className=" md:col-span-6">
+                  <div>
+                    <label className="mt-3 text-[#6B7280] text-xs">
+                      Start Date
+                    </label>
+                  </div>
+                  <div>
+                    <span className="">
+                      <div className="break-words	font-bold">
+                      {formatDate(watch("startDate"))}
+                      </div>
+                    </span>
+                  </div>
+                </div>
+                <div className=" md:col-span-6">
+                  <div>
+                    <label className="mt-3 text-[#6B7280] text-xs">
+                      Number of Devices
+                    </label>
+                  </div>
+                  <div>
+                    <span className="">
+                      <div className="break-words	font-bold">
+                      {deviceListSelected?.length}{" "}
+                            {deviceListSelected?.length > 1
+                              ? "Devices"
+                              : "Device"}
+                      </div>
+                    </span>
+                  </div>
+                </div>
+                <div className=" md:col-span-6">
+                  <div>
+                    <label className="mt-3 text-[#6B7280] text-xs">
+                      Total Capacity
+                    </label>
+                  </div>
+                  <div>
+                    <span className="">
+                      <div className="break-words	font-bold">
+                        {numeral(
+                          TotalCapacityAmount
+                        ).format("0,0.000000") || "-"}{" "}
+                        
+                        MW
+                      </div>
+                    </span>
+                  </div>
+                </div>
+                <div className=" md:col-span-6">
+                  <div>
+                    <label className="mt-3 text-[#6B7280] text-xs">
+                      Mechanism
+                    </label>
+                  </div>
+                  <div>
+                    <span className="">
+                      <div className="break-words	font-bold">
+                        {watch("mechanism")?.mexhanismName}
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="md:col-span-2">
+              <div className=" md:col-span-6">
+                  <div>
+                    <label className="mt-3 text-[#6B7280] text-xs">
+                      Portfolio Code
+                    </label>
+                  </div>
+                  <div>
+                    <span className="">
+                      <div className="break-words	font-bold">
+                        {detailPortfolio?.portfolioInfo?.portfolioCode || "-"}
+                      </div>
+                    </span>
+                  </div>
+                </div>
+                
+                <div className=" md:col-span-6">
+                  <div>
+                    <label className="mt-3 text-[#6B7280] text-xs">
+                      End Date
+                    </label>
+                  </div>
+                  <div>
+                    <span className="">
+                      <div className="break-words	font-bold">
+                      {formatDate(watch("endDate"))}
+                      </div>
+                    </span>
+                  </div>
+                </div>
+                <div className=" md:col-span-6">
+                  <div>
+                    <label className="mt-3 text-[#6B7280] text-xs">
+                      Number of Subscriber
+                    </label>
+                  </div>
+                  <div>
+                    <span className="">
+                      <div className="break-words	font-bold">
+                      {subscriberListSelected?.length}{" "}
+                            {subscriberListSelected?.length > 1
+                              ? "Subscribers"
+                              : "Subscriber"}
+                      </div>
+                    </span>
+                  </div>
+                </div>
+                <div className=" md:col-span-6">
+                  <div>
+                    <label className="mt-3 text-[#6B7280] text-xs">
+                      Total Allocated Energy Amount
+                    </label>
+                  </div>
+                  <div>
+                    <span className="">
+                      <div className="break-words	font-bold">
+                      {numeral(
+                          totalAllocateEnergyAmount
+                        ).format("0,0.000000") || "-"}{" "}
+                      
+                        kWh
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+       
+        
+        {/* Devices*/}
+        <div className="bg-white rounded shadow-none p-14 px-4 md:p-8 mb-6">
+          <div className="  text-sm  ">
+            <div className="grid gap-4 gap-y-2 text-sm  lg:grid-cols-6  ">
+              <div className="col-span-2 mb-4">
+                <div className="md:col-span-6">
+                  <h6 className="text-PRIMARY_TEXT font-semibold">
+                    Device Assignment
+                  </h6>
+                  <label
+                    className={`font-sm font-normal text-sm text-BREAD_CRUMB`}
+                  >
+                    {filteredDeviceList?.length || "0"}{" "}
+                    {filteredDeviceList?.length > 1 ? "Devices" : "Device"}
+                  </label>
+                </div>
+              </div>
+
+              <div className="grid col-span-4 grid-cols-12">
+                <form
+                  autoComplete="off"
+                  className="grid col-span-12 grid-cols-12"
+                >
+                  <div className="col-span-1 px-2"></div>
+                  <div className="col-span-3 px-2"></div>
+                  <div className="col-span-3 px-2">
+                    {/* <Controller
+                      name="deviceStatus"
+                      control={control}
+                      defaultValue={null}
+                      render={({ field }) => (
+                        <Multiselect
+                          {...field}
+                          id={"deviceStatus"}
+                          typeSelect={2}
+                          options={statusList}
+                          valueProp={"id"}
+                          displayProp={"statusName"}
+                          placeholder={"Find Status"}
+                          onChangeInput={(value) => {
+                            handleChangeDeviceStatus(value);
+                          }}
+                        />
+                      )}
+                    /> */}
+                  </div>
+                  
+                </form>
+              </div>
+            </div>
+            <div>
+              <DataTableForCaptures
+                data={filteredDeviceList}
+                columns={columnsDevice}
+                searchData={searchDevice}
+                checkbox={false}
+                isTotal={"Total Capacity"}
+                // onSelectedRowsChange={selectedDeviceChange}
+              />
+            </div>
+          </div>
+        </div>
+        
+        
+        {/* Subscriber*/}
+        <div className="bg-white rounded shadow-none p-14 px-4 md:p-8 mb-6 ">
+          <div className="  text-sm  ">
+            <div className="grid gap-4 gap-y-2 text-sm  lg:grid-cols-6  ">
+              <div className="col-span-2 mb-4">
+                <div className="md:col-span-6">
+                  <h6 className="text-PRIMARY_TEXT font-semibold">
+                    Subscriber Assignment
+                  </h6>
+                  <label
+                    className={`font-sm font-normal text-sm text-BREAD_CRUMB`}
+                  >
+                    {filteredSubList?.length || "0"}{" "}
+                    {filteredSubList?.length > 1
+                      ? "Subscribers"
+                      : "Subscriber"}
+                  </label>
+                </div>
+              </div>
+
+              <div className="grid col-span-4 grid-cols-12">
+                <form
+                  autoComplete="off"
+                  className="grid col-span-12 grid-cols-12"
+                >
+                  <div className="col-span-4 px-2"></div>
+                  <div className="col-span-3 px-2">
+                    {/* <Controller
+                      name="subscriberStatus"
+                      control={control}
+                      defaultValue={null}
+                      render={({ field }) => (
+                        <Multiselect
+                          {...field}
+                          id={"subscriberStatus"}
+                          typeSelect={2}
+                          options={statusList}
+                          valueProp={"id"}
+                          displayProp={"statusName"}
+                          placeholder={"Find Status"}
+                          onChangeInput={(value) => {
+                            handleChangeSubscriberStatus(value);
+                          }}
+                        />
+                      )}
+                    /> */}
+                  </div>
+                  
+                </form>
+              </div>
+            </div>
+            <div>
+              <DataTableForCaptures
+                data={filteredSubList}
+                columns={columnsSubscriber}
+                searchData={searchSubscriber}
+                checkbox={false}
+                isTotal={"Total Allocated Energy Amount"}
+                // onSelectedRowsChange={selectedDeviceChange}
+              />
+            </div>
+          </div>
+        </div>
+      </Card>
     </div>
-  );
+  </div></div>
+    </div>
+    
+    
+
+
+
+
+
+
+
+</>
+
+
+);
 };
 
 export default UpdatePortfolio;

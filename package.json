@@ -17,6 +17,8 @@
     "@heroicons/react": "^2.1.1",
     "@mantine/core": "^7.5.2",
     "@mantine/hooks": "^7.5.2",
+    "@material-ui/core": "^4.12.4",
+    "@mui/icons-material": "^6.1.4",
     "@mui/material": "^5.16.7",
     "@popperjs/core": "^2.11.8",
     "@react-email/components": "^0.0.25",

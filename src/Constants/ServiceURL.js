@@ -78,7 +78,10 @@ export const PORTFOLIO_UPDATE_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/e
 export const PORTFOLIO_UPDATE_LIST_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/portfolio-management`;
 export const PORTFOLIO_HISTORY_LOG = `${DOMAIN_URL}/ugt/v1/portfolio-management/GetPortfoliosHistory`;
 export const PORTFOLIO_CREATE_HISTORY_LOG = `${DOMAIN_URL}/ugt/v1/portfolio-management/CreatePortfoliosHistoryDevicesAndSubscribers`;
-
+export const PORTFOLIO_VALIDATION_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/validation`;
+export const PORTFOLIO_VALIDATION_POPUP_DEVICE_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/getvalidationdeviceinfolist`;
+export const PORTFOLIO_VALIDATION_POPUP_SUBSCRIBER_URL = `${DOMAIN_URL}/ugt/v1/portfolio-management/getvalidationsubscriberinfolist`;
+export const PORTFOLIO_HISTORY_FILE = `${DOMAIN_URL}/ugt/v1/portfolio-management/getfileportfoliofileUpload`
 // EAC
 export const EAC_PORTFOLIO_YEAR_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/portfolioYearList`;
 export const EAC_PORTFOLIO_MONTH_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/portfolioMonthList`;

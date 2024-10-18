@@ -12,7 +12,12 @@ import { GET_PORTFOLIO_DASHBOARD_OBJ,
     EDIT_PORTFOLIO_DEVICE_STATUS,
     EDIT_PORTFOLIO_SUBSCRIBER_STATUS,
     RESET_STATE,
-    GET_HISTORY_PORTFOLIO } from "../ActionType"
+    GET_HISTORY_PORTFOLIO ,
+    VALIDATE_PORTFOLIO_STATUS,
+    GET_VALIDATION_POPUP_DEVICE,
+    GET_VALIDATION_POPUP_SUBSCRIBER,
+    GET_HISTORY_FILE
+} from "../ActionType"
 
 const initialstate = {
     loading: true,
@@ -22,14 +27,18 @@ const initialstate = {
     portfolioDashboardList: [],
     portfolioMechanism: [],
     portfolioCreateStatus: null,
+    portfolioValidateStatus:[],
     isOpenFailModal:false,
     detailInfoList:{},
     getOnePortfolio: {},
+    getValidationDevicePopup: {},
+    getValidationSubPopup: {},
     deletedStatus: {},
     editStatus: {},
     editSubscriberStatus: {},
     editDeviceStatus: {},
-    historyPort:{}
+    historyPort:{},
+    historyFile:{}
 }
 
 export const PortfolioReducer = (state = initialstate, action) => {
@@ -38,6 +47,10 @@ export const PortfolioReducer = (state = initialstate, action) => {
             case GET_HISTORY_PORTFOLIO:return{
                 ...state,
                 historyPort: action.payload
+            }
+            case GET_HISTORY_FILE:return{
+                ...state,
+                historyFile: action.payload
             }
             case GET_PORTFOLIO_DASHBOARD_OBJ:return{
                 ...state,
@@ -59,6 +72,10 @@ export const PortfolioReducer = (state = initialstate, action) => {
                 ...state,
                 portfolioMechanism: action.payload
             }
+            case VALIDATE_PORTFOLIO_STATUS:return{
+                ...state,
+                portfolioValidateStatus: action.payload,
+            }
             case CREATE_PORTFOLIO_STATUS:return{
                 ...state,
                 portfolioCreateStatus: action.payload,
@@ -66,6 +83,14 @@ export const PortfolioReducer = (state = initialstate, action) => {
             case GET_PORTFOLIO_INFO:return{
                 ...state,
                 detailInfoList: action.payload,
+            }
+            case GET_VALIDATION_POPUP_DEVICE:return{
+                ...state,
+                getValidationDevicePopup: action.payload,
+            }
+            case GET_VALIDATION_POPUP_SUBSCRIBER:return{
+                ...state,
+                getValidationSubPopup: action.payload,
             }
             case GET_PORTFOLIO_DETAIL:return{
                 ...state,

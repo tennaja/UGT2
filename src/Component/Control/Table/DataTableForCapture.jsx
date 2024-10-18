@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import DatePicker from "../../Control/DayPicker";
+import DatePicker from "../DayPicker";
 import { useForm, Controller } from "react-hook-form";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import numeral from "numeral";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"; 
-import "../../Control/Css/DataTable.css";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"; // Import the error icon
+import "../Css/DataTable.css";
 import {
   Table,
   TableBody,
@@ -22,9 +22,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
-import WarningIcon from '@mui/icons-material/Warning';
 
-const DataTablePortfolio = ({
+const DataTableForCaptures = ({
   data,
   columns,
   searchData,
@@ -38,7 +37,6 @@ const DataTablePortfolio = ({
   portfolioStartDate,
   portfolioEndDate,
   openpopupDeviceError,
-  openpopupSubError,
   error
 }) => {
   const {
@@ -50,11 +48,6 @@ const DataTablePortfolio = ({
   } = useForm();
 
   const dispatch = useDispatch();
-
-  const detailPortfolio = useSelector(
-    (state) => state.portfolio.getOnePortfolio
-  );
-
   const [orderBy, setOrderBy] = useState(null);
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
@@ -182,20 +175,9 @@ const DataTablePortfolio = ({
   const isSelected = (id) => {
     return selectedRows.indexOf(id) !== -1;
   };
-  const isDisableSelected = ({ id, name }) => {
-    const addedDevice = detailPortfolio?.device?.filter(
-      (item) => item?.id == id && item?.name == name
-    );
-    const addedSubscriber = detailPortfolio?.subscriber?.filter(
-      (item) => item?.id == id && item?.name == name
-    );
-
+  const isDisableSelected = (id) => {
     const filterDisabled = selectedData?.filter((item) => item.id == id);
-    return filterDisabled?.length > 0 || addedDevice.length > 0
-      ? true
-      : false || addedSubscriber.length > 0
-      ? true
-      : false;
+    return filterDisabled?.length > 0 ? true : false;
   };
   const sortedData = data?.sort((a, b) => {
     if (orderBy === null) return 0;
@@ -327,7 +309,7 @@ const DataTablePortfolio = ({
     previousDateEnd.setDate(dateValueEnd.getDate());
 
     const checkEndDate =
-      data.find((item) => item.id === index)?.registrationDate ||
+      // data.find((item) => item.id === index)?.registrationDate ||
       data.find((item) => item.id === index)?.subEndDate;
 
     let tempDateEndDate;
@@ -348,71 +330,77 @@ const DataTablePortfolio = ({
   };
 
   const renderCell = (row, column) => {
-    const isError = row.isError;
-    if (column.render) {
-      if (column.id === "errorDevice" && isError) {
-        return (
-          <div
-          style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
-        >
-          <WarningIcon
-            style={{ color: "red", marginLeft: 4 }}
-            titleAccess="Error" // Tooltip text
-          />
-          <div
-           type="button"
-           className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
-           onClick={() => openpopupDeviceError(row.id ,row.deviceName,row.startDate,row.endDate)}
-          >
-            Error Detail
-          </div>
-        </div>
-        );
-      }
-      if (column.id === "errorSub" && isError) {
-        return (
-          <div 
+    const isError = row.isError; // Assuming row has an isError property
+    if (column.id === "error" && isError) {
+      return (
+        <span
+        onClick={() => openpopupDeviceError(row.id ,row.deviceName,row.startDate,row.endDate)} // Call your error handling function here
         style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
       >
-        <WarningIcon
+        <ErrorOutlineIcon
           style={{ color: "red", marginLeft: 4 }}
           titleAccess="Error" // Tooltip text
         />
-        <div
-                                type="button"
-         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
-         onClick={() => openpopupSubError(row.id,row.startDate,row.endDate,row.subscribersContractInformationId)}
-        >
-          Error Detail
-        </div>
-      </div>
-        );
-      }
+      </span>
+      );
+    }
+    if (column.render) {
       // ถ้ามี props 'render'
       if (!editDatetime) {
-        return column.render(row);
+        return column.render(row)
       } else {
-        // ถ้า Port ยังไม่เริ่ม แก้ไขวันที่ Start / EndDate ได้
-        if (
-          column.id === "startDate" ||
-          column.id === "retailESAContractStartDate"
-        ) {
-          // ถ้าเป็นข้อมูลที่ add ลงไปใน port อยู่แล้ว ห้าม edit start date
-          const addedDevice = detailPortfolio?.device?.filter(
-            (item) => item?.id == row.id && item?.name == row.name
-          );
-
-          // ถ้าเป็นข้อมูลที่ add ลงไปใน port อยู่แล้ว ห้าม edit start date
-          const addedSubscriber = detailPortfolio?.subscriber?.filter(
-            (item) => item?.id == row.id && item?.name == row.name
-          );
-          if (addedDevice.length > 0) return <span>{row[column.id]}</span>;
-          else if (addedSubscriber.length > 0)
+        if (isStartPort) {
+          // ถ้า Port เริ่มไปแล้ว แก้ไขวันที่ EndDate ได้อย่างเดียว
+          if (
+            column.id === "startDate" ||
+            column.id === "retailESAContractStartDate"
+          ) {
             return <span>{row[column.id]}</span>;
-          else {
-            console.log("column.id subscriber", column.id);
-            console.log("row.id subscriber", row);
-            // เป็นข้อมูลที่ add เข้ามา ยังไม่ได้ save จะแก้ไขได้
+          } else if (
+            column.id === "endDate" ||
+            column.id === "retailESAContractEndDate"
+          ) {
+            return (
+              <Controller
+                name={"endDate" + "_" + row.id}
+                control={control}
+                rules={
+                  {
+                    // required: "This field is required",
+                  }
+                }
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    id={"endDate" + "_" + row.id}
+                    formatDate={"d/M/yyyy"}
+                    error={errors["endDate" + "_" + row.id]}
+                    onCalDisableDate={(newValue) => {
+                      return requestedEffectiveDateDisableDateCal(
+                        newValue,
+                        row.id
+                      );
+                    }}
+                    onChangeInput={(newValue) => {
+                      const newDate = format(newValue, "dd/MM/yyyy");
+                      dateChange(newDate, row.id, "endDate");
+                    }}
+                    validate={" *"}
+                    // ... other props
+                  />
+                )}
+              />
+            );
+          } else {
+            // column อื่นๆ
+            return column.render(row);
+          }
+        } else {
+          // ถ้า Port ยังไม่เริ่ม แก้ไขวันที่ Start / EndDate ได้
+          if (
+            column.id === "startDate" ||
+            column.id === "retailESAContractStartDate"
+          ) {
             return (
               <Controller
                 name={"startDate" + "_" + row.id}
@@ -435,7 +423,6 @@ const DataTablePortfolio = ({
                       );
                     }}
                     onChangeInput={(newValue) => {
-                      console.log("newValue", newValue);
                       const newDate = format(newValue, "dd/MM/yyyy");
                       dateChange(newDate, row.id, "startDate");
                     }}
@@ -445,52 +432,52 @@ const DataTablePortfolio = ({
                 )}
               />
             );
-          }
-        } else if (
-          column.id === "endDate" ||
-          column.id === "retailESAContractEndDate"
-        ) {
-          return (
-            <Controller
-              name={"endDate" + "_" + row.id}
-              control={control}
-              rules={
-                {
-                  // required: "This field is required",
+          } else if (
+            column.id === "endDate" ||
+            column.id === "retailESAContractEndDate"
+          ) {
+            return (
+              <Controller
+                name={"endDate" + "_" + row.id}
+                control={control}
+                rules={
+                  {
+                    // required: "This field is required",
+                  }
                 }
-              }
-              render={({ field }) => (
-                <DatePicker
-                  {...field}
-                  id={"endDate" + "_" + row.id}
-                  formatDate={"d/M/yyyy"}
-                  error={errors["endDate" + "_" + row.id]}
-                  onCalDisableDate={(newValue) => {
-                    return requestedEffectiveDateDisableDateCal(
-                      newValue,
-                      row.id
-                    );
-                  }}
-                  onChangeInput={(newValue) => {
-                    const newDate = format(newValue, "dd/MM/yyyy");
-                    dateChange(newDate, row.id, "endDate");
-                  }}
-                  validate={" *"}
-                  // ... other props
-                />
-              )}
-            />
-          );
-        } else {
-          // column อื่นๆ
-          return column.render(row);
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    id={"endDate" + "_" + row.id}
+                    formatDate={"d/M/yyyy"}
+                    error={errors["endDate" + "_" + row.id]}
+                    onCalDisableDate={(newValue) => {
+                      return requestedEffectiveDateDisableDateCal(
+                        newValue,
+                        row.id
+                      );
+                    }}
+                    onChangeInput={(newValue) => {
+                      const newDate = format(newValue, "dd/MM/yyyy");
+                      dateChange(newDate, row.id, "endDate");
+                    }}
+                    validate={" *"}
+                    // ... other props
+                  />
+                )}
+              />
+            );
+          } else {
+            // column อื่นๆ
+            return column.render(row);
+          }
         }
       }
     } else {
       return <span>{row[column.id]}</span>;
     }
   };
-
+  
   return (
     <div>
       <TableContainer
@@ -499,7 +486,7 @@ const DataTablePortfolio = ({
       >
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow >
               {checkbox && (
                 <TableCell
                   padding="checkbox"
@@ -547,13 +534,10 @@ const DataTablePortfolio = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((row, index) => {
+            {filteredData.length > 0 ? (
+              filteredData.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
-                const isDisabled = isDisableSelected({
-                  id: row.id,
-                  name: row.name,
-                });
+                const isDisabled = isDisableSelected(row.id);
                 const isError = row.isError;
                 return (
                   <TableRow
@@ -821,7 +805,7 @@ const DataTablePortfolio = ({
           </TableFooter>
         </Table>
       </TableContainer>
-      <TablePagination
+      {/* <TablePagination
         rowsPerPageOptions={[5, 10, 25, 100]}
         component="div"
         count={filteredData?.length}
@@ -833,9 +817,9 @@ const DataTablePortfolio = ({
         labelDisplayedRows={({ from, to, count }) =>
           `${from} - ${to} of ${count}`
         }
-      />
+      /> */}
     </div>
   );
 };
 
-export default DataTablePortfolio;
+export default DataTableForCaptures;

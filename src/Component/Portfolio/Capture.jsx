@@ -23,9 +23,9 @@ import { MdOutlineHistory } from "react-icons/md";
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import html2pdf from 'html2pdf.js';
-import Captures from "./Capture";
-
-const InfoPortfolio = () => {
+import '../Control/Css/page.css'
+import DataTableForCaptures from "../Control/Table/DataTableForCapture";
+const Captures = () => {
   const cardRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -462,12 +462,57 @@ const InfoPortfolio = () => {
       setSubscriberList(formattedDataArray);
     }
   };
-  
+  const handleCaptureToPDF = async () => {
+    const element = cardRef.current//document.getElementById('pdf-content');
+    element.style.display = 'block';
+  // กำหนดตัวเลือกสำหรับ html2pdf
+  const options = {
+    margin: 0,
+    filename: 'webscreen.pdf',
+    image: { type: 'jpeg', quality: 50 },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+    html2canvas: { scale: 2}, // เพิ่ม scale เพื่อเพิ่มความละเอียด
+    jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait'},
+  };
+
+  // สร้าง PDF ด้วย html2pdf และดึง base64 string
+  html2pdf()
+    .from(element)
+    .set(options)
+    .outputPdf('datauristring') // ดึงข้อมูลออกมาเป็น Base64 string
+    .then((pdfBase64) => {
+      console.log(pdfBase64); // แสดง base64 string ใน console
+      const base64Content = pdfBase64.split(",")[1];
+      const now = new Date();
+      const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
+      const structrueSend =[{
+        id:0,
+        guid:"",
+        name: formattedDateTime+".pdf",
+        binary: base64Content,
+        type: "application/pdf"
+      }]
+    // Create a Blob from the base64 string and trigger the download
+    const blob = new Blob([Uint8Array.from(atob(base64Content), c => c.charCodeAt(0))], { type: "application/pdf" });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${formattedDateTime}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link); // Cleanup the DOM by removing the link
+    element.style.display = 'none';
+  })
+  .catch((error) => {
+    console.error('Error generating PDF:', error);
+    element.style.display = 'none';
+  });
+      
+  };
   return (
     <div>
-      <div ref={cardRef} className="min-h-screen p-6 items-center justify-center">
-        
-        <div className="container max-w-screen-lg mx-auto">
+      <button onClick={handleCaptureToPDF}>Save as PDF</button>
+      <div ref={cardRef} className="min-h-screen p-6 items-center justify-center hidden">
+        <div className="container max-w-screen-lg mx-auto" id="page-1">
           <div className="text-left flex flex-col gap-3">
             <div className="grid gap-4 gap-y-2 grid-cols-1 md:grid-cols-6 ">
               <div className="md:col-span-3">
@@ -483,7 +528,7 @@ const InfoPortfolio = () => {
                 </p>
               </div>
             </div>
-            {/* <button onClick={handleCaptureToPDF}>Save as PDF</button> */}
+            
             <Card
               shadow="md"
               radius="lg"
@@ -730,8 +775,10 @@ const InfoPortfolio = () => {
                 </div>
               </div>
 
+             
+              
               {/* Devices*/}
-              <div className="bg-white rounded shadow-none p-14 px-4 md:p-8 mb-6">
+              <div className="bg-white rounded shadow-none p-14 px-4 md:p-8 mb-6" id="page-2">
                 <div className="  text-sm  ">
                   <div className="grid gap-4 gap-y-2 text-sm  lg:grid-cols-6  ">
                     <div className="col-span-2 mb-4">
@@ -793,7 +840,7 @@ const InfoPortfolio = () => {
                     </div>
                   </div>
                   <div>
-                    <DataTable
+                    <DataTableForCaptures
                       data={deviceList}
                       columns={columnsDevice}
                       searchData={searchDevice}
@@ -804,8 +851,10 @@ const InfoPortfolio = () => {
                   </div>
                 </div>
               </div>
+              
+              
               {/* Subscriber*/}
-              <div className="bg-white rounded shadow-none p-14 px-4 md:p-8 mb-6 ">
+              <div className="bg-white rounded shadow-none p-14 px-4 md:p-8 mb-6 "id="page-3">
                 <div className="  text-sm  ">
                   <div className="grid gap-4 gap-y-2 text-sm  lg:grid-cols-6  ">
                     <div className="col-span-2 mb-4">
@@ -868,7 +917,7 @@ const InfoPortfolio = () => {
                     </div>
                   </div>
                   <div>
-                    <DataTable
+                    <DataTableForCaptures
                       data={subscriberList}
                       columns={columnsSubscriber}
                       searchData={searchSubscriber}
@@ -903,4 +952,4 @@ const InfoPortfolio = () => {
   );
 };
 
-export default InfoPortfolio;
+export default Captures;

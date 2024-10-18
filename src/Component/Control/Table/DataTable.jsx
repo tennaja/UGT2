@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import numeral from "numeral";
-
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"; // Import the error icon
 import "../Css/DataTable.css";
 import {
   Table,
@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
-
+import WarningIcon from '@mui/icons-material/Warning';
 const DataTable = ({
   data,
   columns,
@@ -36,6 +36,9 @@ const DataTable = ({
   isStartPort,
   portfolioStartDate,
   portfolioEndDate,
+  openpopupDeviceError,
+  openpopupSubError,
+  error
 }) => {
   const {
     handleSubmit,
@@ -328,10 +331,49 @@ const DataTable = ({
   };
 
   const renderCell = (row, column) => {
+    const isError = row.isError; // Assuming row has an isError property
+    if (column.id === "errorDevice" && isError) {
+      return (
+        <div
+        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
+      >
+        <WarningIcon
+          style={{ color: "red", marginLeft: 4 }}
+          titleAccess="Error" // Tooltip text
+        />
+        <div
+         type="button"
+         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+         onClick={() => openpopupDeviceError(row.id ,row.deviceName,row.startDate,row.endDate)}
+        >
+          Error Detail
+        </div>
+      </div>
+      );
+    }
+    if (column.id === "errorSub" && isError) {
+      return (
+        <div 
+        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
+      >
+        <WarningIcon
+          style={{ color: "red", marginLeft: 4 }}
+          titleAccess="Error" // Tooltip text
+        />
+        <div
+                                type="button"
+         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+         onClick={() => openpopupSubError(row.id,row.startDate,row.endDate,row.subscribersContractInformationId)}
+        >
+          Error Detail
+        </div>
+      </div>
+      );
+    }
     if (column.render) {
       // ถ้ามี props 'render'
       if (!editDatetime) {
-        return column.render(row);
+        return column.render(row)
       } else {
         if (isStartPort) {
           // ถ้า Port เริ่มไปแล้ว แก้ไขวันที่ EndDate ได้อย่างเดียว
@@ -461,7 +503,7 @@ const DataTable = ({
       return <span>{row[column.id]}</span>;
     }
   };
-
+  
   return (
     <div>
       <TableContainer
@@ -470,7 +512,7 @@ const DataTable = ({
       >
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow >
               {checkbox && (
                 <TableCell
                   padding="checkbox"
@@ -522,6 +564,7 @@ const DataTable = ({
               paginatedData.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
                 const isDisabled = isDisableSelected(row.id);
+                const isError = row.isError;
                 return (
                   <TableRow
                     key={index}
@@ -529,6 +572,9 @@ const DataTable = ({
                     role="checkbox"
                     tabIndex={-1}
                     selected={isItemSelected}
+                    style={{
+                      backgroundColor: isError ? "#F4433614" : "inherit", // Light red background on error
+                    }}
                   >
                     {checkbox && (
                       <TableCell padding="checkbox">

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {setSF02,setCount} from "../../Redux/Device/Action"
 import html2pdf from 'html2pdf.js';
 import pdfIcon from '../assets/EV.png';
-import './page.css'
+import '../Control/Css/page.css'
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import { IoMdCheckmark } from "react-icons/io";
 const PdfFormPreview = (data,aftersign,Sign,Status) => {

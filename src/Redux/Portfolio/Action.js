@@ -13,7 +13,12 @@ import {
   EDIT_PORTFOLIO_STATUS,
   EDIT_PORTFOLIO_DEVICE_STATUS,
   EDIT_PORTFOLIO_SUBSCRIBER_STATUS,
-  GET_HISTORY_PORTFOLIO
+  GET_HISTORY_PORTFOLIO,
+  VALIDATE_PORTFOLIO_STATUS,
+  FAIL_REQUEST,
+  GET_VALIDATION_POPUP_DEVICE,
+  GET_VALIDATION_POPUP_SUBSCRIBER,
+  GET_HISTORY_FILE,
 } from "../../Redux/ActionType";
 
 import {
@@ -29,7 +34,11 @@ import {
   PORTFOLIO_UPDATE_URL,
   PORTFOLIO_UPDATE_LIST_URL,
   PORTFOLIO_HISTORY_LOG,
-  PORTFOLIO_CREATE_HISTORY_LOG
+  PORTFOLIO_CREATE_HISTORY_LOG,
+  PORTFOLIO_VALIDATION_URL,
+  PORTFOLIO_VALIDATION_POPUP_DEVICE_URL,
+  PORTFOLIO_VALIDATION_POPUP_SUBSCRIBER_URL,
+  PORTFOLIO_HISTORY_FILE
 } from "../../Constants/ServiceURL";
 
 import { getHeaderConfig } from "../../Utils/FuncUtils";
@@ -39,7 +48,12 @@ export const setOpenFailModal = () => {
     type: SET_OPEN_FAIL_MODAL,
   };
 };
-
+export const failRequest = (err) => {
+  return {
+    type: FAIL_REQUEST,
+    payload: err,
+  };
+};
 export const getPortfolioManagementDevice = (data) => {
   return {
     type: GET_PORTFOLIO_DEVICE_OBJ,
@@ -149,6 +163,35 @@ export const PortfolioManagementDashboardList = (param) => {
     await axios.get(URL).then(
       (response) => {
         dispatch(getPortfolioManagementDashboardList(response.data));
+      },
+      (error) => {
+        dispatch(failRequest(error.message));
+      }
+    );
+  };
+};
+
+export const getPortfolioManagementValidationStatus = (data) => {
+  return {
+    type: VALIDATE_PORTFOLIO_STATUS,
+    payload: data,
+  };
+};
+export const PortfolioManagementForVailidation = (params, callback) => {
+  const param = params;
+  const URL = PORTFOLIO_VALIDATION_URL;
+  console.log("URL ==", URL);
+  return async (dispatch) => {
+    await axios.post(URL, param).then(
+      (response) => {
+        if (response?.status == 200 || response?.status == 201) {
+          console.log("response == ", response);
+          dispatch(getPortfolioManagementValidationStatus(response.data));
+        } else {
+          dispatch(setOpenFailModal());
+          dispatch(failRequest(error.message));
+        }
+        callback && callback(response?.data);
       },
       (error) => {
         dispatch(failRequest(error.message));
@@ -366,3 +409,86 @@ export const PortfolioHistory = (id, callback = null) => {
       });
   };
 };
+
+
+export const getValidationDevicePopup = (data) => {
+  return {
+    type: GET_VALIDATION_POPUP_DEVICE,
+    payload: data,
+  };
+};
+export const PortfolioValidationDevicePopup = (Portid,id,startdate,enddate ,callback = null) => {
+  const URL = `${PORTFOLIO_VALIDATION_POPUP_DEVICE_URL}?id=${id}&StartDate=${startdate}&EndDate=${enddate}&PortfolioId=${Portid}`;
+  return async (dispatch) => {
+    await axios
+      .get(URL)
+      .then((response) => {
+        if (response?.status == 200) {
+          dispatch(getValidationDevicePopup(response.data));
+        } else {
+          dispatch(failRequest(error.message));
+        }
+        console.log("run callback");
+        callback && callback();
+      })
+      .catch((error) => {
+        dispatch(failRequest(error.message));
+      });
+  };
+};
+
+export const getValidationSubPopup = (data) => {
+  return {
+    type: GET_VALIDATION_POPUP_SUBSCRIBER,
+    payload: data,
+  };
+};
+export const PortfolioValidationSubPopup = (Portid,id,startdate,enddate,Subcontractid ,callback = null) => {
+  const URL = `${PORTFOLIO_VALIDATION_POPUP_SUBSCRIBER_URL}?id=${id}&StartDate=${startdate}&EndDate=${enddate}&PortfolioId=${Portid}&SubscribersContractInformationId=${Subcontractid}`;
+  return async (dispatch) => {
+    await axios
+      .get(URL)
+      .then((response) => {
+        if (response?.status == 200) {
+          dispatch(getValidationSubPopup(response.data));
+        } else {
+          dispatch(failRequest(error.message));
+        }
+        console.log("run callback");
+        callback && callback();
+      })
+      .catch((error) => {
+        dispatch(failRequest(error.message));
+      });
+  };
+};
+export const getPortfolioHistoryFile = (data) => {
+  return {
+    type: GET_HISTORY_FILE,
+    payload: data,
+  };
+};
+export const PortfolioHistoryFile = (guid, callback = null) => {
+  const URL = `${PORTFOLIO_HISTORY_FILE}/${guid}`;
+  console.log("URL History",URL)
+  return async (dispatch) => {
+    await axios
+      .get(URL)
+      .then((response) => {
+        console.log("Response File",response)
+        if (response?.status == 200) {
+          dispatch(getPortfolioHistoryFile(response.data));
+          callback && callback(response, null);
+        } else {
+          dispatch(failRequest(error.message));
+        }
+        console.log("run callback");
+        //callback && callback();
+      })
+      .catch((error) => {
+        dispatch(failRequest(error.message));
+      });
+  };
+};
+
+
