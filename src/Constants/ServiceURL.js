@@ -31,7 +31,7 @@ export const USER_VERIFIER_FOR_SF02_URL = `${DOMAIN_URL}/ugt/v1/device-managemen
 
 
 //Menu
-export const GET_MENU_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/menu-list`;
+export const GET_MENU_LIST_URL = `${DOMAIN_URL}/ugt/v1/menu-list`;
 export const GET_SUB_MENU_DEVICE_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/device-management/submenu-list`;
 export const GET_SUB_MENU_SUBSCRIBER_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/subscriber-management/submenu-list`;
 export const GET_SUB_MENU_PORTFOLIO_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-management/submenu-list`;

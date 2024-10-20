@@ -112,7 +112,7 @@ const DataTablePortfolio = ({
         0
       );
       setTotalValue(numeral(total).format("0,0.000000"));
-    } else if (isTotal === "Total Contracted Energy (kWh)") {
+    } else if (isTotal === "Total Contracted Energy") {
       const total = paginatedData.reduce(
         (acc, row) => acc + (row.allocateEnergyAmount || 0),
         0
@@ -305,6 +305,7 @@ const DataTablePortfolio = ({
       data.find((item) => item.id === index)?.registrationDate ||
       data.find((item) => item.id === index)?.subStartDate;
 
+
     let tempStartDate;
 
     if (data.find((item) => item.id === index)?.subStartDate) {
@@ -327,15 +328,16 @@ const DataTablePortfolio = ({
     previousDateEnd.setDate(dateValueEnd.getDate());
 
     const checkEndDate =
-      data.find((item) => item.id === index)?.registrationDate ||
+      data.find((item) => item.id === index)?.endDate ||
       data.find((item) => item.id === index)?.subEndDate;
 
     let tempDateEndDate;
     if (data.find((item) => item.id === index)?.subEndDate) {
       const parts = checkEndDate.split("/");
       tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else {
-      tempDateEndDate = previousDateEnd;
+    } else if(data.find((item) => item.id === index)?.endDate){
+      const parts = checkEndDate.split("/");
+      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
     }
     const endDateDisabled =
       tempDateEndDate >= previousDateEnd
@@ -634,7 +636,7 @@ const DataTablePortfolio = ({
                   </strong>
                 </TableCell>
               );
-            } else if (isTotal === "Total Contracted Energy (kWh)" && index === 2) {
+            } else if (isTotal === "Total Contracted Energy" && index === 2) {
               return (
                 <TableCell
                   key={`footer-total-capacity`}

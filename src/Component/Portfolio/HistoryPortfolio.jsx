@@ -134,9 +134,9 @@ const HistoryPortfolio = (props) => {
       const day = dateObject.getDate().toString().padStart(2, "0");
       const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
       const year = dateObject.getFullYear();
-      const hour = dateObject.getHours();
-      const min = dateObject.getMinutes();
-      const sec = dateObject.getSeconds().toString().padStart(2, "0")
+      const hour = dateObject.getHours().toString().padStart(2, "0");
+      const min = dateObject.getMinutes().toString().padStart(2, "0");
+      const sec = dateObject.getSeconds().toString().padStart(2, "0");
       return `${day}-${month}-${year} ${hour}:${min}:${sec}`;
     }
     if(historyPort?.portfoliosList !== undefined){

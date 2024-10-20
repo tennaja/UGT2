@@ -2115,7 +2115,7 @@ if (subscriberDataTable.length > 0) {
                           dateChange={handleSubscriberDateChange}
                           isStartPort={isStartPort}
                           error = {portfolioValidateStatus }
-                          isTotal={"Total Contracted Energy (kWh)"}
+                          isTotal={"Total Contracted Energy"}
                           portfolioStartDate={getValues("startDate")}
                           portfolioEndDate={getValues("endDate")}
                           openpopupSubError={handleErrorSubpopup}

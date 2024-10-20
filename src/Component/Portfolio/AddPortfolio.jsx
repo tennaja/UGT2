@@ -1088,7 +1088,8 @@ useEffect(() => {
                  if (newChange.action === "Add") {
                      // Only add if the action is "Add"
                      updatedChanges.push(newChange);
-                     setIsRemovedDevice(true);
+                     setisAddDevice(true);
+
                  } 
                  // else if (newChange.action === "Edit" || newChange.action === "Remove") {
                  //     // Add "Edit" and "Remove" actions to the list as well
@@ -1690,7 +1691,7 @@ useEffect(() => {
                           onSelectedRowsChange={selectedSubscriberChange}
                           dateChange={handleSubscriberDateChange}
                           error = {portfolioValidateStatus }
-                          isTotal={"Total Contracted Energy (kWh)"}
+                          isTotal={"Total Contracted Energy"}
                           portfolioStartDate={getValues("startDate")}
                           portfolioEndDate={getValues("endDate")}
                           openpopupSubError={handleErrorSubpopup}
