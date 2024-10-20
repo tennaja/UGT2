@@ -1121,7 +1121,7 @@ const UpdatePortfolio = () => {
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
-            endDate: itemEndDate.format("DD/MM/YYYY"),
+            endDate: itemExpiryDate.format("DD/MM/YYYY"),
           };
           /*  return {
               ...item,
