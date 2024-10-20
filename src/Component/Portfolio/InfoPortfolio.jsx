@@ -475,7 +475,7 @@ const InfoPortfolio = () => {
                   {details?.portfolioInfo?.portfolioName || "-"}
                 </h2>
                 <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                  {currentUGTGroup?.name} / Portfolio & Settlement Management /
+                  {currentUGTGroup?.name} / Portfolio /
                   Portfolio Info /{" "}
                   <span className="truncate">
                     {details?.portfolioInfo?.portfolioName || "-"}

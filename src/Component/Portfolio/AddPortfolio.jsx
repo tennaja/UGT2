@@ -40,7 +40,7 @@ import dayjs from "dayjs";
 import { IoInformationCircleSharp } from "react-icons/io5";
 import ModalValidation from "./Modalpopupvalidation";
 import { BiErrorCircle } from "react-icons/bi";
-
+import { FaChevronCircleLeft } from "react-icons/fa";
 const AddPortfolio = () => {
   const {
     // register,
@@ -514,7 +514,7 @@ useEffect(() => {
     },
     {
       id: "deviceTechnologiesName",
-      label: "Energy Source",
+      label: "Device Fuel",
       align: "left",
       render: (row) => (
         <Highlighter
@@ -527,7 +527,7 @@ useEffect(() => {
     },
     {
       id: "capacity",
-      label: "Capacity (MWh)",
+      label: "Capacity (MW)",
       align: "right",
       render: (row) => (
         <Highlighter
@@ -623,7 +623,7 @@ useEffect(() => {
     },
     {
       id: "allocateEnergyAmount",
-      label: "Allocated Energy Amount (kWh)",
+      label: "Contracted Energy(kWh)",
       align: "right",
       render: (row) => (
         <Highlighter
@@ -877,26 +877,27 @@ useEffect(() => {
       if (defualtStartDate) {
         const newDateDevice = data?.map((item) => {
           setisAddDevice(true)
-          // device ที่ add เข้ามาใหม่ ถ้าวัน registrationDate น้อยกว่า startDate ของ port ให้ใช้วันของ portfolio
+          // Initialize startDate using registrationDate, but adjust if it's earlier than the portfolio's startDate
           let itemStartDate = dayjs(item?.registrationDate);
-          if (dayjs(defualtStartDate) >= itemStartDate ) {
+          if (itemStartDate < dayjs(defualtStartDate)) {
             itemStartDate = dayjs(defualtStartDate);
-          } else if (itemStartDate >= dayjs(defualtStartDate)){
-            itemStartDate = dayjs(item?.registrationDate)
           }
 
-          // เอา enddate ของ device หลังจากที่ edit ไปแล้วมาใช้
-          let deviceDataTable = deviceListSelected.filter((row) => {
-            return row.id === item.id;
-          });
+      // Fetch expiryDate (previously endDate) and startDate from deviceListSelected if it exists
+      let deviceDataTable = deviceListSelected.filter((row) => row.id === item.id);
+      let itemExpiryDate = dayjs(item?.expiryDate); // Device's expiryDate
 
-          let itemEndDate = dayjs(item?.expiryDate);
-          
-            if (dayjs(defualtEndDate) <= itemEndDate) {
-              itemEndDate = dayjs(defualtEndDate);
-            } else if (itemEndDate <= dayjs(defualtEndDate)) {
-              itemEndDate = dayjs(item?.expiryDate);
-            }
+      if (deviceDataTable.length > 0) {
+        itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
+        itemExpiryDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
+      }
+
+      // Compare the device's expiryDate with the portfolio's endDate
+      if (dayjs(defualtEndDate) <= itemExpiryDate) {
+        itemExpiryDate = dayjs(defualtEndDate);
+      } else if (itemExpiryDate <= dayjs(defualtEndDate)) {
+        itemExpiryDate = dayjs(item?.expiryDate);
+      }
             const newDeviceChange = {
               deviceId: item.id, // Capture the device ID
               subscriberId:  0, // Use actual value or a default
@@ -909,9 +910,10 @@ useEffect(() => {
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
-            endDate: itemEndDate.format("DD/MM/YYYY"),
+            endDate: itemExpiryDate.format("DD/MM/YYYY"),
           };
         });
+        console.log(newDateDevice)
         setDeviceListSelected(newDateDevice);
         console.log(newDateDevice)
         setDeviceChanges((prevChanges) => [...prevChanges, ...newDeviceChanges]);
@@ -920,16 +922,13 @@ useEffect(() => {
         console.log(data)
       }
       
-    } else if (titleAddModal == "Add Subscriber") {
+    } 
+    else if (titleAddModal == "Add Subscriber") {
       const newSubChanges = [];
       if (defualtStartDate) {
         const newDateSubscriber = data?.map((item) => {
           
-          // subscriber ที่ add เข้ามาใหม่ ถ้าวัน retailESAContractStartDate น้อยกว่า startDate ของ port ให้ใช้วันของ portfolio
-          let itemStartDate = dayjs(
-            item?.retailESAContractStartDate,
-            "DD/MM/YYYY"
-          );
+          let itemStartDate = dayjs(item?.retailESAContractStartDate, "DD/MM/YYYY");
 
           if (dayjs(defualtStartDate) >= itemStartDate ) {
             itemStartDate = dayjs(defualtStartDate);
@@ -937,26 +936,23 @@ useEffect(() => {
             itemStartDate = dayjs(item?.retailESAContractStartDate,
               "DD/MM/YYYY")
           }
+      // Fetch endDate from item or adjust using portfolio's endDate
+      let itemEndDate = dayjs(item?.retailESAContractEndDate, "DD/MM/YYYY");
+      
+      if (dayjs(defualtEndDate) <= itemEndDate ) {
+        itemEndDate = dayjs(defualtEndDate);
+      } else if (itemEndDate <= dayjs(defualtEndDate)) {
+        itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY")
+      }
 
-          // เอา startdate และ enddate ของ subscriber หลังจากที่ edit ไปแล้วมาใช้
-          let subscriberDataTable = subscriberListSelected.filter((row) => {
-            return row.id === item.id;
-          });
+      // Check if the subscriber exists in subscriberListSelected
+      let subscriberDataTable = subscriberListSelected.filter((row) => row.id === item.id);
 
-          let itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY");
-
-          console.log("subscriberDataTable", subscriberDataTable);
-          
-            // itemStartDate = dayjs(
-            //   subscriberDataTable[0]?.startDate,
-            //   "DD/MM/YYYY"
-            // );
-            // itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
-            if (dayjs(defualtEndDate) <= itemEndDate ) {
-              itemEndDate = dayjs(defualtEndDate);
-            } else if (itemEndDate <= dayjs(defualtEndDate)) {
-              itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY")
-            }
+      if (subscriberDataTable.length > 0) {
+        // Use the edited startDate and endDate if subscriber exists
+        itemStartDate = dayjs(subscriberDataTable[0]?.startDate, "DD/MM/YYYY");
+        itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
+      }
             const newSubChange = {
               deviceId:  0, // Capture the device ID
               subscriberId: item.id || 0, // Use actual value or a default
@@ -1055,6 +1051,7 @@ useEffect(() => {
         
       }
     });
+    
     setDeviceListSelected(deviceListSelectedTemp);
     setOnEditDevice(false);
     setOnEditDatetimeDevice(false);
@@ -1198,7 +1195,7 @@ useEffect(() => {
                 Add New Portfolio
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                {currentUGTGroup?.name} / Portfolio & Settlement Management /
+                {currentUGTGroup?.name} / Portfolio /
                 Add New Portfolio
               </p>
             </div>
@@ -1215,11 +1212,29 @@ useEffect(() => {
                   <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
                     <div className="lg:col-span-2">
                       <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                        <div className="md:col-span-6">
-                          <h6 className="text-PRIMARY_TEXT font-semibold">
-                            Portfolio Information
-                          </h6>
-                        </div>
+                        
+                      <div className="md:col-span-6 flex items-center gap-3">
+  <FaChevronCircleLeft
+    className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
+    size="30"
+    onClick={() => navigate(WEB_URL.PORTFOLIO_LIST)}
+  />
+  <h6 className="text-PRIMARY_TEXT font-semibold mb-0">
+    Portfolio Information
+  </h6>
+  <div className="ml-auto py-2 flex items-center">
+    <span className="text-[#f94a4a] flex items-center  text-sm rounded-full px-2">
+      <b>* Required Field</b>
+    </span>
+  </div>
+</div>
+
+<div className="p-0 md:col-span-6 mb-0 border-1 align-top"></div>
+<div className="md:col-span-6">
+                      <h6 className="text-PRIMARY_TEXT mt-3">
+                        <b>Portfolio Information</b>
+                      </h6>
+                    </div>
                         <div className="md:col-span-6">
                           <Controller
                             name="portfolioName"
@@ -1675,7 +1690,7 @@ useEffect(() => {
                           onSelectedRowsChange={selectedSubscriberChange}
                           dateChange={handleSubscriberDateChange}
                           error = {portfolioValidateStatus }
-                          isTotal={"Total Allocated Energy Amount"}
+                          isTotal={"Total Contracted Energy (kWh)"}
                           portfolioStartDate={getValues("startDate")}
                           portfolioEndDate={getValues("endDate")}
                           openpopupSubError={handleErrorSubpopup}
@@ -1732,14 +1747,14 @@ useEffect(() => {
           <ModalConfirm
             onClickConfirmBtn={handleClickConfirm}
             onCloseModal={handleCloseModalConfirm}
-            title={"Are you sure?"}
-            content={"Do you confirm to add Portfolio ?"}
+            title={"Save this Portfolio?"}
+            content={"Would you like to save and create this Portfolio?"}
           />
         )}
         {showModalComplete && (
           <ModalComplete
-            title="Done!"
-            context="Create Complete"
+            title="Create Complete!"
+            context=""
             link={WEB_URL.PORTFOLIO_LIST}
           />
         )}

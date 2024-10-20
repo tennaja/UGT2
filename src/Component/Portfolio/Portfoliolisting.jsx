@@ -271,7 +271,7 @@ useEffect(() => {
       label: "",
       render: (row) => (
         <div className="flex gap-2">
-          <div
+          {/* <div
             className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#e38809] bg-[#EFAE1E]`}
             onClick={() => {
               // ล้างค่า settlementYear ก่อนทุกครั้ง
@@ -288,7 +288,7 @@ useEffect(() => {
             <label className="m-auto cursor-pointer text-white font-semibold">
               {"Settlement"}
             </label>
-          </div>
+          </div> */}
 
           <Link
             type="button"
@@ -427,7 +427,7 @@ useEffect(() => {
       label: "",
       render: (row) => (
         <div className="flex gap-2">
-          <div
+          {/* <div
             className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#e38809] bg-[#EFAE1E]`}
             onClick={() => {
               // ล้างค่า settlementYear ก่อนทุกครั้ง
@@ -444,7 +444,7 @@ useEffect(() => {
             <label className="m-auto cursor-pointer text-white font-semibold">
               {"Settlement"}
             </label>
-          </div>
+          </div> */}
 
           <Link
             type="button"
@@ -550,7 +550,7 @@ useEffect(() => {
                 Portfolio Info
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                {currentUGTGroup?.name} / Portfolio & Settlement Management /
+                {currentUGTGroup?.name} / Portfolio /
                 Portfolio Info
               </p>
             </div>

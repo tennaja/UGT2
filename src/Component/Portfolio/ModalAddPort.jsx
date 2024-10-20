@@ -111,7 +111,7 @@ const ModalAddPort = (props) => {
     },
     {
       id: "deviceTechnologiesName",
-      label: "Energy Source",
+      label: "Device Fuel",
       align: "left",
       render: (row) => (
         <Highlighter
@@ -198,7 +198,7 @@ const ModalAddPort = (props) => {
     },
     {
       id: "allocateEnergyAmount",
-      label: "Allocated Energy Amount (kWh)",
+      label: "Contracted Energy(kWh)",
       align: "right",
       render: (row) => (
         <Highlighter

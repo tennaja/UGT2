@@ -112,7 +112,7 @@ const DataTablePortfolio = ({
         0
       );
       setTotalValue(numeral(total).format("0,0.000000"));
-    } else if (isTotal === "Total Allocated Energy Amount") {
+    } else if (isTotal === "Total Contracted Energy (kWh)") {
       const total = paginatedData.reduce(
         (acc, row) => acc + (row.allocateEnergyAmount || 0),
         0
@@ -747,7 +747,7 @@ const DataTablePortfolio = ({
                       </TableCell>
                     );
                   } else if (
-                    isTotal === "Total Allocated Energy Amount" &&
+                    isTotal === "Total Contracted Energy (kWh)" &&
                     index === 2
                   ) {
                     return (

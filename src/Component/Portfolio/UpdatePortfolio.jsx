@@ -627,7 +627,7 @@ const UpdatePortfolio = () => {
     },
     {
       id: "deviceTechnologiesName",
-      label: "Energy Source",
+      label: "Device Fuel",
       align: "left",
       render: (row) => (
         <Highlighter
@@ -735,7 +735,7 @@ const UpdatePortfolio = () => {
     },
     {
       id: "allocateEnergyAmount",
-      label: "Contracted Energy Amount (kWh)",
+      label: "Contracted Energy(kWh)",
       align: "right",
       render: (row) => (
         <Highlighter
@@ -1093,17 +1093,22 @@ const UpdatePortfolio = () => {
             itemStartDate = dayjs(defualtStartDate);
           }
 
-          // เอา enddate ของ device หลังจากที่ edit ไปแล้วมาใช้
-          let deviceDataTable = deviceListSelected.filter((row) => {
-            return row.id === item.id;
-          });
 
-          let itemEndDate = dayjs(defualtEndDate);
+          // Fetch expiryDate (previously endDate) and startDate from deviceListSelected if it exists
+      let deviceDataTable = deviceListSelected.filter((row) => row.id === item.id);
+      let itemExpiryDate = dayjs(item?.expiryDate); // Device's expiryDate
 
-          if (deviceDataTable.length > 0) {
-            itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
-            itemEndDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
-          }
+      if (deviceDataTable.length > 0) {
+        itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
+        itemExpiryDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
+      }
+
+      // Compare the device's expiryDate with the portfolio's endDate
+      if (dayjs(defualtEndDate) <= itemExpiryDate) {
+        itemExpiryDate = dayjs(defualtEndDate);
+      } else if (itemExpiryDate <= dayjs(defualtEndDate)) {
+        itemExpiryDate = dayjs(item?.expiryDate);
+      }
           const newDeviceChange = {
             deviceId: item.id, // Capture the device ID
             subscriberId:  0, // Use actual value or a default
@@ -1172,27 +1177,29 @@ const UpdatePortfolio = () => {
             item?.retailESAContractStartDate,
             "DD/MM/YYYY"
           );
-          if (itemStartDate < dayjs(defualtStartDate)) {
+          if (dayjs(defualtStartDate) >= itemStartDate ) {
             itemStartDate = dayjs(defualtStartDate);
+          } else if (itemStartDate >= dayjs(defualtStartDate)){
+            itemStartDate = dayjs(item?.retailESAContractStartDate,
+              "DD/MM/YYYY")
           }
+// Fetch endDate from item or adjust using portfolio's endDate
+let itemEndDate = dayjs(item?.retailESAContractEndDate, "DD/MM/YYYY");
+      
+if (dayjs(defualtEndDate) <= itemEndDate ) {
+  itemEndDate = dayjs(defualtEndDate);
+} else if (itemEndDate <= dayjs(defualtEndDate)) {
+  itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY")
+}
 
-          // subscriber ที่ add เข้ามาใหม่ ถ้าวัน endDate ของ port น้อยกว่า retailESAContractEndDate ให้ใช้วันของ portfolio
-          let itemEndDate = dayjs(item?.retailESAContractEndDate, "DD/MM/YYYY");
-          if (dayjs(defualtEndDate) < itemEndDate) {
-            itemEndDate = dayjs(defualtEndDate);
-          }
+// Check if the subscriber exists in subscriberListSelected
+let subscriberDataTable = subscriberListSelected.filter((row) => row.id === item.id);
 
-          // เอา startdate และ enddate ของ subscriber หลังจากที่ edit ไปแล้วมาใช้
-          let subscriberDataTable = subscriberListSelected.filter((row) => {
-            return row.id === item.id;
-          });
-          if (subscriberDataTable.length > 0) {
-            itemStartDate = dayjs(
-              subscriberDataTable[0]?.startDate,
-              "DD/MM/YYYY"
-            );
-            itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
-          }
+if (subscriberDataTable.length > 0) {
+  // Use the edited startDate and endDate if subscriber exists
+  itemStartDate = dayjs(subscriberDataTable[0]?.startDate, "DD/MM/YYYY");
+  itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
+}
           const newSubChange = {
             deviceId:  0, // Capture the device ID
             subscriberId: item.id || 0, // Use actual value or a default
@@ -1350,7 +1357,7 @@ const UpdatePortfolio = () => {
         // If the item's endDate is after portEndDate, adjust it
         if (itemEndDate < portEndDate) {
             console.log("item enddate > portenddate");
-            item.endDate = portEndDate.format("DD/MM/YYYY");
+            itemEndDate = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
 
             // Prepare new device change object for date changes
             const newDeviceChangeDate = {
@@ -1363,6 +1370,8 @@ const UpdatePortfolio = () => {
             console.log(newDeviceChangeDate);
             newDeviceChanges.push(newDeviceChangeDate); // Add to the changes list
             isChanged = true; // Mark as changed because endDate was modified
+        } else if (portEndDate < itemEndDate){
+          itemEndDate = portEndDate.format("DD/MM/YYYY");
         }
     }
    // Create a Set of deviceIds from newDeviceChanges for quick lookup
@@ -1451,7 +1460,7 @@ const UpdatePortfolio = () => {
       let itemEndDate = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
       if (itemEndDate < portEndDate) {
         console.log("item enddate > portenddate");
-        item.endDate = portEndDate.format("DD/MM/YYYY");
+        itemEndDate= dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
         const newSubChangeDate = {
         deviceId:  0, // Capture the device ID
         subscriberId: item.id , // Use actual value or a default
@@ -1461,6 +1470,8 @@ const UpdatePortfolio = () => {
       };
       console.log(newSubChangeDate);
       newSubChanges.push(newSubChangeDate);
+      } else if (portEndDate < itemEndDate){
+        itemEndDate = portEndDate.format("DD/MM/YYYY");
       }
     }
 
@@ -1588,11 +1599,11 @@ const UpdatePortfolio = () => {
                 {detailPortfolio?.portfolioInfo?.portfolioName || "-"}
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                {currentUGTGroup?.name} / Portfolio & Settlement Management /
+                {currentUGTGroup?.name} / Portfolio Management /
                 Portfolio Info /{" "}
                 <span className="truncate">
                   {detailPortfolio?.portfolioInfo?.portfolioName || "-"}
-                </span>
+                </span> / Edit
               </p>
               
             </div>
@@ -1607,23 +1618,39 @@ const UpdatePortfolio = () => {
                   className="flex w-full h-full overflow-visible"
                   padding="xl"
                 >
+                  
                   <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-2">
                     <div className="lg:col-span-2">
                       <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                        <div className="md:col-span-6 flex items-center gap-3">
-                          <FaChevronCircleLeft
-                            className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
-                            size="30"
-                            onClick={() =>
-                              navigate(WEB_URL.PORTFOLIO_INFO, {
-                                state: { id: state?.code },
-                              })
-                            }
-                          />
-                          <h6 className="text-PRIMARY_TEXT font-semibold mb-0">
-                            Portfolio Information
-                          </h6>
-                        </div>
+                        
+                      <div className="md:col-span-6 flex items-center gap-3">
+  <FaChevronCircleLeft
+    className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
+    size="30"
+    onClick={() =>
+      navigate(WEB_URL.PORTFOLIO_INFO, {
+        state: { id: state?.code },
+      })
+    }
+  />
+  <h6 className="text-PRIMARY_TEXT font-semibold mb-0">
+    Portfolio Information
+  </h6>
+  <div className="ml-auto py-2 flex items-center">
+    <span className="text-[#f94a4a] flex items-center  text-sm rounded-full px-2">
+      <b>* Required Field</b>
+    </span>
+  </div>
+</div>
+
+<div className="p-0 md:col-span-6 mb-0 border-1 align-top"></div>
+
+                      
+                      <div className="md:col-span-6">
+                      <h6 className="text-PRIMARY_TEXT mt-3">
+                        <b>Portfolio Information</b>
+                      </h6>
+                    </div>
                         <div className="md:col-span-6">
                           <Controller
                             name="portfolioName"
@@ -1729,8 +1756,10 @@ const UpdatePortfolio = () => {
                       </div>
                     </div>
                   </div>
+                  
                 </Card>
-
+                
+                
                 {/* Devices Assignment */}
                 <Card
                   shadow="md"
@@ -2086,7 +2115,7 @@ const UpdatePortfolio = () => {
                           dateChange={handleSubscriberDateChange}
                           isStartPort={isStartPort}
                           error = {portfolioValidateStatus }
-                          isTotal={"Total Contracted Energy Amount"}
+                          isTotal={"Total Contracted Energy (kWh)"}
                           portfolioStartDate={getValues("startDate")}
                           portfolioEndDate={getValues("endDate")}
                           openpopupSubError={handleErrorSubpopup}
@@ -2113,7 +2142,11 @@ const UpdatePortfolio = () => {
                             </div>
                           )}
                   <button
-                    onClick={backtoPortfolioListPage}
+                    onClick={() =>
+                      navigate(WEB_URL.PORTFOLIO_INFO, {
+                        state: { id: state?.code },
+                      })
+                    }
                     className="mr-4 w-1/4 rounded h-12 px-6 text-gray transition-colors duration-150 rounded-lg focus:shadow-outline bg-[#CBD0D5] hover:bg-[#78829D] text-[#78829D] hover:text-white font-semibold"
                   >
                     Back
@@ -2148,14 +2181,14 @@ const UpdatePortfolio = () => {
           <ModalConfirm
             onClickConfirmBtn={handleClickConfirm}
             onCloseModal={handleCloseModalConfirm}
-            title={"Are you sure?"}
-            content={"Do you confirm the change?"}
+            title={"Save Changes this Portfolio?"}
+            content={"Would you like to save changes this Portfolio?"}
           />
         )}
         {showModalComplete && (
           <ModalComplete
-            title="Done!"
-            context="Update Complete"
+            title="Update Complete!"
+            context=""
             link={WEB_URL.PORTFOLIO_LIST}
           />
         )}
@@ -2196,11 +2229,11 @@ const UpdatePortfolio = () => {
           {detailPortfolio?.portfolioInfo?.portfolioName || "-"}
           </h2>
           <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-            {currentUGTGroup?.name} / Portfolio & Settlement Management /
+            {currentUGTGroup?.name} / Portfolio Management /
             Portfolio Info /{" "}
             <span className="truncate">
             {detailPortfolio?.portfolioInfo?.portfolioName || "-"}
-            </span>
+            </span> / Edit
           </p>
         </div>
       </div>
@@ -2520,7 +2553,7 @@ const UpdatePortfolio = () => {
                 columns={columnsSubscriber}
                 searchData={searchSubscriber}
                 checkbox={false}
-                isTotal={"Total Allocated Energy Amount"}
+                isTotal={"Total Contracted Energy (kWh)"}
                 // onSelectedRowsChange={selectedDeviceChange}
               />
             </div>
