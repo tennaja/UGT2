@@ -302,17 +302,23 @@ console.log(data)
     previousDateStart.setDate(dateValueStart.getDate());
 
     const checkStartDate =
-      data.find((item) => item.id === index)?.startDate 
+      data.find((item) => item.id === index)?.regisDate ||
+      data.find((item) => item.id === index)?.checkstartDate
      
 
     let tempStartDate;
 
-    if (data.find((item) => item.id === index)?.startDate) {
+    if (data.find((item) => item.id === index)?.regisDate >= dateValueStart) {
       const parts = checkStartDate.split("/");
       tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else {
+    } else if (data.find((item) => item.id === index)?.checkstartDate >= dateValueStart){
+      const parts = checkEndDate.split("/");
+      tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    }else {
       tempStartDate = new Date(checkStartDate);
     }
+
+
     tempStartDate.setDate(tempStartDate.getDate());
 
     const startDateDisabled =
@@ -327,13 +333,17 @@ console.log(data)
     previousDateEnd.setDate(dateValueEnd.getDate());
 
     const checkEndDate =
-      data.find((item) => item.id === index)?.endDate 
+      data.find((item) => item.id === index)?.expiryDate ||
+      data.find((item) => item.id === index)?.checkEndDate
 
     let tempDateEndDate;
-    if (data.find((item) => item.id === index)?.ugtEndDate) {
+    if (data.find((item) => item.id === index)?.expiryDate <= dateValueEnd) {
       const parts = checkEndDate.split("/");
       tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else {
+    } else if (data.find((item) => item.id === index)?.checkEndDate <= dateValueEnd){
+      const parts = checkEndDate.split("/");
+      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    }else {
       tempDateEndDate = previousDateEnd;
     }
     const endDateDisabled =

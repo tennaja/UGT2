@@ -821,6 +821,7 @@ const UpdatePortfolio = () => {
     );
     setValue("mechanism", tempMechanism || "");
     const tempDevice = detailPortfolio?.device.map((item) => {
+      console.log(item)
       return {
         ...item,
         startDate:
@@ -831,6 +832,14 @@ const UpdatePortfolio = () => {
           item?.ugtEndDate == ""
             ? "-"
             : format(new Date(item?.ugtEndDate), "dd/MM/yyyy"),
+        expriryDate : 
+          item?.expiryDate == "" 
+            ? "-" 
+            : format(new Date(item?.expiryDate), "dd/MM/yyyy"),
+        regisDate : 
+            item?.registrationDate == "" 
+              ? "-" 
+              : format(new Date(item?.registrationDate), "dd/MM/yyyy")
       };
     });
 
@@ -848,6 +857,14 @@ const UpdatePortfolio = () => {
           item?.ugtEndDate == ""
             ? "-"
             : format(new Date(item?.ugtEndDate), "dd/MM/yyyy"),
+        checkstartDate :
+        item?.retailESAContractStartDate == ""
+          ? "-"
+          : format(new Date(item?.retailESAContractStartDate), "dd/MM/yyyy"),
+          checkEndDate :
+          item?.retailESAContractEndDate == ""
+            ? "-"
+            : format(new Date(item?.retailESAContractEndDate), "dd/MM/yyyy"),
       };
     });
 
@@ -868,6 +885,9 @@ const UpdatePortfolio = () => {
     jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait'},
   };
 
+  if (detailPortfolio?.portfolioOperate == true) {
+    
+  }
   // สร้าง PDF ด้วย html2pdf และดึง base64 string
   html2pdf()
     .from(element)
