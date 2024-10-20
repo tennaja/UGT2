@@ -48,7 +48,7 @@ const DataTablePortfolio = ({
     control,
     formState: { errors },
   } = useForm();
-
+console.log(data)
   const dispatch = useDispatch();
 
   const detailPortfolio = useSelector(
@@ -302,13 +302,12 @@ const DataTablePortfolio = ({
     previousDateStart.setDate(dateValueStart.getDate());
 
     const checkStartDate =
-      data.find((item) => item.id === index)?.registrationDate ||
-      data.find((item) => item.id === index)?.subStartDate;
-
+      data.find((item) => item.id === index)?.startDate 
+     
 
     let tempStartDate;
 
-    if (data.find((item) => item.id === index)?.subStartDate) {
+    if (data.find((item) => item.id === index)?.startDate) {
       const parts = checkStartDate.split("/");
       tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
     } else {
@@ -328,16 +327,14 @@ const DataTablePortfolio = ({
     previousDateEnd.setDate(dateValueEnd.getDate());
 
     const checkEndDate =
-      data.find((item) => item.id === index)?.endDate ||
-      data.find((item) => item.id === index)?.subEndDate;
+      data.find((item) => item.id === index)?.endDate 
 
     let tempDateEndDate;
-    if (data.find((item) => item.id === index)?.subEndDate) {
+    if (data.find((item) => item.id === index)?.ugtEndDate) {
       const parts = checkEndDate.split("/");
       tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else if(data.find((item) => item.id === index)?.endDate){
-      const parts = checkEndDate.split("/");
-      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    } else {
+      tempDateEndDate = previousDateEnd;
     }
     const endDateDisabled =
       tempDateEndDate >= previousDateEnd

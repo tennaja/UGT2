@@ -288,7 +288,6 @@ console.log(data)
       data.find((item) => item.id === index)?.registrationDate ||
       data.find((item) => item.id === index)?.subStartDate;
 
-
     let tempStartDate;
 
     if (data.find((item) => item.id === index)?.subStartDate) {
@@ -318,9 +317,8 @@ console.log(data)
     if (data.find((item) => item.id === index)?.subEndDate) {
       const parts = checkEndDate.split("/");
       tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else if(data.find((item) => item.id === index)?.endDate){
-      const parts = checkEndDate.split("/");
-      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    } else {
+      tempDateEndDate = previousDateEnd;
     }
     const endDateDisabled =
       tempDateEndDate >= previousDateEnd
