@@ -297,25 +297,26 @@ console.log(data)
   const requestedEffectiveDateDisableDateCal = (day, index) => {
     // startDate calculate
     let dateValueStart = new Date(portfolioStartDate);
+    console.log(dateValueStart)
     const previousDateStart = new Date(dateValueStart);
+    console.log(previousDateStart)
     previousDateStart.setHours(0, 0, 0, 0);
     previousDateStart.setDate(dateValueStart.getDate());
-
+    
     const checkStartDate =
-      data.find((item) => item.id === index)?.regisDate ||
-      data.find((item) => item.id === index)?.checkstartDate
+      data.find((item) => item.id === index)?.startDate 
      
 
     let tempStartDate;
 
-    if (data.find((item) => item.id === index)?.regisDate >= dateValueStart) {
+    if (data.find((item) => item.id === index)?.Date >= previousDateStart) {
       const parts = checkStartDate.split("/");
       tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else if (data.find((item) => item.id === index)?.checkstartDate >= dateValueStart){
-      const parts = checkEndDate.split("/");
-      tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    }else {
+      console.log("in1")
+    } 
+    else {
       tempStartDate = new Date(checkStartDate);
+      console.log("out")
     }
 
 
