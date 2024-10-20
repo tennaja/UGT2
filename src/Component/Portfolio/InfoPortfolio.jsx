@@ -894,8 +894,8 @@ const InfoPortfolio = () => {
       )}
       {showModalComplete && (
         <ModalComplete
-          title="Done!"
-          context="Delete complete"
+          title="Delete complete!"
+          context=""
           link={WEB_URL.PORTFOLIO_LIST}
         />
       )}
