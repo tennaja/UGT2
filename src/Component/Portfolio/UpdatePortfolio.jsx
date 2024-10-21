@@ -1375,7 +1375,7 @@ if (subscriberDataTable.length > 0) {
     if (type === "startDate") {
       rowData.startDate = newDate;
     } else if (type === "endDate") {
-      rowData.endDate = newDate;
+      rowData.expriryDate = newDate;
     }
   };
   const handleSubscriberDateChange = (newDate, rowId, type) => {
@@ -1783,7 +1783,7 @@ if (subscriberDataTable.length > 0) {
                                 id={"endDate"}
                                 label={"End Date"}
                                 error={errors.endDate}
-                                value={tempDate}
+                                
                                 defaultValue={
                                   detailPortfolio?.portfolioInfo?.endDate
                                 }

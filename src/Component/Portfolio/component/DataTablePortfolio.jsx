@@ -334,11 +334,11 @@ console.log(data)
     previousDateEnd.setDate(dateValueEnd.getDate());
 
     const checkEndDate =
-      data.find((item) => item.id === index)?.expiryDate ||
+      data.find((item) => item.id === index)?.expriryDate ||
       data.find((item) => item.id === index)?.checkEndDate
 
     let tempDateEndDate;
-    if (data.find((item) => item.id === index)?.expiryDate <= dateValueEnd) {
+    if (data.find((item) => item.id === index)?.expriryDate <= dateValueEnd) {
       const parts = checkEndDate.split("/");
       tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
     } else if (data.find((item) => item.id === index)?.checkEndDate <= dateValueEnd){
@@ -623,14 +623,15 @@ console.log(data)
               }}
             >
               {checkbox && (
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={isItemSelected}
-                    disabled={isDisabled}
-                    onChange={(event) => handleCheckboxChange(event, row.id)}
-                  />
-                </TableCell>
-              )}
+  <TableCell padding="checkbox">
+    <Checkbox
+      checked={isItemSelected}
+      disabled={isStartPort ? isDisabled : false} // Disable only if isStartPort is true
+      onChange={(event) => handleCheckboxChange(event, row.id)}
+    />
+  </TableCell>
+)}
+
               {columns.map((column, index) => (
                 <TableCell
                   key={column.id}
