@@ -148,8 +148,8 @@ const UpdatePortfolio = () => {
     setSelectedCommisionDate(date);
     setSelectedCommisionDateCheck(formattedDate)
     setValue("retailESAContractEndDate", "");
-    setDeviceListSelected([]);
-    setSubscriberListSelected([]);
+    // setDeviceListSelected([]);
+    // setSubscriberListSelected([]);
     if (date) {
       setDisableRequestedEffectiveDate(false);
     } else {
