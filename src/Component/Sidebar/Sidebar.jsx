@@ -188,7 +188,8 @@ console.log(currentSubMenuList)
   
       if (
         userData?.userGroup?.id !== USER_GROUP_ID?.PORTFOLIO_MNG &&
-        userData?.userGroup?.id !== USER_GROUP_ID?.ALL_MODULE_VIEWER
+        userData?.userGroup?.id !== USER_GROUP_ID?.ALL_MODULE_VIEWER && 
+        userData?.userGroup?.id !== USER_GROUP_ID?.WHOLE_SALEER_ADMIN 
       ) {
         data = data.filter((item) => item.menuId !== "4" && item.menuId !== "5");
       } else if (userData?.userGroup?.id === USER_GROUP_ID?.ALL_MODULE_VIEWER) {

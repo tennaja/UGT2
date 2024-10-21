@@ -18,6 +18,7 @@ import ModelLoadPage from "../Control/LoadPage";
 import bin from "../assets/bin-3.svg";
 import { Tooltip } from "react-tooltip";
 import DatePicker from "../Control/DayPicker";
+
 import { useFieldArray } from "react-hook-form";
 import * as WEB_URL from "../../Constants/WebURL";
 import { USER_GROUP_ID, UTILITY_GROUP_ID } from "../../Constants/Constants";
@@ -742,21 +743,21 @@ useEffect(() => {
       subscriberId: 0,
       subscribersContractInformationId: 0,
       action: "Create",
-      createBy: "string" 
+      createBy: userData?.firstName + " " + userData?.lastName 
     }]
     const portfoliosHistoryLogListWhenaddNewItemDevice = [{
       deviceId : 0,
       subscriberId: 0,
       subscribersContractInformationId: 0,
       action: "Add Device",
-      createBy: "string" 
+      createBy: userData?.firstName + " " + userData?.lastName 
     }]
     const portfoliosHistoryLogListWhenaddNewItemSub = [{
       deviceId : 0,
       subscriberId: 0,
       subscribersContractInformationId: 0,
       action: "Add Subscriber",
-      createBy: "string" 
+      createBy: userData?.firstName + " " + userData?.lastName 
     }]
     const updatedPortfoliosHistoryLogList = [
       ...portfoliosHistoryLogList,
@@ -903,7 +904,9 @@ useEffect(() => {
               subscriberId:  0, // Use actual value or a default
               subscribersContractInformationId: 0, // Use actual value or a default
               action: "Add", // Specify the action
-              createBy: "string" // Replace with the actual creator's information
+              createBy: userData?.firstName + " " + userData?.lastName ,// Replace with the actual creator's information
+              startDate: format(new Date(itemStartDate), "yyyy-MM-dd"),
+              endDate: format(new Date(itemExpiryDate), "yyyy-MM-dd")
             };
             console.log(newDeviceChange)
             newDeviceChanges.push(newDeviceChange);
@@ -911,6 +914,7 @@ useEffect(() => {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
             endDate: itemExpiryDate.format("DD/MM/YYYY"),
+            
           };
         });
         console.log(newDateDevice)
@@ -958,7 +962,9 @@ useEffect(() => {
               subscriberId: item.id || 0, // Use actual value or a default
               subscribersContractInformationId: item.subscribersContractInformationId || 0, // Use actual value or a default
               action: "Add", // Specify the action
-              createBy: "string" // Replace with the actual creator's information
+              createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
+              startDate: format(new Date(itemStartDate), "yyyy-MM-dd"),
+              endDate: format(new Date(itemEndDate), "yyyy-MM-dd")
             };
             console.log(newSubChange)
             newSubChanges.push(newSubChange);
@@ -1043,8 +1049,10 @@ useEffect(() => {
             subscriberId: deviceToRemove.subscriberId || 0,
             subscribersContractInformationId: deviceToRemove.subscribersContractInformationId || 0,
             action: "Remove", // Specify the action
-            createBy: "string" // Replace with the actual creator's information
-        };
+            createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
+            startDate: format(new Date(deviceListSelectedTemp.startDate), "yyyy-MM-dd"),
+            endDate: format(new Date(deviceListSelectedTemp.endDate), "yyyy-MM-dd")
+          };
         console.log(newDeviceChange);
         newDeviceChanges.push(newDeviceChange);
         deviceListSelectedTemp.splice(index, 1);
@@ -1121,7 +1129,9 @@ useEffect(() => {
         subscriberId: SubToRemove.id , // Use actual value or a default
         subscribersContractInformationId: SubToRemove.subscribersContractInformationId , // Use actual value or a default
         action: "Remove", // Specify the action
-        createBy: "string" // Replace with the actual creator's information
+        createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
+        startDate: format(new Date(subscriberListSelectedTemp.startDate), "yyyy-MM-dd"),
+        endDate: format(new Date(subscriberListSelectedTemp.endDate), "yyyy-MM-dd")
       };
         console.log(newSubChange)
         newSubChanges.push(newSubChange);

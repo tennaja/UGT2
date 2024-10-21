@@ -710,7 +710,7 @@ const InfoPortfolio = () => {
                       <div className=" md:col-span-6">
                         <div>
                           <label className="mt-3 text-[#6B7280] text-xs">
-                            Total Allocated Energy Amount
+                          Total Contracted Energy
                           </label>
                         </div>
                         <div>
@@ -873,7 +873,7 @@ const InfoPortfolio = () => {
                       columns={columnsSubscriber}
                       searchData={searchSubscriber}
                       checkbox={false}
-                      isTotal={"Total Allocated Energy Amount"}
+                      isTotal={"Total Contracted Energy"}
                       // onSelectedRowsChange={selectedDeviceChange}
                     />
                   </div>

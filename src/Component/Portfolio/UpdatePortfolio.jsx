@@ -49,6 +49,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ModalValidation from "./Modalpopupvalidation";
 import { BiErrorCircle } from "react-icons/bi";
 import WarningIcon from '@mui/icons-material/Warning';
+import ModalConfirmChangeDatePortrun from "../Control/Modal/ModalChangDate";
 const UpdatePortfolio = () => {
   const {
     // register,
@@ -76,10 +77,36 @@ const UpdatePortfolio = () => {
   const [isStartDate, setIsStartDate] = useState(false);
   const [isEndDate, setIsEndDate] = useState(false);
   const [isClearData, setIsClearData] = useState(false);
+  const detailPortfolio = useSelector(
+    (state) => state.portfolio.getOnePortfolio
+  );
   const portfolioValidateStatus = useSelector((state) => state.portfolio.portfolioValidateStatus)
   const getValidationDevicePopup = useSelector((state) => state.portfolio.getValidationDevicePopup)
   const getValidationSubPopup = useSelector((state) => state.portfolio.getValidationSubPopup)
+  const [showPopup, setShowPopup] = useState(false);
+  const datebofore = useRef()
+  const [selectedDate, setSelectedDate] = useState(null); // State for the selected date
+  console.log(userData)
+  const [showModals, setShowModals] = useState(false);
+  const [tempDate, setTempDate] = useState(); // Store the new temporary date
+  const [originalDate, setOriginalDate] = useState(); // Store the original date
+  useEffect(() => {
+    setOriginalDate(detailPortfolio?.portfolioInfo?.endDate);
+    setTempDate(detailPortfolio?.portfolioInfo?.endDate); // Reset tempDate as well
+  }, [detailPortfolio]);
+  console.log(tempDate)
+  
+  const handleConfirm = () => {
+    setValue("endDate", tempDate); // Update the form value using setValue
+    setOriginalDate(tempDate); // Update the original date to the new value
+    setShowModals(false); // Close the modal
+  };
 
+  const handleCloseModal = () => {
+    handleChangeEndDate(originalDate)
+    setShowModals(false); // Close the modal
+    setTempDate(originalDate); // Reset the temporary date to the original value
+  };
   useEffect(() => {
     autoScroll();
   }, []);
@@ -100,6 +127,10 @@ const UpdatePortfolio = () => {
       behavior: "smooth",
     });
   };
+  function convertDateFormat(dateString) {
+    const [day, month, year] = dateString.split('/'); // Split the date string
+    return `${year}-${month}-${day}`; // Return in 'YYYY-MM-DD' format
+  }
   const handleChangeCommissioningDate = (date) => {
     const dateObj = new Date(date);
     const year = dateObj.getFullYear();
@@ -124,7 +155,7 @@ const UpdatePortfolio = () => {
     } else {
       setDisableRequestedEffectiveDate(true);
     }
-
+    
     // setValue("endDate", "");
     // setIsStartDate(!!date);
     // const newDateDeviceStartDate = deviceListSelected.map((item) => ({
@@ -168,17 +199,20 @@ const UpdatePortfolio = () => {
     // }
   };
   const handleChangeEndDate = (date) => {
+   
     const dateObj = new Date(date);
     const year = dateObj.getFullYear();
     const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
     const day = String(dateObj.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
+   
     setOnEditDevice(false);
     setOnEditDatetimeDevice(false);
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
     console.log("Onchange End Date",selectedCommisionDateCheck)
     if(date !== undefined && selectedCommisionDateCheck !== null){
+      setShowModals(true)
     dispatch(PortfolioManagementDevice(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code));
     dispatch(
       PortfolioManagementSubscriber(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code, true)
@@ -192,11 +226,17 @@ const UpdatePortfolio = () => {
 
     if (date) {
       if (!isStartPort) {
+        console.log("popup show")
+        if(date !== undefined && selectedCommisionDateCheck !== null){
+        setShowModals(true)}
         if (isClearData) {
           setDeviceListSelected([]);
           setSubscriberListSelected([]);
         }
       } else {
+        console.log("popup show")
+        if(date !== undefined && selectedCommisionDateCheck !== null){
+        setShowModals(true)}
         // device
         let newDateDeviceList = deviceListSelected
           .filter((item) => {
@@ -259,6 +299,7 @@ const UpdatePortfolio = () => {
       }
       setIsClearData(true);
     }
+    
   };
   const disableStartDateCal = (day) => {
     // หาว่าตอนนี้อยู่ ugtGroup ไหน จาก userGroup
@@ -318,9 +359,7 @@ const UpdatePortfolio = () => {
   const portfolioMechanismList = useSelector(
     (state) => state.portfolio.portfolioMechanism
   );
-  const detailPortfolio = useSelector(
-    (state) => state.portfolio.getOnePortfolio
-  );
+ 
   console.log(detailPortfolio?.portfolioInfo?.startDate)
   const { state } = useLocation();
   const [showModal, setShowModalConfirm] = React.useState(false);
@@ -359,6 +398,7 @@ const UpdatePortfolio = () => {
   const [IsRemovedDevice,setIsRemovedDevice] = useState(false);
   const [IsRemovedSub,setIsRemovedSub] = useState(false);
   const [IsError,setIsError] = useState(false)
+  
   useEffect(() => {
     if (Array.isArray(portfolioValidateStatus.device)) {
       const devicesWithError = portfolioValidateStatus.device.filter(device => device.isError === true);
@@ -810,7 +850,7 @@ const UpdatePortfolio = () => {
       "portfolioName",
       detailPortfolio?.portfolioInfo?.portfolioName || "-"
     );
-
+    datebofore.current = detailPortfolio?.portfolioInfo?.endDate 
     setValue("startDate", detailPortfolio?.portfolioInfo?.startDate);
     setValue("endDate", detailPortfolio?.portfolioInfo?.endDate);
     setSelectedCommisionDate(detailPortfolio?.portfolioInfo?.startDate)
@@ -871,7 +911,7 @@ const UpdatePortfolio = () => {
     setSubscriberListSelected(tempSubscriber);
   };
 
-  const onSubmitForm1 = (formData) => {
+   const onSubmitForm1 = (formData) => {
     console.log("deviceListSelected", deviceListSelected);
     const element = cardRef.current//document.getElementById('pdf-content');
     element.style.display = 'block';
@@ -885,9 +925,7 @@ const UpdatePortfolio = () => {
     jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait'},
   };
 
-  if (detailPortfolio?.portfolioOperate == true) {
-    
-  }
+  detailPortfolio?.portfolioOperate == true 
   // สร้าง PDF ด้วย html2pdf และดึง base64 string
   html2pdf()
     .from(element)
@@ -945,35 +983,35 @@ const UpdatePortfolio = () => {
       subscriberId: 0,
       subscribersContractInformationId: 0,
       action: "Edit",
-      createBy: "string" 
+      createBy: userData?.firstName + " " + userData?.lastName 
     }]
     const portfoliosHistoryLogListWhenaddNewItemDevice = [{
       deviceId : 0,
       subscriberId: 0,
       subscribersContractInformationId: 0,
       action: "Add Device",
-      createBy: "string" 
+      createBy: userData?.firstName + " " + userData?.lastName
     }]
     const portfoliosHistoryLogListWhenaddNewItemSub = [{
       deviceId : 0,
       subscriberId: 0,
       subscribersContractInformationId: 0,
       action: "Add Subscriber",
-      createBy: "string" 
+      createBy: userData?.firstName + " " + userData?.lastName 
     }]
     const portfoliosHistoryLogListWhenaddRemovedItemDevice = [{
       deviceId : 0,
       subscriberId: 0,
       subscribersContractInformationId: 0,
       action: "Discontinue - Device",
-      createBy: "string" 
+      createBy: userData?.firstName + " " + userData?.lastName 
     }]
     const portfoliosHistoryLogListWhenaddRemovedItemSub = [{
       deviceId : 0,
       subscriberId: 0,
       subscribersContractInformationId: 0,
       action: "Discontinue - Subscriber",
-      createBy: "string" 
+      createBy: userData?.firstName + " " + userData?.lastName 
     }]
     const updatedPortfoliosHistoryLogList = [
       ...portfoliosHistoryLogList,
@@ -1024,6 +1062,7 @@ const UpdatePortfolio = () => {
   }
 
   };
+  
   const handleClickConfirm = () => {
     setShowModalCreateConfirm(false);
     showLoading();
@@ -1134,7 +1173,9 @@ const UpdatePortfolio = () => {
             subscriberId:  0, // Use actual value or a default
             subscribersContractInformationId: 0, // Use actual value or a default
             action: "Add", // Specify the action
-            createBy: "string" // Replace with the actual creator's information
+            createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
+            startDate: format(new Date(itemStartDate), "yyyy-MM-dd"),
+            endDate: format(new Date(itemExpiryDate), "yyyy-MM-dd")
           };
           console.log(newDeviceChange)
           newDeviceChanges.push(newDeviceChange);
@@ -1225,7 +1266,9 @@ if (subscriberDataTable.length > 0) {
             subscriberId: item.id || 0, // Use actual value or a default
             subscribersContractInformationId: item.subscribersContractInformationId || 0, // Use actual value or a default
             action: "Add", // Specify the action
-            createBy: "string" // Replace with the actual creator's information
+            createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
+            startDate: format(new Date(itemStartDate), "yyyy-MM-dd"),
+            endDate: format(new Date(itemEndDate), "yyyy-MM-dd")
           };
           console.log(newSubChange)
           newSubChanges.push(newSubChange);
@@ -1344,6 +1387,7 @@ if (subscriberDataTable.length > 0) {
     }
   };
   const onApplyChangeDevice = () => {
+    console.log(...deviceListSelected)
     const deviceListSelectedTemp = [...deviceListSelected];
     const newDeviceChanges = [];
     let isChanged = false;
@@ -1352,15 +1396,17 @@ if (subscriberDataTable.length > 0) {
         const index = deviceListSelectedTemp.findIndex((row) => row.id === id);
         if (index !== -1) {
             const deviceToRemove = deviceListSelectedTemp[index];
-
+            console.log(deviceToRemove)
             // Prepare new device change object for removal
             const newDeviceChange = {
                 deviceId: deviceToRemove.id, // Capture the device ID
                 subscriberId: deviceToRemove.subscriberId || 0,
                 subscribersContractInformationId: deviceToRemove.subscribersContractInformationId || 0,
                 action: "Remove", // Specify the action
-                createBy: "string" // Replace with the actual creator's information
-            };
+                createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
+                startDate: convertDateFormat(deviceToRemove.startDate),
+                endDate: convertDateFormat(deviceToRemove.endDate)
+              };
             console.log(newDeviceChange);
             newDeviceChanges.push(newDeviceChange);
             deviceListSelectedTemp.splice(index, 1);
@@ -1385,7 +1431,9 @@ if (subscriberDataTable.length > 0) {
                 subscriberId: item.subscriberId || 0,
                 subscribersContractInformationId: item.subscribersContractInformationId || 0,
                 action: "Edit", // Specify the action as end date update
-                createBy: "string"
+                createBy: userData?.firstName + " " + userData?.lastName,
+                startDate: convertDateFormat(item.startDate),
+                endDate: convertDateFormat(item.endDate)
             };
             console.log(newDeviceChangeDate);
             newDeviceChanges.push(newDeviceChangeDate); // Add to the changes list
@@ -1413,11 +1461,12 @@ if (subscriberDataTable.length > 0) {
                 updatedChanges.splice(existingIndex, 1);
                 setisAddDevice(false);
                 setIsRemovedDevice(false);
-            } else if (existingChange.action === "Edit") {
-                // If the action is "Edit", change it to "Remove"
-                updatedChanges[existingIndex].action = "Remove";
-                console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
-            }
+            } 
+            // else if (existingChange.action === "Edit") {
+            //     // If the action is "Edit", change it to "Remove"
+            //     updatedChanges[existingIndex].action = "Remove";
+            //     console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
+            // }
             // If the action is "Remove", do nothing (keep it in the list)
         } else {
             // If the ID does not exist, find the new change
@@ -1466,7 +1515,9 @@ if (subscriberDataTable.length > 0) {
         subscriberId: SubToRemove.id , // Use actual value or a default
         subscribersContractInformationId: SubToRemove.subscribersContractInformationId , // Use actual value or a default
         action: "Remove", // Specify the action
-        createBy: "string" // Replace with the actual creator's information
+        createBy: userData?.firstName + " " + userData?.lastName ,// Replace with the actual creator's information
+        startDate: convertDateFormat(SubToRemove.startDate),
+        endDate: convertDateFormat(SubToRemove.endDate)
       };
         console.log(newSubChange)
         newSubChanges.push(newSubChange);
@@ -1486,7 +1537,9 @@ if (subscriberDataTable.length > 0) {
         subscriberId: item.id , // Use actual value or a default
         subscribersContractInformationId: item.subscribersContractInformationId , // Use actual value or a default
         action: "Edit", // Specify the action
-        createBy: "string" // Replace with the actual creator's information
+        createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
+        startDate: convertDateFormat(item.startDate),
+        endDate: convertDateFormat(item.endDate)
       };
       console.log(newSubChangeDate);
       newSubChanges.push(newSubChangeDate);
@@ -1707,6 +1760,7 @@ if (subscriberDataTable.length > 0) {
                                 defaultValue={
                                   detailPortfolio?.portfolioInfo?.startDate
                                 }
+                                
                                 onChangeInput={handleChangeCommissioningDate}
                                 onCalDisableDate={disableStartDateCal}
                                 isDisable={isStartPort}
@@ -1729,6 +1783,7 @@ if (subscriberDataTable.length > 0) {
                                 id={"endDate"}
                                 label={"End Date"}
                                 error={errors.endDate}
+                                value={tempDate}
                                 defaultValue={
                                   detailPortfolio?.portfolioInfo?.endDate
                                 }
@@ -2236,6 +2291,16 @@ if (subscriberDataTable.length > 0) {
             content="Your Portfolio Name is the same as in the database"
           />
         )}
+        {showModals && (
+          <ModalConfirmChangeDatePortrun
+          onClickConfirmBtn={handleConfirm} // Pass the confirm function
+          onCloseModal={handleCloseModal}
+          title={"Are you sure?"}
+          content={"Do you confirm the change Start Date/End Date "}
+        />
+        
+          
+      )}
       </div>
   
   

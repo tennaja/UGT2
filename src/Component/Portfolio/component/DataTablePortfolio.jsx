@@ -400,29 +400,60 @@ console.log(data)
       }
       // ถ้ามี props 'render'
       if (!editDatetime) {
-        return column.render(row);
+        return column.render(row)
       } else {
-        // ถ้า Port ยังไม่เริ่ม แก้ไขวันที่ Start / EndDate ได้
-        if (
-          column.id === "startDate" ||
-          column.id === "retailESAContractStartDate"
-        ) {
-          // ถ้าเป็นข้อมูลที่ add ลงไปใน port อยู่แล้ว ห้าม edit start date
-          const addedDevice = detailPortfolio?.device?.filter(
-            (item) => item?.id == row.id && item?.name == row.name
-          );
-
-          // ถ้าเป็นข้อมูลที่ add ลงไปใน port อยู่แล้ว ห้าม edit start date
-          const addedSubscriber = detailPortfolio?.subscriber?.filter(
-            (item) => item?.id == row.id && item?.name == row.name
-          );
-          if (addedDevice.length > 0) return <span>{row[column.id]}</span>;
-          else if (addedSubscriber.length > 0)
+        if (isStartPort) {
+          // ถ้า Port เริ่มไปแล้ว แก้ไขวันที่ EndDate ได้อย่างเดียว
+          if (
+            column.id === "startDate" ||
+            column.id === "retailESAContractStartDate"
+          ) {
             return <span>{row[column.id]}</span>;
-          else {
-            console.log("column.id subscriber", column.id);
-            console.log("row.id subscriber", row);
-            // เป็นข้อมูลที่ add เข้ามา ยังไม่ได้ save จะแก้ไขได้
+          } else if (
+            column.id === "endDate" ||
+            column.id === "retailESAContractEndDate"
+          ) {
+            return (
+              <Controller
+                name={"endDate" + "_" + row.id}
+                control={control}
+                rules={
+                  {
+                    // required: "This field is required",
+                  }
+                }
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    id={"endDate" + "_" + row.id}
+                    formatDate={"d/M/yyyy"}
+                    error={errors["endDate" + "_" + row.id]}
+                    onCalDisableDate={(newValue) => {
+                      return requestedEffectiveDateDisableDateCal(
+                        newValue,
+                        row.id
+                      );
+                    }}
+                    onChangeInput={(newValue) => {
+                      const newDate = format(newValue, "dd/MM/yyyy");
+                      dateChange(newDate, row.id, "endDate");
+                    }}
+                    validate={" *"}
+                    // ... other props
+                  />
+                )}
+              />
+            );
+          } else {
+            // column อื่นๆ
+            return column.render(row);
+          }
+        } else {
+          // ถ้า Port ยังไม่เริ่ม แก้ไขวันที่ Start / EndDate ได้
+          if (
+            column.id === "startDate" ||
+            column.id === "retailESAContractStartDate"
+          ) {
             return (
               <Controller
                 name={"startDate" + "_" + row.id}
@@ -445,7 +476,6 @@ console.log(data)
                       );
                     }}
                     onChangeInput={(newValue) => {
-                      console.log("newValue", newValue);
                       const newDate = format(newValue, "dd/MM/yyyy");
                       dateChange(newDate, row.id, "startDate");
                     }}
@@ -455,45 +485,45 @@ console.log(data)
                 )}
               />
             );
-          }
-        } else if (
-          column.id === "endDate" ||
-          column.id === "retailESAContractEndDate"
-        ) {
-          return (
-            <Controller
-              name={"endDate" + "_" + row.id}
-              control={control}
-              rules={
-                {
-                  // required: "This field is required",
+          } else if (
+            column.id === "endDate" ||
+            column.id === "retailESAContractEndDate"
+          ) {
+            return (
+              <Controller
+                name={"endDate" + "_" + row.id}
+                control={control}
+                rules={
+                  {
+                    // required: "This field is required",
+                  }
                 }
-              }
-              render={({ field }) => (
-                <DatePicker
-                  {...field}
-                  id={"endDate" + "_" + row.id}
-                  formatDate={"d/M/yyyy"}
-                  error={errors["endDate" + "_" + row.id]}
-                  onCalDisableDate={(newValue) => {
-                    return requestedEffectiveDateDisableDateCal(
-                      newValue,
-                      row.id
-                    );
-                  }}
-                  onChangeInput={(newValue) => {
-                    const newDate = format(newValue, "dd/MM/yyyy");
-                    dateChange(newDate, row.id, "endDate");
-                  }}
-                  validate={" *"}
-                  // ... other props
-                />
-              )}
-            />
-          );
-        } else {
-          // column อื่นๆ
-          return column.render(row);
+                render={({ field }) => (
+                  <DatePicker
+                    {...field}
+                    id={"endDate" + "_" + row.id}
+                    formatDate={"d/M/yyyy"}
+                    error={errors["endDate" + "_" + row.id]}
+                    onCalDisableDate={(newValue) => {
+                      return requestedEffectiveDateDisableDateCal(
+                        newValue,
+                        row.id
+                      );
+                    }}
+                    onChangeInput={(newValue) => {
+                      const newDate = format(newValue, "dd/MM/yyyy");
+                      dateChange(newDate, row.id, "endDate");
+                    }}
+                    validate={" *"}
+                    // ... other props
+                  />
+                )}
+              />
+            );
+          } else {
+            // column อื่นๆ
+            return column.render(row);
+          }
         }
       }
     } else {
@@ -517,27 +547,42 @@ console.log(data)
             <Checkbox
   indeterminate={
     selectedRows?.length > 0 &&
-    selectedRows?.length < data?.filter((row) => !isDisableSelected({ id: row.id, name: row.name }))?.length
+    selectedRows?.length < (!isStartPort ? data?.length : data?.filter((row) => !isDisableSelected({ id: row.id, name: row.name }))?.length)
   }
   checked={
-    selectedRows?.length > 0 && 
-    selectedRows?.length === data?.filter((row) => !isDisableSelected({ id: row.id, name: row.name }))?.length
+    !isStartPort && selectedRows?.length === data?.length // Don't check the checkbox if isStartPort is true
   }
-  disabled={selectedData?.length > 0 ? true : false}
+  disabled={isStartPort && selectedData?.length > 0} // Disable only if isStartPort is true and selectedData has items
   onChange={(event) => {
-    const nonDisabledRows = data?.filter((row) => !isDisableSelected({ id: row.id, name: row.name })).map((row) => row.id);
-
     if (event.target.checked) {
-      // If ticked, select all non-disabled rows
-      setSelectedRows(nonDisabledRows);
-      onSelectedRowsChange(nonDisabledRows);
+      if (!isStartPort) {
+        // When isStartPort is false, select all rows (both disabled and non-disabled)
+        const allRows = data.map((row) => row.id); // Get all rows' ids
+        setSelectedRows(allRows);
+        onSelectedRowsChange(allRows);
+      } else {
+        // When isStartPort is true, only select non-disabled rows (but don't check the checkbox)
+        const nonDisabledRows = data
+          .filter((row) => !isDisableSelected({ id: row.id, name: row.name }))
+          .map((row) => row.id);
+        setSelectedRows(nonDisabledRows);
+        onSelectedRowsChange(nonDisabledRows);
+      }
     } else {
-      // If unticked, unselect all rows
+      // Uncheck (clear) all selected rows
       setSelectedRows([]);
       onSelectedRowsChange([]);
     }
   }}
 />
+
+
+
+
+
+
+
+
 
           </TableCell>
         )}

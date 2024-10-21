@@ -724,7 +724,7 @@ useEffect(() => {
                   <div className="grid col-span-4 grid-cols-12">
                     <form className="grid col-span-12 grid-cols-12 gap-2 ">
                       {/* <div className="col-span-3 px-2"></div> */}
-                      {!isPortManager && <div className="col-span-4"></div>}
+                      {/* {!isPortManager && <div className="col-span-4"></div>} */}
                       <div className="col-span-4"></div>
                       <div className="col-span-4"></div>
                       <div className="col-span-4">
@@ -801,7 +801,7 @@ useEffect(() => {
                   <div className="grid col-span-4 grid-cols-12">
                     <form className="grid col-span-12 grid-cols-12 gap-2 ">
                       {/* <div className="col-span-3 px-2"></div> */}
-                      {!isPortManager && <div className="col-span-4"></div>}
+                      {/* {!isPortManager && <div className="col-span-4"></div>} */}
                       <div className="col-span-4"></div>
                       <div className="col-span-4">
                         <Controller
