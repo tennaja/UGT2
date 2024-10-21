@@ -198,8 +198,9 @@ const UpdatePortfolio = () => {
     //   setDisableRequestedEffectiveDate(true);
     // }
   };
+  const EnddateCheck = useRef()
   const handleChangeEndDate = (date) => {
-   
+    EnddateCheck.current = date
     const dateObj = new Date(date);
     const year = dateObj.getFullYear();
     const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
@@ -285,9 +286,9 @@ const UpdatePortfolio = () => {
             console.log("endSub", endSub);
             console.log("date", date);
             if (date < endSub) {
-              endDateValue = dayjs(date);
-            } else {
               endDateValue = endSub;
+            } else {
+              endDateValue = dayjs(date);
             }
             return {
               ...item,
@@ -2009,8 +2010,8 @@ if (subscriberDataTable.length > 0) {
                           isStartPort={isStartPort}
                           error = {portfolioValidateStatus }
                           isTotal={"Total Capacity"}
-                          portfolioStartDate={getValues("startDate")}
-                          portfolioEndDate={getValues("endDate")}
+                          portfolioStartDate={watch("startDate")}
+                          portfolioEndDate={EnddateCheck.current}
                           openpopupDeviceError={handleErrorDevicepopup}
                         />
                       </div>
@@ -2191,9 +2192,9 @@ if (subscriberDataTable.length > 0) {
                           isStartPort={isStartPort}
                           error = {portfolioValidateStatus }
                           isTotal={"Total Contracted Energy"}
-                          portfolioStartDate={getValues("startDate")}
-                          portfolioEndDate={getValues("endDate")}
+                          portfolioStartDate={watch("startDate")}
                           openpopupSubError={handleErrorSubpopup}
+                          portfolioEndDate={EnddateCheck.current}
                         />
                       </div>
                     ) : (

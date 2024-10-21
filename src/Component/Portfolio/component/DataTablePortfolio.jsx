@@ -23,6 +23,7 @@ import {
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
 import WarningIcon from '@mui/icons-material/Warning';
+import { LiaCoinsSolid } from "react-icons/lia";
 
 const DataTablePortfolio = ({
   data,
@@ -305,13 +306,24 @@ console.log(data)
     
     const checkStartDate =
       data.find((item) => item.id === index)?.startDate 
-     
+    
+      console.log(checkStartDate)
+    console.log(day)
+    const parts = checkStartDate.split("/");
+    const temp = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    const startDateChecker = new Date(temp)
+    const newStartDatechecker = new Date(startDateChecker)
+    newStartDatechecker.setHours(0, 0, 0, 0);
+    newStartDatechecker.setDate(startDateChecker.getDate()-1);
+    
+    console.log(startDateChecker)
 
     let tempStartDate;
 
     if (data.find((item) => item.id === index)?.Date >= previousDateStart) {
       const parts = checkStartDate.split("/");
       tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    
       console.log("in1")
     } 
     else {
@@ -323,12 +335,14 @@ console.log(data)
     tempStartDate.setDate(tempStartDate.getDate());
 
     const startDateDisabled =
-      tempStartDate <= previousDateStart
-        ? day < previousDateStart
-        : day < tempStartDate;
+    day <= newStartDatechecker
+      // tempStartDate <= previousDateStart
+      //   ? day < previousDateStart
+      //   : day < tempStartDate;
 
     // endDate calculate
     let dateValueEnd = new Date(portfolioEndDate);
+    console.log(dateValueEnd)
     const previousDateEnd = new Date(dateValueEnd);
     previousDateEnd.setHours(0, 0, 0, 0);
     previousDateEnd.setDate(dateValueEnd.getDate());
@@ -336,23 +350,27 @@ console.log(data)
     const checkEndDate =
       data.find((item) => item.id === index)?.expriryDate ||
       data.find((item) => item.id === index)?.checkEndDate
-
+console.log()
     let tempDateEndDate;
-    if (data.find((item) => item.id === index)?.expriryDate <= dateValueEnd) {
+    if (data.find((item) => item.id === index)?.expriryDate <= dateValueEnd || data.find((item) => item.id === index)?.checkEndDate <= dateValueEnd) {
       const parts = checkEndDate.split("/");
       tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else if (data.find((item) => item.id === index)?.checkEndDate <= dateValueEnd){
-      const parts = checkEndDate.split("/");
-      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    }else {
-      tempDateEndDate = previousDateEnd;
+      console.log("1",tempDateEndDate)
+    } 
+    else {
+      
+      tempDateEndDate = dateValueEnd 
+      console.log("2",tempDateEndDate)
     }
     const endDateDisabled =
-      tempDateEndDate >= previousDateEnd
-        ? day > previousDateEnd
-        : day > tempDateEndDate;
-
+      // tempDateEndDate >= previousDateEnd
+      //   ? day > previousDateEnd
+      //   : day > tempDateEndDate;
+      (day > tempDateEndDate )
+   
+console.log()
     const disable = startDateDisabled || endDateDisabled;
+    console.log(day < startDateChecker)
 
     return disable;
   };
