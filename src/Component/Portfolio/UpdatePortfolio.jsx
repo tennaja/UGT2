@@ -262,7 +262,7 @@ const UpdatePortfolio = () => {
           })
           .map((item) => {
             console.log("Date End",item)
-            const endSub = dayjs(item?.ugtEndDate, [
+            const endSub = dayjs(item?.retailESAContractEndDate, [
               "DD/MM/YYYY",
               "YYYY-MM-DD",
             ]);
