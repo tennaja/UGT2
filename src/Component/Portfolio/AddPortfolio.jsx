@@ -82,7 +82,10 @@ const AddPortfolio = () => {
   const getValidationDevicePopup = useSelector((state) => state.portfolio.getValidationDevicePopup)  
   const getValidationSubPopup = useSelector((state) => state.portfolio.getValidationSubPopup)
   
-  
+  function convertDateFormat(dateString) {
+    const [day, month, year] = dateString.split('/'); // Split the date string
+    return `${year}-${month}-${day}`; // Return in 'YYYY-MM-DD' format
+  }
   useEffect(() => {
     autoScroll();
   }, []);
@@ -1050,8 +1053,8 @@ useEffect(() => {
             subscribersContractInformationId: deviceToRemove.subscribersContractInformationId || 0,
             action: "Remove", // Specify the action
             createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
-            startDate: format(new Date(deviceListSelectedTemp.startDate), "yyyy-MM-dd"),
-            endDate: format(new Date(deviceListSelectedTemp.endDate), "yyyy-MM-dd")
+            startDate: convertDateFormat(deviceToRemove.startDate),
+            endDate: convertDateFormat(deviceToRemove.endDate)
           };
         console.log(newDeviceChange);
         newDeviceChanges.push(newDeviceChange);
@@ -1130,8 +1133,8 @@ useEffect(() => {
         subscribersContractInformationId: SubToRemove.subscribersContractInformationId , // Use actual value or a default
         action: "Remove", // Specify the action
         createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
-        startDate: format(new Date(subscriberListSelectedTemp.startDate), "yyyy-MM-dd"),
-        endDate: format(new Date(subscriberListSelectedTemp.endDate), "yyyy-MM-dd")
+        startDate: convertDateFormat(SubToRemove.startDate),
+        endDate: convertDateFormat(SubToRemove.endDate)
       };
         console.log(newSubChange)
         newSubChanges.push(newSubChange);
@@ -1143,6 +1146,7 @@ useEffect(() => {
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
     setSelectSubscriberChange([]);
+    
     const newSubIds = new Set(newSubChanges.map(change => change.subscriberId));
 
    // Update deviceChanges

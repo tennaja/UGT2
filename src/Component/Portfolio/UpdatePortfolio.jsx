@@ -50,6 +50,7 @@ import ModalValidation from "./Modalpopupvalidation";
 import { BiErrorCircle } from "react-icons/bi";
 import WarningIcon from '@mui/icons-material/Warning';
 import ModalConfirmChangeDatePortrun from "../Control/Modal/ModalChangDate";
+import DatePickerEndDate from "./DatePickerEndDate";
 const UpdatePortfolio = () => {
   const {
     // register,
@@ -87,26 +88,10 @@ const UpdatePortfolio = () => {
   const datebofore = useRef()
   const [selectedDate, setSelectedDate] = useState(null); // State for the selected date
   console.log(userData)
-  const [showModals, setShowModals] = useState(false);
-  const [tempDate, setTempDate] = useState(); // Store the new temporary date
-  const [originalDate, setOriginalDate] = useState(); // Store the original date
-  useEffect(() => {
-    setOriginalDate(detailPortfolio?.portfolioInfo?.endDate);
-    setTempDate(detailPortfolio?.portfolioInfo?.endDate); // Reset tempDate as well
-  }, [detailPortfolio]);
-  console.log(tempDate)
   
-  const handleConfirm = () => {
-    setValue("endDate", tempDate); // Update the form value using setValue
-    setOriginalDate(tempDate); // Update the original date to the new value
-    setShowModals(false); // Close the modal
-  };
-
-  const handleCloseModal = () => {
-    handleChangeEndDate(originalDate)
-    setShowModals(false); // Close the modal
-    setTempDate(originalDate); // Reset the temporary date to the original value
-  };
+ 
+  
+  
   useEffect(() => {
     autoScroll();
   }, []);
@@ -213,7 +198,7 @@ const UpdatePortfolio = () => {
     setOnEditDatetimeSubscriber(false);
     console.log("Onchange End Date",selectedCommisionDateCheck)
     if(date !== undefined && selectedCommisionDateCheck !== null){
-      setShowModals(true)
+      
     dispatch(PortfolioManagementDevice(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code));
     dispatch(
       PortfolioManagementSubscriber(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code, true)
@@ -229,7 +214,7 @@ const UpdatePortfolio = () => {
       if (!isStartPort) {
         console.log("popup show")
         if(date !== undefined && selectedCommisionDateCheck !== null){
-        setShowModals(true)}
+        }
         if (isClearData) {
           setDeviceListSelected([]);
           setSubscriberListSelected([]);
@@ -237,7 +222,7 @@ const UpdatePortfolio = () => {
       } else {
         console.log("popup show")
         if(date !== undefined && selectedCommisionDateCheck !== null){
-        setShowModals(true)}
+        }
         // device
         let newDateDeviceList = deviceListSelected
           .filter((item) => {
@@ -286,9 +271,9 @@ const UpdatePortfolio = () => {
             console.log("endSub", endSub);
             console.log("date", date);
             if (date < endSub) {
-              endDateValue = endSub;
-            } else {
               endDateValue = dayjs(date);
+            } else {
+              endDateValue = dayjs(endSub);
             }
             return {
               ...item,
@@ -1779,7 +1764,7 @@ if (subscriberDataTable.length > 0) {
                               required: "This field is required",
                             }}
                             render={({ field }) => (
-                              <DatePicker
+                              <DatePickerEndDate
                                 {...field}
                                 id={"endDate"}
                                 label={"End Date"}
@@ -2292,16 +2277,10 @@ if (subscriberDataTable.length > 0) {
             content="Your Portfolio Name is the same as in the database"
           />
         )}
-        {showModals && (
-          <ModalConfirmChangeDatePortrun
-          onClickConfirmBtn={handleConfirm} // Pass the confirm function
-          onCloseModal={handleCloseModal}
-          title={"Are you sure?"}
-          content={"Do you confirm the change Start Date/End Date "}
-        />
+        
         
           
-      )}
+    
       </div>
   
   
