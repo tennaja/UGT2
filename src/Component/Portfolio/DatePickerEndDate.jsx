@@ -7,6 +7,8 @@ import "react-day-picker/dist/style.css";
 import { convertDateTimeToDisplayDate } from "../../Utils/DateTimeUtils";
 import { FaCalendarAlt } from "react-icons/fa";
 import ModalConfirm from "../Control/Modal/ModalConfirm";
+import ModalWarning from "../Control/Modal/ModalWarning";
+import ModalConfirmDateWarning from "../Control/Modal/ModalConfirmDatewarning";
 
 export default function DatePickerEndDate(props) {
   const {
@@ -20,7 +22,8 @@ export default function DatePickerEndDate(props) {
     onCalDisableDate,
     formatDate,
     currentDate,
-    defaultValue, // New prop for defaultValue
+    defaultValue,
+    isPortrun,
     ...inputProps
   } = props;
 
@@ -29,6 +32,7 @@ export default function DatePickerEndDate(props) {
   const [isPopperOpen, setIsPopperOpen] = useState(false);
   const [previousDate, setPreviousDate] = useState(null); // Keep track of the previous date
   const [isModalOpen, setIsModalOpen] = useState(false);  // Modal state
+  const [isModalPortrunOpen, setIsModalPortrunOpen] = useState(false);  // Modal state
 
   const popperRef = useRef(null);
   const buttonRef = useRef(null);
@@ -66,13 +70,11 @@ export default function DatePickerEndDate(props) {
     if (defaultValue) {
       const defaultDate = new Date(defaultValue);
       if (isFirstTimeInit && inputProps.value) {
-      //handleDaySelect(defaultDate);
-      setIsFirstTimeInit(false);  // Disable first-time flag after initializing
+        setIsFirstTimeInit(false);  // Disable first-time flag after initializing
         setSelected(defaultDate);  // Set the selected date without calling handleDaySelect
         setInputValue(
           convertDateTimeToDisplayDate(defaultDate, formatDate ? formatDate : "d MMMM yyyy")
         );
-        //onChangeInput && onChangeInput(defaultDate);
       }
     }
   }, [defaultValue,isFirstTimeInit]);
@@ -88,19 +90,17 @@ export default function DatePickerEndDate(props) {
 
   // Open modal to confirm date change
   const handleDaySelect = (date) => {
-    console.log("Handle Date")
-    console.log("Handle Date",date)
     setPreviousDate(selected);  // Save previous date before changing
     setSelected(date);  // Update selected date
-    if(date !== undefined){
-    setIsModalOpen(true);  // Open modal for confirmation
+    if(date !== undefined && isPortrun){
+      setIsModalPortrunOpen(true);  // Open modal for confirmation
+    }else {
+      setIsModalOpen(true);
     }
   };
 
   // Confirm date change
   const handleConfirmDateChange = () => {
-    
-    console.log("Confirm")
     const displayDate = convertDateTimeToDisplayDate(
       selected,
       formatDate ? formatDate : "d MMMM yyyy"
@@ -111,6 +111,7 @@ export default function DatePickerEndDate(props) {
     onChangeInput && onChangeInput(selected);
     closePopper();
     setIsModalOpen(false);  // Close modal
+    setIsModalPortrunOpen(false)
   };
 
   // Cancel date change and revert to previous date
@@ -118,6 +119,7 @@ export default function DatePickerEndDate(props) {
     setSelected(previousDate);  // Revert to previous date
     setInputValue(convertDateTimeToDisplayDate(previousDate, formatDate ? formatDate : "d MMMM yyyy"));
     setIsModalOpen(false);  // Close modal
+    setIsModalPortrunOpen(false)
   };
 
   return (
@@ -129,9 +131,7 @@ export default function DatePickerEndDate(props) {
             <font className="text-[#f94a4a]">{validate}</font>
           </b>
         </label>
-      ) : (
-        <></>
-      )}
+      ) : null}
 
       <div ref={popperRef}>
         <div
@@ -148,7 +148,7 @@ export default function DatePickerEndDate(props) {
             type="text"
             placeholder={"dd/mm/yyyy"}
             value={inputValue}
-            defaultValue={defaultValue} // Set defaultValue
+            defaultValue={defaultValue}
             disabled={isDisable}
             onClick={handleButtonClick}
             className={`${
@@ -211,11 +211,21 @@ export default function DatePickerEndDate(props) {
       {/* Modal for confirming date change */}
       {isModalOpen && (
         <ModalConfirm
-        onClickConfirmBtn={handleConfirmDateChange}
-        onCloseModal={handleCancelDateChange}
-        title={"Are you sure?"}
-        content={"Do you confirm the change?"}
-      />
+          onClickConfirmBtn={handleConfirmDateChange}
+          onCloseModal={handleCancelDateChange}
+          title={"Confirm Changes?"}
+          content={`Would you confirm the change of Start Date/End Date from ${convertDateTimeToDisplayDate(previousDate, formatDate ? formatDate : "d MMMM yyyy")} to ${convertDateTimeToDisplayDate(selected, formatDate ? formatDate : "d MMMM yyyy")}?`}
+        />
+      )}
+
+      
+      {isModalPortrunOpen && (
+        <ModalConfirmDateWarning
+          onClickConfirmBtn={handleConfirmDateChange}
+          onCloseModal={handleCancelDateChange}
+          title={"Change End Date during Portfolio Operation?"}
+          content={`Would you confirm the change of Start Date/End Date from ${convertDateTimeToDisplayDate(previousDate, formatDate ? formatDate : "d MMMM yyyy")} to ${convertDateTimeToDisplayDate(selected, formatDate ? formatDate : "d MMMM yyyy")}?`}
+        />
       )}
     </div>
   );

@@ -19,6 +19,8 @@ import {
   GET_VALIDATION_POPUP_DEVICE,
   GET_VALIDATION_POPUP_SUBSCRIBER,
   GET_HISTORY_FILE,
+  SEND_EMAIL_DEVICE,
+  SEND_EMAIL_SUBSCRIBER
 } from "../../Redux/ActionType";
 
 import {
@@ -38,7 +40,9 @@ import {
   PORTFOLIO_VALIDATION_URL,
   PORTFOLIO_VALIDATION_POPUP_DEVICE_URL,
   PORTFOLIO_VALIDATION_POPUP_SUBSCRIBER_URL,
-  PORTFOLIO_HISTORY_FILE
+  PORTFOLIO_HISTORY_FILE,
+  PORTFOLIO_SEND_EMAIL_DEVICE,
+  PORTFOLIO_SEND_EMAIL_SUBSCRIBER
 } from "../../Constants/ServiceURL";
 
 import { getHeaderConfig } from "../../Utils/FuncUtils";
@@ -296,6 +300,62 @@ export const PortfolioDelete = (id, callback) => {
         if (response?.status == 200 || response?.status == 201) {
           console.log("response == ", response);
           dispatch(getPortfolioDeleteStatus(response.data));
+        } else {
+          dispatch(setOpenFailModal());
+          dispatch(failRequest(error.message));
+        }
+        callback && callback(response?.data);
+      },
+      (error) => {
+        dispatch(failRequest(error.message));
+      }
+    );
+  };
+};
+
+
+export const getPortfolioSendEmailDeviceStatus = (data) => {
+  return {
+    type: SEND_EMAIL_DEVICE,
+    payload: data,
+  };
+};
+export const PortfolioSendEmailDevice = (id,deviceid,isadd, callback) => {
+  const URL = `${PORTFOLIO_SEND_EMAIL_DEVICE}?portfoiloid=${id}&deviceid=${deviceid}&IsAdd=${isadd}`;
+  console.log("URL ==", URL);
+  return async (dispatch) => {
+    await axios.post(URL).then(
+      (response) => {
+        if (response?.status == 200 || response?.status == 201) {
+          console.log("response == ", response);
+          dispatch(getPortfolioSendEmailDeviceStatus(response.data));
+        } else {
+          dispatch(setOpenFailModal());
+          dispatch(failRequest(error.message));
+        }
+        callback && callback(response?.data);
+      },
+      (error) => {
+        dispatch(failRequest(error.message));
+      }
+    );
+  };
+};
+export const getPortfolioSendEmailSubscriberStatus = (data) => {
+  return {
+    type: SEND_EMAIL_SUBSCRIBER,
+    payload: data,
+  };
+};
+export const PortfolioSendEmailSubscriber = (id,subid,isadd, callback) => {
+  const URL = `${PORTFOLIO_SEND_EMAIL_SUBSCRIBER}?portfoiloid=${id}&subscriberid=${subid}&IsAdd=${isadd}`;
+  console.log("URL ==", URL);
+  return async (dispatch) => {
+    await axios.post(URL).then(
+      (response) => {
+        if (response?.status == 200 || response?.status == 201) {
+          console.log("response == ", response);
+          dispatch(getPortfolioSendEmailSubscriberStatus(response.data));
         } else {
           dispatch(setOpenFailModal());
           dispatch(failRequest(error.message));

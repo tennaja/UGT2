@@ -30,7 +30,9 @@ import {
   PortfolioGetOne,
   PortfolioManagementForVailidation,
   PortfolioValidationDevicePopup,
-  PortfolioValidationSubPopup
+  PortfolioValidationSubPopup,
+  PortfolioSendEmailDevice,
+  PortfolioSendEmailSubscriber
 } from "../../Redux/Portfolio/Action";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import { hideLoading, showLoading } from "../../Utils/Utils";
@@ -345,8 +347,8 @@ const UpdatePortfolio = () => {
   const portfolioMechanismList = useSelector(
     (state) => state.portfolio.portfolioMechanism
   );
- 
-  console.log(detailPortfolio?.portfolioInfo?.startDate)
+  
+  console.log(detailPortfolio?.portfolioInfo?.portfolioOperate)
   const { state } = useLocation();
   const [showModal, setShowModalConfirm] = React.useState(false);
   const [showModalCreate, setShowModalCreateConfirm] = React.useState(false);
@@ -384,6 +386,7 @@ const UpdatePortfolio = () => {
   const [IsRemovedDevice,setIsRemovedDevice] = useState(false);
   const [IsRemovedSub,setIsRemovedSub] = useState(false);
   const [IsError,setIsError] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false);
   
   useEffect(() => {
     if (Array.isArray(portfolioValidateStatus.device)) {
@@ -911,7 +914,7 @@ const UpdatePortfolio = () => {
     jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait'},
   };
 
-  detailPortfolio?.portfolioOperate == true 
+  
   // สร้าง PDF ด้วย html2pdf และดึง base64 string
   html2pdf()
     .from(element)
@@ -1016,7 +1019,7 @@ const UpdatePortfolio = () => {
       endDate: formData?.endDate,
       device: deviceList,
       subscriber: subscriberList,
-      fileUploadPortfoliosHistoryLog: structrueSend,
+      fileUploadPortfoliosHistoryLog: detailPortfolio?.portfolioInfo?.portfolioOperate ? structrueSend : [],
       portfoliosHistoryLog : updatedPortfoliosHistoryLogList,
     };
     const paramsforvalidation = {
@@ -1048,10 +1051,14 @@ const UpdatePortfolio = () => {
   }
 
   };
-  
   const handleClickConfirm = () => {
+    // Early exit if already processing
+    if (isProcessing) return;
+  
     setShowModalCreateConfirm(false);
     showLoading();
+    setIsProcessing(true); // Set the flag to true when processing starts
+  
     dispatch(
       PortfolioManagementForVailidation(paramsForValidation, (res) => {
         console.log(res);
@@ -1061,32 +1068,96 @@ const UpdatePortfolio = () => {
               console.log("res === ", createRes);
               if (res?.portfolioInfo !== null) {
                 setShowModalComplete(true);
+  
+                // Create a function to handle the dispatch of device changes
+                const dispatchDeviceChanges = (index) => {
+                  // If index is out of bounds for deviceChanges, check subChanges
+                  if (index >= deviceChanges.length) {
+                    // Start dispatching subscriber changes from index 0
+                    dispatchSubscriberChanges(0);
+                    return; // Exit device processing
+                  }
+  
+                  // Destructure deviceId and action from deviceChanges
+                  const { deviceId, action } = deviceChanges[index];
+  
+                  // Check the action and set isAdd accordingly, or skip if "Edit"
+                  if (action === "Edit") {
+                    dispatchDeviceChanges(index + 1); // Skip to next device change
+                    return; // Exit early for this iteration
+                  }
+  
+                  // Set isAdd based on action type
+                  const isAdd = action === "Add"; // true if "Add", false if "Remove"
+  
+                  // Dispatch the action with a callback for device
+                  dispatch(
+                    PortfolioSendEmailDevice(state?.code, deviceId, isAdd, (callbackRes) => {
+                      console.log(`Dispatched for device ID ${deviceId}, isAdd: ${isAdd}`, callbackRes);
+                      // Move to the next index after processing the callback
+                      dispatchDeviceChanges(index + 1); // Dispatch next device change
+                    })
+                  );
+                };
+  
+                // Create a function to handle the dispatch of subscriber changes
+                const dispatchSubscriberChanges = (subIndex) => {
+                  // If index is out of bounds for subChanges, finish processing
+                  if (subIndex >= subChanges.length) {
+                    hideLoading();
+                    setIsProcessing(false); // Reset the flag after processing
+                    return;
+                  }
+  
+                  // Destructure subscriberId and action from subChanges
+                  const { subscriberId, action } = subChanges[subIndex];
+  
+                  // Check the action and set isAdd accordingly, or skip if "Edit"
+                  if (action === "Edit") {
+                    dispatchSubscriberChanges(subIndex + 1); // Skip to next subscriber change
+                    return; // Exit early for this iteration
+                  }
+  
+                  // Set isAdd based on action type
+                  const isAdd = action === "Add"; // true if "Add", false if "Remove"
+  
+                  // Dispatch the subscriber action
+                  dispatch(
+                    PortfolioSendEmailSubscriber(state?.code, subscriberId, isAdd, (callbackRes) => {
+                      console.log(`Dispatched for subscriber ID ${subscriberId}, isAdd: ${isAdd}`, callbackRes);
+                      // Move to the next index after processing the callback
+                      dispatchSubscriberChanges(subIndex + 1); // Dispatch next subscriber change
+                    })
+                  );
+                };
+  
+                // Start dispatching device changes from index 0
+                dispatchDeviceChanges(0);
+  
               } else {
                 setFailedModal(true);
+                hideLoading();
+                setIsProcessing(false); // Reset the flag if there are no portfolioInfo
               }
-              hideLoading();
             })
           );
         } else {
-          
           console.log("Not yet Pass");
           hideLoading();
+          setIsProcessing(false); // Reset the flag if validation fails
         }
       })
     );
-
-    // dispatch(
-    //   PortfolioManagementUpdate(paramsCreate, (res) => {
-    //     console.log("res === ", res);
-    //     if (res?.portfolioInfo !== null) {
-    //       setShowModalComplete(true);
-    //     } else {
-    //       setFailedModal(true);
-    //     }
-    //     hideLoading();
-    //   })
-    // );
   };
+  
+  
+  
+  
+  
+  
+  
+  
+
   const clearModal = (data) => {
     setFailedModal(data);
   };
@@ -1361,7 +1432,7 @@ if (subscriberDataTable.length > 0) {
     if (type === "startDate") {
       rowData.startDate = newDate;
     } else if (type === "endDate") {
-      rowData.expriryDate = newDate;
+      rowData.endDate = newDate;
     }
   };
   const handleSubscriberDateChange = (newDate, rowId, type) => {
@@ -1402,6 +1473,7 @@ if (subscriberDataTable.length > 0) {
     });
 
     for (const item of deviceListSelectedTemp) {
+      console.log(item)
         // Check if the device's end date is greater than the port end date
         const portEndDate = dayjs(getValues("endDate"));
         let itemEndDate = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
@@ -1423,7 +1495,7 @@ if (subscriberDataTable.length > 0) {
             };
             console.log(newDeviceChangeDate);
             newDeviceChanges.push(newDeviceChangeDate); // Add to the changes list
-            isChanged = true; // Mark as changed because endDate was modified
+            
         } else if (portEndDate < itemEndDate){
           itemEndDate = portEndDate.format("DD/MM/YYYY");
         }
@@ -1434,6 +1506,8 @@ if (subscriberDataTable.length > 0) {
    setDeviceChanges((prevChanges) => {
     // Create a new list to store updated deviceChanges
     const updatedChanges = [...prevChanges];
+    let hasRemoval = false; // Flag to track if any removal happens
+    let hasAddition = false; // Flag to track if any addition happens
 
     newDeviceIds.forEach(newId => {
         // Find the existing index where the deviceId matches
@@ -1442,38 +1516,53 @@ if (subscriberDataTable.length > 0) {
         if (existingIndex !== -1) {
             // If the ID already exists, check the action
             const existingChange = updatedChanges[existingIndex];
+
             if (existingChange.action === "Add") {
-                // If the action is "Add", remove it from the list
+                // If the action is "Add", remove it from the list (undo the addition)
                 updatedChanges.splice(existingIndex, 1);
-                setisAddDevice(false);
-                setIsRemovedDevice(false);
+                hasRemoval = true; // Mark removal because of undoing the add
             } 
-            // else if (existingChange.action === "Edit") {
-            //     // If the action is "Edit", change it to "Remove"
-            //     updatedChanges[existingIndex].action = "Remove";
-            //     console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
-            // }
-            // If the action is "Remove", do nothing (keep it in the list)
+            else if (existingChange.action === "Edit") {
+                // If the action is "Edit", change it to "Remove"
+                updatedChanges[existingIndex].action = "Remove";
+                hasRemoval = true; // Mark removal due to editing to removal
+            } 
         } else {
             // If the ID does not exist, find the new change
             const newChange = newDeviceChanges.find(change => change.deviceId === newId);
             if (newChange) {
                 // Check the action of the new change
+                updatedChanges.push(newChange);
+
                 if (newChange.action === "Add") {
-                    // Only add if the action is "Add"
-                    updatedChanges.push(newChange);
-                    setIsRemovedDevice(true);
-                } else if (newChange.action === "Edit" || newChange.action === "Remove") {
-                    // Add "Edit" and "Remove" actions to the list as well
-                    updatedChanges.push(newChange);
-                    console.log(`${newChange.action} action for device ID:`, newId); // Example logging
+                    hasAddition = true; // Mark as added
+                } else if (newChange.action === "Remove") {
+                    hasRemoval = true; // Mark as removed
                 }
+
+                // Optional logging for other actions
+                console.log(`${newChange.action} action for device ID:`, newId);
             }
         }
     });
 
+    // Set the states only once after processing all devices
+    if (hasRemoval) {
+        setIsRemovedDevice(true);
+    }
+    
+    // Set addition flag based on whether any "Add" action exists
+    if (hasAddition) {
+        setisAddDevice(true); // Set to true if any addition happened
+    } else {
+        setisAddDevice(false); // Set to false if no addition happened
+    }
+
     return updatedChanges; // Return the updated list
 });
+
+
+
 
 
 
@@ -1540,44 +1629,62 @@ if (subscriberDataTable.length > 0) {
 
    // Update deviceChanges
    setSubChanges((prevChanges) => {
-       // Create a new list to store updated deviceChanges
-       const updatedChanges = [...prevChanges];
+    // Create a new list to store updated subscriber changes
+    const updatedChanges = [...prevChanges];
+    let hasRemoval = false; // Flag to track if any removal happens
+    let hasAdd = false; // Flag to track if any "Add" happens
 
-       newSubIds.forEach(newId => {
-           const existingIndex = updatedChanges.findIndex(change => change.subscriberId === newId);
-           if (existingIndex !== -1) {
+    newSubIds.forEach(newId => {
+        // Find the existing index where the subscriberId matches
+        const existingIndex = updatedChanges.findIndex(change => change.subscriberId === newId);
+
+        if (existingIndex !== -1) {
+            // If the ID already exists, check the action
             const existingChange = updatedChanges[existingIndex];
             if (existingChange.action === "Add") {
-               updatedChanges.splice(existingIndex, 1);
-               setisAddSub(false)
-               setIsRemovedSub(false);
-            } else if (existingChange.action === "Edit") {
-              // If the action is "Edit", change it to "Remove"
-              updatedChanges[existingIndex].action = "Remove";
-              console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
+                // If the action is "Add", remove it from the list
+                updatedChanges.splice(existingIndex, 1);
+                hasRemoval = true; // Mark as removed
+            } 
+            else if (existingChange.action === "Edit") {
+                // If the action is "Edit", change it to "Remove"
+                updatedChanges[existingIndex].action = "Remove";
+                console.log(`Changed action for subscriber ID ${newId} from Edit to Remove.`);
+                hasRemoval = true; // Mark as removed
             }
-
-
-           } else {
-               // If the ID does not exist, add it to the list
-               const newChange = newSubChanges.find(change => change.subscriberId === newId);
-               if (newChange) {
+        } else {
+            // If the ID does not exist, add it to the list
+            const newChange = newSubChanges.find(change => change.subscriberId === newId);
+            if (newChange) {
                 // Check the action of the new change
+                updatedChanges.push(newChange);
                 if (newChange.action === "Add") {
-                    // Only add if the action is "Add"
-                    updatedChanges.push(newChange);
-                    setIsRemovedSub(true);
-                } else if (newChange.action === "Edit" || newChange.action === "Remove") {
-                    // Add "Edit" and "Remove" actions to the list as well
-                    updatedChanges.push(newChange);
-                    console.log(`${newChange.action} action for device ID:`, newId); // Example logging
+                    hasAdd = true; // Mark as added
+                } else if (newChange.action === "Remove") {
+                    hasRemoval = true; // Mark as removed
                 }
-            }
-           }
-       });
 
-       return updatedChanges; // Return the updated list
-   });
+                console.log(`${newChange.action} action for subscriber ID:`, newId);
+            }
+        }
+    });
+
+    // Set state after loop to avoid multiple triggers
+    if (hasRemoval) {
+        setIsRemovedSub(true); // If any removal occurred, set this once
+    }
+
+    // Set addition flag based on whether any "Add" action exists
+    if (hasAdd) {
+        setisAddSub(true); // Set to true if any addition happened
+    } else {
+        setisAddSub(false); // Set to false if no addition happened
+    }
+
+    return updatedChanges; // Return the updated list
+});
+
+
    setSubscriberListSelected(subscriberListSelectedTemp);
     setOnEditSubscriber(false);
     setOnEditDatetimeSubscriber(false);
@@ -1769,7 +1876,7 @@ if (subscriberDataTable.length > 0) {
                                 id={"endDate"}
                                 label={"End Date"}
                                 error={errors.endDate}
-                                
+                                isPortrun= {isStartPort}
                                 defaultValue={
                                   detailPortfolio?.portfolioInfo?.endDate
                                 }

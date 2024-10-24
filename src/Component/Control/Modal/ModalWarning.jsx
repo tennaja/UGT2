@@ -54,7 +54,7 @@ const ModalWarning = (props) => {
           </div>
           <div className="mt-5 sm:mt-6">
             <button
-              onClick={()=>{onClickOk&&onClickOk(false)}}
+              onClick={onClickOk}
               className="inline-flex justify-center w-full rounded  border border-transparent shadow-sm px-4 py-2 bg-[#EF4835] text-base font-medium text-white hover:bg-[#78829D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
             >
               OK
