@@ -572,8 +572,9 @@ console.log(data)
                     role="checkbox"
                     tabIndex={-1}
                     selected={isItemSelected}
+                    
                     style={{
-                      backgroundColor: isError ? "#F4433614" : "inherit", // Light red background on error
+                      backgroundColor: isError ? "#F4433614" : "", // Light red background on error
                     }}
                   >
                     {checkbox && (

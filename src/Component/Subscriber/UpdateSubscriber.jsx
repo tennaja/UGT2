@@ -65,6 +65,7 @@ import InfoCircle from "../assets/InfoCircle.svg"
 import { LiaDownloadSolid } from "react-icons/lia";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { BiErrorCircle } from "react-icons/bi";
 
 const UpdateSubscriber = () => {
   const {
@@ -3829,7 +3830,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractStartDate"}
-                                      label={"Retail ESA Contract Start Date"}
+                                      label={"Retail ESA Start Date"}
                                       error={errors.retailESAContractStartDate}
                                       onChangeInput={
                                         handleChangeCommissioningDate
@@ -3850,7 +3851,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractEndDate"}
-                                      label={"Retail ESA Contract End Date"}
+                                      label={"Retail ESA End Date"}
                                       error={errors.retailESAContractEndDate}
                                       onCalDisableDate={
                                         requestedEffectiveDateDisableDateCal
@@ -3879,7 +3880,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       {...field}
                                       id={"retailESAContractDuration"}
                                       type={"text"}
-                                      label={"Retail ESA Contract Duration"}
+                                      label={"Retail ESA Duration"}
                                       error={errors.retailESAContractDuration}
                                       disabled
                                     />
@@ -3891,8 +3892,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                   name="portfolioAssignment"
                                   control={control}
                                   rules={{
-                                    required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                    /*validate: (value) => value.trim() !== "" || "Input cannot be just spaces",*/
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -3901,7 +3901,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       type={"text"}
                                       label={"Portfolio Assignment"}
                                       error={errors.portfolioAssignment}
-                                      validate={" *"}
+                                      //validate={" *"}
                                       placeholder="Please fill the form in English"
                                     />
                                   )}
@@ -3994,6 +3994,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       type={"checkbox"}
                                       label={"Opt for up to 15% green electricity from UGT1"}
                                       error={errors.optGreen}
+                                      disabled={currentUGTGroup?.id === 1?true:false}
                                       validate={" *"}
                                       value={field.value === undefined?false:field.value}
                                     />
@@ -4012,6 +4013,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       type={"checkbox"}
                                       label={"Opt for excess UGT beyond contract"}
                                       error={errors.optContract}
+                                      disabled={currentUGTGroup?.id === 1?true:false}
                                       validate={" *"}
                                       value={field.value === undefined?false:field.value}
                                       
@@ -4824,7 +4826,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractStartDate"}
-                                      label={"Retail ESA Contract Start Date"}
+                                      label={"Retail ESA Start Date"}
                                       error={errors.retailESAContractStartDate}
                                       onChangeInput={
                                         handleChangeCommissioningDate
@@ -4845,7 +4847,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     <DatePickerSubscriber
                                       {...field}
                                       id={"retailESAContractEndDate"}
-                                      label={"Retail ESA Contract End Date"}
+                                      label={"Retail ESA End Date"}
                                       error={errors.retailESAContractEndDate}
                                       onCalDisableDate={
                                         requestedEffectiveDateDisableDateCal
@@ -4874,7 +4876,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       {...field}
                                       id={"retailESAContractDuration"}
                                       type={"text"}
-                                      label={"Retail ESA Contract Duration"}
+                                      label={"Retail ESA Duration"}
                                       error={errors.retailESAContractDuration}
                                       disabled
                                     />
@@ -4886,8 +4888,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                   name="portfolioAssignment"
                                   control={control}
                                   rules={{
-                                    required: "This field is required",
-                                    validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                                    /*validate: (value) => value.trim() !== "" || "Input cannot be just spaces",*/
                                   }}
                                   render={({ field }) => (
                                     <Input
@@ -4896,7 +4897,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       type={"text"}
                                       label={"Portfolio Assignment"}
                                       error={errors.portfolioAssignment}
-                                      validate={" *"}
+                                      //validate={" *"}
                                       placeholder="Please fill the form in English"
                                     />
                                   )}
@@ -4920,6 +4921,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       type={"checkbox"}
                                       label={"Opt for up to 15% green electricity from UGT1"}
                                       error={errors.optGreen}
+                                      disabled={currentUGTGroup?.id === 1?true:false}
                                       validate={" *"}
                                       value={field.value === undefined?false:field.value}
                                     />
@@ -4938,6 +4940,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       type={"checkbox"}
                                       label={"Opt for excess UGT beyond contract"}
                                       error={errors.optContract}
+                                      disabled={currentUGTGroup?.id === 1?true:false}
                                       validate={" *"}
                                       value={field.value === undefined?false:field.value}
                                       
@@ -5835,7 +5838,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             <div className="md:col-span-3 ml-2">
                               <div className="w-full">
                                 <label>
-                                  <b>Retail ESA Contract Start Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
+                                  <b>Retail ESA Start Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
@@ -5845,7 +5848,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             <div className="md:col-span-3 ml-2">
                             <div className="w-full">
                                 <label>
-                                  <b>Retail ESA Contract End Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
+                                  <b>Retail ESA End Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
@@ -5855,7 +5858,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             <div className="md:col-span-3 ml-2">
                             <div className="w-full">
                                 <label>
-                                  <b>Retail ESA Contract Duration</b><b className="text-[#f94a4a] ml-[5px]">*</b>
+                                  <b>Retail ESA Duration</b><b className="text-[#f94a4a] ml-[5px]">*</b>
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
@@ -5865,7 +5868,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             <div className="md:col-span-3 ml-2">
                             <div className="w-full">
                                 <label>
-                                  <b>Portfolio Assignment</b><b className="text-[#f94a4a] ml-[5px]">*</b>
+                                  <b>Portfolio Assignment</b>
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
@@ -5928,6 +5931,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     type={"checkbox"}
                                     label={"Opt for up to 15% green electricity from UGT1"}
                                     error={errors.optGreen}
+                                    disabled={currentUGTGroup?.id === 1?true:false}
                                     validate={" *"}
                                     value={field.value === undefined?false:field.value}
                                   />
@@ -5946,6 +5950,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     type={"checkbox"}
                                     label={"Opt for excess UGT beyond contract"}
                                     error={errors.optContract}
+                                    disabled={currentUGTGroup?.id === 1?true:false}
                                     validate={" *"}
                                     value={field.value === undefined?false:field.value}
                                     
@@ -6595,7 +6600,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             <div className="md:col-span-3 ml-2">
                             <div className="w-full">
                                 <label>
-                                  <b>Retail ESA Contract Start Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
+                                  <b>Retail ESA Start Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
@@ -6605,7 +6610,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             <div className="md:col-span-3 ml-2">
                             <div className="w-full">
                                 <label>
-                                  <b>Retail ESA Contract End Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
+                                  <b>Retail ESA End Date</b><b className="text-[#f94a4a] ml-[5px]">*</b>
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
@@ -6615,7 +6620,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             <div className="md:col-span-3 ml-2">
                             <div className="w-full">
                                 <label>
-                                  <b>Retail ESA Contract Duration</b><b className="text-[#f94a4a] ml-[5px]">*</b>
+                                  <b>Retail ESA Duration</b><b className="text-[#f94a4a] ml-[5px]">*</b>
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
@@ -6625,7 +6630,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             <div className="md:col-span-3 ml-2">
                             <div className="w-full">
                                 <label>
-                                  <b>Portfolio Assignment</b><b className="text-[#f94a4a] ml-[5px]">*</b>
+                                  <b>Portfolio Assignment</b>
                                 </label>
                               </div>
                               <div className="mt-2 w-full">
@@ -6648,6 +6653,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     {...field}
                                     id={"optGreen"}
                                     type={"checkbox"}
+                                    disabled={currentUGTGroup?.id === 1?true:false}
                                     label={"Opt for up to 15% green electricity from UGT1"}
                                     error={errors.optGreen}
                                     validate={" *"}
@@ -6666,6 +6672,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     {...field}
                                     id={"optContract"}
                                     type={"checkbox"}
+                                    disabled={currentUGTGroup?.id === 1?true:false}
                                     label={"Opt for excess UGT beyond contract"}
                                     error={errors.optContract}
                                     validate={" *"}

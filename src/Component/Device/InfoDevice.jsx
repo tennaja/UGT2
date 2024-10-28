@@ -417,7 +417,7 @@ const InfoDevice = () => {
 const emailBodyWithdraw = `
   <html>
     <body>
-      <p>Dear UGT Registrant (Verifier),</p>
+      <p>Dear Device Owner,</p>
       
       <p>
       Device registration has been

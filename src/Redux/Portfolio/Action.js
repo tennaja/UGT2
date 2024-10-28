@@ -64,13 +64,13 @@ export const getPortfolioManagementDevice = (data) => {
     payload: data,
   };
 };
-export const PortfolioManagementDevice = (param,startDate,endate,portId) => {
+export const PortfolioManagementDevice = (param,startDate,endate,portId,isEdit) => {
   const findUgtGroupId = param;
   let URL = "";
   if (!portId) {
     URL = `${PORTFOLIO_DEVICE_LIST_URL}?findUgtGroupId=${findUgtGroupId}&portfolioStartDate=${startDate}&portfolioEndDate=${endate}`;
   } else {
-    URL = `${PORTFOLIO_DEVICE_LIST_URL}?findUgtGroupId=${findUgtGroupId}&portfolioStartDate=${startDate}&portfolioEndDate=${endate}&portfolioId=${portId}`;
+    URL = `${PORTFOLIO_DEVICE_LIST_URL}?findUgtGroupId=${findUgtGroupId}&portfolioId=${portId}&portfolioStartDate=${startDate}&portfolioEndDate=${endate}&isEdit=${isEdit}`;
   }
   return async (dispatch) => {
     await axios.get(URL).then(
@@ -90,7 +90,7 @@ export const getPortfolioManagementSubscriber = (data) => {
     payload: data,
   };
 };
-export const PortfolioManagementSubscriber = (param,startDate,endate,portId, isEdit) => {
+export const PortfolioManagementSubscriber = (param,startDate,endate,portId,isEdit) => {
   const findUgtGroupId = param;
   let URL = "";
   if (!portId) {

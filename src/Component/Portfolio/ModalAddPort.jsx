@@ -118,7 +118,7 @@ const ModalAddPort = (props) => {
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={row.deviceTechnologiesName}
+          textToHighlight={row.fuelName}
         />
       ),
     },
@@ -213,7 +213,7 @@ const ModalAddPort = (props) => {
     },
     {
       id: "retailESAContractStartDate",
-      label: "ESA Contract Start Date",
+      label: "ESA Start Date",
       render: (row) => (
         <Highlighter
           highlightTag={Highlight}
@@ -225,7 +225,7 @@ const ModalAddPort = (props) => {
     },
     {
       id: "retailESAContractEndDate",
-      label: "ESA Contract End Date",
+      label: "ESA End Date",
       render: (row) => (
         <Highlighter
           highlightTag={Highlight}

@@ -131,6 +131,8 @@ const UploadFileSubscriber = (props) => {
     const handlePreview =(file)=>{
       console.log(file)
       if(file.binary === undefined){
+        const extension = file.name?.split(".").pop();
+        console.log(extension)
         const blobResult = file instanceof Blob ? file : new Blob([file], { type: file.type });;
         console.log("Blob Result",blobResult)
       
@@ -143,32 +145,139 @@ const UploadFileSubscriber = (props) => {
             const pdfWindow = window.open("");
           console.log("PDF",pdfWindow)
           //console.log(type)
-          if (pdfWindow) {
-            pdfWindow.document.write(
-                `<iframe width="100%" height="100%" src="data:${file.type};base64,${base64Content}" style="border:none; position:fixed; top:0; left:0; bottom:0; right:0; width:100vw; height:100vh;"></iframe>`
-            );
-            pdfWindow.document.body.style.margin = "0"; // Remove any default margin
-                  pdfWindow.document.body.style.overflow = "hidden"; // Hide any scrollbars
-        } else {
-            alert('Unable to open new tab. Please allow popups for this website.');
-        }
+          //const pdfWindow = window.open("");
+          console.log("PDF",pdfWindow)
+          console.log(base64Content)
+          console.log(file.type)
+          if(extension === "jpeg" || extension === "jpg" || extension === "png" || extension === "svg"){
+            if (pdfWindow) {
+              pdfWindow.document.write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
+                  <img src="data:image/jpeg;base64,${base64Content}" style="max-width:100%; height:auto;"/>
+              </body></html>`);
+              pdfWindow.document.title = "Image Preview";
+              pdfWindow.document.close();
+          }
+          }
+          else if(extension === "pdf"){
+            if (pdfWindow) {
+              // Set the title of the new tab to the filename
+              pdfWindow.document.title = file.filename;
+          
+              // Convert Base64 to raw binary data held in a string
+              const byteCharacters = atob(base64Content);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+          
+              // Create a Blob from the byte array and set the MIME type
+              const blob = new Blob([byteArray], { type: file.type});
+              console.log("Blob",blob)
+          
+              // Create a URL for the Blob and set it as the iframe source
+              const blobURL = URL.createObjectURL(blob);
+              console.log("Blob url :" ,blobURL)
+              let name = file.filename
+          
+              const iframe = pdfWindow.document.createElement("iframe");
+              
+              iframe.style.border = "none";
+              iframe.style.position = "fixed";
+              iframe.style.top = "0";
+              iframe.style.left = "0";
+              iframe.style.bottom = "0";
+              iframe.style.right = "0";
+              iframe.style.width = "100vw";
+              iframe.style.height = "100vh";
+              
+              // Use Blob URL as the iframe source
+              iframe.src = blobURL;
+          
+              // Remove any margin and scrollbars
+              pdfWindow.document.body.style.margin = "0";
+              pdfWindow.document.body.style.overflow = "hidden";
+          
+              // Append the iframe to the new window's body
+              pdfWindow.document.body.appendChild(iframe);
+
+              // Optionally, automatically trigger file download with correct name
+            
+            } else {
+              alert('Unable to open new tab. Please allow popups for this website.');
+            }
+          }
             
         };
         reader.readAsDataURL(blobResult);
       }
       else{
+        const extension = file.name?.split(".").pop();
           const pdfWindow = window.open("");
           console.log("PDF",pdfWindow)
           //console.log(type)
-          if (pdfWindow) {
-            pdfWindow.document.write(
-                `<iframe width="100%" height="100%" src="data:${file.type};base64,${file.binary}" style="border:none; position:fixed; top:0; left:0; bottom:0; right:0; width:100vw; height:100vh;"></iframe>`
-            );
-            pdfWindow.document.body.style.margin = "0"; // Remove any default margin
-                  pdfWindow.document.body.style.overflow = "hidden"; // Hide any scrollbars
-        } else {
-            alert('Unable to open new tab. Please allow popups for this website.');
-        }
+          //const pdfWindow = window.open("");
+          console.log("PDF",pdfWindow)
+          //console.log(base64String)
+          //console.log(type)
+          if(extension === "jpeg" || extension === "jpg" || extension === "png" || extension === "svg"){
+            if (pdfWindow) {
+              pdfWindow.document.write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
+                  <img src="data:image/jpeg;base64,${file.binary}" style="max-width:100%; height:auto;"/>
+              </body></html>`);
+              pdfWindow.document.title = "Image Preview";
+              pdfWindow.document.close();
+          }
+          }
+          else if(extension === "pdf"){
+            if (pdfWindow) {
+              // Set the title of the new tab to the filename
+              pdfWindow.document.title = file.filename;
+          
+              // Convert Base64 to raw binary data held in a string
+              const byteCharacters = atob(file.binary);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+          
+              // Create a Blob from the byte array and set the MIME type
+              const blob = new Blob([byteArray], { type: file.type});
+              console.log("Blob",blob)
+          
+              // Create a URL for the Blob and set it as the iframe source
+              const blobURL = URL.createObjectURL(blob);
+              console.log("Blob url :" ,blobURL)
+              let name = file.filename
+          
+              const iframe = pdfWindow.document.createElement("iframe");
+              
+              iframe.style.border = "none";
+              iframe.style.position = "fixed";
+              iframe.style.top = "0";
+              iframe.style.left = "0";
+              iframe.style.bottom = "0";
+              iframe.style.right = "0";
+              iframe.style.width = "100vw";
+              iframe.style.height = "100vh";
+              
+              // Use Blob URL as the iframe source
+              iframe.src = blobURL;
+          
+              // Remove any margin and scrollbars
+              pdfWindow.document.body.style.margin = "0";
+              pdfWindow.document.body.style.overflow = "hidden";
+          
+              // Append the iframe to the new window's body
+              pdfWindow.document.body.appendChild(iframe);
+
+              // Optionally, automatically trigger file download with correct name
+            
+            } else {
+              alert('Unable to open new tab. Please allow popups for this website.');
+            }
+          }
       }
     }
 
@@ -314,12 +423,12 @@ const UploadFileSubscriber = (props) => {
                       {/* {readableBytes(file?.props?.meta?.size)} */}
                     </label>
                   </div>
-                  {file?.props?.meta?.name?.split(".").pop() === "pdf" && <button type="button"
+                  {file?.props?.meta?.name?.split(".").pop() === "pdf" ||  file?.props?.meta?.name?.split(".").pop() === "png" || file?.props?.meta?.name?.split(".").pop() === "jpg" || file?.props?.meta?.name?.split(".").pop() === "jpeg" || file?.props?.meta?.name?.split(".").pop() === "svg"   ? <button type="button"
                     onClick={() => {
                       handlePreview(file?.props?.fileWithMeta?.file);
                     }}>
                       <RiEyeLine className="pl-2 text-xl font-medium cursor-pointer h-[30px] w-[30px]"/>
-                      </button>}
+                      </button>:undefined}
                   <button
                     type="button"
                     onClick={() => {

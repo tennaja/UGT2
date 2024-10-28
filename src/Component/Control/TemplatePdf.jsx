@@ -440,7 +440,7 @@ submission`})</em></p>
                 <td className="border p-2 font-bold">Expected form of volume evidence
                 <p className='text-[8px] text-gray-600'><em>({`if other please specify`})</em></p>
                 </td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.isMeteringData == "True" ? "Metering data / " : ""}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data.data.isOther == "True" ? "Other : " : ""} {data.data.otherDescription}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.isMeteringData == "True" ? "Metering data / " : ""}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data.data.isOther == "True" ? "Other : " : ""} {data.data.isOther == "True" ? data.data.otherDescription : ""}</td>
               </tr>
             </tbody>
           </table>
@@ -616,9 +616,9 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 text-left">(if public (government) funding has been received when did/will it finish?)</td>
-                <td className="border p-2 text-left ">{dayfund}</td>
-                <td className="border p-2 text-left ">{monthfund}</td>
-                <td className="border p-2 text-left w-36">{yearfund}</td>
+                <td className="border p-2 text-left ">{data?.data?.publicFunding == "Feed in Tariff" ? dayfund : ""}</td>
+                <td className="border p-2 text-left ">{data?.data?.publicFunding == "Feed in Tariff" ? monthfund : ""}</td>
+                <td className="border p-2 text-left w-36">{data?.data?.publicFunding == "Feed in Tariff" ? yearfund : ""}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Requested effective date of registration: (no earlier than 12 months prior to submitting this form)</td>

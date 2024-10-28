@@ -42,6 +42,8 @@ const Portfoliolisting = (props) => {
     if (currentUGTGroup?.id !== undefined) {
       if (userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG) {
         setIsPortManager(true);
+      }else {
+        setIsPortManager(false);
       }
     }
   }, [currentUGTGroup, userData]);
@@ -52,6 +54,7 @@ const Portfoliolisting = (props) => {
   const dashboardDataList = useSelector(
     (state) => state.portfolio.portfolioDashboardList
   );
+  console.log(dashboardDataList)
   const [dashboardList, setDashboardList] = useState([]);
   const [activeList, setActiveList] = useState([]);
   const [inactiveList, setInactiveList] = useState([]);
@@ -87,6 +90,7 @@ const Portfoliolisting = (props) => {
     const _now = now.setHours(0, 0, 0, 0);
 
     const filtered = dashboardList.filter((item) => {
+      if (item.isDeleted === "True") return false;
         const [endDay, endMonth, endYear] = item.endDate.split("/");
         const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
         const _endDate = endDate.setHours(0, 0, 0, 0);
@@ -107,20 +111,27 @@ useEffect(() => {
   const _now = now.setHours(0, 0, 0, 0);
 
   const filtered = dashboardList.filter((item) => {
+
+    // Exclude items where isDeleted is "True"
+    if (item.isDeleted === "True") return false;
+
+    // Proceed if isDeleted is null or any other value except "True"
     const [startDay, startMonth, startYear] = item.startDate.split("/");
     const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
     const _startDate = startDate.setHours(0, 0, 0, 0);
 
     const [endDay, endMonth, endYear] = item.endDate.split("/");
     const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
-    const _endDate = endDate.setHours(0, 0, 0, 0);
+    
 
-    return _startDate > _now 
+    return _startDate > _now;
     // || _endDate <= _now;
   });
 
   setInactiveList(filtered);
 }, [dashboardList]);
+
+
 
 
   const copyToClipboard = (text) => {
@@ -297,7 +308,7 @@ useEffect(() => {
             className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#4D6A00] bg-[#87BE33]`}
           >
             <label className="m-auto cursor-pointer text-white font-semibold">
-              {"Manage"}
+              {userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER || userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ? "View" : "Manage"}
             </label>
           </Link>
         </div>
@@ -453,7 +464,7 @@ useEffect(() => {
             className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#4D6A00] bg-[#87BE33]`}
           >
             <label className="m-auto cursor-pointer text-white font-semibold">
-              {"Manage"}
+            {userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER || userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ? "View" : "Manage"}
             </label>
           </Link>
         </div>
@@ -550,7 +561,7 @@ useEffect(() => {
                 Portfolio Info
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                {currentUGTGroup?.name} / Portfolio /
+                {currentUGTGroup?.name} / Portfolio Management /
                 Portfolio Info
               </p>
             </div>

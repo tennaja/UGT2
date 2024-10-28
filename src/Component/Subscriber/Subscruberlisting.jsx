@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import Calendar from "../assets/calendars.svg";
 import User from "../assets/3 User.svg";
 import Clock from "../assets/Clock.svg";
@@ -411,7 +411,7 @@ const Subscriberlisting = (props) => {
               //  whiteSpace: "nowrap",
               // overflow: "hidden",
               // textOverflow: "ellipsis",
-              maxWidth: "300px",
+              maxWidth: "200px",
             }}
           >
             <Highlighter
@@ -469,8 +469,9 @@ const Subscriberlisting = (props) => {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
       align: "right",
+      maxWidth: "100px",
       render: (row) => (
-        <span>
+          <span>
           <Highlighter
             highlightClassName="highlight"
             highlightTag={Highlight}
@@ -484,7 +485,7 @@ const Subscriberlisting = (props) => {
                 : "-"
             }
           />
-        </span>
+          </span>
       ),
     },
     {
@@ -845,6 +846,7 @@ const Subscriberlisting = (props) => {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
       align: "right",
+      maxWidth: "100px",
       render: (row) => (
         <span>
           <Highlighter
@@ -1755,7 +1757,7 @@ const Subscriberlisting = (props) => {
                     </div>
                     <div className="font-bold mt-2">Total Active Subscriber</div>
                     <div className="text-gray-500 text-xs">
-                      Keep track of all your devices at a glance.
+                      Keep track of all your subscribers at a glance.
                     </div>
                   </div>
                 </Card>
@@ -1930,10 +1932,10 @@ const Subscriberlisting = (props) => {
                       */}
                     </div>
 
-                    <div className="font-bold mt-2 text-xl">
+                    <div className="font-bold mt-3 ">{/*text-xl*/}
                       Utility Subscription
                     </div>
-                    <div className="text-gray-500 text-sm font-medium">
+                    <div className="text-gray-500 text-xs">{/*text-sm font-medium */}
                       Observe the overall subscription ratio of all utilities’
                       subscribers.
                     </div>

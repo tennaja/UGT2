@@ -233,9 +233,9 @@ const AddSubscriber = () => {
 
   useEffect(() => {
     permissionAllow();
-    if (userData?.userGroup?.name !== "EGAT Subscriber Manager") {
-      handleClickForm2();
-    }
+    //if (userData?.userGroup?.name !== "EGAT Subscriber Manager") {
+    //  handleClickForm2();
+    //}
   }, [dropDrowList?.assignedUtility, userData]);
 
   useEffect(() => {
@@ -2082,7 +2082,7 @@ const AddSubscriber = () => {
                     </label>
                   </div>
                   <div>
-                    {permission === "EGAT Subscriber Manager" && (
+                    {/*permission === "EGAT Subscriber Manager" && (
                       <button
                         className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
                           isActiveForm1
@@ -2093,8 +2093,17 @@ const AddSubscriber = () => {
                       >
                         Subscriber
                       </button>
-                    )}
-
+                    )*/}
+                    <button
+                        className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
+                          isActiveForm1
+                            ? "bg-BREAD_CRUMB text-MAIN_SCREEN_BG font-semibold"
+                            : "bg-MAIN_SCREEN_BG hover:bg-BREAD_CRUMB hover:text-MAIN_SCREEN_BG"
+                        }`}
+                        onClick={handleClickForm1}
+                      >
+                        Subscriber
+                      </button>
                     <button
                       className={`h-12 px-10 mr-4 rounded duration-150 border-2 text-BREAD_CRUMB border-BREAD_CRUMB ${
                         isActiveForm2
@@ -2879,7 +2888,7 @@ const AddSubscriber = () => {
                                   <DatePickerSubscriber
                                     {...field}
                                     id={"retailESAContractStartDate"}
-                                    label={"Retail ESA Contract Start Date"}
+                                    label={"Retail ESA Start Date"}
                                     error={errors.retailESAContractStartDate}
                                     onChangeInput={
                                       handleChangeCommissioningDate
@@ -2900,7 +2909,7 @@ const AddSubscriber = () => {
                                   <DatePickerSubscriber
                                     {...field}
                                     id={"retailESAContractEndDate"}
-                                    label={"Retail ESA Contract End Date"}
+                                    label={"Retail ESA End Date"}
                                     error={errors.retailESAContractEndDate}
                                     onCalDisableDate={
                                       requestedEffectiveDateDisableDateCal
@@ -2931,7 +2940,7 @@ const AddSubscriber = () => {
                                     {...field}
                                     id={"retailESAContractDuration"}
                                     type={"text"}
-                                    label={"Retail ESA Contract Duration"}
+                                    label={"Retail ESA Duration"}
                                     error={errors.retailESAContractDuration}
                                     disabled
                                   />
@@ -2943,10 +2952,10 @@ const AddSubscriber = () => {
                                 name="portfolioAssignment"
                                 control={control}
                                 rules={{
-                                  required: "This field is required",
-                                  validate: (value) =>
+                                  
+                                  /*validate: (value) =>
                                     value.trim() !== "" ||
-                                    "Input cannot be just spaces",
+                                    "Input cannot be just spaces",*/
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -2955,7 +2964,7 @@ const AddSubscriber = () => {
                                     type={"text"}
                                     label={"Portfolio Assignment"}
                                     error={errors.portfolioAssignment}
-                                    validate={" *"}
+                                    //validate={" *"}
                                     placeholder="Please fill the form in English"
                                   />
                                 )}
@@ -3048,6 +3057,7 @@ const AddSubscriber = () => {
                                         label={
                                           "Opt for up to 15% green electricity from UGT1"
                                         }
+                                        disabled={currentUGTGroup?.id === 1?true:false}
                                         error={errors.optGreen}
                                         validate={" *"}
                                         value={
@@ -3071,6 +3081,7 @@ const AddSubscriber = () => {
                                         label={
                                           "Opt for excess UGT beyond contract"
                                         }
+                                        disabled={currentUGTGroup?.id === 1?true:false}
                                         error={errors.optContract}
                                         validate={" *"}
                                         value={
@@ -4247,7 +4258,7 @@ const AddSubscriber = () => {
                                   <DatePickerSubscriber
                                     {...field}
                                     id={"retailESAContractStartDate"}
-                                    label={"Retail ESA Contract Start Date"}
+                                    label={"Retail ESA Start Date"}
                                     error={errors.retailESAContractStartDate}
                                     onChangeInput={
                                       handleChangeCommissioningDate
@@ -4268,7 +4279,7 @@ const AddSubscriber = () => {
                                   <DatePickerSubscriber
                                     {...field}
                                     id={"retailESAContractEndDate"}
-                                    label={"Retail ESA Contract End Date"}
+                                    label={"Retail ESA End Date"}
                                     error={errors.retailESAContractEndDate}
                                     onCalDisableDate={
                                       requestedEffectiveDateDisableDateCal
@@ -4299,7 +4310,7 @@ const AddSubscriber = () => {
                                     {...field}
                                     id={"retailESAContractDuration"}
                                     type={"text"}
-                                    label={"Retail ESA Contract Duration"}
+                                    label={"Retail ESA Duration"}
                                     error={errors.retailESAContractDuration}
                                     disabled
                                     placeholder="Please fill the form in English"
@@ -4312,10 +4323,10 @@ const AddSubscriber = () => {
                                 name="portfolioAssignment"
                                 control={control}
                                 rules={{
-                                  required: "This field is required",
-                                  validate: (value) =>
+                                  
+                                  /*validate: (value) =>
                                     value.trim() !== "" ||
-                                    "Input cannot be just spaces",
+                                    "Input cannot be just spaces",*/
                                 }}
                                 render={({ field }) => (
                                   <Input
@@ -4324,7 +4335,7 @@ const AddSubscriber = () => {
                                     type={"text"}
                                     label={"Portfolio Assignment"}
                                     error={errors.portfolioAssignment}
-                                    validate={" *"}
+                                    //validate={" *"}
                                     placeholder="Please fill the form in English"
                                   />
                                 )}
@@ -4415,6 +4426,7 @@ const AddSubscriber = () => {
                                         label={
                                           "Opt for up to 15% green electricity from UGT1"
                                         }
+                                        disabled={currentUGTGroup?.id === 1?true:false}
                                         error={errors.optGreen}
                                         validate={" *"}
                                         value={
@@ -4438,6 +4450,7 @@ const AddSubscriber = () => {
                                         label={
                                           "Opt for excess UGT beyond contract"
                                         }
+                                        disabled={currentUGTGroup?.id === 1?true:false}
                                         error={errors.optContract}
                                         validate={" *"}
                                         value={

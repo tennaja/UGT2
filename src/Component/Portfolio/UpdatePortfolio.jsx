@@ -201,9 +201,9 @@ const UpdatePortfolio = () => {
     console.log("Onchange End Date",selectedCommisionDateCheck)
     if(date !== undefined && selectedCommisionDateCheck !== null){
       
-    dispatch(PortfolioManagementDevice(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code));
+    dispatch(PortfolioManagementDevice(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code,true));
     dispatch(
-      PortfolioManagementSubscriber(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code, true)
+      PortfolioManagementSubscriber(currentUGTGroup?.id,selectedCommisionDateCheck,formattedDate,state?.code,true)
     );
   }
     setIsEndDate(!!date);
@@ -402,8 +402,10 @@ const UpdatePortfolio = () => {
       });
   
       setFilteredDeviceList(updatedDeviceList);
+      console.log(updatedDeviceList)
     } else {
       setFilteredDeviceList(deviceListSelected)
+      console.log(deviceListSelected)
     }
   }, [portfolioValidateStatus, deviceListSelected]);
   
@@ -423,8 +425,10 @@ const UpdatePortfolio = () => {
       });
   
       setFilteredSubList(updatedSubList);
+      console.log(updatedSubList)
     } else {
       setFilteredSubList(subscriberListSelected)
+      console.log(subscriberListSelected)
     }
   }, [portfolioValidateStatus, subscriberListSelected]);
 
@@ -449,7 +453,7 @@ const UpdatePortfolio = () => {
       currentUGTGroup?.id,
       detailPortfolio?.portfolioInfo?.startDate,
       detailPortfolio?.portfolioInfo?.endDate,
-      state?.code));
+      state?.code,true));
     dispatch(
       PortfolioManagementSubscriber(
         currentUGTGroup?.id,
@@ -663,7 +667,7 @@ const UpdatePortfolio = () => {
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={row.deviceTechnologiesName}
+          textToHighlight={row.fuelName}
         />
       ),
     },
@@ -1177,7 +1181,7 @@ const UpdatePortfolio = () => {
     setTitleAddModal(title);
     setColumnsTable("device");
     setListTable(deviceList);
-    setSelectedData(deviceListSelected);
+    setSelectedData(filteredDeviceList);
     setShowModalAdd(true);
   };
   const addSubscriberModal = () => {
@@ -1185,7 +1189,7 @@ const UpdatePortfolio = () => {
     setTitleAddModal(title);
     setColumnsTable("subscriber");
     setListTable(subscriberList);
-    setSelectedData(subscriberListSelected);
+    setSelectedData(filteredSubList);
     setShowModalAdd(true);
   };
   const onClickConfirmBtn = (data) => {
@@ -2102,8 +2106,8 @@ if (subscriberDataTable.length > 0) {
                           isStartPort={isStartPort}
                           error = {portfolioValidateStatus }
                           isTotal={"Total Capacity"}
-                          portfolioStartDate={watch("startDate")}
-                          portfolioEndDate={EnddateCheck.current}
+                          portfolioStartDate={getValues("startDate")}
+                          portfolioEndDate={getValues("endDate")}
                           openpopupDeviceError={handleErrorDevicepopup}
                         />
                       </div>
@@ -2284,9 +2288,10 @@ if (subscriberDataTable.length > 0) {
                           isStartPort={isStartPort}
                           error = {portfolioValidateStatus }
                           isTotal={"Total Contracted Energy"}
-                          portfolioStartDate={watch("startDate")}
+                          portfolioStartDate={getValues("startDate")}
+                          portfolioEndDate={getValues("endDate")}
                           openpopupSubError={handleErrorSubpopup}
-                          portfolioEndDate={EnddateCheck.current}
+                          
                         />
                       </div>
                     ) : (

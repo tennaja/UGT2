@@ -525,7 +525,7 @@ useEffect(() => {
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={row.deviceTechnologiesName}
+          textToHighlight={row.fuelName}
         />
       ),
     },

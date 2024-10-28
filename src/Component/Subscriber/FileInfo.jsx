@@ -41,7 +41,7 @@ const FileInfo = (props) =>{
         }
       };
       const handleFileChange = (items) => {
-        openPDFInNewTab(items.binary,items.type)
+        openPDFInNewTab(items.binary,items.type,items.name)
         /*if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -52,19 +52,69 @@ const FileInfo = (props) =>{
         }*/
     };
     
-    const openPDFInNewTab = (base64String,type) => {
+    const openPDFInNewTab = (base64String,type,name) => {
+      const extension = name.split(".").pop();
         const pdfWindow = window.open("");
         console.log("PDF",pdfWindow)
         console.log(type)
-        if (pdfWindow) {
-          pdfWindow.document.write(
-              `<iframe width="100%" height="100%" src="data:${type};base64,${base64String}" style="border:none; position:fixed; top:0; left:0; bottom:0; right:0; width:100vw; height:100vh;"></iframe>`
-          );
-          pdfWindow.document.body.style.margin = "0"; // Remove any default margin
-                pdfWindow.document.body.style.overflow = "hidden"; // Hide any scrollbars
-      } else {
-          alert('Unable to open new tab. Please allow popups for this website.');
-      }
+        if(extension === "pdf"){
+          if (pdfWindow) {
+            // Set the title of the new tab to the filename
+            pdfWindow.document.title = name;
+        
+            // Convert Base64 to raw binary data held in a string
+            const byteCharacters = atob(base64String);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+        
+            // Create a Blob from the byte array and set the MIME type
+            const blob = new Blob([byteArray], { type: type});
+            console.log("Blob",blob)
+        
+            // Create a URL for the Blob and set it as the iframe source
+            const blobURL = URL.createObjectURL(blob);
+            console.log("Blob url :" ,blobURL)
+            let names = name
+        
+            const iframe = pdfWindow.document.createElement("iframe");
+            
+            iframe.style.border = "none";
+            iframe.style.position = "fixed";
+            iframe.style.top = "0";
+            iframe.style.left = "0";
+            iframe.style.bottom = "0";
+            iframe.style.right = "0";
+            iframe.style.width = "100vw";
+            iframe.style.height = "100vh";
+            
+            // Use Blob URL as the iframe source
+            iframe.src = blobURL;
+        
+            // Remove any margin and scrollbars
+            pdfWindow.document.body.style.margin = "0";
+            pdfWindow.document.body.style.overflow = "hidden";
+        
+            // Append the iframe to the new window's body
+            pdfWindow.document.body.appendChild(iframe);
+
+            // Optionally, automatically trigger file download with correct name
+          
+          } else {
+              alert('Unable to open new tab. Please allow popups for this website.');
+          }
+        }
+        else if(extension === "jpeg" || extension === "jpg" || extension === "png" || extension === "svg"){
+          if (pdfWindow) {
+            pdfWindow.document.write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
+                <img src="data:image/jpeg;base64,${base64String}" style="max-width:100%; height:auto;"/>
+            </body></html>`);
+            pdfWindow.document.title = "Image Preview";
+            pdfWindow.document.close();
+        }
+        }
     };
     const downloadFile =(items)=>{
         const base64Content = items.binary//.split(",")[1];
@@ -98,11 +148,11 @@ const FileInfo = (props) =>{
                     {items.name}
                 </div>
                 <div className="flex justify-center mr-3 items-center">
-                    {items.name.split(".").pop() === "pdf"&&<div>
+                {items.name?.split(".").pop() === "pdf" ||  items.name?.split(".").pop() === "png" || items.name?.split(".").pop() === "jpg" || items.name?.split(".").pop() === "jpeg" || items.name?.split(".").pop() === "svg"   ?<div>
                         <button type="button"  onClick={()=>handleFileChange(items)}>
                             <RiEyeLine className="inline-block w-5 h-5 mt-1 text-PRIMARY_TEXT"/>
                         </button>
-                    </div>}
+                    </div>:undefined}
                     <div className="ml-3">
                         <button type="button" onClick={()=>downloadFile(items)}>
                             <LiaDownloadSolid className="inline-block w-5 h-5 mt-1 text-PRIMARY_TEXT"/>

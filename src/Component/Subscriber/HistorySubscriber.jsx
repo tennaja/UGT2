@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import SubscriberLOGO02 from "../assets/contractenergy.svg";
 import SubscriberLOGO03 from "../assets/accumconsum.svg";
 import { useForm, Controller } from "react-hook-form";
@@ -1037,10 +1037,10 @@ const downloadFile =(items)=>{
             <div className="flex justify-between">
               <div>
                 <h2 className="font-semibold text-xl text-black">
-                {subscriberInfo?.subscriberDetail?.organizationName}
+                {subscriberInfo?.subscriberDetail?.subscriberTypeId === 1?subscriberInfo?.subscriberDetail?.organizationName:subscriberInfo?.subscriberDetail?.name}
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                {currentUGTGroup?.name} / Subscriber Management / Subscriber / {subscriberInfo?.subscriberDetail?.organizationName} / History Log
+                {currentUGTGroup?.name} / Subscriber Management / Subscriber Info / {subscriberInfo?.subscriberDetail?.subscriberTypeId === 1?subscriberInfo?.subscriberDetail?.organizationName:subscriberInfo?.subscriberDetail?.name} / History Log
                 Info
               </p>
               </div>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import right from "../assets/right.svg";
 import down from "../assets/down.svg";
 import { FaTrashAlt } from "react-icons/fa";
+import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 const CollapsInfo = ({
   title,
@@ -31,21 +32,16 @@ const CollapsInfo = ({
         </div>
         <div className="col-start-2">
             <div className="items-center">
-                <h2 className="text-lg mb-0 mr-5 text-center">
-                <img
-                    src={istoggleIcon}
-                    alt="React Logo"
-                    width={20}
-                    height={20}
-                    className={"text-white mr-2 inline-block"}
-                />
-                </h2>
+            <h2 className="text-sm mb-0 pl-4 text-center font-semibold ">
+            {total}
+          </h2>
             </div>
         </div>
         <div>
-          <h2 className="text-sm mb-0 pl-4 text-center font-semibold ">
-            {total}
-          </h2>
+          
+          <h2 className="text-lg mb-0 mr-5 text-center">
+          {isCollapsed ? <IoChevronDown /> : <IoChevronUp />}
+                </h2>
         </div>
         
         {isShowEdit&&<div className="flex justify-end items-center gap-3">

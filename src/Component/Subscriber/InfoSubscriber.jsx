@@ -1399,6 +1399,20 @@ const action = CheckActionManageButton()
 
                           <div className="col-span-12 lg:col-span-9">
                           <div className="w-2/3">
+                          <TableContainer>
+                                  <Table>
+                                    <TableHead>
+                                      <TableRow>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell align="center">
+                                          Status
+                                        </TableCell>
+                                        <TableCell />
+                                        <TableCell/>
+                                      </TableRow>
+                                    </TableHead>
+                                  </Table>
+                                </TableContainer>
                                 {details?.beneficiaryInfo.map((items,index)=>(
                                     <CollapsInfo
                                       title={items.beneficiaryName}

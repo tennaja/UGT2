@@ -225,14 +225,14 @@ const InfoPortfolio = () => {
     },
     {
       id: "deviceTechnologiesName",
-      label: "Energy Source",
+      label: "Device Fuel",
       align: "left",
       render: (row) => (
         <Highlighter
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={row.deviceTechnologiesName}
+          textToHighlight={row.fuelName}
         />
       ),
     },
@@ -305,7 +305,7 @@ const InfoPortfolio = () => {
     },
     {
       id: "allocateEnergyAmount",
-      label: "Allocated Energy Amount (kWh)",
+      label: "Contracted Energy (kWh)",
       align: "right",
       render: (row) => (
         <Highlighter
@@ -610,7 +610,7 @@ const InfoPortfolio = () => {
                       <div className=" md:col-span-6">
                         <div>
                           <label className="mt-3 text-[#6B7280] text-xs">
-                            Number of Devices
+                            Number of Device
                           </label>
                         </div>
                         <div>

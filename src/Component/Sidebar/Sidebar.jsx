@@ -240,7 +240,9 @@ console.log(currentSubMenuList)
         }
       }
       if (selectedMenuID == 4) {
-        if (userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER) {
+        if (userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER ||
+            userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN 
+        ) {
           let data = currentSubMenuList;
           data = data.filter((item) => item.id !== 2);
           setSubmenu(data);
