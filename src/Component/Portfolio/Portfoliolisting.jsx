@@ -501,6 +501,7 @@ useEffect(() => {
         const now = new Date();
         const _now = now.setHours(0, 0, 0, 0);
         const filtered = dashboardList.filter((item) => {
+          if (item.isDeleted === "True") return false;
           const [startDay, startMonth, startYear] = item.startDate.split("/");
           const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
           const _startDate = startDate.setHours(0, 0, 0, 0);
@@ -511,6 +512,7 @@ useEffect(() => {
         const now = new Date();
         const _now = now.setHours(0, 0, 0, 0);
         const filtered = dashboardList.filter((item) => {
+          if (item.isDeleted === "True") return false;
           const [endDay, endMonth, endYear] = item.endDate.split("/");
           const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
           const _endDate = endDate.setHours(0, 0, 0, 0);
@@ -522,6 +524,7 @@ useEffect(() => {
       const now = new Date();
       const _now = now.setHours(0, 0, 0, 0);
       const filtered = dashboardList.filter((item) => {
+        if (item.isDeleted === "True") return false;
         const [startDay, startMonth, startYear] = item.startDate.split("/");
         const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
         const _startDate = startDate.setHours(0, 0, 0, 0);
@@ -537,6 +540,7 @@ useEffect(() => {
       const now = new Date();
       const _now = now.setHours(0, 0, 0, 0);
       const filtered = dashboardList.filter((item) => {
+        if (item.isDeleted === "True") return false;
         const [startDay, startMonth, startYear] = item.startDate.split("/");
         const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
         const _startDate = startDate.setHours(0, 0, 0, 0);
