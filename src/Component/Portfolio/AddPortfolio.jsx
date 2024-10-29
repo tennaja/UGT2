@@ -1210,7 +1210,7 @@ useEffect(() => {
                 Add New Portfolio
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                {currentUGTGroup?.name} / Portfolio /
+                {currentUGTGroup?.name} / Portfolio Management /
                 Add New Portfolio
               </p>
             </div>
