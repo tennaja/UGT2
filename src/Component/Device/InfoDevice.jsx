@@ -116,7 +116,7 @@ const InfoDevice = () => {
   const [isSyncing, syncHandlers] = useDisclosure();
   const [showModalSyncSuccess, modalSyncSuccessHandlers] = useDisclosure();
   const [showModalSyncFail, modalSyncFailHandlers] = useDisclosure();
- console.log(userverifier)
+ console.log(deviceobj?.isApproved)
   const handleClickBackToHome = () => {
     dispatch(clearModal());
     navigate(WEB_URL.DEVICE_LIST);
@@ -862,7 +862,7 @@ const handleClickDownloadFile = async (item) => {
         status == DEVICE_STATUS.DRAFT.toLowerCase() ||
         status == DEVICE_STATUS.REJECTED.toLowerCase() ||
         status == DEVICE_STATUS.VERIFYING.toLowerCase() ||
-        status == DEVICE_STATUS.VERIFIED.toLowerCase()
+        status == DEVICE_STATUS.VERIFIED.toLowerCase() && deviceobj?.isApproved === "True"
       ) {
         isWithdraw = true;
       } else {
@@ -1173,52 +1173,55 @@ const handleClickDownloadFile = async (item) => {
       {canSeeSF02 && <PreviewPdf data={sf02obj} />}
 
       {isShowManageBtn && (
-        <ManageBtn
-        actionList={[
-          {
-            label: "Edit",
-            onClick: onClickEdit,
-            disabled: !canEdit,
-            endSection: true,
-          },
-          {
-            label: "Withdraw",
-            onClick: onClickWithdrawBtn,
-            disabled: !canWithdrawn,
-            endSection: true,
-          },
-          {
-            label: "Send to Verify",
-            onClick: onClickSendtoVerifyBtn,
-            disabled: !canVerifying,
-            endSection: true,
-          },
-          {
-            label: "Verify",
-            onClick: onClickVerifiedBtn,
-            disabled: !canVerified,
-            endSection: true,
-          },
-          {
-            label: "Sign&Submit",
-            onClick: onclicksubmitstep1,
-            disabled: !canSubmit,
-            endSection: true,
-          },
-          {
-            label: "Return",
-            onClick: onClickReturnBtn,
-            disabled: !canReturn,
-            endSection: true,
-          },
-          {
-            label: "Change Detail / Renew",
-            onClick: onClickRenew,
-            disabled: !canRenew,
-          },
-        ].filter(action => !action.disabled)} // filter out disabled actions
-      />
-      )}
+  <ManageBtn
+    actionList={[
+      {
+        label: "Edit",
+        onClick: onClickEdit,
+        disabled: !canEdit,
+        endSection: true,
+      },
+      {
+        label: "Withdraw",
+        onClick: onClickWithdrawBtn,
+        disabled: !canWithdrawn,
+        endSection: true,
+      },
+      {
+        label: "Send to Verify",
+        onClick: onClickSendtoVerifyBtn,
+        disabled: !canVerifying,
+        endSection: true,
+      },
+      {
+        label: "Verify",
+        onClick: onClickVerifiedBtn,
+        disabled: !canVerified,
+        endSection: true,
+      },
+      {
+        label: "Sign&Submit",
+        onClick: onclicksubmitstep1,
+        disabled: !canSubmit,
+        endSection: true,
+      },
+      {
+        label: "Return",
+        onClick: onClickReturnBtn,
+        disabled: !canReturn,
+        endSection: true,
+      },
+      {
+        label: "Change Detail / Renew",
+        onClick: onClickRenew,
+        disabled: !canRenew,
+      },
+    ].filter(action => 
+      !action.disabled && !(deviceobj?.isApproved === "True" && action.label === "Withdraw")
+    )} // Remove "Withdraw" if approved
+  />
+)}
+
 
       {/* {infoMessage() && (
         <div className="text-xs text-gray-500">
