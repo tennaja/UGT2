@@ -112,7 +112,9 @@ export const FetchCountryList = () => {
     await axios
       .get(`${countryListURL}`, getHeaderConfig())
       .then((res) => {
-        dispatch(setCountryList(res?.data));
+        const datas = res?.data
+          datas.sort((a,b)=>a.id - b.id)
+        dispatch(setCountryList(datas));
       })
       .catch((err) => {
         dispatch(failRequest(err.message));
@@ -152,7 +154,9 @@ export const FetchProvinceList = (countryID) => {
       await axios
         .get(provinceListUrl, getHeaderConfig())
         .then((res) => {
-          dispatch(setProvinceList(res?.data));
+          const datas = res?.data
+          datas.sort((a,b)=>a.id - b.id)
+          dispatch(setProvinceList(datas));
         })
         .catch((err) => {
           dispatch(failRequest(err.message));
@@ -178,7 +182,9 @@ export const FetchDistrictList = (provinceCode) => {
         const districtList = res.data?.filter(
           (item) => item.provinceCode == provinceCode
         );
-        dispatch(setDistrictList(districtList));
+        const datas = districtList
+          datas.sort((a,b)=>a.id - b.id)
+        dispatch(setDistrictList(datas));
       })
       .catch((err) => {
         dispatch(failRequest(err.message));
@@ -200,7 +206,9 @@ export const FetchSubDistrictList = (districtCode, provinceCode) => {
             item.provinceCode == provinceCode &&
             item.districtCode == districtCode
         );
-        dispatch(setSubDistrictList(subdistrictList));
+        const datas = subdistrictList
+          datas.sort((a,b)=>a.id - b.id)
+        dispatch(setSubDistrictList(datas));
       })
       .catch((err) => {
         dispatch(failRequest(err.message));
@@ -224,8 +232,9 @@ export const FetchPostcodeList = (provinceCode) => {
         const postCodeList = res?.data.map((item) => {
           return { ...item, postCodeDisplay: item.postalCode };
         }); //เพิ่ม key postCodeDisplay สำหรับใช้กับ control select
-
-        dispatch(setPostcodeList(postCodeList));
+        const datas = postCodeList
+          datas.sort((a,b)=>a.id - b.id)
+        dispatch(setPostcodeList(datas));
       })
       .catch((err) => {
         dispatch(failRequest(err.message));
