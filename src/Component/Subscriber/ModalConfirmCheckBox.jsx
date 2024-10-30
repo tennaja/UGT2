@@ -77,8 +77,8 @@ const ModalConfirmCheckBox = (props) => {
             </div>}
           </div>
         </div>
-        {showCheckBox && <div className="flex item-center gap-3">
-              <div className="">
+        {showCheckBox && <div className="flex item-center">
+              <div className="w-[5%] ml-2">
                 <input
                   type="checkbox"
                   onChange={onChangeCheckBox}
@@ -86,7 +86,10 @@ const ModalConfirmCheckBox = (props) => {
                   className={"border-1 border-gray-300 rounded mt-2 w-5 h-5 align-top "}
                 />
                 
-                  <label className={`w-[90%] text-sm ml-2 mt-2`}>
+                  
+              </div>
+              <div className="w-full">
+              <label className={`text-sm ml-2 mt-2 inline-block`}>
                     {textCheckBox}
                   </label>
               </div>
