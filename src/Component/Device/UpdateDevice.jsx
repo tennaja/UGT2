@@ -762,7 +762,7 @@ const UpdateDevice = () => {
               console.error("Error during verification:", error);
               // Handle the error as needed
             });
-        } else if (["Submitted", "Verifying"].includes(deviceobj?.statusName)) {
+        } else if (["Submitted", "Verifying","Rejected"].includes(deviceobj?.statusName)) {
           // Delay navigation by 1 second for transition effect
           dispatch(clearModal());
             navigate(DEVICE_LIST);
