@@ -24,6 +24,7 @@ import Highlighter from "react-highlight-words";
 import numeral from "numeral";
 import { message } from "antd";
 import { MdOutlineContentCopy } from "react-icons/md";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
 const itemsPerPage = 5;
 const Portfoliolisting = (props) => {
   const navigate = useNavigate();
@@ -301,16 +302,22 @@ useEffect(() => {
             </label>
           </div> */}
 
-          <Link
-            type="button"
-            state={{ id: row?.id }}
-            to={WEB_URL.PORTFOLIO_INFO}
-            className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#4D6A00] bg-[#87BE33]`}
-          >
-            <label className="m-auto cursor-pointer text-white font-semibold">
-              {userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER || userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ? "View" : "Manage"}
-            </label>
-          </Link>
+<Link
+  type="button"
+  state={{ id: row?.id }}
+  to={WEB_URL.PORTFOLIO_INFO}
+  className="flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]"
+>
+  <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
+    {userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER || userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ? (
+      <>
+        {"View"} <MdOutlineRemoveRedEye className="text-white" />
+      </>
+    ) : (
+      "Manage"
+    )}
+  </label>
+</Link>
         </div>
       ),
     },
@@ -457,16 +464,24 @@ useEffect(() => {
             </label>
           </div> */}
 
-          <Link
-            type="button"
-            state={{ id: row?.id }}
-            to={WEB_URL.PORTFOLIO_INFO}
-            className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center  hover:bg-[#4D6A00] bg-[#87BE33]`}
-          >
-            <label className="m-auto cursor-pointer text-white font-semibold">
-            {userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER || userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ? "View" : "Manage"}
-            </label>
-          </Link>
+<Link
+  type="button"
+  state={{ id: row?.id }}
+  to={WEB_URL.PORTFOLIO_INFO}
+  className="flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]"
+>
+  <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
+    {userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER || userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ? (
+      <>
+        {"View"} <MdOutlineRemoveRedEye className="text-white" />
+      </>
+    ) : (
+      "Manage"
+    )}
+  </label>
+</Link>
+
+
         </div>
       ),
     },
