@@ -282,53 +282,49 @@ console.log(data)
     let dateValueStart = new Date(portfolioStartDate);
     const previousDateStart = new Date(dateValueStart);
     previousDateStart.setHours(0, 0, 0, 0);
-    previousDateStart.setDate(dateValueStart.getDate());
-
+  
     const checkStartDate =
       data.find((item) => item.id === index)?.registrationDate ||
       data.find((item) => item.id === index)?.subStartDate;
-
+  
     let tempStartDate;
-
+  
     if (data.find((item) => item.id === index)?.subStartDate) {
       const parts = checkStartDate.split("/");
       tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
     } else {
       tempStartDate = new Date(checkStartDate);
     }
-    tempStartDate.setDate(tempStartDate.getDate());
-
-    const startDateDisabled =
-      tempStartDate <= previousDateStart
-        ? day < previousDateStart
-        : day < tempStartDate;
-
-    // endDate calculate
+    tempStartDate.setHours(0, 0, 0, 0);
+  
+    const startDateDisabled = day < (tempStartDate <= previousDateStart ? previousDateStart : tempStartDate);
+  
+    // endDate calculate (find the earliest endDate)
     let dateValueEnd = new Date(portfolioEndDate);
     const previousDateEnd = new Date(dateValueEnd);
     previousDateEnd.setHours(0, 0, 0, 0);
-    previousDateEnd.setDate(dateValueEnd.getDate());
-
-    const checkEndDate =
-      data.find((item) => item.id === index)?.endDate ||
-      data.find((item) => item.id === index)?.subEndDate;
-
-    let tempDateEndDate;
-    if (data.find((item) => item.id === index)?.subEndDate) {
-      const parts = checkEndDate.split("/");
-      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    } else {
-      tempDateEndDate = previousDateEnd;
-    }
-    const endDateDisabled =
-      tempDateEndDate >= previousDateEnd
-        ? day > previousDateEnd
-        : day > tempDateEndDate;
-
+  
+    const endDates = data
+      .map((item) => {
+        const checkEndDate = item.endDate || item.subEndDate;
+        if (checkEndDate) {
+          const parts = checkEndDate.split("/");
+          return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+        }
+        return previousDateEnd;
+      })
+      .filter((date) => date instanceof Date);
+  
+    const minEndDate = endDates.length > 0 ? new Date(Math.min(...endDates)) : previousDateEnd;
+  
+    const endDateDisabled = day > minEndDate;
+  
+    // Combine conditions
     const disable = startDateDisabled || endDateDisabled;
-
+  
     return disable;
   };
+  
 
   const renderCell = (row, column) => {
     const isError = row.isError; // Assuming row has an isError property

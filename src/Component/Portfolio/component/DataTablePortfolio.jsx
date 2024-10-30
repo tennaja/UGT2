@@ -296,84 +296,60 @@ console.log(data)
     return new Date(year, month, day);
   }
   const requestedEffectiveDateDisableDateCal = (day, index) => {
-    // startDate calculate
+    // Start Date Calculation
     let dateValueStart = new Date(portfolioStartDate);
-    console.log(dateValueStart)
+    console.log(dateValueStart);
     const previousDateStart = new Date(dateValueStart);
-    console.log(previousDateStart)
     previousDateStart.setHours(0, 0, 0, 0);
     previousDateStart.setDate(dateValueStart.getDate());
     
-    const checkStartDate =
-      data.find((item) => item.id === index)?.startDate 
+    const checkStartDate = data.find((item) => item.id === index)?.startDate;
+    console.log(checkStartDate);
+    console.log(day);
     
-      console.log(checkStartDate)
-    console.log(day)
     const parts = checkStartDate.split("/");
     const temp = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    const startDateChecker = new Date(temp)
-    const newStartDatechecker = new Date(startDateChecker)
-    newStartDatechecker.setHours(0, 0, 0, 0);
-    newStartDatechecker.setDate(startDateChecker.getDate()-1);
-    
-    console.log(startDateChecker)
+    const startDateChecker = new Date(temp);
+    const newStartDateChecker = new Date(startDateChecker);
+    newStartDateChecker.setHours(0, 0, 0, 0);
+    newStartDateChecker.setDate(startDateChecker.getDate() - 1);
+    console.log(startDateChecker);
 
     let tempStartDate;
-
     if (data.find((item) => item.id === index)?.Date >= previousDateStart) {
-      const parts = checkStartDate.split("/");
       tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    
-      console.log("in1")
-    } 
-    else {
+      console.log("in1");
+    } else {
       tempStartDate = new Date(checkStartDate);
-      console.log("out")
+      console.log("out");
     }
-
 
     tempStartDate.setDate(tempStartDate.getDate());
 
-    const startDateDisabled =
-    day <= newStartDatechecker
-      // tempStartDate <= previousDateStart
-      //   ? day < previousDateStart
-      //   : day < tempStartDate;
+    const startDateDisabled = day <= newStartDateChecker;
 
-    // endDate calculate
+    // End Date Calculation with Minimum End Date
     let dateValueEnd = new Date(portfolioEndDate);
-    console.log(dateValueEnd)
-    const previousDateEnd = new Date(dateValueEnd);
-    previousDateEnd.setHours(0, 0, 0, 0);
-    previousDateEnd.setDate(dateValueEnd.getDate());
+    console.log(dateValueEnd);
+    
+    // Find the earliest end date from data
+    const earliestEndDate = data.reduce((minDate, item) => {
+      const endDateStr = item.expriryDate || item.checkEndDate;
+      const parts = endDateStr.split("/");
+      const endDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+      return endDate < minDate ? endDate : minDate;
+    }, dateValueEnd);
+    
+    console.log("Earliest End Date:", earliestEndDate);
 
-    const checkEndDate =
-      data.find((item) => item.id === index)?.expriryDate ||
-      data.find((item) => item.id === index)?.checkEndDate
-console.log()
-    let tempDateEndDate;
-    if (data.find((item) => item.id === index)?.expriryDate <= dateValueEnd || data.find((item) => item.id === index)?.checkEndDate <= dateValueEnd) {
-      const parts = checkEndDate.split("/");
-      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-      console.log("1",tempDateEndDate)
-    } 
-    else {
-      
-      tempDateEndDate = dateValueEnd 
-      console.log("2",tempDateEndDate)
-    }
-    const endDateDisabled =
-      // tempDateEndDate >= previousDateEnd
-      //   ? day > previousDateEnd
-      //   : day > tempDateEndDate;
-      (day > tempDateEndDate )
-   
-console.log()
+    const endDateDisabled = day > earliestEndDate;
+
     const disable = startDateDisabled || endDateDisabled;
-    console.log(day < startDateChecker)
+    console.log(day < startDateChecker);
 
     return disable;
-  };
+};
+
 
   const renderCell = (row, column) => {
     const isError = row.isError;
