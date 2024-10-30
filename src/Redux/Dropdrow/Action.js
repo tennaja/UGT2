@@ -155,7 +155,7 @@ export const FetchProvinceList = (countryID) => {
         .get(provinceListUrl, getHeaderConfig())
         .then((res) => {
           const datas = res?.data
-          datas.sort((a,b)=>a.id - b.id)
+          datas.sort((a,b)=>a.provinceNameEn - b.provinceNameEn)
           dispatch(setProvinceList(datas));
         })
         .catch((err) => {
@@ -183,7 +183,7 @@ export const FetchDistrictList = (provinceCode) => {
           (item) => item.provinceCode == provinceCode
         );
         const datas = districtList
-          datas.sort((a,b)=>a.id - b.id)
+          datas.sort((a,b)=>a.districtNameEn - b.districtNameEn)
         dispatch(setDistrictList(datas));
       })
       .catch((err) => {
@@ -207,7 +207,7 @@ export const FetchSubDistrictList = (districtCode, provinceCode) => {
             item.districtCode == districtCode
         );
         const datas = subdistrictList
-          datas.sort((a,b)=>a.id - b.id)
+          datas.sort((a,b)=>a.subdistrictNameEn - b.subdistrictNameEn)
         dispatch(setSubDistrictList(datas));
       })
       .catch((err) => {

@@ -105,6 +105,7 @@ export const SubscriberManagementdashboard = (param) => {
     queryStringPortifolioId = queryStringPortifolioId.slice(0, -1);
   }
   const URL = `${DASHBOARD_LIST_URL}/${UgtGroupId}?${queryStringUtilityId}&${queryStringPortifolioId}`;
+  console.log("URL DASHBOARD",URL)
   console.log("Dash Board URL :",URL)
   return async (dispatch) => {
     await axios.get(URL).then(
@@ -485,7 +486,7 @@ export const FetchDistrictBeneList = (provinceCode) => {
         const districtList = res.data?.filter(
           (item) => item.provinceCode == provinceCode
         );
-        const districtSort = districtList.sort((a,b)=>a.id-b.id)
+        const districtSort = districtList.sort((a,b)=>a.districtNameEn-b.districtNameEn)
         dispatch(setDistrictBeneList(districtSort));
       })
       .catch((err) => {
@@ -513,7 +514,7 @@ export const FetchDistrictBeneListAdd = (provinceCode) => {
         const districtList = res.data?.filter(
           (item) => item.provinceCode == provinceCode
         );
-        const districtSort = districtList.sort((a,b)=>a.id-b.id)
+        const districtSort = districtList.sort((a,b)=>a.districtNameEn-b.districtNameEn)
         dispatch(setDistrictBeneListAdd(districtSort));
       })
       .catch((err) => {
@@ -541,7 +542,7 @@ export const FetchDistrictBeneListEdit = (provinceCode) => {
         const districtList = res.data?.filter(
           (item) => item.provinceCode == provinceCode
         );
-        const districtSort = districtList.sort((a,b)=>a.id-b.id)
+        const districtSort = districtList.sort((a,b)=>a.districtNameEn-b.districtNameEn)
         dispatch(setDistrictBeneListEdit(districtSort));
       })
       .catch((err) => {
@@ -572,7 +573,7 @@ export const FetchSubDistrictBeneList = (districtCode, provinceCode) => {
             item.provinceCode == provinceCode &&
             item.districtCode == districtCode
         );
-        const subDistrictSort = subdistrictList.sort((a,b)=> a.id-b.id)
+        const subDistrictSort = subdistrictList.sort((a,b)=> a.subdistrictNameEn-b.subdistrictNameEn)
         dispatch(setSubDistrictBeneList(subDistrictSort));
       })
       .catch((err) => {
@@ -590,7 +591,7 @@ export const FetchSubDistrictBeneListAll = (districtCode, provinceCode) => {
     await axios
       .get(subDistrictListUrl, getHeaderConfig())
       .then((res) => {
-        const subdistrictList = res.data?.sort((a,b)=> a.id - b.id)
+        const subdistrictList = res.data?.sort((a,b)=> a.subdistrictNameEn - b.subdistrictNameEn)
         dispatch(setSubDistrictBeneListAll(subdistrictList));
       })
       .catch((err) => {
@@ -625,7 +626,7 @@ export const FetchSubDistrictBeneListAdd = (districtCode, provinceCode) => {
             item.provinceCode == provinceCode &&
             item.districtCode == districtCode
         );
-        const subDistrictSort = subdistrictList.sort((a,b)=> a.id-b.id)
+        const subDistrictSort = subdistrictList.sort((a,b)=> a.subdistrictNameEn-b.subdistrictNameEn)
         dispatch(setSubDistrictBeneListAdd(subDistrictSort));
       })
       .catch((err) => {
@@ -654,7 +655,7 @@ export const FetchSubDistrictBeneListEdit = (districtCode, provinceCode) => {
             item.provinceCode == provinceCode &&
             item.districtCode == districtCode
         );
-        const subDistrictSort = subdistrictList.sort((a,b)=> a.id-b.id)
+        const subDistrictSort = subdistrictList.sort((a,b)=> a.subdistrictNameEn-b.subdistrictNameEn)
         dispatch(setSubDistrictBeneListEdit(subDistrictSort));
       })
       .catch((err) => {
@@ -780,7 +781,7 @@ export const FetchProvinceBeneList = (countryID) => {
         .get(provinceListUrl, getHeaderConfig())
         .then((res) => {
           const datas = res?.data
-          datas.sort((a,b)=>a.id - b.id)
+          datas.sort((a,b)=>a.provinceNameEn - b.provinceNameEn)
           dispatch(setProvinceBeneList(datas));
         })
         .catch((err) => {
@@ -790,7 +791,7 @@ export const FetchProvinceBeneList = (countryID) => {
     };
   } else {
     return async (dispatch) => {
-      dispatch(setProvinceList([]));
+      dispatch(setProvinceBeneList([]));
     };
   }
 };
@@ -814,7 +815,7 @@ export const FetchProvinceBeneListAdd = (countryID) => {
         .get(provinceListUrl, getHeaderConfig())
         .then((res) => {
           const datas = res?.data
-          datas.sort((a,b)=>a.id - b.id)
+          datas.sort((a,b)=>a.provinceNameEn - b.provinceNameEn)
           dispatch(setProvinceBeneListAdd(datas));
         })
         .catch((err) => {
@@ -824,7 +825,7 @@ export const FetchProvinceBeneListAdd = (countryID) => {
     };
   } else {
     return async (dispatch) => {
-      dispatch(setProvinceList([]));
+      dispatch(setProvinceBeneListAdd([]));
     };
   }
 };
@@ -848,7 +849,7 @@ export const FetchProvinceBeneListEdit = (countryID) => {
         .get(provinceListUrl, getHeaderConfig())
         .then((res) => {
           const datas = res?.data
-          datas.sort((a,b)=>a.id - b.id)
+          datas.sort((a,b)=>a.provinceNameEn - b.provinceNameEn)
           dispatch(setProvinceBeneListEdit(datas));
         })
         .catch((err) => {
@@ -858,7 +859,7 @@ export const FetchProvinceBeneListEdit = (countryID) => {
     };
   } else {
     return async (dispatch) => {
-      dispatch(setProvinceList([]));
+      dispatch(setProvinceBeneListEdit([]));
     };
   }
 };
