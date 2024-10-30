@@ -277,7 +277,7 @@ console.log(data)
     const year = parseInt(parts[2], 10);
     return new Date(year, month, day);
   }
-  const requestedEffectiveDateDisableDateCal = (day, index) => {
+  const requestedEffectiveDateDisableDateCal = (day, index, isStartDate = true) => {
     // startDate calculate
     let dateValueStart = new Date(portfolioStartDate);
     const previousDateStart = new Date(dateValueStart);
@@ -295,36 +295,56 @@ console.log(data)
     } else {
       tempStartDate = new Date(checkStartDate);
     }
-    tempStartDate.setHours(0, 0, 0, 0);
+    tempStartDate.setDate(tempStartDate.getDate());
   
-    const startDateDisabled = day < (tempStartDate <= previousDateStart ? previousDateStart : tempStartDate);
+    // If checking for start date, we need to ensure it does not exceed the minimum end date
+    if (isStartDate) {
+      let minEndDate = new Date(Math.min(
+        ...data
+          .filter(item => item.id === index)
+          .map(item => {
+            const checkEndDate =
+              item.endDate || item.subEndDate;
+            if (checkEndDate) {
+              const parts = checkEndDate.split("/");
+              return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+            }
+            return Infinity; // return a high value if no date is found
+          })
+      ));
   
-    // endDate calculate (find the earliest endDate)
+      const startDateDisabled = day < previousDateStart || day > minEndDate || day < tempStartDate;
+  
+      return startDateDisabled;
+    }
+  
+    // endDate calculation remains unchanged
     let dateValueEnd = new Date(portfolioEndDate);
     const previousDateEnd = new Date(dateValueEnd);
     previousDateEnd.setHours(0, 0, 0, 0);
   
-    const endDates = data
-      .map((item) => {
-        const checkEndDate = item.endDate || item.subEndDate;
-        if (checkEndDate) {
-          const parts = checkEndDate.split("/");
-          return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-        }
-        return previousDateEnd;
-      })
-      .filter((date) => date instanceof Date);
+    const checkEndDate =
+      data.find((item) => item.id === index)?.endDate ||
+      data.find((item) => item.id === index)?.subEndDate;
   
-    const minEndDate = endDates.length > 0 ? new Date(Math.min(...endDates)) : previousDateEnd;
+    let tempDateEndDate;
+    if (data.find((item) => item.id === index)?.subEndDate) {
+      const parts = checkEndDate.split("/");
+      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    } else {
+      tempDateEndDate = previousDateEnd;
+    }
   
-    const endDateDisabled = day > minEndDate;
+    const endDateDisabled =
+      tempDateEndDate >= previousDateEnd
+        ? day > previousDateEnd
+        : day > tempDateEndDate;
   
-    // Combine conditions
-    const disable = startDateDisabled || endDateDisabled;
-  
-    return disable;
+    return endDateDisabled;
   };
   
+  
+
 
   const renderCell = (row, column) => {
     const isError = row.isError; // Assuming row has an isError property
@@ -398,10 +418,7 @@ console.log(data)
                     formatDate={"d/M/yyyy"}
                     error={errors["endDate" + "_" + row.id]}
                     onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(
-                        newValue,
-                        row.id
-                      );
+                      return requestedEffectiveDateDisableDateCal(newValue, row.id, false); // false for EndDate
                     }}
                     onChangeInput={(newValue) => {
                       const newDate = format(newValue, "dd/MM/yyyy");
@@ -439,10 +456,7 @@ console.log(data)
                     formatDate={"d/M/yyyy"}
                     error={errors["startDate" + "_" + row.id]}
                     onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(
-                        newValue,
-                        row.id
-                      );
+                      return requestedEffectiveDateDisableDateCal(newValue, row.id, true); // true for StartDate
                     }}
                     onChangeInput={(newValue) => {
                       const newDate = format(newValue, "dd/MM/yyyy");
@@ -474,10 +488,7 @@ console.log(data)
                     formatDate={"d/M/yyyy"}
                     error={errors["endDate" + "_" + row.id]}
                     onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(
-                        newValue,
-                        row.id
-                      );
+                      return requestedEffectiveDateDisableDateCal(newValue, row.id, false); // false for EndDate
                     }}
                     onChangeInput={(newValue) => {
                       const newDate = format(newValue, "dd/MM/yyyy");
