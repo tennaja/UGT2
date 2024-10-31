@@ -277,7 +277,21 @@ console.log(data)
     const year = parseInt(parts[2], 10);
     return new Date(year, month, day);
   }
-  
+  function formatDateToDDMMYYYY(dateString) {
+    const date = new Date(dateString);
+    
+    // ตรวจสอบว่ามีวันที่ที่ถูกต้องหรือไม่
+    if (isNaN(date)) {
+        return null; // หรือส่งกลับวันที่ที่เป็นค่าเริ่มต้นตามต้องการ
+    }
+
+    // รับวัน เดือน และปี
+    const day = String(date.getDate()).padStart(2, '0'); // เพิ่ม 0 ข้างหน้าถ้าจำนวนน้อยกว่า 10
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // เดือนเริ่มต้นที่ 0
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`; // ส่งกลับวันที่ในรูปแบบ dd/mm/yyyy
+}
   const parseDate = (dateStr) => {
     const parts = dateStr.split("/");
     return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
@@ -296,8 +310,10 @@ console.log(data)
   
     if (checkStartDate) {
       tempStartDate = parseDate(checkStartDate);
+      console.log(parseDate(checkStartDate))
     } else {
-      tempStartDate = previousDateStart; // ตั้งค่าเป็น previousDate ถ้าไม่มี
+      tempStartDate = previousDateStart; 
+      console.log(parseDate(previousDateStart))// ตั้งค่าเป็น previousDate ถ้าไม่มี
     }
   
     // If checking for start date, we need to ensure it does not exceed the minimum end date
@@ -326,12 +342,23 @@ console.log(data)
     const checkEndDate =
       data.find((item) => item.id === index)?.endDate ||
       data.find((item) => item.id === index)?.subEndDate;
-  
+   console.log(checkEndDate)
     let tempEndDate;
     if (checkEndDate) {
-      tempEndDate = parseDate(checkEndDate);
+      if(new Date(portfolioEndDate) < parseDate(formatDateToDDMMYYYY(data.find((item) => item.id === index)?.expiryDate))){
+        tempEndDate = previousDateEnd;
+        console.log("PRE")
+      }
+      else{
+        
+        tempEndDate = parseDate(formatDateToDDMMYYYY(data.find((item) => item.id === index)?.expiryDate));
+        console.log(parseDate(data.find((item) => item.id === index)?.endDate))
+        console.log("CHECK")
+      }
+      console.log("11111")
     } else {
-      tempEndDate = previousDateEnd; // ตั้งค่าเป็น previousDate ถ้าไม่มี
+      tempEndDate =  parseDate(checkEndDate); // ตั้งค่าเป็น previousDate ถ้าไม่มี
+      console.log("222222")
     }
   
     // Ensure endDate must be greater than StartDate
