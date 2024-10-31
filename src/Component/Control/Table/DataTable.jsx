@@ -278,7 +278,7 @@ console.log(data)
     return new Date(year, month, day);
   }
   const requestedEffectiveDateDisableDateCal = (day, index, isStartDate = true) => {
-    // startDate calculate
+    // เริ่มคำนวณ startDate
     let dateValueStart = new Date(portfolioStartDate);
     const previousDateStart = new Date(dateValueStart);
     previousDateStart.setHours(0, 0, 0, 0);
@@ -297,28 +297,13 @@ console.log(data)
     }
     tempStartDate.setDate(tempStartDate.getDate());
   
-    // If checking for start date, we need to ensure it does not exceed the minimum end date
+    // ตรวจสอบ startDate
     if (isStartDate) {
-      let minEndDate = new Date(Math.min(
-        ...data
-          .filter(item => item.id === index)
-          .map(item => {
-            const checkEndDate =
-              item.endDate || item.subEndDate;
-            if (checkEndDate) {
-              const parts = checkEndDate.split("/");
-              return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-            }
-            return Infinity; // return a high value if no date is found
-          })
-      ));
-  
-      const startDateDisabled = day < previousDateStart || day > minEndDate || day < tempStartDate;
-  
+      const startDateDisabled = day < previousDateStart || day < tempStartDate;
       return startDateDisabled;
     }
   
-    // endDate calculation remains unchanged
+    // คำนวณ endDate
     let dateValueEnd = new Date(portfolioEndDate);
     const previousDateEnd = new Date(dateValueEnd);
     previousDateEnd.setHours(0, 0, 0, 0);
@@ -335,13 +320,13 @@ console.log(data)
       tempDateEndDate = previousDateEnd;
     }
   
-    const endDateDisabled =
-      tempDateEndDate >= previousDateEnd
-        ? day > previousDateEnd
-        : day > tempDateEndDate;
+    // เพิ่มเงื่อนไขไม่ให้ endDate เกิน startDate
+    const endDateDisabled = day > tempDateEndDate || day < tempStartDate;
   
     return endDateDisabled;
   };
+  
+  
   
   
 
