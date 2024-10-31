@@ -233,7 +233,6 @@ const ListDevice = (props) => {
       id: "manage",
       label: "",
       render: (row) => (
-        <div className="flex gap-2">
         <Link
           type="button"
           state={{ code: row.id }}
@@ -241,29 +240,48 @@ const ListDevice = (props) => {
           // hover:bg-[#4D6A00] bg-[#87BE33]
           className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]`}
         >
-          <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
-    {
-    userData?.userGroup?.id === USER_GROUP_ID.EGAT_DEVICE_MNG || 
-    userData?.userGroup?.id === USER_GROUP_ID.MEA_DEVICE_MNG ||
-    userData?.userGroup?.id === USER_GROUP_ID.PEA_DEVICE_MNG || 
-    userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_VERIFIER || 
-    userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
-    ? (
-      "Manage"
-    ) : (
-      <>
-        {"View"} <MdOutlineRemoveRedEye className="text-white" />
-      </>
-      
-    )}
-  </label>
-</Link>
-        </div>
+          <label className="cursor-pointer text-white font-semibold mr-2">
+            {"Manage"}
+          </label>
+          {/* <MdOutlineRemoveRedEye className="text-white" /> */}
+        </Link>
       ),
     },
     // Add more columns as needed
   ];
 
+//   {
+//     id: "manage",
+//     label: "",
+//     render: (row) => (
+//       <div className="flex gap-2">
+//       <Link
+//         type="button"
+//         state={{ code: row.id }}
+//         to={WEB_URL.DEVICE_INFO}
+//         // hover:bg-[#4D6A00] bg-[#87BE33]
+//         className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]`}
+//       >
+//         <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
+//   {
+//   userData?.userGroup?.id === USER_GROUP_ID.EGAT_DEVICE_MNG || 
+//   userData?.userGroup?.id === USER_GROUP_ID.MEA_DEVICE_MNG ||
+//   userData?.userGroup?.id === USER_GROUP_ID.PEA_DEVICE_MNG || 
+//   userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_VERIFIER || 
+//   userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+//   ? (
+//     "Manage"
+//   ) : (
+//     <>
+//       {"View"} <MdOutlineRemoveRedEye className="text-white" />
+//     </>
+    
+//   )}
+// </label>
+// </Link>
+//       </div>
+//     ),
+//   },
   const columnsUnAssigned = [
     {
       id: "name",
@@ -396,7 +414,6 @@ const ListDevice = (props) => {
       id: "manage",
       label: "",
       render: (row) => (
-        <div className="flex gap-2">
         <Link
           type="button"
           state={{ code: row.id }}
@@ -404,24 +421,11 @@ const ListDevice = (props) => {
           // hover:bg-[#4D6A00] bg-[#87BE33]
           className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]`}
         >
-          <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
-    {
-    userData?.userGroup?.id === USER_GROUP_ID.EGAT_DEVICE_MNG || 
-    userData?.userGroup?.id === USER_GROUP_ID.MEA_DEVICE_MNG ||
-    userData?.userGroup?.id === USER_GROUP_ID.PEA_DEVICE_MNG || 
-    userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_VERIFIER || 
-    userData?.userGroup?.id === USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
-    ? (
-      "Manage"
-    ) : (
-      <>
-        {"View"} <MdOutlineRemoveRedEye className="text-white" />
-      </>
-      
-    )}
-  </label>
-</Link>
-        </div>
+          <label className="cursor-pointer text-white font-semibold mr-2">
+            {"Manage"}
+          </label>
+          {/* <MdOutlineRemoveRedEye className="text-white" /> */}
+        </Link>
       ),
     },
     

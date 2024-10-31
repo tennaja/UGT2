@@ -295,81 +295,137 @@ console.log(data)
     const year = parseInt(parts[2], 10);
     return new Date(year, month, day);
   }
-  const requestedEffectiveDateDisableDateCal = (day, index) => {
-    // startDate calculate
-    let dateValueStart = new Date(portfolioStartDate);
-    console.log(dateValueStart)
-    const previousDateStart = new Date(dateValueStart);
-    console.log(previousDateStart)
+  function formatDateToDDMMYYYY(dateString) {
+    const date = new Date(dateString);
+    
+    // ตรวจสอบว่ามีวันที่ที่ถูกต้องหรือไม่
+    if (isNaN(date)) {
+        return null; // หรือส่งกลับวันที่ที่เป็นค่าเริ่มต้นตามต้องการ
+    }
+
+    // รับวัน เดือน และปี
+    const day = String(date.getDate()).padStart(2, '0'); // เพิ่ม 0 ข้างหน้าถ้าจำนวนน้อยกว่า 10
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // เดือนเริ่มต้นที่ 0
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`; // ส่งกลับวันที่ในรูปแบบ dd/mm/yyyy
+}
+  const parseDate = (dateStr) => {
+    const parts = dateStr.split("/");
+    return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+  };
+  
+  const requestedEffectiveDateDisableDateCal = (day, index, isStartDate = true) => {
+    // startDate calculation
+    const previousDateStart = new Date(portfolioStartDate);
     previousDateStart.setHours(0, 0, 0, 0);
-    previousDateStart.setDate(dateValueStart.getDate());
-
+  
     const checkStartDate =
-      data.find((item) => item.id === index)?.startDate 
+    data.find((item) => item.id === index)?.startDate ||
+    data.find((item) => item.id === index)?.subStartDate;
 
-      console.log(checkStartDate)
-    console.log(day)
-    const parts = checkStartDate.split("/");
-    const temp = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    const startDateChecker = new Date(temp)
-    const newStartDatechecker = new Date(startDateChecker)
-    newStartDatechecker.setHours(0, 0, 0, 0);
-    newStartDatechecker.setDate(startDateChecker.getDate()-1);
-    
-    console.log(startDateChecker)
+let tempStartDate;
 
-    let tempStartDate;
-    if (data.find((item) => item.id === index)?.Date >= previousDateStart) {
-      const parts = checkStartDate.split("/");
-      tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    
-      console.log("in1")
-    } 
-    else {
-      tempStartDate = new Date(checkStartDate);
-      console.log("out")
+if (checkStartDate) {
+    const registrationDate = formatDateToDDMMYYYY(data.find((item) => item.id === index)?.registrationDate);
+    const retailStartDate = data.find((item) => item.id === index)?.retailESAContractStartDate;
+
+    // แปลง registrationDate และ retailStartDate
+    const parsedRegistrationDate = registrationDate ? parseDate(registrationDate) : null;
+    const parsedRetailStartDate = retailStartDate ? parseDate(retailStartDate) : null;
+
+    // ตรวจสอบว่า previousDateStart มีค่าน้อยกว่าหรือเท่ากับ registrationDate หรือ retailStartDate หรือไม่
+    if ((parsedRegistrationDate && previousDateStart > parsedRegistrationDate) || 
+        (parsedRetailStartDate && previousDateStart > parsedRetailStartDate)) {
+          tempStartDate = parseDate(previousDateStart instanceof Date ? previousDateStart.toISOString().slice(0, 10) : previousDateStart);
+
+        console.log("Using Previous Start Date:", tempStartDate);
+    } else {
+        tempStartDate = parsedRegistrationDate || parsedRetailStartDate 
+        console.log("Parsed Start Date:", tempStartDate);
     }
+} else {
+    tempStartDate = parseDate(previousDateStart);
+    console.log("Default Start Date:", tempStartDate); // ตั้งค่าเป็น previousDate ถ้าไม่มี
+}
 
-    tempStartDate.setDate(tempStartDate.getDate());
-
-    const startDateDisabled =
-    day <= newStartDatechecker
-      // tempStartDate <= previousDateStart
-      //   ? day < previousDateStart
-      //   : day < tempStartDate;
-
-    // endDate calculate
-    let dateValueEnd = new Date(portfolioEndDate);
-    console.log(dateValueEnd)
-    const previousDateEnd = new Date(dateValueEnd);
+  
+    // If checking for start date, we need to ensure it does not exceed the minimum end date
+    if (isStartDate) {
+      let minEndDate = new Date(Math.min(
+        ...data
+          .filter(item => item.id === index)
+          .map(item => {
+            const checkEndDate =
+              item.endDate || item.subEndDate;
+            if (checkEndDate) {
+              return parseDate(checkEndDate);
+            }
+            return Infinity; // return a high value if no date is found
+          })
+      ));
+  
+      const startDateDisabled = day < previousDateStart || day > minEndDate || day < tempStartDate;
+      return startDateDisabled;
+    }
+  
+    // endDate calculation
+    const previousDateEnd = new Date(portfolioEndDate);
     previousDateEnd.setHours(0, 0, 0, 0);
-    previousDateEnd.setDate(dateValueEnd.getDate());
+  
     const checkEndDate =
-      data.find((item) => item.id === index)?.expriryDate ||
-      data.find((item) => item.id === index)?.checkEndDate
-console.log()
-    let tempDateEndDate;
-    if (data.find((item) => item.id === index)?.expriryDate <= dateValueEnd || data.find((item) => item.id === index)?.checkEndDate <= dateValueEnd) {
-      const parts = checkEndDate.split("/");
-      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-      console.log("1",tempDateEndDate)
-    } 
-    else {
-      
-      tempDateEndDate = dateValueEnd 
-      console.log("2",tempDateEndDate)
-    }
-    const endDateDisabled =
-      // tempDateEndDate >= previousDateEnd
-      //   ? day > previousDateEnd
-      //   : day > tempDateEndDate;
-      (day > tempDateEndDate )
-   
-console.log()
-    const disable = startDateDisabled || endDateDisabled;
-    console.log(day < startDateChecker)
+      data.find((item) => item.id === index)?.endDate ||
+      data.find((item) => item.id === index)?.subEndDate;
 
-    return disable;
+    console.log("Check End Date:", checkEndDate);
+    let tempEndDate;
+    
+    if (checkEndDate) {
+      const expiryDate = formatDateToDDMMYYYY(data.find((item) => item.id === index)?.expiryDate);
+      const retailEndDate = data.find((item) => item.id === index)?.retailESAContractEndDate;
+  
+      const parsedExpiryDate = expiryDate ? parseDate(expiryDate) : null;
+      const parsedRetailEndDate = retailEndDate ? parseDate(retailEndDate) : null;
+      const parsedPortfolioEndDate = new Date(portfolioEndDate);
+  
+      // Check if parsedPortfolioEndDate is less than parsedExpiryDate or parsedRetailEndDate
+      if (
+          (parsedExpiryDate && parsedPortfolioEndDate < parsedExpiryDate) ||
+          (parsedRetailEndDate && parsedPortfolioEndDate < parsedRetailEndDate)
+      ) {
+          tempEndDate = previousDateEnd;
+          console.log("Using Previous End Date:", previousDateEnd);
+      } else {
+          // Use the available valid date or fallback to previousDateEnd
+          tempEndDate = parsedExpiryDate || parsedRetailEndDate || previousDateEnd;
+          console.log("Using Available End Date:", tempEndDate);
+      }
+  } else {
+      tempEndDate = previousDateEnd;
+      console.log("No End Date Found, Using Previous End Date:", tempEndDate);
+  }
+  
+  
+  const foundItem = data.find((item) => item.id === index);
+
+  let startDate = null;
+  if (foundItem) {
+      const parsedStartDate = foundItem.startDate ? parseDate(foundItem.startDate) : null;
+      const parsedSubStartDate = foundItem.subStartDate ? parseDate(foundItem.subStartDate) : null;
+  
+      startDate = parsedStartDate || parsedSubStartDate;
+  }
+  
+  // Check for startDate validity
+  if (!startDate) {
+      console.error("Start date could not be determined.");
+  }
+    
+  
+    // Disable logic for end date: must be greater than StartDate
+    const endDateDisabled = day < startDate || day < previousDateStart || day > tempEndDate;
+  
+    return endDateDisabled; // คืนค่า endDateDisabled
   };
 
 

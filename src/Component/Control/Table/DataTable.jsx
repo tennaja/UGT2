@@ -366,35 +366,27 @@ if (checkStartDate) {
       const expiryDate = formatDateToDDMMYYYY(data.find((item) => item.id === index)?.expiryDate);
       const retailEndDate = data.find((item) => item.id === index)?.retailESAContractEndDate;
   
-      // แสดงค่าของ retailEndDate
-      console.log("Retail End Date:", retailEndDate);
-  
-      // เช็คให้แน่ใจว่า expiryDate และ retailEndDate มีค่า
       const parsedExpiryDate = expiryDate ? parseDate(expiryDate) : null;
       const parsedRetailEndDate = retailEndDate ? parseDate(retailEndDate) : null;
-  
-      // ตรวจสอบว่าค่าที่แปลงได้มีค่าถูกต้อง
-      const isExpiryDateValid = parsedExpiryDate instanceof Date && !isNaN(parsedExpiryDate);
-      const isRetailEndDateValid = parsedRetailEndDate instanceof Date && !isNaN(parsedRetailEndDate);
       const parsedPortfolioEndDate = new Date(portfolioEndDate);
   
-      // เช็ควันสิ้นสุด
-      if (isExpiryDateValid && isRetailEndDateValid) {
-          if (parsedPortfolioEndDate < parsedExpiryDate || parsedPortfolioEndDate < parsedRetailEndDate) {
-              tempEndDate = previousDateEnd;
-              console.log("Using Previous End Date:", previousDateEnd);
-          } 
-      } else  {
-          // เฉพาะ expiryDate มีค่าถูกต้อง
-          tempEndDate = parsedExpiryDate || parsedRetailEndDate;
-          console.log("Only Expiry Date is Valid, Using:", tempEndDate);
-      }  
-  
-      console.log("End Date Calculation Complete");
+      // Check if parsedPortfolioEndDate is less than parsedExpiryDate or parsedRetailEndDate
+      if (
+          (parsedExpiryDate && parsedPortfolioEndDate < parsedExpiryDate) ||
+          (parsedRetailEndDate && parsedPortfolioEndDate < parsedRetailEndDate)
+      ) {
+          tempEndDate = previousDateEnd;
+          console.log("Using Previous End Date:", previousDateEnd);
+      } else {
+          // Use the available valid date or fallback to previousDateEnd
+          tempEndDate = parsedExpiryDate || parsedRetailEndDate || previousDateEnd;
+          console.log("Using Available End Date:", tempEndDate);
+      }
   } else {
-      tempEndDate = parseDate(checkEndDate); // ตั้งค่าเป็น previousDate ถ้าไม่มี
+      tempEndDate = previousDateEnd;
       console.log("No End Date Found, Using Previous End Date:", tempEndDate);
   }
+  
   
   const foundItem = data.find((item) => item.id === index);
 
