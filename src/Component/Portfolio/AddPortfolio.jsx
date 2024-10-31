@@ -1528,9 +1528,14 @@ useEffect(() => {
                         />
                       </div>
                     ) : (
-                      <div>
-                        <p class="px-4 py-4 text-gray">No data selected</p>
-                      </div>
+                      <div style={{ border: IsError ? "2px solid red" : "none", padding: "16px", borderRadius: "4px", position: "relative" }}>
+        <p className="px-4 py-4 text-gray">There is no data to display.</p>
+        {IsError && (
+          <p style={{ color: "red", position: "absolute", bottom: "-25px", right: "5px", margin: 0 ,fontSize: "12px"}}>
+            This field is required
+          </p>
+        )}
+      </div>
                     )}
                   </div>
                 </Card>
@@ -1712,16 +1717,22 @@ useEffect(() => {
                         />
                       </div>
                     ) : (
-                      <div>
-                        <p class="px-4 py-4 text-gray">No data selected</p>
-                      </div>
+                      <div style={{ border: IsError ? "2px solid red" : "none", padding: "16px", borderRadius: "4px", position: "relative" }}>
+        <p className="px-4 py-4 text-gray">There is no data to display.</p>
+        {IsError && (
+          <p style={{ color: "red", position: "absolute", bottom: "-25px", right: "5px", margin: 0 ,fontSize: "12px"}}>
+            This field is required
+          </p>
+        )}
+      </div>
+      
                     )}
                   </div>
                 </Card>
 
                 {/* submit button */}
                 <div className="text-center my-5">
-                {IsError && (
+                {/* {IsError && (
                             <div className="font-normaltext-lg flex items-center justify-center border-solid bg-[#fdeeee] border-red-300 border-3   my-2 p-4 text-red-400 ">
                               <div className="mr-2">
                                 <BiErrorCircle className="w-[25px] h-[25px] text-red-600" />
@@ -1730,7 +1741,7 @@ useEffect(() => {
                               Device Assignment and Subscriber Assignment must have at least 1 item.
                               </div>
                             </div>
-                          )}
+                          )} */}
                   <button
                     onClick={backtoPortfolioListPage}
                     className="mr-4 w-1/4 rounded h-12 px-6 text-gray transition-colors duration-150 rounded-lg focus:shadow-outline bg-[#CBD0D5] hover:bg-[#78829D] text-[#78829D] hover:text-white font-semibold"

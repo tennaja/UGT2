@@ -2112,9 +2112,14 @@ if (subscriberDataTable.length > 0) {
                         />
                       </div>
                     ) : (
-                      <div>
-                        <p class="px-4 py-4 text-gray">No data selected</p>
-                      </div>
+                      <div style={{ border: IsError ? "2px solid red" : "none", padding: "16px", borderRadius: "4px", position: "relative" }}>
+        <p className="px-4 py-4 text-gray">There is no data to display.</p>
+        {IsError && (
+          <p style={{ color: "red", position: "absolute", bottom: "-25px", right: "5px", margin: 0 ,fontSize: "12px"}}>
+            This field is required
+          </p>
+        )}
+      </div>
                     )}
                   </div>
                 </Card>
@@ -2295,25 +2300,21 @@ if (subscriberDataTable.length > 0) {
                         />
                       </div>
                     ) : (
-                      <div>
-                        <p className="px-4 py-4 text-gray">No data selected</p>
-                      </div>
+                      <div style={{ border: IsError ? "2px solid red" : "none", padding: "16px", borderRadius: "4px", position: "relative" }}>
+        <p className="px-4 py-4 text-gray">There is no data to display.</p>
+        {IsError && (
+          <p style={{ color: "red", position: "absolute", bottom: "-25px", right: "5px", margin: 0 ,fontSize: "12px"}}>
+            This field is required
+          </p>
+        )}
+      </div>
                     )}
                   </div>
                 </Card>
 
                 {/* submit button */}
                 <div className="text-center my-5">
-                {IsError && (
-                            <div className="font-normaltext-lg flex items-center justify-center border-solid bg-[#fdeeee] border-red-300 border-3   my-2 p-4 text-red-400 ">
-                              <div className="mr-2">
-                                <BiErrorCircle className="w-[25px] h-[25px] text-red-600" />
-                              </div>
-                              <div className="">
-                              Device Assignment and Subscriber Assignment must have at least 1 item.
-                              </div>
-                            </div>
-                          )}
+                
                   <button
                     onClick={() =>
                       navigate(WEB_URL.PORTFOLIO_INFO, {
