@@ -296,47 +296,81 @@ console.log(data)
     return new Date(year, month, day);
   }
   const requestedEffectiveDateDisableDateCal = (day, index) => {
-    // คำนวณ startDate
-    const dateValueStart = new Date(portfolioStartDate);
-    dateValueStart.setHours(0, 0, 0, 0);
-  
-    const checkStartDate = data.find((item) => item.id === index)?.startDate;
-    const startDateParts = checkStartDate.split("/");
-    const startDateChecker = new Date(`${startDateParts[2]}-${startDateParts[1]}-${startDateParts[0]}`);
-    startDateChecker.setHours(0, 0, 0, 0);
+    // startDate calculate
+    let dateValueStart = new Date(portfolioStartDate);
+    console.log(dateValueStart)
+    const previousDateStart = new Date(dateValueStart);
+    console.log(previousDateStart)
+    previousDateStart.setHours(0, 0, 0, 0);
+    previousDateStart.setDate(dateValueStart.getDate());
+
+    const checkStartDate =
+      data.find((item) => item.id === index)?.startDate 
+
+      console.log(checkStartDate)
+    console.log(day)
+    const parts = checkStartDate.split("/");
+    const temp = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    const startDateChecker = new Date(temp)
+    const newStartDatechecker = new Date(startDateChecker)
+    newStartDatechecker.setHours(0, 0, 0, 0);
+    newStartDatechecker.setDate(startDateChecker.getDate()-1);
     
+    console.log(startDateChecker)
+
     let tempStartDate;
-    if (data.find((item) => item.id === index)?.Date >= dateValueStart) {
-      tempStartDate = startDateChecker;
-    } else {
+    if (data.find((item) => item.id === index)?.Date >= previousDateStart) {
+      const parts = checkStartDate.split("/");
+      tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    
+      console.log("in1")
+    } 
+    else {
       tempStartDate = new Date(checkStartDate);
+      console.log("out")
     }
-  
-    const startDateDisabled = day <= startDateChecker || day < tempStartDate;
-  
-    // คำนวณ endDate
-    const dateValueEnd = new Date(portfolioEndDate);
-    dateValueEnd.setHours(0, 0, 0, 0);
-  
-    const checkEndDate = data.find((item) => item.id === index)?.expriryDate || data.find((item) => item.id === index)?.checkEndDate;
+
+    tempStartDate.setDate(tempStartDate.getDate());
+
+    const startDateDisabled =
+    day <= newStartDatechecker
+      // tempStartDate <= previousDateStart
+      //   ? day < previousDateStart
+      //   : day < tempStartDate;
+
+    // endDate calculate
+    let dateValueEnd = new Date(portfolioEndDate);
+    console.log(dateValueEnd)
+    const previousDateEnd = new Date(dateValueEnd);
+    previousDateEnd.setHours(0, 0, 0, 0);
+    previousDateEnd.setDate(dateValueEnd.getDate());
+    const checkEndDate =
+      data.find((item) => item.id === index)?.expriryDate ||
+      data.find((item) => item.id === index)?.checkEndDate
+console.log()
     let tempDateEndDate;
-  
-    if (checkEndDate) {
-      const endDateParts = checkEndDate.split("/");
-      tempDateEndDate = new Date(`${endDateParts[2]}-${endDateParts[1]}-${endDateParts[0]}`);
-      tempDateEndDate.setHours(0, 0, 0, 0);
-    } else {
-      tempDateEndDate = dateValueEnd;
+    if (data.find((item) => item.id === index)?.expriryDate <= dateValueEnd || data.find((item) => item.id === index)?.checkEndDate <= dateValueEnd) {
+      const parts = checkEndDate.split("/");
+      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+      console.log("1",tempDateEndDate)
+    } 
+    else {
+      
+      tempDateEndDate = dateValueEnd 
+      console.log("2",tempDateEndDate)
     }
-  
-    const endDateDisabled = day > tempDateEndDate || day > dateValueEnd;
-  
-    // คำนวณว่า disable วันหรือไม่
+    const endDateDisabled =
+      // tempDateEndDate >= previousDateEnd
+      //   ? day > previousDateEnd
+      //   : day > tempDateEndDate;
+      (day > tempDateEndDate )
+   
+console.log()
     const disable = startDateDisabled || endDateDisabled;
-  
+    console.log(day < startDateChecker)
+
     return disable;
   };
-  
 
 
   const renderCell = (row, column) => {

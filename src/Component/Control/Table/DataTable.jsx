@@ -277,10 +277,15 @@ console.log(data)
     const year = parseInt(parts[2], 10);
     return new Date(year, month, day);
   }
+  
+  const parseDate = (dateStr) => {
+    const parts = dateStr.split("/");
+    return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+  };
+  
   const requestedEffectiveDateDisableDateCal = (day, index, isStartDate = true) => {
-    // เริ่มคำนวณ startDate
-    let dateValueStart = new Date(portfolioStartDate);
-    const previousDateStart = new Date(dateValueStart);
+    // startDate calculation
+    const previousDateStart = new Date(portfolioStartDate);
     previousDateStart.setHours(0, 0, 0, 0);
   
     const checkStartDate =
@@ -289,42 +294,65 @@ console.log(data)
   
     let tempStartDate;
   
-    if (data.find((item) => item.id === index)?.subStartDate) {
-      const parts = checkStartDate.split("/");
-      tempStartDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    if (checkStartDate) {
+      tempStartDate = parseDate(checkStartDate);
     } else {
-      tempStartDate = new Date(checkStartDate);
+      tempStartDate = previousDateStart; // ตั้งค่าเป็น previousDate ถ้าไม่มี
     }
-    tempStartDate.setDate(tempStartDate.getDate());
   
-    // ตรวจสอบ startDate
+    // If checking for start date, we need to ensure it does not exceed the minimum end date
     if (isStartDate) {
-      const startDateDisabled = day < previousDateStart || day < tempStartDate;
+      let minEndDate = new Date(Math.min(
+        ...data
+          .filter(item => item.id === index)
+          .map(item => {
+            const checkEndDate =
+              item.endDate || item.subEndDate;
+            if (checkEndDate) {
+              return parseDate(checkEndDate);
+            }
+            return Infinity; // return a high value if no date is found
+          })
+      ));
+  
+      const startDateDisabled = day < previousDateStart || day > minEndDate || day < tempStartDate;
       return startDateDisabled;
     }
   
-    // คำนวณ endDate
-    let dateValueEnd = new Date(portfolioEndDate);
-    const previousDateEnd = new Date(dateValueEnd);
+    // endDate calculation
+    const previousDateEnd = new Date(portfolioEndDate);
     previousDateEnd.setHours(0, 0, 0, 0);
   
     const checkEndDate =
       data.find((item) => item.id === index)?.endDate ||
       data.find((item) => item.id === index)?.subEndDate;
   
-    let tempDateEndDate;
-    if (data.find((item) => item.id === index)?.subEndDate) {
-      const parts = checkEndDate.split("/");
-      tempDateEndDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    let tempEndDate;
+    if (checkEndDate) {
+      tempEndDate = parseDate(checkEndDate);
     } else {
-      tempDateEndDate = previousDateEnd;
+      tempEndDate = previousDateEnd; // ตั้งค่าเป็น previousDate ถ้าไม่มี
     }
   
-    // เพิ่มเงื่อนไขไม่ให้ endDate เกิน startDate
-    const endDateDisabled = day > tempDateEndDate || day < tempStartDate;
+    // Ensure endDate must be greater than StartDate
+    const startDate = tempStartDate; // ใช้ tempStartDate ที่ได้จากการคำนวณ
   
-    return endDateDisabled;
+    // Disable logic for end date: must be greater than StartDate
+    const endDateDisabled = day <= startDate || day < previousDateStart || day > tempEndDate;
+  
+    return endDateDisabled; // คืนค่า endDateDisabled
   };
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
