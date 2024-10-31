@@ -303,18 +303,34 @@ console.log(data)
     previousDateStart.setHours(0, 0, 0, 0);
   
     const checkStartDate =
-      data.find((item) => item.id === index)?.registrationDate ||
-      data.find((item) => item.id === index)?.subStartDate;
-  
-    let tempStartDate;
-  
-    if (checkStartDate) {
-      tempStartDate = parseDate(checkStartDate);
-      console.log(parseDate(checkStartDate))
+    data.find((item) => item.id === index)?.startDate ||
+    data.find((item) => item.id === index)?.subStartDate;
+
+let tempStartDate;
+
+if (checkStartDate) {
+    const registrationDate = formatDateToDDMMYYYY(data.find((item) => item.id === index)?.registrationDate);
+    const retailStartDate = data.find((item) => item.id === index)?.retailESAContractStartDate;
+
+    // แปลง registrationDate และ retailStartDate
+    const parsedRegistrationDate = registrationDate ? parseDate(registrationDate) : null;
+    const parsedRetailStartDate = retailStartDate ? parseDate(retailStartDate) : null;
+
+    // ตรวจสอบว่า previousDateStart มีค่าน้อยกว่าหรือเท่ากับ registrationDate หรือ retailStartDate หรือไม่
+    if ((parsedRegistrationDate && previousDateStart > parsedRegistrationDate) || 
+        (parsedRetailStartDate && previousDateStart > parsedRetailStartDate)) {
+          tempStartDate = parseDate(previousDateStart instanceof Date ? previousDateStart.toISOString().slice(0, 10) : previousDateStart);
+
+        console.log("Using Previous Start Date:", tempStartDate);
     } else {
-      tempStartDate = previousDateStart; 
-      console.log(parseDate(previousDateStart))// ตั้งค่าเป็น previousDate ถ้าไม่มี
+        tempStartDate = parsedRegistrationDate || parsedRetailStartDate 
+        console.log("Parsed Start Date:", tempStartDate);
     }
+} else {
+    tempStartDate = parseDate(previousDateStart);
+    console.log("Default Start Date:", tempStartDate); // ตั้งค่าเป็น previousDate ถ้าไม่มี
+}
+
   
     // If checking for start date, we need to ensure it does not exceed the minimum end date
     if (isStartDate) {
@@ -342,30 +358,62 @@ console.log(data)
     const checkEndDate =
       data.find((item) => item.id === index)?.endDate ||
       data.find((item) => item.id === index)?.subEndDate;
-   console.log(checkEndDate)
+
+    console.log("Check End Date:", checkEndDate);
     let tempEndDate;
+    
     if (checkEndDate) {
-      if(new Date(portfolioEndDate) < parseDate(formatDateToDDMMYYYY(data.find((item) => item.id === index)?.expiryDate))){
-        tempEndDate = previousDateEnd;
-        console.log("PRE")
-      }
-      else{
-        
-        tempEndDate = parseDate(formatDateToDDMMYYYY(data.find((item) => item.id === index)?.expiryDate));
-        console.log(parseDate(data.find((item) => item.id === index)?.endDate))
-        console.log("CHECK")
-      }
-      console.log("11111")
-    } else {
-      tempEndDate =  parseDate(checkEndDate); // ตั้งค่าเป็น previousDate ถ้าไม่มี
-      console.log("222222")
-    }
+      const expiryDate = formatDateToDDMMYYYY(data.find((item) => item.id === index)?.expiryDate);
+      const retailEndDate = data.find((item) => item.id === index)?.retailESAContractEndDate;
   
-    // Ensure endDate must be greater than StartDate
-    const startDate = tempStartDate; // ใช้ tempStartDate ที่ได้จากการคำนวณ
+      // แสดงค่าของ retailEndDate
+      console.log("Retail End Date:", retailEndDate);
+  
+      // เช็คให้แน่ใจว่า expiryDate และ retailEndDate มีค่า
+      const parsedExpiryDate = expiryDate ? parseDate(expiryDate) : null;
+      const parsedRetailEndDate = retailEndDate ? parseDate(retailEndDate) : null;
+  
+      // ตรวจสอบว่าค่าที่แปลงได้มีค่าถูกต้อง
+      const isExpiryDateValid = parsedExpiryDate instanceof Date && !isNaN(parsedExpiryDate);
+      const isRetailEndDateValid = parsedRetailEndDate instanceof Date && !isNaN(parsedRetailEndDate);
+      const parsedPortfolioEndDate = new Date(portfolioEndDate);
+  
+      // เช็ควันสิ้นสุด
+      if (isExpiryDateValid && isRetailEndDateValid) {
+          if (parsedPortfolioEndDate < parsedExpiryDate || parsedPortfolioEndDate < parsedRetailEndDate) {
+              tempEndDate = previousDateEnd;
+              console.log("Using Previous End Date:", previousDateEnd);
+          } 
+      } else  {
+          // เฉพาะ expiryDate มีค่าถูกต้อง
+          tempEndDate = parsedExpiryDate || parsedRetailEndDate;
+          console.log("Only Expiry Date is Valid, Using:", tempEndDate);
+      }  
+  
+      console.log("End Date Calculation Complete");
+  } else {
+      tempEndDate = parseDate(checkEndDate); // ตั้งค่าเป็น previousDate ถ้าไม่มี
+      console.log("No End Date Found, Using Previous End Date:", tempEndDate);
+  }
+  
+  const foundItem = data.find((item) => item.id === index);
+
+  let startDate = null;
+  if (foundItem) {
+      const parsedStartDate = foundItem.startDate ? parseDate(foundItem.startDate) : null;
+      const parsedSubStartDate = foundItem.subStartDate ? parseDate(foundItem.subStartDate) : null;
+  
+      startDate = parsedStartDate || parsedSubStartDate;
+  }
+  
+  // Check for startDate validity
+  if (!startDate) {
+      console.error("Start date could not be determined.");
+  }
+    
   
     // Disable logic for end date: must be greater than StartDate
-    const endDateDisabled = day <= startDate || day < previousDateStart || day > tempEndDate;
+    const endDateDisabled = day < startDate || day < previousDateStart || day > tempEndDate;
   
     return endDateDisabled; // คืนค่า endDateDisabled
   };

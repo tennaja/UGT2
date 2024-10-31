@@ -512,7 +512,7 @@ const UpdatePortfolio = () => {
           }) => ({
             ...item, // Spread the remaining properties
             startDate: formatDate(item.registrationDate), // Add formatted start date
-            endDate: formatDate(item.registrationDate), // Add formatted end date
+            endDate: formatDate(item.expiryDate), // Add formatted end date
           })
         );
 
