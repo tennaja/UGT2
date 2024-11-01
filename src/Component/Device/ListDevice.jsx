@@ -102,7 +102,7 @@ const ListDevice = (props) => {
 
   const [searchQueryAssigned, setSearchQueryAssigned] = useState("");
   const [searchQueryUnAssigned, setSearchQueryUnAssigned] = React.useState('');
-
+  
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
   );
@@ -553,149 +553,65 @@ const ListDevice = (props) => {
   };
 
   const handleChangeAssignFilter = (value, filterType) => {
-    const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
-    let fetchParameterForAssignedList = null;
-    const currentFilterList = value.map((item) => {
-      return item.id;
-    });
+    const ugtGroupId = currentUGTGroup?.id || ""; // Fallback for ugtGroupId
+    const selectedFilterIds = value.map(item => item.id); // Extract selected IDs
 
-    if (filterType === "TYPE") {
-      const newCurrentAssignedFilter = {
+    // Update the current filter based on the type
+    const newCurrentAssignedFilter = {
         ...currentAssignedFilterObj,
-        type: currentFilterList,
-      };
-      setCurrentAssignedFilterObj(newCurrentAssignedFilter);
-      dispatch(setCurrentAssignedFilter(newCurrentAssignedFilter));
+        [filterType.toLowerCase()]: selectedFilterIds
+    };
+    
+    // Update state and dispatch the filter
+    setCurrentAssignedFilterObj(newCurrentAssignedFilter);
+    dispatch(setCurrentAssignedFilter(newCurrentAssignedFilter));
 
-      fetchParameterForAssignedList = {
-        findTypeId: currentFilterList ? currentFilterList : [],
-        // findTypeId:'2',
-        findUtilityId: currentAssignedFilterObj?.utility
-          ? currentAssignedFilterObj?.utility
-          : "",
-        findStatusId: currentAssignedFilterObj?.status
-          ? currentAssignedFilterObj?.status
-          : "",
+    // Prepare fetch parameters with the latest filter values
+    const fetchParameterForAssignedList = {
+        findTypeId: newCurrentAssignedFilter.type || [],
+        findUtilityId: newCurrentAssignedFilter.utility || [],
+        findStatusId: newCurrentAssignedFilter.status || [],
         pageNumber: 1,
         pageSize: itemsPerPage,
-        findUgtGroupId: ugtGroupId,
-      };
-    } else if (filterType === "UTILITY") {
-      const newCurrentAssignedFilter = {
-        ...currentAssignedFilterObj,
-        utility: currentFilterList,
-      };
-      setCurrentAssignedFilterObj(newCurrentAssignedFilter);
-      dispatch(setCurrentAssignedFilter(newCurrentAssignedFilter));
+        findUgtGroupId: ugtGroupId
+    };
 
-      fetchParameterForAssignedList = {
-        findTypeId: currentAssignedFilterObj?.type
-          ? currentAssignedFilterObj?.type
-          : [],
-        findUtilityId: currentFilterList ? currentFilterList : "",
-        findStatusId: currentAssignedFilterObj?.status
-          ? currentAssignedFilterObj?.status
-          : [],
-        pageNumber: 1,
-        pageSize: itemsPerPage,
-        findUgtGroupId: ugtGroupId,
-      };
-    } else if (filterType === "STATUS") {
-      const newCurrentAssignedFilter = {
-        ...currentAssignedFilterObj,
-        status: currentFilterList,
-      };
-      setCurrentAssignedFilterObj(newCurrentAssignedFilter);
-      dispatch(setCurrentAssignedFilter(newCurrentAssignedFilter));
-
-      fetchParameterForAssignedList = {
-        findTypeId: currentAssignedFilterObj?.type
-          ? currentAssignedFilterObj?.type
-          : [],
-        findUtilityId: currentAssignedFilterObj?.utility
-          ? currentAssignedFilterObj?.utility
-          : [],
-        findStatusId: currentFilterList ? currentFilterList : [],
-        pageNumber: 1,
-        pageSize: itemsPerPage,
-        findUgtGroupId: ugtGroupId,
-      };
-    }
-
+    // Dispatch the fetch action
     dispatch(FetchDeviceManagementAssigned(fetchParameterForAssignedList));
+};
+
+
+const handleChangeUnAssignFilter = (value, filterType) => {
+  let fetchParameterForUnAssignedList = null;
+  const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
+
+  const currentFilterList = value.map((item) => item.id);
+  const newCurrentUnAssignedFilter = { ...currentUnAssignedFilterObj };
+
+  if (filterType === "TYPE") {
+      newCurrentUnAssignedFilter.type = currentFilterList;
+  } else if (filterType === "UTILITY") {
+      newCurrentUnAssignedFilter.utility = currentFilterList;
+  } else if (filterType === "STATUS") {
+      newCurrentUnAssignedFilter.status = currentFilterList;
+  }
+
+  setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
+  dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
+
+  fetchParameterForUnAssignedList = {
+      findTypeId: newCurrentUnAssignedFilter.type || [],
+      findUtilityId: newCurrentUnAssignedFilter.utility || [],
+      findStatusId: newCurrentUnAssignedFilter.status || [],
+      pageNumber: 1,
+      pageSize: itemsPerPage,
+      findUgtGroupId: ugtGroupId,
   };
 
-  const handleChangeUnAssignFilter = (value, filterType) => {
-    let fetchParameterForUnAssignedList = null;
-    const ugtGroupId = currentUGTGroup?.id ? currentUGTGroup?.id : "";
+  dispatch(FetchDeviceManagementUnAssigned(fetchParameterForUnAssignedList));
+};
 
-    const currentFilterList = value.map((item) => item.id);
-    if (filterType === "TYPE") {
-      const newCurrentUnAssignedFilter = {
-        ...currentUnAssignedFilterObj,
-        [filterType.toLowerCase()]: currentFilterList,
-      };
-      console.log("New Filter State:", newCurrentUnAssignedFilter); // ตรวจสอบค่าที่เก็บ
-      setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
-      dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
 
-      fetchParameterForUnAssignedList = {
-        findTypeId: currentFilterList ? currentFilterList : [],
-        findUtilityId: currentUnAssignedFilterObj?.utility
-          ? currentUnAssignedFilterObj?.utility
-          : [],
-        findStatusId: currentUnAssignedFilterObj?.status
-          ? currentUnAssignedFilterObj?.status
-          : [],
-        pageNumber: 1,
-        pageSize: itemsPerPage,
-        findUgtGroupId: ugtGroupId,
-      };
-    } else if (filterType === "UTILITY") {
-      const newCurrentUnAssignedFilter = {
-        ...currentUnAssignedFilterObj,
-        utility: currentFilterList,
-      };
-      setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
-      dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
-
-      fetchParameterForUnAssignedList = {
-        findTypeId: currentUnAssignedFilterObj?.type
-          ? currentUnAssignedFilterObj?.type
-          : [],
-        findUtilityId: currentFilterList ? currentFilterList : [],
-        findStatusId: currentUnAssignedFilterObj?.status
-          ? currentUnAssignedFilterObj?.status
-          : [],
-        pageNumber: 1,
-        pageSize: itemsPerPage,
-        findUgtGroupId: ugtGroupId,
-      };
-    } else if (filterType === "STATUS") {
-      const newCurrentUnAssignedFilter = {
-        ...currentUnAssignedFilterObj,
-        status: currentFilterList,
-      };
-
-      setCurrentUnAssignedFilterObj(newCurrentUnAssignedFilter);
-      dispatch(setCurrentUnAssignedFilter(newCurrentUnAssignedFilter));
-
-      fetchParameterForUnAssignedList = {
-        findTypeId: currentUnAssignedFilterObj?.type
-          ? currentUnAssignedFilterObj?.type
-          : [],
-        findUtilityId: currentUnAssignedFilterObj?.utility
-          ? currentUnAssignedFilterObj?.utility
-          : "",
-        findStatusId: currentFilterList ? currentFilterList : [],
-        pageNumber: 1,
-        pageSize: itemsPerPage,
-        findUgtGroupId: ugtGroupId,
-      };
-    }
-
-    dispatch(FetchDeviceManagementUnAssigned(fetchParameterForUnAssignedList));
-  };
 
 
 
@@ -867,43 +783,47 @@ const ListDevice = (props) => {
   const handleAssignedSearchChange = (e) => {
     setSearchQueryAssigned(e.target.value);
   };
+  const handleUnAssignedSearchChange = (e) => {
+    const value = e.target.value; // Get the input value
+    setSearchQueryUnAssigned(value); // Update the search query
+};
 
-  // ฟังก์ชันสำหรับอัปเดตคำค้นหา
-  const handleUnAssignedSearchChange = (value) => {
-    setSearchQueryUnAssigned(value); // อัปเดตสถานะการค้นหา
-  };
+// Filtering logic to get the search results
+let filteredSearchResults = unAssignedList.filter(item => {
+  // ตรวจสอบการค้นหาชื่อและสถานะ
+  const matchesSearchQuery = item.name.toLowerCase().includes(searchQueryUnAssigned.toLowerCase()) ||
+      item.statusName.toLowerCase().includes(searchQueryUnAssigned.toLowerCase());
 
-  // ค้นหาในข้อมูลทั้งหมด (รวมทั้ง "Withdrawn")
-  const searchResults = unAssignedList.filter(item => {
-    const isMatchingName = item.name.toLowerCase().includes(searchQueryUnAssigned.toLowerCase());
-    const isMatchingStatus = item.statusName.toLowerCase().includes(searchQueryUnAssigned.toLowerCase());
-    return isMatchingName || isMatchingStatus; // ค้นหาทั้งชื่อและสถานะ
-  });
+  // ตรวจสอบสถานะ โดยเฉพาะรายการ Withdrawn
+  const matchesStatusFilter = currentUnAssignedFilterObj.status?.length
+      ? currentUnAssignedFilterObj.status.includes(item.statusName) || item.statusName === "Withdrawn"
+      : item.statusName !== "Withdrawn"; // ถ้าไม่มีสถานะที่เลือก ให้ตัดรายการ Withdrawn ออก
 
-  const filteredSearchResults = searchQueryUnAssigned
-    ? searchResults // แสดงทุกสถานะเมื่อค้นหา
-    : unAssignedList.filter(item => {
-        // ตรวจสอบว่ามีการติ๊กสถานะ Withdrawn
-        const isWithdrawnSelected = currentUnAssignedFilterObj.status?.includes("Withdrawn");
+  // คืนค่าผลลัพธ์โดยใช้ตัวแปรที่สร้างขึ้น
+  return matchesSearchQuery && matchesStatusFilter; // คืนค่าหากตรงกับการค้นหาและสถานะ
+});
 
-        // ให้แสดงรายการที่มีสถานะ Withdrawn เมื่อมันถูกเลือก
-        if (isWithdrawnSelected) {
-            return true; // โชว์รายการ Withdrawn
-        }
+/// หากมีการค้นหาโดยพิมพ์ตัวอักษรเดียวหรือมากกว่า
+if (searchQueryUnAssigned.trim().length >= 1) {
+  const withdrawnItems = unAssignedList.filter(item => 
+      item.statusName === "Withdrawn" || 
+      item.name.toLowerCase().includes(searchQueryUnAssigned.toLowerCase())
+  );
 
-        // ถ้าไม่เลือกสถานะ Withdrawn ให้กรองเฉพาะรายการที่ไม่ใช่ Withdrawn
-        return item.statusName !== "Withdrawn";
-    });
+  // กรองเพื่อไม่ให้รายการ Withdrawn ซ้ำซ้อนกับผลลัพธ์ก่อนหน้า
+  const uniqueWithdrawnItems = withdrawnItems.filter(withdrawnItem =>
+      !filteredSearchResults.some(result => result.id === withdrawnItem.id)
+  );
+
+  // เพิ่มรายการ Withdrawn ที่ไม่ซ้ำลงใน filteredSearchResults
+  filteredSearchResults = [...filteredSearchResults, ...uniqueWithdrawnItems];
+}
+
+// แสดงผลลัพธ์สุดท้าย
+console.log(filteredSearchResults);
 
 
 
-
-
-    console.log(currentUnAssignedFilterObj)
-console.log("Unassigned List:", unAssignedList);
-console.log("Search Query:", searchQueryUnAssigned);
-console.log("Search Results:", searchResults);
-console.log("Filtered Search Results:", filteredSearchResults);
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
@@ -1444,23 +1364,21 @@ console.log("Filtered Search Results:", filteredSearchResults);
 
                   <div className="grid lg:col-span-4 2xl:col-span-3 grid-cols-6">
                     <form className="grid col-span-6 grid-cols-6">
-                      <div className="col-span-2 px-2">
-                        <Controller
-                          name="SearchText"
-                          control={control}
-                          defaultValue={null}
-                          render={({ field }) => (
-                            <SearchBox
-                placeholder="Search"
-                onChange={(e) => {
-                  field.onChange(e.target.value); // อัปเดตค่าในฟอร์ม
-                  handleUnAssignedSearchChange(e.target.value); // เรียกใช้ฟังก์ชันค้นหา
-                }}
-                value={field.value} // ใช้ค่าจากฟอร์ม
-              />
-                          )}
+                    <div className="col-span-2 px-2">
+                <Controller
+                    name="SearchText"
+                    control={control}
+                    defaultValue={null}
+                    render={({ field }) => (
+                        <SearchBox
+                            placeholder="Search"
+                            onChange={handleUnAssignedSearchChange} // Use the updated function
+                            value={searchQueryUnAssigned} // Bind the input value to the state
+                             
                         />
-                      </div>
+                    )}
+                />
+            </div>
                       <div className="col-span-2 px-2">
                         <Controller
                           name="unAssignType"
