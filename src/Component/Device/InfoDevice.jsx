@@ -747,7 +747,7 @@ const handleClickDownloadFile = async (item) => {
     const emailBodytoOwnerWhenreturn = `
   <html>
     <body>
-      <p>Dear registration was returned for editing.</p>
+      <p>Dear Device Owner,</p>
       
       <p>
       Device registration was 
