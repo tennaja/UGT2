@@ -107,7 +107,7 @@ const emailBodytoVerifier = `
         <b>Submission Date:</b> ${formatDate(Datenow)} 
       </p>
       
-      <p>Please verify via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      <p>Please verify via this link: <a href="${`https://ugt-2.vercel.app/`}">UGT Platform</a>.</p>
       
       <p>UGT Platform</p>
     </body>
