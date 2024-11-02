@@ -676,13 +676,11 @@ const RenewDevice = () => {
       FunctionRenewDevice(deviceData, () => {
         // setIsOpenLoading(false);
         hideLoading();
-        dispatch (
-          sendEmail(titleemail,emailBodytoOwner,deviceobj?.userEmail
-            ,() => {
-            hideLoading();
-            // dispatch(clearModal());
+        dispatch(
+          sendEmail(titleemail, emailBodytoOwner, deviceobj?.userEmail, () => {
+            // Email sent successfully
           })
-        )
+        );
         if (deviceobj?.statusName !== "Draft") {
           navigate(DEVICE_LIST); // Replace '/' with your home page path
         }
@@ -2187,6 +2185,7 @@ const RenewDevice = () => {
                           name="note"
                           control={control}
                           rules={{
+                            required: "This field is required", // Add required rule
                             validate: (value) => {
                               console.log("Note value on submit:", value);
                               console.log("Initial note value:", initialNote);
@@ -2203,7 +2202,8 @@ const RenewDevice = () => {
                               type={"text"}
                               label={"Note"}
                               error={errors.note}
-                              disabled={vDisabled}
+                              validate={" *"}
+                              // disabled={vDisabled}
                               // ... other props
                             />
                           )}

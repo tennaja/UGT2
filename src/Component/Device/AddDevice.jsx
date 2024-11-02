@@ -130,7 +130,7 @@ const AddDevice = () => {
         <b>Edited Date:</b> ${formatDate(Datenow)} 
       </p>
       
-      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">Sign Here</a>.</p>
+      <p>Please sign via this link: <a href="${`https://ugt-2.vercel.app/`}">UGT Platform</a>.</p>
       
       <p>UGT Platform</p>
     </body>

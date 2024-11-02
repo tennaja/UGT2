@@ -664,97 +664,56 @@ const UpdateDevice = () => {
   };
 
   const onChangeProvince = (value) => {
-    // ตรวจสอบว่ามีการเลือกค่าใหม่หรือเป็นการเลือกค่าปัจจุบัน
-    if (value?.provinceCode === deviceobj?.provinceCode) {
-      // หากเลือกตัวมันเอง หรือเลือกค่าเดิม
-      setValue("districtCode", null); // รีเซ็ต district code
-      setCurrentDistrict(null); // ล้าง current district
-  
-      setValue("subdistrictCode", null); // รีเซ็ต subdistrict code
-      setCurrentSubDistrict(null); // ล้าง current subdistrict
-  
-      setValue("postCode", null); // รีเซ็ต post code
-      setCurrentPostCode(null); // ล้าง current postcode
-      setPostCodeListForDisplay([]); // ล้างรายการ post code
-      console.log("INNNNNNNNNNNN")
-    } else {
-      // หากเลือกค่าใหม่ ให้ทำการรีเซ็ตค่าเขตและค่าที่เกี่ยวข้อง
-      if (currentDistrict?.id) {
-        setValue("districtCode", null); // รีเซ็ต district code
-        setCurrentDistrict(null); // ล้าง current district
-  
-        setValue("subdistrictCode", null); // รีเซ็ต subdistrict code
-        setCurrentSubDistrict(null); // ล้าง current subdistrict
-  
-        setValue("postCode", null); // รีเซ็ต post code
-        setCurrentPostCode(null); // ล้าง current postcode
-        setPostCodeListForDisplay([]); // ล้างรายการ post code
-  
-        dispatch(FetchSubDistrictList());
-      }
-      console.log("OUTTTTTTTTTT")
-      // ตั้งค่าปัจจุบันใหม่
-      setCurrentProvicne(value);
-      dispatch(FetchDistrictList(value?.provinceCode));
+    if (currentDistrict?.id) {
+      setValue("districtCode", null); //set value to null
+      setCurrentDistrict(null);
+
+      setValue("subdistrictCode", null); //set value to null
+      setCurrentSubDistrict(null);
+
+      setValue("postCode", null); //set value to null
+      setCurrentPostCode(null);
+      setPostCodeListForDisplay([]); // clear post code list option
+
+      dispatch(FetchSubDistrictList());
     }
+
+    setCurrentProvicne(value);
+    dispatch(FetchDistrictList(value?.provinceCode));
   };
-  
-  
-  
+
   const onChangeDistrict = (value) => {
-    // เช็คว่ามี subdistrict ปัจจุบันอยู่หรือไม่
     if (currentSubDistrict?.id) {
-      setValue("subdistrictCode", null); // เคลียร์ subdistrictCode
-      setCurrentSubDistrict(null); // เคลียร์ currentSubDistrict
-  
-      setValue("postCode", null); // เคลียร์ postCode
-      setCurrentPostCode(null); // เคลียร์ currentPostCode
-      setPostCodeListForDisplay([]); // เคลียร์รายชื่อ post code
+      setValue("subdistrictCode", null); //set value to null
+      setCurrentSubDistrict(null);
+
+      setValue("postCode", null); //set value to null
+      setCurrentPostCode(null);
+      setPostCodeListForDisplay([]); // clear post code list option
     }
-  
-    // ตั้งค่า district ใหม่
+
     setCurrentDistrict(value);
-  
-    // เรียกใช้ fetch สำหรับ subdistrict list ใหม่
-    dispatch(FetchSubDistrictList(value?.districtCode, currentProvince?.provinceCode));
+    dispatch(
+      FetchSubDistrictList(value?.districtCode, currentProvince?.provinceCode)
+    );
   };
-  
+
   const onChangeSubDistrict = (value) => {
-    // กรองรายชื่อ post code ตาม province, district, และ postal code ที่เลือก
     const postCodeFilter = postcodeList.filter(
       (item) =>
-        item.provinceCode === currentProvince?.provinceCode &&
-        item.districtCode === currentDistrict?.districtCode &&
-        item.postalCode === value?.postalCode
+        item.provinceCode == currentProvince?.provinceCode &&
+        item.districtCode == currentDistrict?.districtCode &&
+        item.postalCode == value?.postalCode
     );
-  
-    // ตั้งค่ารายชื่อ post code สำหรับแสดง
     if (postCodeFilter.length > 0) {
       const newPostCodeListForDisplay = _.uniqBy(postCodeFilter, "postalCode");
       setPostCodeListForDisplay(newPostCodeListForDisplay);
     } else {
       setPostCodeListForDisplay([]);
     }
-  
-    // ตั้งค่า subDistrict ใหม่
+
     setCurrentSubDistrict(value);
   };
-  
-  // useEffect สำหรับการเคลียร์ districtCode เมื่อ province เปลี่ยน
-  useEffect(() => {
-    setValue("districtCode", null);
-  }, [currentProvince]); // ติดตามการเปลี่ยนแปลงของ currentProvince
-  
-  // useEffect สำหรับการเคลียร์ subdistrictCode เมื่อ district เปลี่ยน
-  useEffect(() => {
-    setValue("subdistrictCode", null);
-  }, [currentDistrict]); // ติดตามการเปลี่ยนแปลงของ currentDistrict
-  
-  // useEffect สำหรับการเคลียร์ postCode เมื่อ subdistrict เปลี่ยน
-  useEffect(() => {
-    setValue("postCode", null);
-  }, [currentSubDistrict]); // ติดตามการเปลี่ยนแปลงของ currentSubDistrict
-  
 
   const onChangePostCode = (value) => {
     setCurrentPostCode(value);
@@ -1805,13 +1764,7 @@ const UpdateDevice = () => {
                               valueProp={"provinceCode"}
                               label={"State / Province"}
                               validate={" *"}
-                              onChangeInput={(selectedValue) => {
-                                // Call onChangeProvince to handle the state change
-                                onChangeProvince(selectedValue);
-                                
-                                // Also, clear districtCode to make sure it's reset
-                                setValue("districtCode", null); // Ensure the districtCode is cleared
-                              }}
+                              onChangeInput={onChangeProvince}
                               error={errors.stateCode}
                               withNullValue
                               // ... other props

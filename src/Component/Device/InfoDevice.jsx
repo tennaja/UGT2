@@ -743,7 +743,7 @@ const handleClickDownloadFile = async (item) => {
   const handleClickConfirmReturn = (rem) => {
     setOpenConfirmReturnModal(false)
     showLoading();
-    const titleemail = "[Device Registration] Return UGT Device Registration Returned"
+    const titleemail = "[Device Registration] UGT Device Registration Returned"
     const emailBodytoOwnerWhenreturn = `
   <html>
     <body>

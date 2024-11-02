@@ -781,7 +781,8 @@ const handleChangeUnAssignFilter = (value, filterType) => {
   };
 
   const handleAssignedSearchChange = (e) => {
-    setSearchQueryAssigned(e.target.value);
+    const value = e.target.value;
+    setSearchQueryAssigned(value);
   };
   const handleUnAssignedSearchChange = (e) => {
     const value = e.target.value; // Get the input value
@@ -790,17 +791,17 @@ const handleChangeUnAssignFilter = (value, filterType) => {
 
 // Filtering logic to get the search results
 let filteredSearchResults = unAssignedList.filter(item => {
-  // ตรวจสอบการค้นหาชื่อและสถานะ
-  const matchesSearchQuery = item.name.toLowerCase().includes(searchQueryUnAssigned.toLowerCase()) ||
-      item.statusName.toLowerCase().includes(searchQueryUnAssigned.toLowerCase());
+    // ตรวจสอบการค้นหาชื่อและสถานะ
+    const matchesSearchQuery = item.name.toLowerCase().includes(searchQueryUnAssigned.toLowerCase()) ||
+        item.statusName.toLowerCase().includes(searchQueryUnAssigned.toLowerCase());
 
-  // ตรวจสอบสถานะ โดยเฉพาะรายการ Withdrawn
-  const matchesStatusFilter = currentUnAssignedFilterObj.status?.length
-      ? currentUnAssignedFilterObj.status.includes(item.statusName) || item.statusName === "Withdrawn"
-      : item.statusName !== "Withdrawn"; // ถ้าไม่มีสถานะที่เลือก ให้ตัดรายการ Withdrawn ออก
+    // ตรวจสอบสถานะ โดยเฉพาะรายการ Withdrawn
+    const matchesStatusFilter = currentUnAssignedFilterObj.status?.length
+        ? currentUnAssignedFilterObj.status.includes(item.statusName) || item.statusName === "Withdrawn"
+        : item.statusName !== "Withdrawn"; // ถ้าไม่มีสถานะที่เลือก ให้ตัดรายการ Withdrawn ออก
 
-  // คืนค่าผลลัพธ์โดยใช้ตัวแปรที่สร้างขึ้น
-  return matchesSearchQuery && matchesStatusFilter; // คืนค่าหากตรงกับการค้นหาและสถานะ
+    // คืนค่าผลลัพธ์โดยใช้ตัวแปรที่สร้างขึ้น
+    return matchesSearchQuery && matchesStatusFilter;
 });
 
 /// หากมีการค้นหาโดยพิมพ์ตัวอักษรเดียวหรือมากกว่า
