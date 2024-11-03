@@ -499,38 +499,43 @@ const emailBodywhenSubmited = `
 
 
 
+
 const handleClickDownloadFile = async (item) => {
-    console.log(item)
-    try {
-      // setIsOpenLoading(true);
-      showLoading();
-      const fileID = item?.evidentFileID;
-      const fileName = item?.name;
-      const requestParameter = {
-        fileID: fileID,
-        fileName: fileName,
-      };
-      const response = await FetchDownloadFile(requestParameter);
-      console.log(response)
-      const blob = new Blob([response.res.data], {
-        type: response.res.headers["content-type"],
-      });
-      // Create a download link
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.open(url, '_blank');
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error downloading file:", error);
-    }
-    // setIsOpenLoading(false);
-    hideLoading();
-  };
+
+  console.log('item',item)
+  // console.log('item evidentFileID',item?.evidentFileID)
+  // console.log('item name',item?.name)
+  try {
+    // setIsOpenLoading(true);
+    showLoading();
+
+    const fileID = item?.evidentFileID;
+    const fileName = item?.name;
+    const requestParameter = {
+      fileID: fileID,
+      fileName: fileName,
+    };
+    const response = await FetchDownloadFile(requestParameter);
+    console.log(response.res.data)
+    const blob = new Blob([response.res.data], {
+      
+      type: response.res.headers["content-type"],
+    });
+    // Create a download link
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+  }
+  // setIsOpenLoading(false);
+  hideLoading();
+};
 
 
   const handleClickPreviewFile = async (item) => {

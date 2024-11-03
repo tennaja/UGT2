@@ -142,7 +142,6 @@ const UploadFile = (props) => {
       }
     
       const zip = new JSZip();
-      const fileMetadata = [];
     
       // Convert file to Base64 string
       const readFileAsBase64 = (file) => {
@@ -154,42 +153,18 @@ const UploadFile = (props) => {
         });
       };
     
-      for (const file of files) {
-        if (!(file instanceof File)) {
-          console.error('Provided item is not a File object:', file);
-          continue;
-        }
+      try {
+        for (const file of files) {
+          if (!(file instanceof File)) {
+            console.error('Provided item is not a File object:', file);
+            continue;
+          }
     
-        try {
           const fileContentBase64 = await readFileAsBase64(file); // Read file as Base64
           zip.file(file.name, fileContentBase64, { base64: true }); // Add the file to the zip with base64 flag
-    
-          fileMetadata.push({
-            name: file.name,
-            size: file.size,
-            type: file.type,
-          });
-        } catch (error) {
-          console.error(`Error processing file ${file.name}: ${error.message}`);
         }
-      }
     
-      if (Object.keys(zip.files).length === 0) {
-        console.error('No valid files were added to the ZIP. Aborting download.');
-        return;
-      }
-    
-      try {
         const content = await zip.generateAsync({ type: 'blob' });
-    
-        // Get the size of the ZIP file in bytes
-        const zipSize = content.size; // Size of the generated ZIP file in bytes
-        console.log(`Size of ZIP file: ${zipSize} bytes`);
-    
-        // Convert size to kilobytes or megabytes for easier reading
-        const sizeInKB = (zipSize / 1024).toFixed(2); // KB
-        const sizeInMB = (zipSize / (1024 * 1024)).toFixed(2); // MB
-        console.log(`Size of ZIP file: ${sizeInKB} KB (${sizeInMB} MB)`);
     
         // Trigger the download
         const link = document.createElement('a');
@@ -203,6 +178,7 @@ const UploadFile = (props) => {
         console.error('Error generating ZIP:', error.message);
       }
     }
+    
     
     
 
@@ -481,6 +457,7 @@ const UploadFile = (props) => {
     }
 
     onChngeInput && onChngeInput(props?.meta?.id, result);
+    console.log(result)
     return { url: "https://httpbin.org/post" };
   };
   const handleChangeStatus = ({ meta, file, remove }, status, allFiles) => {

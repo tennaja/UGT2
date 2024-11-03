@@ -797,7 +797,7 @@ let filteredSearchResults = unAssignedList.filter(item => {
 
     // ตรวจสอบสถานะ โดยเฉพาะรายการ Withdrawn
     const matchesStatusFilter = currentUnAssignedFilterObj.status?.length
-        ? currentUnAssignedFilterObj.status.includes(item.statusName) || item.statusName === "Withdrawn"
+        ? currentUnAssignedFilterObj.status.includes(item.statusName) || item.statusName === "Withdrawn" || item.statusName === "Submitted" || item.statusName === "Approved" || item.statusName === "Draft" || item.statusName === "Verifying" || item.statusName === "Verified" || item.statusName === "Return" || item.statusName === "Rejected" || item.statusName === "In Progress"
         : item.statusName !== "Withdrawn"; // ถ้าไม่มีสถานะที่เลือก ให้ตัดรายการ Withdrawn ออก
 
     // คืนค่าผลลัพธ์โดยใช้ตัวแปรที่สร้างขึ้น
