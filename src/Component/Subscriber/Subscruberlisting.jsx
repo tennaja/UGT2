@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import Calendar from "../assets/calendars.svg";
 import User from "../assets/3 User.svg";
 import Clock from "../assets/Clock.svg";
@@ -403,6 +403,7 @@ const Subscriberlisting = (props) => {
       id: "subcriberName",
       label: "Subscriber Name",
       align: "left",
+      maxWidth: "200px",
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
@@ -469,7 +470,7 @@ const Subscriberlisting = (props) => {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
       align: "right",
-      maxWidth: "100px",
+      //maxWidth: "100px",
       render: (row) => (
           <span>
           <Highlighter
@@ -559,7 +560,7 @@ const Subscriberlisting = (props) => {
               : row?.subscriberStatusId == 2
               ? "Active"
               : row?.subscriberStatusId == 3
-              ? "Withdrawn"
+              ? "Deleted"
               : "Expired"
           }
           searchQuery={searchQueryAssigned}
@@ -590,6 +591,7 @@ const Subscriberlisting = (props) => {
       id: "subcriberName",
       label: "Subscriber Name",
       align: "left",
+      maxWidth: "200px",
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
@@ -598,7 +600,7 @@ const Subscriberlisting = (props) => {
               // whiteSpace: "nowrap",
               // overflow: "hidden",
               // textOverflow: "ellipsis",
-              maxWidth: "350px",
+              maxWidth: "200px",
             }}
           >
             <Highlighter
@@ -739,7 +741,7 @@ const Subscriberlisting = (props) => {
               : row?.subscriberStatusId == 2
               ? "Active"
               : row?.subscriberStatusId == 3
-              ? "Withdrawn"
+              ? "Deleted"
               : "Expired"
           }
           searchQuery={searchQueryUnAssigned}
@@ -780,6 +782,7 @@ const Subscriberlisting = (props) => {
       id: "subcriberName",
       label: "Subscriber Name",
       align: "left",
+      maxWidth: "200px",
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
@@ -788,7 +791,7 @@ const Subscriberlisting = (props) => {
               //  whiteSpace: "nowrap",
               // overflow: "hidden",
               // textOverflow: "ellipsis",
-              maxWidth: "300px",
+              maxWidth: "200px",
             }}
           >
             <Highlighter
@@ -846,7 +849,7 @@ const Subscriberlisting = (props) => {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
       align: "right",
-      maxWidth: "100px",
+      //maxWidth: "100px",
       render: (row) => (
         <span>
           <Highlighter
@@ -936,7 +939,7 @@ const Subscriberlisting = (props) => {
               : row?.subscriberStatusId == 2
               ? "Active"
               : row?.subscriberStatusId == 3
-              ? "Withdrawn"
+              ? "Deleted"
               : "Expired"
           }
           searchQuery={searchQueryAssigned}
@@ -958,6 +961,7 @@ const Subscriberlisting = (props) => {
       id: "subcriberName",
       label: "Subscriber Name",
       align: "left",
+      maxWidth: "200px",
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
@@ -966,7 +970,7 @@ const Subscriberlisting = (props) => {
               // whiteSpace: "nowrap",
               // overflow: "hidden",
               // textOverflow: "ellipsis",
-              maxWidth: "350px",
+              maxWidth: "200px",
             }}
           >
             <Highlighter
@@ -1107,7 +1111,7 @@ const Subscriberlisting = (props) => {
               : row?.subscriberStatusId == 2
               ? "Active"
               : row?.subscriberStatusId == 3
-              ? "Withdrawn"
+              ? "Deleted"
               : "Expired"
           }
           searchQuery={searchQueryUnAssigned}
@@ -1755,7 +1759,7 @@ const Subscriberlisting = (props) => {
                         </label>
                       </div>
                     </div>
-                    <div className="font-bold mt-2">Total Active Subscriber</div>
+                    <div className="font-bold mt-2">Total Active Subscribers</div>
                     <div className="text-gray-500 text-xs">
                       Keep track of all your subscribers at a glance.
                     </div>
@@ -2022,7 +2026,7 @@ const Subscriberlisting = (props) => {
                 <div className="grid gap-4 gap-y-2 text-sm  lg:grid-cols-6">
                   <div className="lg:col-span-2 2xl:col-span-3 mb-4">
                     <span className="font-bold text-lg">
-                    Active Subscriber
+                    Active Subscribers
                       <br />
                       <label
                         className={`font-sm font-normal text-sm text-BREAD_CRUMB`}
@@ -2143,7 +2147,7 @@ const Subscriberlisting = (props) => {
                 <div className="grid gap-4 gap-y-2 text-sm  lg:grid-cols-6">
                   <div className="lg:col-span-2 2xl:col-span-3 mb-4">
                     <span className="font-bold text-lg">
-                    Inactive Subscriber
+                    Inactive Subscribers
                       <br />
                       <label
                         className={`font-sm font-normal text-sm text-BREAD_CRUMB`}

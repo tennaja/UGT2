@@ -479,7 +479,7 @@ function CheckActionManageButton(){
         return []
       }
     }
-    else if(userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN){
+    else if(userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN || userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER){
       if(details?.subscriberDetail?.subscriberStatusId){
         showAction = [{
           icon: <FaRegEdit />,
@@ -1086,7 +1086,7 @@ const action = CheckActionManageButton()
                                 {/*Retail Start Date */}
                                 <div>
                                   <label className="text-[#6B7280] text-xs ">
-                                    Retail ESA Contract Start Date
+                                    Retail ESA Start Date
                                   </label>
                                   <div className="break-words	font-bold">
                                     {renderData(
@@ -1107,7 +1107,7 @@ const action = CheckActionManageButton()
                                 {/*Retail Start Date */}
                                 <div>
                                       <label className="text-[#6B7280] text-xs ">
-                                        Retail ESA Contract Start Date
+                                        Retail ESA Start Date
                                       </label>
                                       <div className="break-words	font-bold">
                                         {renderData(
@@ -1125,7 +1125,7 @@ const action = CheckActionManageButton()
                                 {/*Retail End Date */}
                                   <div>
                                     <label className="text-[#6B7280] text-xs">
-                                      Retail ESA Contract End Date
+                                      Retail ESA End Date
                                     </label>
 
                                     <div className="break-words	font-bold">
@@ -1150,7 +1150,7 @@ const action = CheckActionManageButton()
                                 {/*Retail End Date */}
                                 <div>
                                     <label className="text-[#6B7280] text-xs">
-                                      Retail ESA Contract End Date
+                                      Retail ESA End Date
                                     </label>
 
                                     <div className="break-words	font-bold">
@@ -1169,7 +1169,7 @@ const action = CheckActionManageButton()
                                 {/*Retail Duration */}
                                 <div>
                                   <label className="text-[#6B7280] text-xs">
-                                    Retail ESA Contract Duration
+                                    Retail ESA Duration
                                   </label>
 
                                   <div className="break-words	font-bold">
@@ -1185,7 +1185,7 @@ const action = CheckActionManageButton()
                                 {/*Retail Duration */}
                                 <div>
                                   <label className="text-[#6B7280] text-xs">
-                                    Retail ESA Contract Duration
+                                    Retail ESA Duration
                                   </label>
 
                                   <div className="break-words	font-bold">
@@ -1404,11 +1404,11 @@ const action = CheckActionManageButton()
                                     <TableHead>
                                       <TableRow>
                                         <TableCell>Name</TableCell>
-                                        <TableCell align="center">
+                                        <TableCell align="right" style={{ width: '280px' }}>
                                           Status
                                         </TableCell>
                                         <TableCell />
-                                        <TableCell/>
+                                        
                                       </TableRow>
                                     </TableHead>
                                   </Table>

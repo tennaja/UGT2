@@ -4,13 +4,12 @@ import down from "../assets/down.svg";
 import { FaTrashAlt } from "react-icons/fa";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
-const CollapsInfo = ({
+const CollapsEdit = ({
   title,
   total,
   children,
   onClickEditBtn,
   onClickDeleteBtn,
-  isShowEdit
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [istoggleIcon, setIstoggleIcon] = useState(right);
@@ -21,30 +20,35 @@ const CollapsInfo = ({
   return (
     <div className="">
       <div
-        className="grid grid-cols-[150px_minmax(200px,_1fr)_50px] bg-MAIN_SCREEN_BG items-center  cursor-pointer"
+        className="grid grid-cols-3 bg-MAIN_SCREEN_BG items-center  px-4 py-2 cursor-pointer"
         onClick={toggleCollapse}
       >
-        <div className="flex p-3">
-          <div>
-            <h2 className="text-sm mb-0 font-semibold text-left">{title}</h2>
+        
+        <div className="grid grid-cols-[60px_60px] px-4 ">
+        <div className="mb-0 col-start-1">
+            {isCollapsed ? <IoChevronDown /> : <IoChevronUp />}
           </div>
-          
+          <div className=" col-start-2">
+            <h2 className="text-sm mb-0 pl-4 font-semibold">{title}</h2>
+          </div>
+          {/*<div className="flex items-center">
+            <h2 className="text-lg mb-0 mr-5">
+              <img
+                src={istoggleIcon}
+                alt="React Logo"
+                width={20}
+                height={20}
+                className={"text-white mr-2"}
+              />
+            </h2>
+          </div>*/}
         </div>
-        <div className="col-start-2">
-            <div className="ml-24 items-center">
-            <h2 className="ml-20 text-sm mb-0 pl-4 text-center font-semibold ">
+        <div>
+          <h2 className="text-sm mb-0 pl-4 text-center font-semibold ">
             {total}
           </h2>
-            </div>
         </div>
-        <div className="grid grid-cols-3">
-          
-          <div className="col-start-1 mb-0 mr-5">
-          {isCollapsed ? <IoChevronDown /> : <IoChevronUp />}
-                </div>
-        </div>
-        
-        {isShowEdit&&<div className="flex justify-end items-center gap-3">
+        <div className="flex justify-end items-center gap-3">
           <button
             onClick={onClickEditBtn}
             type="button"
@@ -58,7 +62,8 @@ const CollapsInfo = ({
             size={20}
             onClick={onClickDeleteBtn}
           />
-        </div>}
+          
+        </div>
         {/* <span className="text-sm">{isCollapsed ? "Expand" : "Collapse"}</span> */}
       </div>
       {!isCollapsed && <div className="p-4 border-t">{children}</div>}
@@ -66,4 +71,4 @@ const CollapsInfo = ({
   );
 };
 
-export default CollapsInfo;
+export default CollapsEdit;

@@ -304,6 +304,7 @@ const UpdateSubscriber = () => {
   useEffect(() => {
     if (details?.subscriberDetail?.subscriberTypeId == 1) {
       // set defualt province
+      
       const tempProvince = initialvalueForSelectField(
         provinceList,
         "provinceCode",
@@ -329,7 +330,9 @@ const UpdateSubscriber = () => {
 
   useEffect(() => {
     if (details?.subscriberDetail?.subscriberTypeId == 1) {
+      console.log(getValues("stateCode"))
       // set defualt district
+      if(getValues("districtCode") === null){
       const tempDistrict = initialvalueForSelectField(
         districtList,
         "districtCode",
@@ -337,6 +340,7 @@ const UpdateSubscriber = () => {
       );
       setValue("districtCode", tempDistrict || "");
       onChangeDistrict(tempDistrict);
+      }
     }
   }, [districtList]);
 
@@ -356,6 +360,7 @@ const UpdateSubscriber = () => {
   useEffect(() => {
     if (details?.subscriberDetail?.subscriberTypeId == 1) {
       // set defualt subdistrict
+      if(getValues("subdistrictCode") === null){
       const tempSubdistrict = initialvalueForSelectField(
         subDistrictList,
         "subdistrictCode",
@@ -363,6 +368,7 @@ const UpdateSubscriber = () => {
       );
       setValue("subdistrictCode", tempSubdistrict || "");
       onChangeSubDistrict(tempSubdistrict);
+      }
     }
   }, [subDistrictList]);
 
@@ -382,6 +388,7 @@ const UpdateSubscriber = () => {
   useEffect(() => {
     if (details?.subscriberDetail?.subscriberTypeId == 1) {
       // set defualt postcodeBene
+      if(getValues("postCode") === null){
       const tempPostcode = initialvalueForSelectField(
         postcodeList,
         "postalCode",
@@ -389,8 +396,11 @@ const UpdateSubscriber = () => {
       );
       setValue("postCode", tempPostcode);
       onChangePostCode(tempPostcode);
+      }
     }
   }, [postcodeList]);
+
+
 
   useEffect(() => {
     if (details?.subscriberDetail?.subscriberTypeId == 1) {
@@ -491,6 +501,7 @@ const UpdateSubscriber = () => {
 
 
   const setDefualtDataOnEdit = () => {
+    console.log("Set Default")
     setRemark(details?.subscriberRemark)
     if (details?.subscriberDetail?.subscriberTypeId == 1) {
       // General Information
@@ -4187,18 +4198,21 @@ function downloadAllFileAggregate(outputZipFilename) {
                                   </CollapsSubscriberEdit>
                                 </div>
                               )):
-                              <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                              <div>
+                              <div className={allowcatedEnergyList?.length == 0?"text-center md:col-span-6 p-10 border-2 border-red-500 rounded-[10px]":"text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]"}>
                                 <label className="text-gray-400">There is no data to display.</label>
-                              </div>}
+                              </div>
                               {allowcatedEnergyList?.length == 0 && (
-                                <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                  <div>
-                                    <h6 className="text-red-500 font-semibold">
-                                      This field is required
-                                    </h6>
-                                  </div>
+                                <div className="grid grid-cols-3 text-center mt-2 md:col-span-6">
+                                <div className=" text-left">
+                                  <label className="text-red-500 text-xs">
+                                    This field is required.
+                                  </label>
                                 </div>
+                              </div>
                               )}
+                              </div>}
+                              
                               
                             </div>
                             {allowcatedExcelFileList.length !== 0?
@@ -4288,6 +4302,21 @@ function downloadAllFileAggregate(outputZipFilename) {
                               </div>
 
                               <div className="mt-3 mb-4 md:col-span-6">
+                              {benefitList.length > 0 && (
+                              <>
+                                <div className="grid grid-cols-3 text-center mt-4 md:col-span-6 text-GRAY_BUTTON font-semibold">
+                                  <div>
+                                    <p>Name</p>
+                                  </div>
+                                  <div>
+                                    <p className="m-0 p-0">
+                                      Status
+                                    </p>
+                                  </div>
+                                  <div></div>
+                                </div>
+                              </>
+                            )}
                               {benefitList.length > 0? benefitList.map((item, index) => (
                                 statusFilterBene === "All"?
                                 <div
@@ -5077,18 +5106,20 @@ function downloadAllFileAggregate(outputZipFilename) {
                                   </CollapsSubscriberEdit>
                                 </div>
                               )):
-                              <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
-                              <label className="text-gray-400">There is no data to display.</label>
-                            </div>}
+                              <div>
+                              <div className={allowcatedEnergyList?.length == 0?"text-center md:col-span-6 p-10 border-2 border-red-500 rounded-[10px]":"text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]"}>
+                                <label className="text-gray-400">There is no data to display.</label>
+                              </div>
                               {allowcatedEnergyList?.length == 0 && (
-                                <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                  <div>
-                                    <h6 className="text-red-500 font-semibold">
-                                      This field is required
-                                    </h6>
-                                  </div>
+                                <div className="grid grid-cols-3 text-center mt-2 md:col-span-6">
+                                <div className=" text-left">
+                                  <label className="text-red-500 text-xs">
+                                    This field is required.
+                                  </label>
                                 </div>
+                              </div>
                               )}
+                              </div>}
                               
                             </div>
                             {allowcatedExcelFileList.length !== 0?
@@ -6000,7 +6031,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Contracted Energy (kWh)
+                                    Total Contracted Energy Amount (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -6066,7 +6097,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     </div>
                                     <div>
                                       <p className="text-GRAY_BUTTON">
-                                      Contracted Energy amount (kWh)
+                                      Contracted Energy Amount (kWh)
                                       </p>
                                       <hr />
                                       <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -6709,7 +6740,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Contracted Energy (kWh)
+                                    Total Contracted Energy Amount (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -6775,7 +6806,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     </div>
                                     <div>
                                       <p className="text-GRAY_BUTTON">
-                                      Contracted Energy amount (kWh)
+                                      Contracted Energy Amount (kWh)
                                       </p>
                                       <hr />
                                       <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -7074,8 +7105,8 @@ function downloadAllFileAggregate(outputZipFilename) {
       {/*Modal Create Complete */}
       {isOpen && (
         <ModalCompleteSubscriber
-          title="Edit Complete"
-          context="Edit Complete"
+          title="Edit Complete!"
+          context="Edit Complete!"
           link={WEB_URL.SUBSCRIBER_LIST}
         />
       )}

@@ -62,6 +62,7 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { LiaDownloadSolid } from "react-icons/lia";
 import { BiErrorCircle } from "react-icons/bi";
+import CollapsEdit from "./CollapsEdit";
 
 const AddSubscriber = () => {
   const {
@@ -2993,7 +2994,7 @@ const AddSubscriber = () => {
                                 <p className="m-0">Add Feeder</p>
                               </button>
                             </div>
-                            <div className="mt-3 mb-4 md:col-span-6">
+                            <div className="mb-4 md:col-span-6">
                               {fields.map((item, index) => (
                                 <div
                                   key={item.id}
@@ -3135,7 +3136,7 @@ const AddSubscriber = () => {
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Contracted Energy (kWh)
+                                    Total Contracted Energy Amount (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -3168,7 +3169,8 @@ const AddSubscriber = () => {
                                   key={index}
                                   className="px-4 md:col-span-6 text-sm"
                                 >
-                                  <Collaps
+                                  <CollapsEdit
+                                  isShowEdit={true}
                                     onClickEditBtn={() => {
                                       onClickEditBtn(item, index);
                                     }}
@@ -3299,7 +3301,7 @@ const AddSubscriber = () => {
                                       </div>
                                       <div>
                                         <p className="text-GRAY_BUTTON">
-                                          Contracted Energy amount (kWh)
+                                          Contracted Energy Amount (kWh)
                                         </p>
                                         <hr />
                                         <p
@@ -3621,26 +3623,29 @@ const AddSubscriber = () => {
                                         </p>
                                       </div>
                                     </div>
-                                  </Collaps>
+                                  </CollapsEdit>
                                 </div>
                               ))
                             ) : (
-                              <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                              <div className="md:col-span-6">
+                              <div className={isAllocatedEnergyAmount?"text-center md:col-span-6 p-10 border-2 border-red-500 rounded-[10px]":"text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]"}>
                                 <label className="text-gray-400">
                                   There is no data to display.
                                 </label>
                               </div>
-                            )}
-                            {/*Error */}
-                            {isAllocatedEnergyAmount && (
-                              <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                <div>
-                                  <h6 className="text-red-500 font-semibold">
-                                    * This field is required.
-                                  </h6>
+                              {isAllocatedEnergyAmount && (
+                                <div className="grid grid-cols-3 text-center mt-2 md:col-span-6">
+                                  <div className=" text-left">
+                                    <label className="text-red-500 text-xs">
+                                      This field is required.
+                                    </label>
+                                  </div>
                                 </div>
+                              )}
                               </div>
                             )}
+                            {/*Error */}
+                            
                           </div>
                         </div>
                       </div>
@@ -3710,13 +3715,28 @@ const AddSubscriber = () => {
                             </div>
 
                             <div className="mt-3 mb-4 md:col-span-6">
+                            {benefitList.length > 0 && (
+                              <>
+                                <div className="grid grid-cols-3 text-center mt-4 md:col-span-6 text-GRAY_BUTTON font-semibold">
+                                  <div>
+                                    <p>Name</p>
+                                  </div>
+                                  <div>
+                                    <p className="m-0 p-0">
+                                      Status
+                                    </p>
+                                  </div>
+                                  <div></div>
+                                </div>
+                              </>
+                            )}
                               {benefitList.length > 0 ? (
                                 benefitList.map((item, index) => (
                                   <div
                                     key={index}
                                     className="px-4 md:col-span-6 text-sm"
                                   >
-                                    <Collaps
+                                    <CollapsEdit
                                       onClickEditBtn={() => {
                                         onClickEditBeneBtn(item, index);
                                       }}
@@ -3730,7 +3750,7 @@ const AddSubscriber = () => {
                                         beneficiaryDataEdit={item}
                                         editStatus={true}
                                       />
-                                    </Collaps>
+                                    </CollapsEdit>
                                   </div>
                                 ))
                               ) : (
@@ -4503,7 +4523,7 @@ const AddSubscriber = () => {
                               <>
                                 <div className="flex flex-col ml-2 col-span-6">
                                   <label className="mt-3 text-[#6B7280] text-xs">
-                                    Total Contracted Energy (kWh)
+                                    Total Contracted Energy Amount (kWh)
                                   </label>
                                   <span className="">
                                     <div className="break-words	font-bold">
@@ -4536,7 +4556,7 @@ const AddSubscriber = () => {
                                   key={index}
                                   className="px-4 md:col-span-6 text-sm"
                                 >
-                                  <Collaps
+                                  <CollapsEdit
                                     onClickEditBtn={() => {
                                       onClickEditBtn(item, index);
                                     }}
@@ -4667,7 +4687,7 @@ const AddSubscriber = () => {
                                       </div>
                                       <div>
                                         <p className="text-GRAY_BUTTON">
-                                          Contracted Energy amount (kWh)
+                                          Contracted Energy Amount (kWh)
                                         </p>
                                         <hr />
                                         <p
@@ -4989,23 +5009,25 @@ const AddSubscriber = () => {
                                         </p>
                                       </div>
                                     </div>
-                                  </Collaps>
+                                  </CollapsEdit>
                                 </div>
                               ))
                             ) : (
-                              <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">
+                              <div className="md:col-span-6">
+                              <div className={isAllocatedEnergyAmount?"text-center md:col-span-6 p-10 border-2 border-red-500 rounded-[10px]":"text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]"}>
                                 <label className="text-gray-400">
                                   There is no data to display.
                                 </label>
                               </div>
-                            )}
-                            {isAllocatedEnergyAmount && (
-                              <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                <div>
-                                  <h6 className="text-red-500 font-semibold">
-                                    * This field is required.
-                                  </h6>
+                              {isAllocatedEnergyAmount && (
+                                <div className="grid grid-cols-3 text-center mt-2 md:col-span-6">
+                                  <div className=" text-left">
+                                    <label className="text-red-500 text-xs">
+                                      This field is required.
+                                    </label>
+                                  </div>
                                 </div>
+                              )}
                               </div>
                             )}
                           </div>

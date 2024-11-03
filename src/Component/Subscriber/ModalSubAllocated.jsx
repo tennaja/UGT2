@@ -304,7 +304,7 @@ const ModalSubAllocated = (props) => {
     >
       <div className="pt-4 px-4 pb-2">
         <h6 className="text-PRIMARY_TEXT font-semibold">
-        Contracted energy amount
+        Contracted Energy Amount
         </h6>
 
         <form className="text-sm">
@@ -333,7 +333,7 @@ const ModalSubAllocated = (props) => {
 
           <div className="md:col-span-2 mt-4">
             <strong>
-              Contracted energy amount
+              Contracted Energy Amount
               <span className="text-red-500"> *</span>
             </strong>
           </div>
@@ -418,7 +418,7 @@ const ModalSubAllocated = (props) => {
                 Month
               </div>
               <div className="col-span-3 text-center text-gray-500 text-sm">
-                Contracted energy amount (kWh)
+                Contracted Energy Amount (kWh)
               </div>
             </div>
             <hr className="mx-4 my-1" />

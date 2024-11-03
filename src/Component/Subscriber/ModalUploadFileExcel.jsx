@@ -541,7 +541,7 @@ export default function ModalUploadFileExcel(props) {
             type={"file"}
             multiple={false}
             accept={".xls,.xlsx"}
-            label={"Allocated energy amount"}
+            label={"Contracted Energy Amount"}
             onChngeInput={(id, res) => {
               handleUploadfileExcel(id, res);
             }}

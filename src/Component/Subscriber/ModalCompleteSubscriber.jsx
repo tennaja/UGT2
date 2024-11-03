@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import AlmostDone from "../assets/done.png";
+import AlmostDone from "../assets/Done.png";
 import { Link, useNavigate } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import { getCookie, removeCookie, setCookie } from "../../Utils/FuncUtils";
@@ -23,7 +23,7 @@ const ModalCompleteSubscriber = (props) => {
   return (
     <>
       <>
-        <div className="fixed z-10 inset-0 overflow-y-auto">
+        <div className="fixed z-10 inset-0 overflow-y-auto sm:mt-[25%] md:mt-[13%]">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-10">
             <div
               className="fixed inset-0 transition-opacity"
@@ -33,7 +33,7 @@ const ModalCompleteSubscriber = (props) => {
             </div>
 
             <div
-              className="inline-block rounded align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+              className="inline-block rounded align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full"
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-headline"

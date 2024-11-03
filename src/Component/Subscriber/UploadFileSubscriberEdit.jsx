@@ -457,7 +457,7 @@ const UploadFileSubscriber = (props) => {
           <ModalConfirm
             onClickConfirmBtn={handleClickConfirmModal}
             onCloseModal={handleCloseModal}
-            title={"Confirm delete?"}
+            title={"Confirm Delete?"}
             content={"Are you sure you would like to Delete this File?"}
             buttonTypeColor="danger"
           />

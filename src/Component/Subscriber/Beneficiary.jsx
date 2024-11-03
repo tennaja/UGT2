@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Input from "../Control/Input";
@@ -105,6 +105,10 @@ const Beneficiary = (props) => {
     postCodeBeneficiaryListForDisplay,
     setPostCodeBeneficiaryListForDisplay,
   ] = useState([]);
+  const BeneProvince = useRef(null)
+  const BeneDistrict = useRef(null)
+  const BeneSubDistrict = useRef(null)
+  const BenePostCode = useRef(null)
 
   const [isCheckBoxConfirmAdd, setIsCheckBoxConfirmAdd] = useState(false);
   const [isCheckBoxConfirmEdit, setIsCheckBoxCOnfirmEdit] = useState(false);
@@ -180,18 +184,22 @@ const Beneficiary = (props) => {
     if (currentBeneficiaryDistrict?.id) {
       setValue("beneficiaryDistrictCode", null);
       setCurrentBeneficiaryDistrict(null);
+      BeneDistrict.current = null
 
       setValue("beneficiarySubdistrictCode", null);
       setCurrentBeneficiarySubDistrict(null);
+      BeneSubDistrict.current = null
 
       setValue("beneficiaryPostcode", null);
       setCurrentBeneficiaryPostCode(null);
+      BenePostCode.current = null
       setPostCodeBeneficiaryListForDisplay([]);
 
       dispatch(FetchSubDistrictBeneList());
       //console.log("Change Province with Dis");
     }
     setCurrentBeneficiaryProvicne(value);
+    BeneProvince.current = value
     dispatch(FetchDistrictBeneList(value?.provinceCode));
     //console.log(currentBeneficiaryDistrict);
   };
@@ -202,9 +210,11 @@ const Beneficiary = (props) => {
     if (currentBeneficiarySubDistrict?.id) {
       setValue("beneficiarySubdistrictCode", null);
       setCurrentBeneficiarySubDistrict(null);
+      BeneSubDistrict.current = null
 
       setValue("beneficiaryPostcode", null);
       setCurrentBeneficiaryPostCode(null);
+      BenePostCode.current = null
       setPostCodeBeneficiaryListForDisplay([]);
 
       //console.log("In set Null");
@@ -214,6 +224,7 @@ const Beneficiary = (props) => {
     //console.log("Check Value");
     //console.log(value);
     setCurrentBeneficiaryDistrict(value);
+    BeneDistrict.current = value
     //console.log("After");
     //console.log(currentBeneficiaryDistrict);
     dispatch(
@@ -227,8 +238,8 @@ const Beneficiary = (props) => {
   const onChangeBeneficiarySubDistrict = (value) => {
     const postCodeFilter = postcodeBeneficiaryList.filter(
       (item) =>
-        item.provinceCode == currentBeneficiaryProvince?.provinceCode &&
-        item.districtCode == currentBeneficiaryDistrict?.districtCode &&
+        item.provinceCode == BeneProvince.current?.provinceCode &&
+        item.districtCode == BeneDistrict.current?.districtCode &&
         item.postalCode == value?.postalCode
     );
     //console.log("OnChange Sub Dis");
@@ -248,10 +259,12 @@ const Beneficiary = (props) => {
       setPostCodeBeneficiaryListForDisplay([]);
     }
     setCurrentBeneficiarySubDistrict(value);
+    BeneSubDistrict.current = value
   };
 
   const onChangeBeneficiaryPostCode = (value) => {
     setCurrentBeneficiaryPostCode(value);
+    BenePostCode.current = value
   };
   // --------- Status Process ---------- //
   const onChangeBeneficiaryStatus = (value) => {
@@ -287,15 +300,18 @@ const Beneficiary = (props) => {
     );
 
     setCurrentBeneficiaryProvicne(tempProvince);
+    BeneProvince.current = tempProvince
     setCurrentBeneficiarySubDistrict(tempSubDistrict);
+    BeneSubDistrict.current = tempSubDistrict
     setCurrentBeneficiaryDistrict(tempDistrict);
+    BeneDistrict.current = tempDistrict
 
     onChangeBeneficiarySubDistrict(tempSubDistrict);
 
     const postCodeFilter = postcodeBeneficiaryList.filter(
       (item) =>
-        item.provinceCode == currentBeneficiaryProvince?.provinceCode &&
-        item.districtCode == currentBeneficiaryDistrict?.districtCode &&
+        item.provinceCode == BeneProvince.current?.provinceCode &&
+        item.districtCode == BeneDistrict.current?.districtCode &&
         item.postalCode == beneficiaryDataEdit.beneficiaryPostcode
     );
     /*console.log("Post filter")

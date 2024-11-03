@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import right from "../assets/right.svg";
 import down from "../assets/down.svg";
 import { FaTrashAlt } from "react-icons/fa";
+import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 const CollapsSubscriberEdit = ({
   title,
@@ -29,14 +30,17 @@ const CollapsSubscriberEdit = ({
   return (
     <div className="">
       <div
-        className="grid grid-cols-3 bg-MAIN_SCREEN_BG flex items-center  px-5 py-2 cursor-pointer"
+        className="grid grid-cols-3 bg-MAIN_SCREEN_BG items-center  px-4 py-2 cursor-pointer"
         onClick={toggleCollapse}
       >
-        <div className="flex justify-between px-4">
-          <div>
+        <div className="grid grid-cols-[60px_60px] px-4">
+        <div className="mb-0 col-start-1">
+            {isCollapsed ? <IoChevronDown /> : <IoChevronUp />}
+          </div>
+          <div className=" col-start-2">
             <h2 className="text-sm mb-0 pl-4 font-semibold">{title}</h2>
           </div>
-          <div className="flex items-center">
+          {/*<div className="flex items-center">
             <h2 className="text-lg mb-0 mr-5">
               <img
                 src={istoggleIcon}
@@ -46,7 +50,7 @@ const CollapsSubscriberEdit = ({
                 className={"text-white mr-2"}
               />
             </h2>
-          </div>
+          </div>*/}
         </div>
         <div>
           <h2 className="text-sm mb-0 pl-4 text-center font-semibold ">
