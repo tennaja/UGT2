@@ -390,8 +390,8 @@ if (checkStartDate) {
   
       // Check if parsedPortfolioEndDate is less than parsedExpiryDate or parsedRetailEndDate
       if (
-          (parsedExpiryDate && parsedPortfolioEndDate < parsedExpiryDate) ||
-          (parsedRetailEndDate && parsedPortfolioEndDate < parsedRetailEndDate)
+          (parsedExpiryDate && parsedPortfolioEndDate <= parsedExpiryDate) ||
+          (parsedRetailEndDate && parsedPortfolioEndDate <= parsedRetailEndDate)
       ) {
           tempEndDate = previousDateEnd;
           console.log("Using Previous End Date:", previousDateEnd);
@@ -501,10 +501,7 @@ if (checkStartDate) {
                     formatDate={"d/M/yyyy"}
                     error={errors["endDate" + "_" + row.id]}
                     onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(
-                        newValue,
-                        row.id
-                      );
+                      return requestedEffectiveDateDisableDateCal(newValue, row.id, false); // false for EndDate
                     }}
                     onChangeInput={(newValue) => {
                       const newDate = format(newValue, "dd/MM/yyyy");
@@ -542,10 +539,7 @@ if (checkStartDate) {
                     formatDate={"d/M/yyyy"}
                     error={errors["startDate" + "_" + row.id]}
                     onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(
-                        newValue,
-                        row.id
-                      );
+                      return requestedEffectiveDateDisableDateCal(newValue, row.id, true); // true for StartDate
                     }}
                     onChangeInput={(newValue) => {
                       const newDate = format(newValue, "dd/MM/yyyy");
@@ -577,10 +571,7 @@ if (checkStartDate) {
                     formatDate={"d/M/yyyy"}
                     error={errors["endDate" + "_" + row.id]}
                     onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(
-                        newValue,
-                        row.id
-                      );
+                      return requestedEffectiveDateDisableDateCal(newValue, row.id, false); // false for EndDate
                     }}
                     onChangeInput={(newValue) => {
                       const newDate = format(newValue, "dd/MM/yyyy");

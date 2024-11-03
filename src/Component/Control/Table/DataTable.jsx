@@ -599,9 +599,10 @@ if (checkStartDate) {
       >
         <Table>
           <TableHead>
-            <TableRow >
+            <TableRow style={{ textAlign: "center" }}>
               {checkbox && (
                 <TableCell
+                  align="center" // Ensure this is set to center for checkbox column
                   padding="checkbox"
                   style={{
                     backgroundColor: "#F3F6F9",

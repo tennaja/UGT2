@@ -183,21 +183,24 @@ const ListDevice = (props) => {
     {
       id: "utilityContractAbbr",
       label: "Utility Contract",
+      align: "center",
       render: (row) => (
+        <div className="text-center">
         <Highlighter
           highlightTag={Highlight}
           searchWords={[searchQueryAssigned]}
           autoEscape={true}
           textToHighlight={row.utilityContractAbbr}
         />
+        </div>
       ),
     },
     {
       id: "capacity",
       label: "Capacity (MW)",
-      align: "right",
+      align: "center",
       render: (row) => (
-        <span className="text-right">
+        <span className="text-center">
           <Highlighter
             highlightTag={Highlight}
             searchWords={[searchQueryAssigned]}
@@ -210,29 +213,37 @@ const ListDevice = (props) => {
     {
       id: "portfolio",
       label: "Portfolio",
+      align: "center",
       render: (row) => (
+        <div className="text-center">
         <Highlighter
           highlightTag={Highlight}
           searchWords={[searchQueryAssigned]}
           autoEscape={true}
           textToHighlight={row.portfolio}
         />
+        </div>
       ),
     },
     {
       id: "statusName",
       label: "Status",
+      align: "center",
       render: (row) => (
+        <div className="text-center">
         <StatusLabel
           status={row.statusName}
           searchQuery={searchQueryAssigned}
         />
+        </div>
       ),
     },
     {
       id: "manage",
       label: "",
+      align: "center",
       render: (row) => (
+        <div className="text-center">
         <Link
           type="button"
           state={{ code: row.id }}
@@ -245,6 +256,7 @@ const ListDevice = (props) => {
           </label>
           {/* <MdOutlineRemoveRedEye className="text-white" /> */}
         </Link>
+        </div>
       ),
     },
     // Add more columns as needed
