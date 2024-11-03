@@ -109,7 +109,9 @@ const RenewDevice = () => {
   const [showModal, setShowModalConfirm] = React.useState(false);
   const [currentProvince, setCurrentProvicne] = useState(null);
   const [currentDistrict, setCurrentDistrict] = useState(null);
+  const [currentDistrictcheck, setCurrentDistrictcheck] = useState(false);
   const [currentSubDistrict, setCurrentSubDistrict] = useState(null);
+  const [currentSubDistrictcheck, setCurrentSubDistrictcheck] = useState(null);
   const [currentPostCode, setCurrentPostCode] = useState(null);
   const [currentOnsite, setCurrentOnsite] = useState({ id: null, Name: '' });
   const [currentPublicfunding, setPublicfunding] = useState({ id: null, Name: '' });
@@ -400,7 +402,7 @@ const RenewDevice = () => {
     setDeviceTechnoList(newDeviceTechnologyList);
     //---------------------------------//
   }, [deviceobj, dropDrowList]);
-
+  const [selectedProvince, setSelectedProvince] = useState(null);
   //------------------- USEEFECT FOR SET INITIAL VALUE PROVINCE DISTRICT SUBDISTRICT POSTCODE ----------------//
   useEffect(() => {
     const filteredProvince = provinceList.filter(
@@ -425,69 +427,81 @@ const RenewDevice = () => {
   }, [provinceList]);
 
   useEffect(() => {
+    
+    console.log(currentDistrictcheck)
     //set Current DistrictList & initial value
     const filteredDistrict = districtList.filter(
-      (item) => item.districtCode == deviceobj?.districtCode
+        (item) => item.districtCode == deviceobj?.districtCode
+        
     );
+    // ตรวจสอบและตั้งค่า currentDistrict
     if (filteredDistrict.length > 0) {
-      setCurrentDistrict(filteredDistrict[0]);
-    }
-    setValue(
+      setCurrentDistrict(currentDistrictcheck ? null : filteredDistrict[0]);
+  }
+
+  setValue(
       "districtCode",
       initialvalueForSelectField(
-        districtList,
-        "districtCode",
-        deviceobj?.districtCode
+          districtList,
+          "districtCode",
+          currentDistrictcheck ? null : deviceobj?.districtCode // itemID ที่ต้องการ
       )
-    ); //initial value for district
-  }, [districtList]);
+  ); //initial value for district
 
-  useEffect(() => {
-    //set Current subdistrictCode
-    const filteredSubDistrictList = subDistrictList.filter(
-      (item) => item.subdistrictCode == deviceobj?.subdistrictCode
-    );
-    if (filteredSubDistrictList.length > 0) {
-      setCurrentSubDistrict(filteredSubDistrictList[0]);
-    }
+    
 
-    setValue(
+    
+
+}, [districtList, selectedProvince]); // เพิ่ม selectedProvince เป็น dependency
+
+useEffect(() => {
+  //set Current subdistrictCode
+  const filteredSubDistrictList = subDistrictList.filter(
+    (item) => item.subdistrictCode == deviceobj?.subdistrictCode
+  );
+  if (filteredSubDistrictList.length > 0) {
+    setCurrentSubDistrict(currentSubDistrictcheck ? null :filteredSubDistrictList[0]);
+  }
+
+  setValue(
+    "subdistrictCode",
+    initialvalueForSelectField(
+      subDistrictList,
       "subdistrictCode",
-      initialvalueForSelectField(
-        subDistrictList,
-        "subdistrictCode",
-        deviceobj?.subdistrictCode
-      )
-    ); //initial value for subdistrictCode
-  }, [subDistrictList]);
+      currentSubDistrictcheck ? null : deviceobj?.subdistrictCode
+    )
+  ); //initial value for subdistrictCode
+}, [subDistrictList]);
 
   
 
-  useEffect(() => {
-    //set initial postcode list
-    const postCodeFilter = postcodeList.filter(
-      (item) =>
-        item.provinceCode == deviceobj?.proviceCode &&
-        item.districtCode == deviceobj?.districtCode &&
-        item.postalCode == deviceobj?.postcode
-    );
-    if (postCodeFilter.length > 0) {
-      const newPostCodeListForDisplay = _.uniqBy(postCodeFilter, "postalCode");
-      setPostCodeListForDisplay(newPostCodeListForDisplay);
-    } else {
-      setPostCodeListForDisplay([]);
-    }
-  }, [postcodeList, deviceobj]);
+useEffect(() => {
+  //set initial postcode list
+  const postCodeFilter = postcodeList.filter(
+    (item) =>
+      item.provinceCode == deviceobj?.proviceCode &&
+      item.districtCode == deviceobj?.districtCode &&
+      item.postalCode == deviceobj?.postcode
+  );
+  if (postCodeFilter.length > 0) {
+    const newPostCodeListForDisplay = _.uniqBy(postCodeFilter, "postalCode");
+    setPostCodeListForDisplay(newPostCodeListForDisplay);
+  } else {
+    setPostCodeListForDisplay([]);
+  }
+}, [postcodeList, deviceobj]);
 
-  useEffect(() => {
-    //set initial postcode value
-    const postCodeFilter = postcodeList.filter(
-      (item) =>
-        item.provinceCode == deviceobj?.proviceCode &&
-        item.districtCode == deviceobj?.districtCode &&
-        item.postalCode == deviceobj?.postcode
-    );
-    if (postCodeListForDisplay.length > 0) {
+useEffect(() => {
+  //set initial postcode value
+  const postCodeFilter = postcodeList.filter(
+    (item) =>
+      item.provinceCode == deviceobj?.proviceCode &&
+      item.districtCode == deviceobj?.districtCode &&
+      item.postalCode == deviceobj?.postcode
+  );
+
+  if (postCodeListForDisplay.length > 0) {
+    if (currentSubDistrict?.subdistrictCode == deviceobj?.subdistrictCode) {
       setValue(
         "postCode",
         initialvalueForSelectField(
@@ -497,7 +511,8 @@ const RenewDevice = () => {
         )
       );
     }
-  }, [postCodeListForDisplay]);
+  }
+}, [postCodeListForDisplay]);
 
   const onHandleSubmitForm = (formData) => {
     const data = {
@@ -597,23 +612,56 @@ const RenewDevice = () => {
   };
 
   const onChangeProvince = (value) => {
-    if (currentDistrict?.id) {
-      setValue("districtCode", null); //set value to null
-      setCurrentDistrict(null);
+    console.log("Selected Province:", value);
+    console.log("Device Province Code:", deviceobj?.provinceCode);
 
-      setValue("subdistrictCode", null); //set value to null
-      setCurrentSubDistrict(null);
+    // เช็คว่าจังหวัดที่เลือกตรงกับรหัสจังหวัดในอุปกรณ์หรือไม่
+    if (value?.provinceCode === deviceobj?.provinceCode) {
+        console.log("Same province as device's province code. Resetting district...");
 
-      setValue("postCode", null); //set value to null
-      setCurrentPostCode(null);
-      setPostCodeListForDisplay([]); // clear post code list option
+        // รีเซ็ตค่าต่างๆ ใน dropdown เป็นค่าว่าง
+        resetField("districtCode"); // รีเซ็ต districtCode
+        setCurrentDistrict(null);
+        setCurrentDistrictcheck(true) // รีเซ็ต currentDistrict
+        console.log("District set to empty");
 
-      dispatch(FetchSubDistrictList());
+        resetField("subdistrictCode"); // รีเซ็ต subdistrictCode
+        setCurrentSubDistrict(null); // รีเซ็ต currentSubDistrict
+        setCurrentSubDistrictcheck(true)
+        resetField("postCode"); // รีเซ็ต postCode
+        setCurrentPostCode(null); // รีเซ็ต currentPostCode
+
+        setPostCodeListForDisplay([]); // clear post code list option
+
+      dispatch(FetchDistrictList(null));
+      dispatch(FetchSubDistrictList(null));
+      dispatch(FetchDistrictList(value?.provinceCode));
+    } else {
+        console.log("Different province selected. Fetching new district list...");
+
+        // ดึงรายการอำเภอใหม่ตามจังหวัดที่เลือก
+        dispatch(FetchDistrictList(value?.provinceCode));
+        
+        // รีเซ็ตค่าต่างๆ เป็นค่าว่าง
+        resetField("districtCode");
+        setCurrentDistrict(null);
+        setCurrentDistrictcheck(true)
+        resetField("subdistrictCode");
+        setCurrentSubDistrict(null);
+
+        resetField("postCode");
+        setCurrentPostCode(null);
+        setPostCodeListForDisplay([]); // clear post code list option
+
+      dispatch(FetchDistrictList(null));
+      dispatch(FetchSubDistrictList(null));
+      dispatch(FetchDistrictList(value?.provinceCode));
     }
 
+    // อัพเดทจังหวัดปัจจุบัน
+    setSelectedProvince(value?.provinceCode); // ตั้งค่า selectedProvince
     setCurrentProvicne(value);
-    dispatch(FetchDistrictList(value?.provinceCode));
-  };
+};
 
   const onChangeDistrict = (value) => {
     if (currentSubDistrict?.id) {

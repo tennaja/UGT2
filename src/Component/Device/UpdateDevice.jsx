@@ -112,7 +112,9 @@ const UpdateDevice = () => {
   const [showModal, setShowModalConfirm] = React.useState(false);
   const [currentProvince, setCurrentProvicne] = useState(null);
   const [currentDistrict, setCurrentDistrict] = useState(null);
+  const [currentDistrictcheck, setCurrentDistrictcheck] = useState(false);
   const [currentSubDistrict, setCurrentSubDistrict] = useState(null);
+  const [currentSubDistrictcheck, setCurrentSubDistrictcheck] = useState(null);
   const [currentPostCode, setCurrentPostCode] = useState(null);
   const [currentOnsite, setCurrentOnsite] = useState({ id: null, Name: '' });
   const [currentPublicfunding, setPublicfunding] = useState({ id: null, Name: '' });
@@ -135,7 +137,7 @@ const UpdateDevice = () => {
   const [deviceTechnoList, setDeviceTechnoList] = React.useState([]);
   
   const deviceobj = useSelector((state) => state.device.deviceobj);
-  
+  console.log(deviceobj)
   const countryList = useSelector((state) => state.dropdrow.countryList);
   const provinceList = useSelector((state) => state.dropdrow.provinceList);
   const districtList = useSelector((state) => state.dropdrow.districtList);
@@ -154,8 +156,8 @@ const UpdateDevice = () => {
   const modalFailMessage = useSelector(
     (state) => state.device.modalFailMessage
   );
-  console.log(deviceobj)
-  console.log(deviceobj?.imagePath?.slice(24))
+  // console.log(deviceobj)
+  // console.log(deviceobj?.imagePath?.slice(24))
   useEffect(() => {
     // Check if deviceobj.onSiteConsumer exists
     if (deviceobj?.onSiteConsumer) {
@@ -273,6 +275,8 @@ const UpdateDevice = () => {
       return null;
     }
   };
+  const [previousProvince, setPreviousProvince] = useState(null); // State to track the previous province
+
   useEffect(() => {
     // setIsOpenLoading(true);
     showLoading();
@@ -408,7 +412,7 @@ const UpdateDevice = () => {
     setDeviceTechnoList(newDeviceTechnologyList);
     //---------------------------------//
   }, [deviceobj, dropDrowList]);
-
+  const [selectedProvince, setSelectedProvince] = useState(null);
   //------------------- USEEFECT FOR SET INITIAL VALUE PROVINCE DISTRICT SUBDISTRICT POSTCODE ----------------//
   useEffect(() => {
     const filteredProvince = provinceList.filter(
@@ -433,22 +437,32 @@ const UpdateDevice = () => {
   }, [provinceList]);
 
   useEffect(() => {
+    
+    console.log(currentDistrictcheck)
     //set Current DistrictList & initial value
     const filteredDistrict = districtList.filter(
-      (item) => item.districtCode == deviceobj?.districtCode
+        (item) => item.districtCode == deviceobj?.districtCode
+        
     );
+    // ตรวจสอบและตั้งค่า currentDistrict
     if (filteredDistrict.length > 0) {
-      setCurrentDistrict(filteredDistrict[0]);
-    }
-    setValue(
+      setCurrentDistrict(currentDistrictcheck ? null : filteredDistrict[0]);
+  }
+
+  setValue(
       "districtCode",
       initialvalueForSelectField(
-        districtList,
-        "districtCode",
-        deviceobj?.districtCode
+          districtList,
+          "districtCode",
+          currentDistrictcheck ? null : deviceobj?.districtCode // itemID ที่ต้องการ
       )
-    ); //initial value for district
-  }, [districtList]);
+  ); //initial value for district
+
+    
+
+    
+
+}, [districtList, selectedProvince]); // เพิ่ม selectedProvince เป็น dependency
 
   useEffect(() => {
     //set Current subdistrictCode
@@ -456,7 +470,7 @@ const UpdateDevice = () => {
       (item) => item.subdistrictCode == deviceobj?.subdistrictCode
     );
     if (filteredSubDistrictList.length > 0) {
-      setCurrentSubDistrict(filteredSubDistrictList[0]);
+      setCurrentSubDistrict(currentSubDistrictcheck ? null :filteredSubDistrictList[0]);
     }
 
     setValue(
@@ -464,7 +478,7 @@ const UpdateDevice = () => {
       initialvalueForSelectField(
         subDistrictList,
         "subdistrictCode",
-        deviceobj?.subdistrictCode
+        currentSubDistrictcheck ? null : deviceobj?.subdistrictCode
       )
     ); //initial value for subdistrictCode
   }, [subDistrictList]);
@@ -652,7 +666,6 @@ const UpdateDevice = () => {
 
       setValue("subdistrictCode", null); //set value to null
       setCurrentSubDistrict(null);
-
       setValue("postCode", null); //set value to null
       setCurrentPostCode(null);
       setPostCodeListForDisplay([]); // clear post code list option
@@ -662,41 +675,84 @@ const UpdateDevice = () => {
     }
     dispatch(FetchProvinceList(value?.id));
   };
+  
+  
+
+
 
   const onChangeProvince = (value) => {
-    if (currentDistrict?.id) {
-      setValue("districtCode", null); //set value to null
-      setCurrentDistrict(null);
+    console.log("Selected Province:", value);
+    console.log("Device Province Code:", deviceobj?.provinceCode);
 
-      setValue("subdistrictCode", null); //set value to null
-      setCurrentSubDistrict(null);
+    // เช็คว่าจังหวัดที่เลือกตรงกับรหัสจังหวัดในอุปกรณ์หรือไม่
+    if (value?.provinceCode === deviceobj?.provinceCode) {
+        console.log("Same province as device's province code. Resetting district...");
 
-      setValue("postCode", null); //set value to null
-      setCurrentPostCode(null);
-      setPostCodeListForDisplay([]); // clear post code list option
+        // รีเซ็ตค่าต่างๆ ใน dropdown เป็นค่าว่าง
+        resetField("districtCode"); // รีเซ็ต districtCode
+        setCurrentDistrict(null);
+        setCurrentDistrictcheck(true) // รีเซ็ต currentDistrict
+        console.log("District set to empty");
 
-      dispatch(FetchSubDistrictList());
+        resetField("subdistrictCode"); // รีเซ็ต subdistrictCode
+        setCurrentSubDistrict(null); // รีเซ็ต currentSubDistrict
+        setCurrentSubDistrictcheck(true)
+        resetField("postCode"); // รีเซ็ต postCode
+        setCurrentPostCode(null); // รีเซ็ต currentPostCode
+
+        setPostCodeListForDisplay([]); // clear post code list option
+
+      dispatch(FetchDistrictList(null));
+      dispatch(FetchSubDistrictList(null));
+      dispatch(FetchDistrictList(value?.provinceCode));
+    } else {
+        console.log("Different province selected. Fetching new district list...");
+
+        // ดึงรายการอำเภอใหม่ตามจังหวัดที่เลือก
+        dispatch(FetchDistrictList(value?.provinceCode));
+        
+        // รีเซ็ตค่าต่างๆ เป็นค่าว่าง
+        resetField("districtCode");
+        setCurrentDistrict(null);
+        setCurrentDistrictcheck(true)
+        resetField("subdistrictCode");
+        setCurrentSubDistrict(null);
+
+        resetField("postCode");
+        setCurrentPostCode(null);
+        setPostCodeListForDisplay([]); // clear post code list option
+
+      dispatch(FetchDistrictList(null));
+      dispatch(FetchSubDistrictList(null));
+      dispatch(FetchDistrictList(value?.provinceCode));
     }
 
+    // อัพเดทจังหวัดปัจจุบัน
+    setSelectedProvince(value?.provinceCode); // ตั้งค่า selectedProvince
     setCurrentProvicne(value);
-    dispatch(FetchDistrictList(value?.provinceCode));
-  };
+};
 
-  const onChangeDistrict = (value) => {
-    if (currentSubDistrict?.id) {
-      setValue("subdistrictCode", null); //set value to null
-      setCurrentSubDistrict(null);
 
-      setValue("postCode", null); //set value to null
-      setCurrentPostCode(null);
-      setPostCodeListForDisplay([]); // clear post code list option
-    }
 
-    setCurrentDistrict(value);
-    dispatch(
-      FetchSubDistrictList(value?.districtCode, currentProvince?.provinceCode)
-    );
-  };
+
+
+
+
+const onChangeDistrict = (value) => {
+  if (currentSubDistrict?.id) {
+    setValue("subdistrictCode", null); //set value to null
+    setCurrentSubDistrict(null);
+
+    setValue("postCode", null); //set value to null
+    setCurrentPostCode(null);
+    setPostCodeListForDisplay([]); // clear post code list option
+  }
+
+  setCurrentDistrict(value);
+  dispatch(
+    FetchSubDistrictList(value?.districtCode, currentProvince?.provinceCode)
+  );
+};
 
   const onChangeSubDistrict = (value) => {
     const postCodeFilter = postcodeList.filter(
@@ -870,8 +926,42 @@ const UpdateDevice = () => {
     }
   };
 
-  
+  const handleClickDownloadFile = async (item) => {
 
+    console.log('item',item)
+    // console.log('item evidentFileID',item?.evidentFileID)
+    // console.log('item name',item?.name)
+    try {
+      // setIsOpenLoading(true);
+      showLoading();
+
+      const fileID = item?.evidentFileID;
+      const fileName = item?.name;
+      const requestParameter = {
+        fileID: fileID,
+        fileName: fileName,
+      };
+      const response = await FetchDownloadFile(requestParameter);
+      console.log(response.res.data)
+      const blob = new Blob([response.res.data], {
+        
+        type: response.res.headers["content-type"],
+      });
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+    // setIsOpenLoading(false);
+    hideLoading();
+  };
 
   const handleClickPreviewFile = async (item) => {
     console.log(item)
@@ -1739,7 +1829,7 @@ const UpdateDevice = () => {
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <Controller
+                      <Controller
                           name="districtCode"
                           control={control}
                           defaultValue={null}

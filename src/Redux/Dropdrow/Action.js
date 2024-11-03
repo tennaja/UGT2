@@ -184,6 +184,7 @@ export const FetchDistrictList = (provinceCode) => {
         );
         const datas = districtList
           datas.sort((a,b)=>a.districtNameEn - b.districtNameEn)
+          console.log(datas)
         dispatch(setDistrictList(datas));
       })
       .catch((err) => {
