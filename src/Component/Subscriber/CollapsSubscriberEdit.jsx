@@ -33,12 +33,12 @@ const CollapsSubscriberEdit = ({
         className="grid grid-cols-3 bg-MAIN_SCREEN_BG items-center  px-4 py-2 cursor-pointer"
         onClick={toggleCollapse}
       >
-        <div className="grid grid-cols-[60px_60px] px-4">
+        <div className="grid grid-cols-[60px_100px] px-4">
         <div className="mb-0 col-start-1">
             {isCollapsed ? <IoChevronDown /> : <IoChevronUp />}
           </div>
           <div className=" col-start-2">
-            <h2 className="text-sm mb-0 pl-4 font-semibold">{title}</h2>
+            <h2 className="text-sm mb-0 font-semibold">{title}</h2>
           </div>
           {/*<div className="flex items-center">
             <h2 className="text-lg mb-0 mr-5">

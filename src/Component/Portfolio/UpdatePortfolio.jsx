@@ -235,10 +235,26 @@ const UpdatePortfolio = () => {
             const endDevice = dayjs(date).startOf("day");
             return endDevice >= startDevice;
           })
-          .map((item) => ({
-            ...item,
-            endDate: dayjs(date).format("DD/MM/YYYY"),
-          }));
+          .map((item) => {
+            console.log("Date End",item)
+            const Enddevice = dayjs(item?.expiryDate, [
+              "DD/MM/YYYY",
+              "YYYY-MM-DD",
+            ]);
+
+            let endDateValue;
+            console.log("endSub", Enddevice);
+            console.log("date", date);
+            if (date < Enddevice) {
+              endDateValue = dayjs(date);
+            } else {
+              endDateValue = dayjs(Enddevice);
+            }
+            return {
+              ...item,
+              endDate: endDateValue.format("DD/MM/YYYY"),
+            };
+          });
         setDeviceListSelected(newDateDeviceList);
 
         // subscriber

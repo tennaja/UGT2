@@ -24,7 +24,7 @@ const CollapsEdit = ({
         onClick={toggleCollapse}
       >
         
-        <div className="grid grid-cols-[60px_60px] px-4 ">
+        <div className="grid grid-cols-[60px_100px] px-4 ">
         <div className="mb-0 col-start-1">
             {isCollapsed ? <IoChevronDown /> : <IoChevronUp />}
           </div>

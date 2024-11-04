@@ -184,6 +184,7 @@ const UpdateSubscriber = () => {
       value: "MS.",
     },
   ];
+  const [isChangeProvince,setIsChangeProvince] = useState(false)
   const [allowcatedEnergyList, setAllowcatedEnergyList] = useState([]);
   const [allowcatedEnergyDataEdit, setAllowcatedEnergyDataEdit] = useState({});
   const [allowcatedExcelFileList,setAllowcatesExcelfileList] = useState([]);
@@ -311,7 +312,8 @@ const UpdateSubscriber = () => {
         details.subscriberDetail.provinceCode
       );
       setValue("stateCode", tempProvince || "");
-      onChangeProvince(tempProvince);
+      setCurrentProvicne(tempProvince);
+    dispatch(FetchDistrictList(tempProvince?.provinceCode));
     }
   }, [provinceList]);
 
@@ -332,15 +334,16 @@ const UpdateSubscriber = () => {
     if (details?.subscriberDetail?.subscriberTypeId == 1) {
       console.log(getValues("stateCode"))
       // set defualt district
-      if(getValues("districtCode") === null){
+      console.log(isChangeProvince)
+      if(isChangeProvince === false){
       const tempDistrict = initialvalueForSelectField(
         districtList,
         "districtCode",
         details.subscriberDetail.districtCode
       );
       setValue("districtCode", tempDistrict || "");
-      onChangeDistrict(tempDistrict);
-      }
+      onChangeDistrict(tempDistrict);}
+      
     }
   }, [districtList]);
 
@@ -360,7 +363,8 @@ const UpdateSubscriber = () => {
   useEffect(() => {
     if (details?.subscriberDetail?.subscriberTypeId == 1) {
       // set defualt subdistrict
-      if(getValues("subdistrictCode") === null){
+      console.log(getValues("subdistrictCode"))
+      if(isChangeProvince === false){
       const tempSubdistrict = initialvalueForSelectField(
         subDistrictList,
         "subdistrictCode",
@@ -368,7 +372,7 @@ const UpdateSubscriber = () => {
       );
       setValue("subdistrictCode", tempSubdistrict || "");
       onChangeSubDistrict(tempSubdistrict);
-      }
+    }
     }
   }, [subDistrictList]);
 
@@ -388,7 +392,7 @@ const UpdateSubscriber = () => {
   useEffect(() => {
     if (details?.subscriberDetail?.subscriberTypeId == 1) {
       // set defualt postcodeBene
-      if(getValues("postCode") === null){
+      if(isChangeProvince === false){
       const tempPostcode = initialvalueForSelectField(
         postcodeList,
         "postalCode",
@@ -2012,6 +2016,7 @@ const UpdateSubscriber = () => {
   // --------- Country, Province,District,Subdistrict,Postcode Process ---------- //
   const onChangeCountry = (value) => {};
   const onChangeProvince = (value) => {
+    console.log(currentDistrict?.id)
     if (currentDistrict?.id) {
       setValue("districtCode", null); //set value to null
       setCurrentDistrict(null);
@@ -2022,9 +2027,10 @@ const UpdateSubscriber = () => {
       setValue("postCode", null); //set value to null
       setCurrentPostCode(null);
       setPostCodeListForDisplay([]); // clear post code list option
-
+      setIsChangeProvince(true)
       dispatch(FetchSubDistrictList());
     }
+    
     setCurrentProvicne(value);
     dispatch(FetchDistrictList(value?.provinceCode));
   };
@@ -2069,7 +2075,9 @@ const UpdateSubscriber = () => {
   // --------- Country, Province,District,Subdistrict,Postcode Process ---------- //
   const onChangeBeneficiaryCountry = (value) => {};
   const onChangeBeneficiaryProvince = (value) => {
+    console.log(currentBeneficiaryDistrict?.id)
     if (currentBeneficiaryDistrict?.id) {
+      console.log("SetNull")
       setValue("beneficiaryDistrictCode", null); //set value to null
       setCurrentBeneficiaryDistrict(null);
 
