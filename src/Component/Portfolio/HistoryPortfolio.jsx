@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Button } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import deviceLogo from "../assets/device.svg";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import submenuPortfolioLogoInfoSelectedwhite from "../assets/graphInfo_selected_white.svg";
 import submenuPortfolioLogoAddSelectedwhite from "../assets/pieplus_selected_white.svg";
 import { useForm, Controller } from "react-hook-form";
@@ -48,7 +48,6 @@ const HistoryPortfolio = (props) => {
   const historyPort = useSelector((state) => state.portfolio.historyPort);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const details = useSelector((state) => state.portfolio.detailInfoList);
-  console.log(details?.portfolioInfo?.portfolioName)
   const historyFile = useSelector((state)=> state.portfolio.historyFile)
   
   const [isPortManager, setIsPortManager] = useState(false);
@@ -137,7 +136,7 @@ const HistoryPortfolio = (props) => {
       const year = dateObject.getFullYear();
       const hour = dateObject.getHours().toString().padStart(2, "0");
       const min = dateObject.getMinutes().toString().padStart(2, "0");
-      const sec = dateObject.getSeconds().toString().padStart(2, "0");
+      const sec = dateObject.getSeconds().toString().padStart(2, "0")
       return `${day}-${month}-${year} ${hour}:${min}:${sec}`;
     }
     if(historyPort?.portfoliosList !== undefined){
@@ -369,7 +368,7 @@ const HistoryPortfolio = (props) => {
     },
     {
       id: "lastDate",
-      label: "Lastes Date",
+      label: "Latest Date",
       width: "150px",
       render: (row) => (
         <Highlighter
@@ -450,7 +449,7 @@ const HistoryPortfolio = (props) => {
     },
     {
       id: "lastDate",
-      label: "Lastes Date",
+      label: "Latest Date",
       width: "150px",
       render: (row) => (
         <Highlighter
@@ -531,7 +530,7 @@ const HistoryPortfolio = (props) => {
     },
     {
       id: "lastDate",
-      label: "Lastes Date",
+      label: "Latest Date",
       width: "150px",
       render: (row) => (
         <Highlighter
@@ -612,7 +611,7 @@ const HistoryPortfolio = (props) => {
     },
     {
       id: "lastDate",
-      label: "Lastes Date",
+      label: "Latest Date",
       width: "150px",
       render: (row) => (
         <Highlighter
@@ -1351,11 +1350,11 @@ const HistoryPortfolio = (props) => {
           <div className="text-left flex flex-col gap-3">
             <div>
               <h2 className="font-semibold text-xl text-black">
-                {details?.portfolioInfo?.portfolioName}
+                {details?.detailInfoList?.portfolioInfo?.portfolioName}
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
                 {currentUGTGroup?.name} / Portfolio Management / Portfolio Info
-                / {details?.portfolioInfo?.portfolioName} /
+                / {details?.detailInfoList?.portfolioInfo?.portfolioName} /
                 History Log
               </p>
             </div>
