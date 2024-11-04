@@ -398,7 +398,7 @@ const InfoDevice = () => {
         <b><span style="color: red;"> waiting for verification.</span></b>
       </p>
       
-      <p>Device Details:</p>
+      <p><b>Device Details:</b></p>
        
       <p>
       <b>Name:</b> ${deviceobj?.name}
@@ -759,7 +759,7 @@ const handleClickDownloadFile = async (item) => {
         <b><span style="color: red;"> returned for editing.</span></b>
       </p>
       
-      <p>Device Details:</p>
+      <p><b>Device Details:</b></p>
        
       <p>
       <b>Name:</b> ${deviceobj?.name}
