@@ -537,6 +537,58 @@ const handleClickDownloadFile = async (item) => {
   hideLoading();
 };
 
+const handleDownloadZipFile = async (item) => {
+  console.log('item', item);
+
+  try {
+    // แสดง loading indicator
+    showLoading();
+
+    // ดึงข้อมูลที่จำเป็น เช่น fileID และ fileName
+    const fileID = item?.evidentFileID;
+    const fileName = item?.name ? `${item.name}.zip` : 'download.zip';
+    if (!fileID) {
+      throw new Error("Missing fileID");
+    }
+
+    // สร้างพารามิเตอร์สำหรับการเรียกข้อมูล
+    const requestParameter = {
+      fileID: fileID,
+      fileName: fileName,
+    };
+
+    // เรียกข้อมูลจากเซิร์ฟเวอร์
+    const response = await FetchDownloadFile(requestParameter);
+
+    // ตรวจสอบข้อมูลที่ได้จากเซิร์ฟเวอร์
+    if (!response?.res?.data) {
+      throw new Error("No data received from server");
+    }
+
+    // สร้าง Blob ไฟล์ zip จากข้อมูลที่ได้
+    const blob = new Blob([response.res.data], {
+      type: "application/zip",  // กำหนดชนิดไฟล์เป็น zip
+    });
+
+    // สร้างลิงก์สำหรับดาวน์โหลด
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+
+    // ลบลิงก์ออกและ revoke URL เมื่อดาวน์โหลดเสร็จสิ้น
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading zip file:", error);
+    alert("ไม่สามารถดาวน์โหลดไฟล์ได้ กรุณาลองใหม่อีกครั้ง");
+  } finally {
+    // ซ่อน loading indicator
+    hideLoading();
+  }
+};
 
   const handleClickPreviewFile = async (item) => {
     console.log(item)
@@ -1802,6 +1854,10 @@ const handleClickDownloadFile = async (item) => {
                               onPreview ={(item)=>{
                                 handleClickPreviewFile(item)
                               }}
+                              
+                              // onzipfile = {(item)=>{
+                              //   handleDownloadZipFile(item)
+                              // }} 
                             error={errors.uploadFile}
                             defaultValue={deviceobj?.fileUploads}
 

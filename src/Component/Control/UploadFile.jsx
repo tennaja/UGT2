@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone from "react-dropzone-uploader";
-
 import jpgIcon from "../assets/jpg.png";
 import pngIcon from "../assets/png.png";
 import csvIcon from "../assets/csv.png";
@@ -16,12 +15,13 @@ import { FiTrash2 } from "react-icons/fi";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { jwtDecode } from "jwt-decode";
-import { FetchUploadFile } from "../../Redux/Device/Action";
+import { FetchUploadFile,FetchDownloadFile } from "../../Redux/Device/Action";
 import { useDispatch } from "react-redux";
 import ModalConfirm from "../Control/Modal/ModalConfirm";
 import ModelFail from "../Control/Modal/ModalFail";
+import { hideLoading, showLoading } from "../../Utils/Utils";
 import { message } from "antd";
-
+FetchDownloadFile
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 const UploadFile = (props) => {
@@ -39,7 +39,7 @@ const UploadFile = (props) => {
     defaultValue = null,
     isViewMode = false,
     onClickFile,
-    onZipfile,
+  
     ...inputProps
   } = props;
 
@@ -133,58 +133,64 @@ const UploadFile = (props) => {
     };
     
     
-
+ 
+    const handleClickDownloadFile = async (file) => {
+      const fileID = file?.evidentFileID; 
+      const fileName = file?.name; 
+      const requestParameter = {
+        fileID: fileID,
+        fileName: fileName,
+      };
     
-    async function downloadZip(files) {
-      if (!Array.isArray(files) || files.length === 0) {
-        console.error('No valid files found.');
-        return;
+      // เรียกฟังก์ชันดาวน์โหลดไฟล์
+      const response = await FetchDownloadFile(requestParameter);
+    
+      // ตรวจสอบว่า response.res มีข้อมูลหรือไม่
+      if (!response || !response.res || !response.res.data) {
+        throw new Error("Invalid response from FetchDownloadFile");
       }
     
-      const zip = new JSZip();
+      // เพิ่มข้อมูลลงใน ZIP
+      const blob = new Blob([response.res.data], {
+        type: response.res.headers["content-type"],
+      });
     
-      // Convert file to Base64 string
-      const readFileAsBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result.split(',')[1]); // Get Base64 part after 'data:*/*;base64,'
-          reader.onerror = (error) => reject(new Error(`FileReader error: ${error.message}`));
-          reader.readAsDataURL(file); // This will read the file as Base64 encoded data URL
-        });
-      };
+      return { blob, fileName }; // ส่งกลับ blob และชื่อไฟล์
+    };
+    
+    // ฟังก์ชันดาวน์โหลดไฟล์ทั้งหมดในอาเรย์
+    const downloadAllFiles = async (files) => {
+      const zip = new JSZip(); // สร้างอ็อบเจกต์ JSZip
+      showLoading(); // แสดงโหลดเมื่อเริ่มดาวน์โหลด
     
       try {
         for (const file of files) {
-          if (!(file instanceof File)) {
-            console.error('Provided item is not a File object:', file);
-            continue;
+          try {
+            const { blob, fileName } = await handleClickDownloadFile(file); // ส่งอ็อบเจกต์ File ไปยังฟังก์ชันดาวน์โหลดไฟล์
+            zip.file(fileName, blob); // เพิ่มไฟล์ไปยัง ZIP โดยใช้ชื่อไฟล์
+          } catch (error) {
+            console.error("Error downloading file:", error); // จัดการข้อผิดพลาดสำหรับไฟล์แต่ละไฟล์
           }
-    
-          const fileContentBase64 = await readFileAsBase64(file); // Read file as Base64
-          zip.file(file.name, fileContentBase64, { base64: true }); // Add the file to the zip with base64 flag
         }
     
-        const content = await zip.generateAsync({ type: 'blob' });
+        // สร้างไฟล์ ZIP
+        const zipBlob = await zip.generateAsync({ type: "blob" });
     
-        // Trigger the download
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = 'files.zip'; // Default file name
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
+        // สร้างลิงก์ดาวน์โหลด
+        const url = window.URL.createObjectURL(zipBlob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "files.zip"; // ตั้งชื่อไฟล์ ZIP ที่ดาวน์โหลด
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
       } catch (error) {
-        console.error('Error generating ZIP:', error.message);
+        console.error("Error creating zip file:", error.message || error); // แสดงข้อผิดพลาด
+      } finally {
+        hideLoading(); // ซ่อนโหลดเมื่อเสร็จสิ้น
       }
-    }
-    
-    
-    
-
-
-    
- 
+    };
     
     
 
@@ -355,7 +361,9 @@ const UploadFile = (props) => {
             
           )}
           {files.length > 0 && 
-           <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" onClick={() => {downloadZip(previews.map(file => file.props.fileWithMeta.file));}}>Download All Files (.zip)</div> }
+           <div type="button" className="w-full h-12 rounded border-2 border-[#4D6A00] mt-3 flex items-center justify-center text-PRIMARY_TEXT font-bold" 
+           onClick={() => downloadAllFiles(previews.map(file => file.props.fileWithMeta.file))} // ส่งอาเรย์ของไฟล์
+  >Download All Files (.zip)</div> }
         </div>
     
         {showModalConfirm && (

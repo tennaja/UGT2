@@ -49,7 +49,7 @@ const HistoryPortfolio = (props) => {
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const details = useSelector((state) => state.portfolio.detailInfoList);
   const historyFile = useSelector((state)=> state.portfolio.historyFile)
-  
+  console.log(details)
   const [isPortManager, setIsPortManager] = useState(false);
   const userData = useSelector((state) => state.login.userobj);
   //console.log("detail History",historyPort)
@@ -1350,11 +1350,11 @@ const HistoryPortfolio = (props) => {
           <div className="text-left flex flex-col gap-3">
             <div>
               <h2 className="font-semibold text-xl text-black">
-                {details?.detailInfoList?.portfolioInfo?.portfolioName}
+                {details?.portfolioInfo?.portfolioName}
               </h2>
               <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
                 {currentUGTGroup?.name} / Portfolio Management / Portfolio Info
-                / {details?.detailInfoList?.portfolioInfo?.portfolioName} /
+                / {details?.portfolioInfo?.portfolioName} /
                 History Log
               </p>
             </div>

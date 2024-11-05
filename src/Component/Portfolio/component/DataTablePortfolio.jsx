@@ -339,10 +339,10 @@ if (checkStartDate) {
         (parsedRetailStartDate && previousDateStart > parsedRetailStartDate)) {
           tempStartDate = parseDate(previousDateStart instanceof Date ? previousDateStart.toISOString().slice(0, 10) : previousDateStart);
 
-        console.log("Using Previous Start Date:", tempStartDate);
+        // console.log("Using Previous Start Date:", tempStartDate);
     } else {
         tempStartDate = parsedRegistrationDate || parsedRetailStartDate 
-        console.log("Parsed Start Date:", tempStartDate);
+        // console.log("Parsed Start Date:", tempStartDate);
     }
 } else {
     tempStartDate = parseDate(previousDateStart);
@@ -377,7 +377,7 @@ if (checkStartDate) {
       data.find((item) => item.id === index)?.endDate ||
       data.find((item) => item.id === index)?.subEndDate;
 
-    console.log("Check End Date:", checkEndDate);
+    // console.log("Check End Date:", checkEndDate);
     let tempEndDate;
     
     if (checkEndDate) {
@@ -394,11 +394,11 @@ if (checkStartDate) {
           (parsedRetailEndDate && parsedPortfolioEndDate <= parsedRetailEndDate)
       ) {
           tempEndDate = previousDateEnd;
-          console.log("Using Previous End Date:", previousDateEnd);
+          // console.log("Using Previous End Date:", previousDateEnd);
       } else {
           // Use the available valid date or fallback to previousDateEnd
           tempEndDate = parsedExpiryDate || parsedRetailEndDate || previousDateEnd;
-          console.log("Using Available End Date:", tempEndDate);
+          // console.log("Using Available End Date:", tempEndDate);
       }
   } else {
       tempEndDate = previousDateEnd;
@@ -430,99 +430,38 @@ if (checkStartDate) {
 
 
   const renderCell = (row, column) => {
-    const isError = row.isError;
     if (column.render) {
-      if (column.id === "errorDevice" && isError) {
-        return (
-          <div
-          style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
-        >
-          <WarningIcon
-            style={{ color: "red", marginLeft: 4 }}
-            titleAccess="Error" // Tooltip text
-          />
-          <div
-           type="button"
-           className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
-           onClick={() => openpopupDeviceError(row.id ,row.deviceName,row.startDate,row.endDate)}
-          >
-            Error Detail
-          </div>
-        </div>
-        );
-      }
-      if (column.id === "errorSub" && isError) {
-        return (
-          <div 
-        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
-      >
-        <WarningIcon
-          style={{ color: "red", marginLeft: 4 }}
-          titleAccess="Error" // Tooltip text
-        />
-        <div
-                                type="button"
-         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
-         onClick={() => openpopupSubError(row.id,row.startDate,row.endDate,row.subscribersContractInformationId)}
-        >
-          Error Detail
-        </div>
-      </div>
-        );
-      }
       // ถ้ามี props 'render'
       if (!editDatetime) {
-        return column.render(row)
+        return column.render(row);
       } else {
-        if (isStartPort) {
-          // ถ้า Port เริ่มไปแล้ว แก้ไขวันที่ EndDate ได้อย่างเดียว
-          if (
-            column.id === "startDate" ||
-            column.id === "retailESAContractStartDate"
-          ) {
+        // ถ้า Port ยังไม่เริ่ม แก้ไขวันที่ Start / EndDate ได้
+        if (
+          column.id === "startDate" ||
+          column.id === "retailESAContractStartDate"
+        ) {
+          // ถ้าเป็นข้อมูลที่ add ลงไปใน port อยู่แล้ว และ port เริ่มไปแล้ว ห้าม edit start date
+          const addedDevice = detailPortfolio?.device?.filter(
+            (item) =>
+              item?.id == row.id &&
+              item?.name == row.name &&
+              dayjs().startOf("day") > dayjs(portfolioStartDate).startOf("day")
+          );
+
+          // ถ้าเป็นข้อมูลที่ add ลงไปใน port อยู่แล้ว และ port เริ่มไปแล้ว ห้าม edit start date
+          const addedSubscriber = detailPortfolio?.subscriber?.filter(
+            (item) =>
+              item?.id == row.id &&
+              item?.name == row.name &&
+              dayjs().startOf("day") > dayjs(portfolioStartDate).startOf("day")
+          );
+          if (addedDevice?.length > 0) return <span>{row[column.id]}</span>;
+          else if (addedSubscriber?.length > 0)
             return <span>{row[column.id]}</span>;
-          } else if (
-            column.id === "endDate" ||
-            column.id === "retailESAContractEndDate"
-          ) {
-            return (
-              <Controller
-                name={"endDate" + "_" + row.id}
-                control={control}
-                rules={
-                  {
-                    // required: "This field is required",
-                  }
-                }
-                render={({ field }) => (
-                  <DatePicker
-                    {...field}
-                    id={"endDate" + "_" + row.id}
-                    formatDate={"d/M/yyyy"}
-                    error={errors["endDate" + "_" + row.id]}
-                    onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(newValue, row.id, false); // false for EndDate
-                    }}
-                    onChangeInput={(newValue) => {
-                      const newDate = format(newValue, "dd/MM/yyyy");
-                      dateChange(newDate, row.id, "endDate");
-                    }}
-                    validate={" *"}
-                    // ... other props
-                  />
-                )}
-              />
-            );
-          } else {
-            // column อื่นๆ
-            return column.render(row);
-          }
-        } else {
-          // ถ้า Port ยังไม่เริ่ม แก้ไขวันที่ Start / EndDate ได้
-          if (
-            column.id === "startDate" ||
-            column.id === "retailESAContractStartDate"
-          ) {
+          else {
+            // console.log("column.id subscriber", column.id);
+            // console.log("row.id subscriber", row);
+            // เป็นข้อมูลที่ add เข้ามา ยังไม่ได้ save จะแก้ไขได้
             return (
               <Controller
                 name={"startDate" + "_" + row.id}
@@ -551,12 +490,13 @@ if (checkStartDate) {
                 )}
               />
             );
-          } else if (
-            column.id === "endDate" ||
-            column.id === "retailESAContractEndDate"
-          ) {
-            return (
-              <Controller
+          }
+        } else if (
+          column.id === "endDate" ||
+          column.id === "retailESAContractEndDate"
+        ) {
+          return (
+            <Controller
                 name={"endDate" + "_" + row.id}
                 control={control}
                 rules={
@@ -582,11 +522,10 @@ if (checkStartDate) {
                   />
                 )}
               />
-            );
-          } else {
-            // column อื่นๆ
-            return column.render(row);
-          }
+          );
+        } else {
+          // column อื่นๆ
+          return column.render(row);
         }
       }
     } else {

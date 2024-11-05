@@ -876,116 +876,135 @@ useEffect(() => {
     console.log("data  >>> ", data);
     const defualtStartDate = watch("startDate");
     const defualtEndDate = watch("endDate");
-    if (titleAddModal == "Add Device") {
+    if (titleAddModal === "Add Device") {
       const newDeviceChanges = [];
       if (defualtStartDate) {
         const newDateDevice = data?.map((item) => {
-          setisAddDevice(true)
+          setisAddDevice(true);
+          
           // Initialize startDate using registrationDate, but adjust if it's earlier than the portfolio's startDate
           let itemStartDate = dayjs(item?.registrationDate);
           if (itemStartDate < dayjs(defualtStartDate)) {
             itemStartDate = dayjs(defualtStartDate);
           }
-
-      // Fetch expiryDate (previously endDate) and startDate from deviceListSelected if it exists
-      let deviceDataTable = deviceListSelected.filter((row) => row.id === item.id);
-      let itemExpiryDate = dayjs(item?.expiryDate); // Device's expiryDate
-
-      if (deviceDataTable.length > 0) {
-        itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
-        itemExpiryDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
-      }
-
-      // Compare the device's expiryDate with the portfolio's endDate
-      if (dayjs(defualtEndDate) <= itemExpiryDate) {
-        itemExpiryDate = dayjs(defualtEndDate);
-      } else if (itemExpiryDate <= dayjs(defualtEndDate)) {
-        itemExpiryDate = dayjs(item?.expiryDate);
-      }
-            const newDeviceChange = {
-              deviceId: item.id, // Capture the device ID
-              subscriberId:  0, // Use actual value or a default
-              subscribersContractInformationId: 0, // Use actual value or a default
-              action: "Add", // Specify the action
-              createBy: userData?.firstName + " " + userData?.lastName ,// Replace with the actual creator's information
-              startDate: format(new Date(itemStartDate), "yyyy-MM-dd"),
-              endDate: format(new Date(itemExpiryDate), "yyyy-MM-dd")
-            };
-            console.log(newDeviceChange)
-            newDeviceChanges.push(newDeviceChange);
+    
+          // Fetch expiryDate (previously endDate) and startDate from deviceListSelected if it exists
+          let deviceDataTable = deviceListSelected.filter((row) => row.id === item.id);
+          let itemExpiryDate = dayjs(item?.expiryDate);
+    
+          if (deviceDataTable.length > 0) {
+            itemStartDate = dayjs(deviceDataTable[0]?.startDate, "DD/MM/YYYY");
+            itemExpiryDate = dayjs(deviceDataTable[0]?.endDate, "DD/MM/YYYY");
+          }
+    
+          // Compare the device's expiryDate with the portfolio's endDate
+          if (dayjs(defualtEndDate) <= itemExpiryDate) {
+            itemExpiryDate = dayjs(defualtEndDate);
+          } else if (itemExpiryDate <= dayjs(defualtEndDate)) {
+            itemExpiryDate = dayjs(item?.expiryDate);
+          }
+    
+          const newDeviceChange = {
+            deviceId: item.id,
+            subscriberId: 0,
+            subscribersContractInformationId: 0,
+            action: "Add",
+            createBy: `${userData?.firstName} ${userData?.lastName}`,
+            startDate: format(new Date(itemStartDate), "yyyy-MM-dd"),
+            endDate: format(new Date(itemExpiryDate), "yyyy-MM-dd")
+          };
+    
+          newDeviceChanges.push(newDeviceChange);
+    
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
             endDate: itemExpiryDate.format("DD/MM/YYYY"),
-            
           };
         });
-        console.log(newDateDevice)
+    
+        console.log(newDateDevice);
         setDeviceListSelected(newDateDevice);
-        console.log(newDateDevice)
-        setDeviceChanges((prevChanges) => [...prevChanges, ...newDeviceChanges]);
+    
+        setDeviceChanges((prevChanges) => {
+          // Filter out any existing device IDs from prevChanges before adding newDeviceChanges
+          const uniqueNewDeviceChanges = newDeviceChanges.filter(
+            (newChange) => !prevChanges.some((prevChange) => prevChange.deviceId === newChange.deviceId)
+          );
+          return [...prevChanges, ...uniqueNewDeviceChanges];
+        });
       } else {
         setDeviceListSelected(data);
-        console.log(data)
+        console.log(data);
       }
-      
-    } 
-    else if (titleAddModal == "Add Subscriber") {
+    }
+    
+    
+    else if (titleAddModal === "Add Subscriber") {
       const newSubChanges = [];
       if (defualtStartDate) {
         const newDateSubscriber = data?.map((item) => {
           
           let itemStartDate = dayjs(item?.retailESAContractStartDate, "DD/MM/YYYY");
-
-          if (dayjs(defualtStartDate) >= itemStartDate ) {
+    
+          if (dayjs(defualtStartDate) >= itemStartDate) {
             itemStartDate = dayjs(defualtStartDate);
-          } else if (itemStartDate >= dayjs(defualtStartDate)){
-            itemStartDate = dayjs(item?.retailESAContractStartDate,
-              "DD/MM/YYYY")
+          } else if (itemStartDate >= dayjs(defualtStartDate)) {
+            itemStartDate = dayjs(item?.retailESAContractStartDate, "DD/MM/YYYY");
           }
-      // Fetch endDate from item or adjust using portfolio's endDate
-      let itemEndDate = dayjs(item?.retailESAContractEndDate, "DD/MM/YYYY");
-      
-      if (dayjs(defualtEndDate) <= itemEndDate ) {
-        itemEndDate = dayjs(defualtEndDate);
-      } else if (itemEndDate <= dayjs(defualtEndDate)) {
-        itemEndDate = dayjs(item?.retailESAContractEndDate,"DD/MM/YYYY")
-      }
-
-      // Check if the subscriber exists in subscriberListSelected
-      let subscriberDataTable = subscriberListSelected.filter((row) => row.id === item.id);
-
-      if (subscriberDataTable.length > 0) {
-        // Use the edited startDate and endDate if subscriber exists
-        itemStartDate = dayjs(subscriberDataTable[0]?.startDate, "DD/MM/YYYY");
-        itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
-      }
-            const newSubChange = {
-              deviceId:  0, // Capture the device ID
-              subscriberId: item.id || 0, // Use actual value or a default
-              subscribersContractInformationId: item.subscribersContractInformationId || 0, // Use actual value or a default
-              action: "Add", // Specify the action
-              createBy: userData?.firstName + " " + userData?.lastName, // Replace with the actual creator's information
-              startDate: format(new Date(itemStartDate), "yyyy-MM-dd"),
-              endDate: format(new Date(itemEndDate), "yyyy-MM-dd")
-            };
-            console.log(newSubChange)
-            newSubChanges.push(newSubChange);
-            setisAddSub(true)
+    
+          // Fetch endDate from item or adjust using portfolio's endDate
+          let itemEndDate = dayjs(item?.retailESAContractEndDate, "DD/MM/YYYY");
+          
+          if (dayjs(defualtEndDate) <= itemEndDate) {
+            itemEndDate = dayjs(defualtEndDate);
+          } else if (itemEndDate <= dayjs(defualtEndDate)) {
+            itemEndDate = dayjs(item?.retailESAContractEndDate, "DD/MM/YYYY");
+          }
+    
+          // Check if the subscriber exists in subscriberListSelected
+          let subscriberDataTable = subscriberListSelected.filter((row) => row.id === item.id);
+    
+          if (subscriberDataTable.length > 0) {
+            // Use the edited startDate and endDate if subscriber exists
+            itemStartDate = dayjs(subscriberDataTable[0]?.startDate, "DD/MM/YYYY");
+            itemEndDate = dayjs(subscriberDataTable[0]?.endDate, "DD/MM/YYYY");
+          }
+    
+          const newSubChange = {
+            deviceId: 0,
+            subscriberId: item.id || 0,
+            subscribersContractInformationId: item.subscribersContractInformationId || 0,
+            action: "Add",
+            createBy: `${userData?.firstName} ${userData?.lastName}`,
+            startDate: format(new Date(itemStartDate), "yyyy-MM-dd"),
+            endDate: format(new Date(itemEndDate), "yyyy-MM-dd")
+          };
+          
+          newSubChanges.push(newSubChange);
+          setisAddSub(true);
+    
           return {
             ...item,
             startDate: itemStartDate.format("DD/MM/YYYY"),
             endDate: itemEndDate.format("DD/MM/YYYY"),
           };
-        
         });
-        // console.log("newDateSubscriber == ", newDateSubscriber);
-        setSubChanges((prevChanges) => [...prevChanges, ...newSubChanges]);
+    
+        // Update subChanges with unique entries only
+        setSubChanges((prevChanges) => {
+          const uniqueNewSubChanges = newSubChanges.filter(
+            (newChange) => !prevChanges.some((prevChange) => prevChange.subscriberId === newChange.subscriberId)
+          );
+          return [...prevChanges, ...uniqueNewSubChanges];
+        });
+    
         setSubscriberListSelected(newDateSubscriber);
       } else {
         setSubscriberListSelected(data);
       }
     }
+    
   };
   const onCloseAddModal = () => {
     setShowModalAdd(false);
