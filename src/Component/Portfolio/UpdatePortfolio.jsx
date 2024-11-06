@@ -584,8 +584,8 @@ const UpdatePortfolio = () => {
     setColumnsTable("device");
     // Function to parse DD/MM/YYYY and return a Date object
     const parseDate = (dateString) => {
-      const [day, month, year] = dateString.split('/').map(Number);
-      return new Date(year, month - 1, day); // month is 0-based in Date
+    const [day, month, year] = dateString.split('/').map(Number);
+    return new Date(year, month - 1, day); // month is 0-based in Date
   };
 
   // Parse and format the start and end dates

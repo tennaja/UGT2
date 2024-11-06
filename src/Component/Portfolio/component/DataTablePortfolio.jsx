@@ -430,6 +430,45 @@ if (checkStartDate) {
 
 
   const renderCell = (row, column) => {
+    const isError = row.isError; // Assuming row has an isError property
+    if (column.id === "errorDevice" && isError) {
+      return (
+        <div
+        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
+      >
+        <WarningIcon
+          style={{ color: "red", marginLeft: 4 }}
+          titleAccess="Error" // Tooltip text
+        />
+        <div
+         type="button"
+         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+         onClick={() => openpopupDeviceError(row.id ,row.deviceName,row.startDate,row.endDate)}
+        >
+          Error Detail
+        </div>
+      </div>
+      );
+    }
+    if (column.id === "errorSub" && isError) {
+      return (
+        <div 
+        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
+      >
+        <WarningIcon
+          style={{ color: "red", marginLeft: 4 }}
+          titleAccess="Error" // Tooltip text
+        />
+        <div
+                                type="button"
+         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+         onClick={() => openpopupSubError(row.id,row.startDate,row.endDate,row.subscribersContractInformationId)}
+        >
+          Error Detail
+        </div>
+      </div>
+      );
+    }
     if (column.render) {
       // ถ้ามี props 'render'
       if (!editDatetime) {
