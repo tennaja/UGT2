@@ -182,7 +182,7 @@ useEffect(() => {
               // whiteSpace: "nowrap",
               // overflow: "hidden",
               // textOverflow: "ellipsis",
-              maxWidth: "350px",
+              maxWidth: "300px",
             }}
           >
             <Highlighter
@@ -344,7 +344,7 @@ useEffect(() => {
               // whiteSpace: "nowrap",
               // overflow: "hidden",
               // textOverflow: "ellipsis",
-              maxWidth: "350px",
+              maxWidth: "300px",
             }}
           >
             <Highlighter
