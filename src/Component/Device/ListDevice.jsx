@@ -116,29 +116,14 @@ const ListDevice = (props) => {
         <div className="flex flex-col justify-center">
           <div
             className="font-semibold break-words"
-            style={{
-              // whiteSpace: "nowrap",
-              // overflow: "hidden",
-              // textOverflow: "ellipsis",
-              maxWidth: "300px",
-            }}
+            style={{ maxWidth: "300px" }}
           >
             <Highlighter
               highlightTag={Highlight}
               searchWords={searchQueryAssigned.split(" ")}
               autoEscape={true}
-              textToHighlight={
-                row.name?.length > 100
-                  ? row.name?.substring(0, 100) + "..."
-                  : row.name
-              }
+              textToHighlight={row.name?.length > 100 ? row.name?.substring(0, 100) + "..." : row.name}
             />
-            <style>{`
-              .highlight {
-                background-color: yellow;
-                font-weight: bold;
-              }
-            `}</style>
           </div>
           <label className="text-[#2e8d8d] bg-[#f0f8ff] rounded w-max px-2 py-1 mt-1 text-xs font-normal">
             <Highlighter
@@ -149,50 +134,19 @@ const ListDevice = (props) => {
             />
           </label>
         </div>
-        // <div className="flex w-80">
-        //   <div className="w-1/6">
-        //     <img
-        //       src={egat}
-        //       className="w-[40px] h-[40px]"
-        //       style={{ borderRadius: "50%" }}
-        //     ></img>
-        //   </div>
-        //   <div className="flex flex-col ml-2 w-5/6">
-        //     <div
-        //       className="font-semibold mb-1"
-        //       style={{
-        //         // whiteSpace: "nowrap",
-        //         wordWrap: "break-word",
-        //         // overflow: "hidden",
-        //         // textOverflow: "ellipsis",
-        //         // maxWidth: "300px",
-        //       }}
-        //     >
-        //       {row.name?.length > 100
-        //         ? row.name?.substring(0, 100) + "..."
-        //         : row.name}
-        //     </div>
-        //     <label className="text-[#33bfbf] bg-[#f0f8ff] rounded w-max px-2 py-1 text-xs	font-semibold">
-        //       {row?.typeName}
-        //     </label>
-        //   </div>
-        // </div>
       ),
     },
-
     {
       id: "utilityContractAbbr",
       label: "Utility Contract",
       align: "center",
       render: (row) => (
-        <div className="text-center">
         <Highlighter
           highlightTag={Highlight}
           searchWords={[searchQueryAssigned]}
           autoEscape={true}
           textToHighlight={row.utilityContractAbbr}
         />
-        </div>
       ),
     },
     {
@@ -200,10 +154,105 @@ const ListDevice = (props) => {
       label: "Capacity (MW)",
       align: "center",
       render: (row) => (
-        <span className="text-center">
+        <Highlighter
+          highlightTag={Highlight}
+          searchWords={[searchQueryAssigned]}
+          autoEscape={true}
+          textToHighlight={numeral(row.capacity).format("0,0.00")}
+        />
+      ),
+    },
+    {
+      id: "portfolio",
+      label: "Portfolio",
+      align: "center",
+      render: (row) => (
+        <div className="break-words" style={{ maxWidth: "200px" }}>
           <Highlighter
             highlightTag={Highlight}
             searchWords={[searchQueryAssigned]}
+            autoEscape={true}
+            textToHighlight={row.portfolio}
+          />
+        </div>
+      ),
+    },
+    {
+      id: "statusName",
+      label: "Status",
+      align: "center",
+      render: (row) => (
+        <StatusLabel status={row.statusName} searchQuery={searchQueryAssigned} />
+      ),
+    },
+    {
+      id: "manage",
+      label: "",
+      align: "center",
+      render: (row) => (
+        <Link
+          type="button"
+          state={{ code: row.id }}
+          to={WEB_URL.DEVICE_INFO}
+          className="flex no-underline rounded text-center p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33] w-24"
+        >
+          <label className="cursor-pointer text-white font-semibold">Manage</label>
+        </Link>
+      ),
+    },
+  ];
+  
+  const columnsUnAssigned = [
+    {
+      id: "name",
+      label: "Device Name",
+      align: "left",
+      render: (row) => (
+        <div className="flex flex-col justify-center">
+          <div
+            className="font-semibold break-words"
+            style={{ maxWidth: "300px" }}
+          >
+            <Highlighter
+              highlightTag={Highlight}
+              searchWords={[searchQueryUnAssigned]}
+              autoEscape={true}
+              textToHighlight={row.name?.length > 100 ? row.name?.substring(0, 100) + "..." : row.name}
+            />
+          </div>
+          <label className="text-[#2e8d8d] bg-[#f0f8ff] rounded w-max px-2 py-1 mt-1 text-xs font-normal">
+            <Highlighter
+              highlightTag={Highlight}
+              searchWords={[searchQueryUnAssigned]}
+              autoEscape={true}
+              textToHighlight={row?.typeName ?? ""}
+            />
+          </label>
+        </div>
+      ),
+    },
+    {
+      id: "utilityContractAbbr",
+      label: "Utility Contract",
+      align: "center",
+      render: (row) => (
+        <Highlighter
+          highlightTag={Highlight}
+          searchWords={[searchQueryUnAssigned]}
+          autoEscape={true}
+          textToHighlight={row.utilityContractAbbr}
+        />
+      ),
+    },
+    {
+      id: "capacity",
+      label: "Capacity (MW)",
+      align: "center",
+      render: (row) => (
+        <span className="text-right">
+          <Highlighter
+            highlightTag={Highlight}
+            searchWords={[searchQueryUnAssigned]}
             autoEscape={true}
             textToHighlight={numeral(row.capacity).format("0,0.00")}
           />
@@ -215,13 +264,13 @@ const ListDevice = (props) => {
       label: "Portfolio",
       align: "center",
       render: (row) => (
-        <div className="text-center">
-        <Highlighter
-          highlightTag={Highlight}
-          searchWords={[searchQueryAssigned]}
-          autoEscape={true}
-          textToHighlight={row.portfolio}
-        />
+        <div className="break-words" style={{ maxWidth: "200px" }}>
+          <Highlighter
+            highlightTag={Highlight}
+            searchWords={[searchQueryUnAssigned]}
+            autoEscape={true}
+            textToHighlight={row.portfolio ?? ""}
+          />
         </div>
       ),
     },
@@ -230,12 +279,19 @@ const ListDevice = (props) => {
       label: "Status",
       align: "center",
       render: (row) => (
-        <div className="text-center">
-        <StatusLabel
-          status={row.statusName}
-          searchQuery={searchQueryAssigned}
-        />
-        </div>
+        <>
+          <StatusLabel
+            status={row.statusName}
+            searchQuery={searchQueryUnAssigned}
+          />
+          {row.isApproved === "True" && (
+            <StatusLabel
+              key={row.id} // Assuming each item has a unique id
+              status="Approved"
+              searchQuery={searchQueryUnAssigned}
+            />
+          )}
+        </>
       ),
     },
     {
@@ -243,24 +299,18 @@ const ListDevice = (props) => {
       label: "",
       align: "center",
       render: (row) => (
-        <div className="text-center">
         <Link
           type="button"
           state={{ code: row.id }}
           to={WEB_URL.DEVICE_INFO}
-          // hover:bg-[#4D6A00] bg-[#87BE33]
-          className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]`}
+          className="flex no-underline rounded text-center p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33] w-24"
         >
-          <label className="cursor-pointer text-white font-semibold mr-2">
-            {"Manage"}
-          </label>
-          {/* <MdOutlineRemoveRedEye className="text-white" /> */}
+          <label className="cursor-pointer text-white font-semibold">Manage</label>
         </Link>
-        </div>
       ),
     },
-    // Add more columns as needed
   ];
+  
 
 //   {
 //     id: "manage",
@@ -294,155 +344,7 @@ const ListDevice = (props) => {
 //       </div>
 //     ),
 //   },
-  const columnsUnAssigned = [
-    {
-      id: "name",
-      label: "Device Name",
-      align: "left",
-      render: (row) => (
-        <div className="flex flex-col justify-center">
-          <div
-            className="font-semibold  	break-words"
-            style={{
-              // whiteSpace: "nowrap",
-              // overflow: "hidden",
-              // textOverflow: "ellipsis",
-              maxWidth: "300px",
-            }}
-          >
-            <Highlighter
-              highlightTag={Highlight}
-              searchWords={[searchQueryUnAssigned]}
-              autoEscape={true}
-              textToHighlight={
-                row.name?.length > 100
-                  ? row.name?.substring(0, 100) + "..."
-                  : row.name
-              }
-            />
-          </div>
-          <label className="text-[#2e8d8d] bg-[#f0f8ff] rounded w-max px-2 py-1 mt-1 text-xs font-normal">
-            <Highlighter
-              highlightTag={Highlight}
-              searchWords={[searchQueryUnAssigned]}
-              autoEscape={true}
-              textToHighlight={row?.typeName ?? ""}
-            />
-          </label>
-        </div>
-        // <div className="flex w-80">
-        //   <div className="w-1/6">
-        //     <img
-        //       src={egat}
-        //       className="w-[40px] h-[40px]"
-        //       style={{ borderRadius: "50%" }}
-        //     ></img>
-        //   </div>
-        //   <div className="flex flex-col ml-2 w-5/6">
-        //     <div
-        //       className="font-semibold mb-1"
-        //       style={{
-        //         // whiteSpace: "nowrap",
-        //         wordWrap: "break-word",
-        //         // overflow: "hidden",
-        //         // textOverflow: "ellipsis",
-        //         // maxWidth: "300px",
-        //       }}
-        //     >
-        //       {row.name?.length > 100
-        //         ? row.name?.substring(0, 100) + "..."
-        //         : row.name}
-        //     </div>
-        //     <label className="text-[#33bfbf] bg-[#f0f8ff] rounded w-max px-2 py-1 text-xs	font-semibold">
-        //       {row?.typeName}
-        //     </label>
-        //   </div>
-        // </div>
-      ),
-    },
-    {
-      id: "utilityContractAbbr",
-      label: "Utility Contract",
-      render: (row) => (
-        <Highlighter
-          highlightTag={Highlight}
-          searchWords={[searchQueryUnAssigned]}
-          autoEscape={true}
-          textToHighlight={row.utilityContractAbbr}
-        />
-      ),
-    },
-    {
-      id: "capacity",
-      label: "Capacity (MW)",
-      align: "right",
-      render: (row) => (
-        <span className="text-right">
-          <Highlighter
-            highlightTag={Highlight}
-            searchWords={[searchQueryUnAssigned]}
-            autoEscape={true}
-            textToHighlight={numeral(row.capacity).format("0,0.00")}
-          />
-        </span>
-      ),
-    },
-    // { id: "portfolio", label: "Portfolio" },
-    {
-      id: "portfolio",
-      label: "Portfolio",
-      render: (row) => (
-        <Highlighter
-          highlightTag={Highlight}
-          searchWords={[searchQueryUnAssigned]}
-          autoEscape={true}
-          textToHighlight={row.portfolio ?? ""}
-        />
-      ),
-    },
-    {
-      id: "statusName",
-      label: "Status",
-      // render: (row) => StatusLabel(row.statusName),
-      render: (row) => (
-       <>
-        <StatusLabel
-          status={row.statusName}
-          searchQuery={searchQueryUnAssigned}
-        />
-      
-      {row.isApproved === "True" && (
-          <StatusLabel
-            key={row.id} // Assuming each item has a unique id
-            status="Approved"
-            searchQuery={searchQueryUnAssigned}
-          />
-        )}
-
-        </>
-      ),
-    },
-    {
-      id: "manage",
-      label: "",
-      render: (row) => (
-        <Link
-          type="button"
-          state={{ code: row.id }}
-          to={WEB_URL.DEVICE_INFO}
-          // hover:bg-[#4D6A00] bg-[#87BE33]
-          className={`flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]`}
-        >
-          <label className="cursor-pointer text-white font-semibold mr-2">
-            {"Manage"}
-          </label>
-          {/* <MdOutlineRemoveRedEye className="text-white" /> */}
-        </Link>
-      ),
-    },
-    
-    // Add more columns as needed
-  ];
+  
 
   useEffect(() => {
     const { hash, pathname, search } = location;

@@ -860,7 +860,7 @@ const handleClickPreviewFile = async (item) => {
         status == DEVICE_STATUS.DRAFT.toLowerCase() ||
         status == DEVICE_STATUS.REJECTED.toLowerCase() ||
         status == DEVICE_STATUS.VERIFYING.toLowerCase() ||
-        status == DEVICE_STATUS.VERIFIED.toLowerCase() && deviceobj?.isApproved === "True"
+        status == DEVICE_STATUS.VERIFIED.toLowerCase() 
       ) {
         isWithdraw = true;
       } else {

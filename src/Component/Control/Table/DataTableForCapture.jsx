@@ -725,7 +725,7 @@ const DataTableForCaptures = ({
                       >
                         <strong>
                           {totalValue
-                            ? numeral(totalValue).format("0,0.000000")
+                            ? numeral(totalValue).format("0,0.00")
                             : ""}
                         </strong>
                       </TableCell>

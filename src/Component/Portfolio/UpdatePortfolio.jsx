@@ -2222,7 +2222,7 @@ if (hasAddition) {
                       <div style={{ border: IsError ? "2px solid red" : "none", padding: "16px", borderRadius: "4px", position: "relative" }}>
         <p className="px-4 py-4 text-gray">There is no data to display.</p>
         {IsError && (
-          <p style={{ color: "red", position: "absolute", bottom: "-25px", right: "5px", margin: 0 ,fontSize: "12px"}}>
+          <p style={{ color: "red", position: "absolute", bottom: "-25px", left: "5px", margin: 0 ,fontSize: "12px"}}>
             This field is required
           </p>
         )}
@@ -2410,7 +2410,7 @@ if (hasAddition) {
                       <div style={{ border: IsError ? "2px solid red" : "none", padding: "16px", borderRadius: "4px", position: "relative" }}>
         <p className="px-4 py-4 text-gray">There is no data to display.</p>
         {IsError && (
-          <p style={{ color: "red", position: "absolute", bottom: "-25px", right: "5px", margin: 0 ,fontSize: "12px"}}>
+          <p style={{ color: "red", position: "absolute", bottom: "-25px", left: "5px", margin: 0 ,fontSize: "12px"}}>
             This field is required
           </p>
         )}

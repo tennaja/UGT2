@@ -179,7 +179,7 @@ const RenewDevice = () => {
         <b><span style="color: red;"> has been edited.</span></b>
       </p>
       
-      <p>Device Details:</p>
+      <p><b>Device Details:</b></p>
        
       <p>
       <b>Name:</b> ${deviceName}
