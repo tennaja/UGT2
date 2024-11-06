@@ -1097,19 +1097,25 @@ const UpdatePortfolio = () => {
                     dispatchSubscriberChanges(0);
                     return; // Exit device processing
                   }
-  
+                
                   // Destructure deviceId and action from deviceChanges
                   const { deviceId, action } = deviceChanges[index];
-  
-                  // Check the action and set isAdd accordingly, or skip if "Edit"
-                  if (action === "Edit") {
-                    dispatchDeviceChanges(index + 1); // Skip to next device change
+                
+                  // Check if deviceId exists; if not, skip to the next item
+                  if (!deviceId) {
+                    dispatchDeviceChanges(index + 1); // Move to the next device change
                     return; // Exit early for this iteration
                   }
-  
+                
+                  // Check the action and set isAdd accordingly, or skip if "Edit"
+                  if (action === "Edit") {
+                    dispatchDeviceChanges(index + 1); // Skip to the next device change
+                    return; // Exit early for this iteration
+                  }
+                
                   // Set isAdd based on action type
                   const isAdd = action === "Add"; // true if "Add", false if "Remove"
-  
+                
                   // Dispatch the action with a callback for device
                   dispatch(
                     PortfolioSendEmailDevice(state?.code, deviceId, isAdd, (callbackRes) => {
@@ -1119,6 +1125,7 @@ const UpdatePortfolio = () => {
                     })
                   );
                 };
+                
   
                 // Create a function to handle the dispatch of subscriber changes
                 const dispatchSubscriberChanges = (subIndex) => {
@@ -1128,28 +1135,35 @@ const UpdatePortfolio = () => {
                     setIsProcessing(false); // Reset the flag after processing
                     return;
                   }
-  
+                
                   // Destructure subscriberId and action from subChanges
                   const { subscriberId, action } = subChanges[subIndex];
-  
-                  // Check the action and set isAdd accordingly, or skip if "Edit"
-                  if (action === "Edit") {
-                    dispatchSubscriberChanges(subIndex + 1); // Skip to next subscriber change
+                
+                  // Check if subscriberId exists; if not, skip to the next item
+                  if (!subscriberId) {
+                    dispatchSubscriberChanges(subIndex + 1); // Move to the next subscriber change
                     return; // Exit early for this iteration
                   }
-  
+                
+                  // Check the action and set isAdd accordingly, or skip if "Edit"
+                  if (action === "Edit") {
+                    dispatchSubscriberChanges(subIndex + 1); // Skip to the next subscriber change
+                    return; // Exit early for this iteration
+                  }
+                
                   // Set isAdd based on action type
                   const isAdd = action === "Add"; // true if "Add", false if "Remove"
-  
-                  // Dispatch the subscriber action
+                
+                  // Dispatch the subscriber action with a callback
                   dispatch(
                     PortfolioSendEmailSubscriber(state?.code, subscriberId, isAdd, (callbackRes) => {
                       console.log(`Dispatched for subscriber ID ${subscriberId}, isAdd: ${isAdd}`, callbackRes);
                       // Move to the next index after processing the callback
-                      dispatchSubscriberChanges(subIndex + 1); // Dispatch next subscriber change
+                      dispatchSubscriberChanges(subIndex + 1); // Dispatch the next subscriber change
                     })
                   );
                 };
+                
   
                 // Start dispatching device changes from index 0
                 dispatchDeviceChanges(0);
@@ -1429,6 +1443,7 @@ if (subscriberDataTable.length > 0) {
   const editSubscriber = () => {
     if (subscriberListSelected?.length > 0) {
       setTempSubscriberListSelected(structuredClone(subscriberListSelected));
+      console.log(structuredClone(subscriberListSelected))
       setOnEditSubscriber(true);
       setOnEditDatetimeSubscriber(true);
     }
@@ -1449,87 +1464,116 @@ if (subscriberDataTable.length > 0) {
   };
   const handleDeviceDateChange = (newDate, rowId, type) => {
     const rowData = deviceListSelected.find((item) => item.id === rowId);
+    const newDeviceChanges = [...deviceChanges]; // Spread the previous deviceChanges
+    let isChanged = false; // Flag to check if any value is changed
+  
+    // Find if the record already exists in the deviceChanges array
+    const existingDeviceChangeIndex = newDeviceChanges.findIndex(
+      (change) => change.deviceId === rowData.id
+    );
+  
     if (type === "startDate") {
-      rowData.startDate = newDate;
+      if (rowData.startDate !== newDate) {
+        rowData.startDate = newDate;
+        console.log(rowData.startDate);
+        isChanged = true; // Mark as changed
+      }
     } else if (type === "endDate") {
-      rowData.endDate = newDate;
+      if (rowData.endDate !== newDate) {
+        rowData.endDate = newDate;
+        console.log(rowData.endDate);
+        isChanged = true; // Mark as changed
+      }
+    }
+  
+    // If any date is changed, update the existing entry or add a new one
+    if (isChanged) {
+      const newDeviceChange = {
+        deviceId: rowData.id,
+        subscriberId: 0,
+        subscribersContractInformationId: 0,
+        action: "Edit",
+        startDate: convertDateFormat(rowData.startDate),
+        endDate: convertDateFormat(rowData.endDate),
+      };
+  
+      if (existingDeviceChangeIndex !== -1) {
+        // If the entry already exists, update it
+        newDeviceChanges[existingDeviceChangeIndex] = newDeviceChange;
+      } else {
+        // If no entry exists, add the new change
+        newDeviceChanges.push(newDeviceChange);
+      }
+  
+      // Update the state with the updated deviceChanges
+      setDeviceChanges(newDeviceChanges);
     }
   };
   
   
+  
   const handleSubscriberDateChange = (newDate, rowId, type) => {
-    const portStartDate = dayjs(watch("startDate"));
-    const portEndDate = dayjs(watch("endDate"));
-    const newSubChanges = [];
     const rowData = subscriberListSelected.find((item) => item.id === rowId);
-    
-    // Ensure rowData is found
-    if (!rowData) {
-        console.error(`Row with ID ${rowId} not found`);
-        return;
-    }
-
+    const newSubChanges = [...subChanges]; // Spread the previous subChanges
+    let isChanged = false; // Flag to check if any value is changed
+  
+    // Find if the record already exists in the subChanges array
+    const existingSubChangeIndex = newSubChanges.findIndex(
+      (change) => change.subscriberId === rowData.id && change.subscribersContractInformationId === rowData.subscribersContractInformationId
+    );
+  
     if (type === "startDate") {
-        rowData.startDate = newDate; // Update to the new date
-
-        // Check if the start date has changed compared to portStartDate
-        if (!dayjs(portStartDate).isSame(dayjs(newDate))) {
-            const newSubChangeDate = {
-                deviceId: 0, // Use actual device ID here if available
-                subscriberId: rowData.id,
-                subscribersContractInformationId: rowData.subscribersContractInformationId,
-                action: "Edit",
-                createBy: `${userData?.firstName} ${userData?.lastName}`, // Use actual creator's information
-                startDate: convertDateFormat(rowData.startDate), // Use updated start date
-                endDate: convertDateFormat(rowData.endDate) // Use updated end date
-            };
-            newSubChanges.push(newSubChangeDate);
-            setSubChanges(newSubChanges);
-        }
-
-    } else if (type === "endDate") {
-      rowData.endDate = newDate; // Update to the new date
-  
-      // Check if the end date has changed compared to portEndDate
-      if (!dayjs(portEndDate).isSame(dayjs(newDate))) {
-          const newSubChangeDate = {
-              deviceId: 0, // Use actual device ID here if available
-              subscriberId: rowData.id,
-              subscribersContractInformationId: rowData.subscribersContractInformationId,
-              action: "Edit",
-              createBy: `${userData?.firstName} ${userData?.lastName}`, // Use actual creator's information
-              startDate: convertDateFormat(rowData.startDate), // Use updated start date
-              endDate: convertDateFormat(rowData.endDate) // Use updated end date
-          };
-  
-          setSubChanges((prevChanges) => {
-              // Clone the previous changes to modify them
-              const updatedChanges = [...prevChanges];
-  
-              // Find if an entry with the same subscriberId already exists
-              const existingIndex = updatedChanges.findIndex(
-                  change => change.subscriberId === newSubChangeDate.subscriberId
-              );
-  
-              if (existingIndex !== -1) {
-                  // Update the existing entry's information for the same subscriberId
-                  updatedChanges[existingIndex] = { ...updatedChanges[existingIndex], ...newSubChangeDate };
-                  console.log(`Updated record for subscriber ID ${newSubChangeDate.subscriberId}`);
-              } else {
-                  // If no existing entry, add new change as a new row in the list
-                  updatedChanges.push(newSubChangeDate);
-                  console.log(`Added new record for subscriber ID ${newSubChangeDate.subscriberId}`);
-              }
-  
-              return updatedChanges; // Return the updated list without removing existing records
-          });
+      if (rowData.startDate !== newDate) {
+        rowData.startDate = newDate;
+        console.log(rowData.startDate);
+        isChanged = true; // Mark as changed
       }
-  }
+    } else if (type === "endDate") {
+      if (rowData.endDate !== newDate) {
+        rowData.endDate = newDate;
+        console.log(rowData.endDate);
+        isChanged = true; // Mark as changed
+      }
+    }
+  
+    // If any date is changed, update the existing entry or add a new one
+    if (isChanged) {
+      const newSubChangeDate = {
+        deviceId: 0, // Use actual deviceId if available
+        subscriberId: rowData.id,
+        subscribersContractInformationId: rowData.subscribersContractInformationId,
+        action: "Edit",
+        createBy: `${userData?.firstName} ${userData?.lastName}`,
+        startDate: convertDateFormat(rowData.startDate),
+        endDate: convertDateFormat(rowData.endDate),
+      };
+  
+      if (existingSubChangeIndex !== -1) {
+        // If the entry already exists, update it
+        newSubChanges[existingSubChangeIndex] = newSubChangeDate;
+      } else {
+        // If no entry exists, add the new change
+        newSubChanges.push(newSubChangeDate);
+      }
+  
+      // Update the state with the updated subChanges
+      setSubChanges(newSubChanges);
+    }
+  };
   
   
   
 
-    }
+
+
+
+
+
+
+
+
+
+
 
 
  
@@ -1573,20 +1617,6 @@ const onApplyChangeDevice = () => {
         if (itemEndDate < portEndDate) {
             console.log("item enddate > portenddate");
             itemEndDate = dayjs(item?.endDate, ["DD/MM/YYYY", "YYYY-MM-DD"]);
-
-            // Prepare new device change object for date changes
-            const newDeviceChangeDate = {
-                deviceId: item.id,
-                subscriberId: item.subscriberId || 0,
-                subscribersContractInformationId: item.subscribersContractInformationId || 0,
-                action: "Edit", // Specify the action as end date update
-                createBy: userData?.firstName + " " + userData?.lastName,
-                startDate: convertDateFormat(item.startDate),
-                endDate: convertDateFormat(item.endDate)
-            };
-            console.log(newDeviceChangeDate);
-            newDeviceChanges.push(newDeviceChangeDate); // Add to the changes list
-            
         } else if (portEndDate < itemEndDate){
           itemEndDate = portEndDate.format("DD/MM/YYYY");
         }
@@ -1614,9 +1644,10 @@ const onApplyChangeDevice = () => {
                 hasRemoval = true; // Mark removal because of undoing the add
             } 
             else if (existingChange.action === "Edit") {
-                // If the action is "Edit", change it to "Remove"
-                updatedChanges[existingIndex].action = "Remove";
-                hasRemoval = true; // Mark removal due to editing to removal
+              // If the action is "Edit", change it to "Remove"
+              updatedChanges[existingIndex].action = "Remove";
+              console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
+              hasRemoval = true; // แสดงว่าได้ทำการลบแล้ว
             } 
         } else {
             // If the ID does not exist, find the new change
@@ -1709,7 +1740,60 @@ const onApplyChangeDevice = () => {
     const newSubIds = new Set(newSubChanges.map(change => change.subscriberId));
 
     // Update deviceChanges
-    setDeviceChanges((prevChanges) => [...prevChanges, ...newSubChanges]); 
+   setSubChanges((prevChanges) => {
+    // Create a new list to store updated deviceChanges
+    const updatedChanges = [...prevChanges];
+    let hasRemoval = false; // Flag to track if any removal happens
+    let hasAddition = false; // Flag to track if any addition happens
+
+    newSubIds.forEach(newId => {
+        const existingIndex = updatedChanges.findIndex(change => change.subscriberId === newId);
+        if (existingIndex !== -1) {
+         const existingChange = updatedChanges[existingIndex];
+         if (existingChange.action === "Add") {
+            updatedChanges.splice(existingIndex, 1);
+            hasRemoval = true; // Mark removal because of undoing the add
+         } else if (existingChange.action === "Edit") {
+           // If the action is "Edit", change it to "Remove"
+           updatedChanges[existingIndex].action = "Remove";
+           console.log(`Changed action for device ID ${newId} from Edit to Remove.`);
+           hasRemoval = true; // แสดงว่าได้ทำการลบแล้ว
+          }
+
+
+        } else {
+            // If the ID does not exist, add it to the list
+            const newChange = newSubChanges.find(change => change.subscriberId === newId);
+            if (newChange) {
+              updatedChanges.push(newChange);
+
+              if (newChange.action === "Add") {
+                  hasAddition = true; // Mark as added
+              } else if (newChange.action === "Remove") {
+                  hasRemoval = true; // Mark as removed
+              }
+
+             // else if (newChange.action === "Edit" || newChange.action === "Remove") {
+             //     // Add "Edit" and "Remove" actions to the list as well
+             //     updatedChanges.push(newChange);
+             //     console.log(`${newChange.action} action for device ID:`, newId); // Example logging
+             // }
+         }
+        }
+    });
+// Set the states only once after processing all devices
+if (hasRemoval) {
+  setIsRemovedSub(true);
+}
+
+// Set addition flag based on whether any "Add" action exists
+if (hasAddition) {
+  setisAddSub(true); // Set to true if any addition happened
+} else {
+  setisAddSub(false); // Set to false if no addition happened
+}
+    return updatedChanges; // Return the updated list
+});
   
   
      setSubscriberListSelected(subscriberListSelectedTemp);
