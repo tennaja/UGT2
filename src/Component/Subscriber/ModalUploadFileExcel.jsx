@@ -120,7 +120,7 @@ export default function ModalUploadFileExcel(props) {
     // Access data from the first sheet
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
-    const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }).filter((items)=> items.length !== 0);
 
     // Log the sheet data
     //console.log(sheetData);
@@ -128,12 +128,15 @@ export default function ModalUploadFileExcel(props) {
     if (sheetData.length >= 3) {
       if(sheetData[1]?.[1] === "Year"||sheetData[1]?.[1] === "Year (A.D.)"){
         const filterYearSheet = sheetData.filter((items) => items[1] > 2100)
-        const filterYearSheetEmpty = sheetData.filter((items) => items[1] === undefined)
+        const filterEmptyData = sheetData.filter((item)=> item.length !== 0)
+        const filterYearSheetEmpty = filterEmptyData.filter((items) => items[1] === undefined)
+        console.log(filterYearSheetEmpty)
         if(filterYearSheetEmpty.length === 0){
             if(filterYearSheet.length === 0){
               for(let i = 0;i < sheetData.length;i++){
                 if(i>=2){
                   const filterDuplicate = sheetData.filter((items)=>items[1] === sheetData[i]?.[1])
+                  console.log(filterDuplicate)
                   if(filterDuplicate.length === 1){
                     if (listData.length === 0) {
                       console.log("Add new");
@@ -338,7 +341,7 @@ export default function ModalUploadFileExcel(props) {
         else{
           //message.error("Please check file data again year is empty.")
           setIsShowFailModal(true)
-          setMessageFailModal("Please check file data again year is empty.")
+          setMessageFailModal("Please check file data again.")
           setAllowcatesExcelfileList([])
           setTumbFile([]);
           onCloseModal();
@@ -364,11 +367,14 @@ export default function ModalUploadFileExcel(props) {
     console.log("Come to function check")
       const diffYear = (yearEnd-yearStart)+1
       const lengthData = data.length-2
+      const lengthDataNoEmpty = data.filter((item)=> item.length !== 0)
+      const lengthCreateData = lengthDataNoEmpty.length - 2
+      console.log(lengthCreateData)
       console.log("Data",data)
       const lengthCreateStartyear = data.filter((items)=> items[1] === yearStart)
       const lenghtCreateEndyear = data.filter((items)=>items[1] === yearEnd)
       console.log("Diff Year",diffYear)
-      console.log("Data length",lengthData)
+      console.log("Data length",lengthCreateData)
       console.log(lengthCreateStartyear.length)
       console.log(lenghtCreateEndyear.length)
 
@@ -376,7 +382,7 @@ export default function ModalUploadFileExcel(props) {
         console.log("Have Start Year")
         if(lenghtCreateEndyear.length !== 0){
           console.log("Have End Year")
-          if(lengthData < diffYear){
+          if(lengthCreateData < diffYear){
             console.log("Length is not match")
             setIsShowFailModal(true)
             setMessageFailModal("Data upload file is not match with Retail ESA Contract Start Date and Retail ESA Contract End Date")

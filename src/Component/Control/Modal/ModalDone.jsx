@@ -98,7 +98,7 @@ const emailBodytoVerifier = `
         <b><span style="color: red;"> waiting for verification.</span></b>
       </p>
       
-      <p>Device Details:</p>
+      <p><b>Device Details:</b></p>
        
       <p>
       <b>Name:</b> ${Name}

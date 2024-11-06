@@ -134,7 +134,7 @@ const UploadFile = (props) => {
     
     
  
-    const handleClickDownloadFile = async (file) => {
+    const handleClickZipFile = async (file) => {
       const fileID = file?.evidentFileID; 
       const fileName = file?.name; 
       const requestParameter = {
@@ -166,7 +166,7 @@ const UploadFile = (props) => {
       try {
         for (const file of files) {
           try {
-            const { blob, fileName } = await handleClickDownloadFile(file); // ส่งอ็อบเจกต์ File ไปยังฟังก์ชันดาวน์โหลดไฟล์
+            const { blob, fileName } = await handleClickZipFile(file); // ส่งอ็อบเจกต์ File ไปยังฟังก์ชันดาวน์โหลดไฟล์
             zip.file(fileName, blob); // เพิ่มไฟล์ไปยัง ZIP โดยใช้ชื่อไฟล์
           } catch (error) {
             console.error("Error downloading file:", error); // จัดการข้อผิดพลาดสำหรับไฟล์แต่ละไฟล์

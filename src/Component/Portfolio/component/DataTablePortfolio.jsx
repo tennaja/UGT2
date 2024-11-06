@@ -382,7 +382,7 @@ if (checkStartDate) {
     
     if (checkEndDate) {
       const expiryDate = formatDateToDDMMYYYY(data.find((item) => item.id === index)?.expiryDate);
-      const retailEndDate = data.find((item) => item.id === index)?.retailESAContractEndDate;
+      const retailEndDate = formatDateToDDMMYYYY(data.find((item) => item.id === index)?.retailESAContractEndDate);
   
       const parsedExpiryDate = expiryDate ? parseDate(expiryDate) : null;
       const parsedRetailEndDate = retailEndDate ? parseDate(retailEndDate) : null;
@@ -437,8 +437,8 @@ if (checkStartDate) {
       } else {
         // ถ้า Port ยังไม่เริ่ม แก้ไขวันที่ Start / EndDate ได้
         if (
-          column.id === "startDate" ||
-          column.id === "retailESAContractStartDate"
+          column.id === "startDate" 
+      
         ) {
           // ถ้าเป็นข้อมูลที่ add ลงไปใน port อยู่แล้ว และ port เริ่มไปแล้ว ห้าม edit start date
           const addedDevice = detailPortfolio?.device?.filter(
@@ -493,7 +493,8 @@ if (checkStartDate) {
           }
         } else if (
           column.id === "endDate" ||
-          column.id === "retailESAContractEndDate"
+            column.id === "retailESAContractEndDate" 
+  
         ) {
           return (
             <Controller

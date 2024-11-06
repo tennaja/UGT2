@@ -1473,6 +1473,7 @@ const AddSubscriber = () => {
   const handleChangeContractEndDate = (date) => {
     let dateStart = dayjs(selectedCommisionDate).hour(0).minute(0).second(0);
     let dateEnd = dayjs(date);
+    dateEnd = dateEnd.add(1, "day"); // บวก 1 วันเพื่อนับรวมวันที่สิ้นสุดด้วย
 
     let years = dateEnd.diff(dateStart, "year"); // หาจำนวนปีที่ต่างกัน
     dateStart = dateStart.add(years, "years"); // บวกจำนวนปีที่ต่างกันเข้าไป เพื่อไปเทียบจำนวนเดือนต่อ
@@ -1480,7 +1481,7 @@ const AddSubscriber = () => {
     let months = dateEnd.diff(dateStart, "month"); // หาจำนวนเดือนที่ต่างกัน
     dateStart = dateStart.add(months, "months"); // บวกจำนวนเดือนที่ต่างกันเข้าไป เพื่อไปเทียบจำนวนวันต่อ
 
-    dateEnd = dateEnd.add(1, "day"); // บวก 1 วันเพื่อนับรวมวันที่สิ้นสุดด้วย
+    
     let days = dateEnd.diff(dateStart, "day"); // หาจำนวนวันที่ต่างกัน
 
     let durationString = "";

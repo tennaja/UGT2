@@ -1978,6 +1978,7 @@ const UpdateSubscriber = () => {
   const handleChangeContractEndDate = (date) => {
     let dateStart = dayjs(selectedCommisionDate).hour(0).minute(0).second(0);
     let dateEnd = dayjs(date);
+    dateEnd = dateEnd.add(1, "day"); // บวก 1 วันเพื่อนับรวมวันที่สิ้นสุดด้วย
 
     let years = dateEnd.diff(dateStart, "year"); // หาจำนวนปีที่ต่างกัน
     dateStart = dateStart.add(years, "years"); // บวกจำนวนปีที่ต่างกันเข้าไป เพื่อไปเทียบจำนวนเดือนต่อ
@@ -1985,7 +1986,7 @@ const UpdateSubscriber = () => {
     let months = dateEnd.diff(dateStart, "month"); // หาจำนวนเดือนที่ต่างกัน
     dateStart = dateStart.add(months, "months"); // บวกจำนวนเดือนที่ต่างกันเข้าไป เพื่อไปเทียบจำนวนวันต่อ
 
-    dateEnd = dateEnd.add(1, "day"); // บวก 1 วันเพื่อนับรวมวันที่สิ้นสุดด้วย
+    
     let days = dateEnd.diff(dateStart, "day"); // หาจำนวนวันที่ต่างกัน
 
     let durationString = "";
@@ -4171,7 +4172,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       </div>
                                       <div>
                                         <p className="text-GRAY_BUTTON">
-                                        Contracted Energy amount (kWh)
+                                        Contracted Energy Amount (kWh)
                                         </p>
                                         <hr />
                                         <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
@@ -5079,7 +5080,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                       </div>
                                       <div>
                                         <p className="text-GRAY_BUTTON">
-                                        Contracted Energy amount (kWh)
+                                        Contracted Energy Amount (kWh)
                                         </p>
                                         <hr />
                                         <p className={getStyleContractAllowcated(item.year,1,item.amount01)}>{item.amount01?.toLocaleString(undefined, {minimumFractionDigits: 2,})}</p>
