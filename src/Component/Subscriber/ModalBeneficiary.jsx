@@ -55,6 +55,7 @@ const ModalBeneficiary = (props) => {
 
   useEffect(() => {
     if (editStatus === true) {
+      console.log("Fetch Edit")
       dispatch(
         FetchDistrictBeneList(beneficiaryDataEdit.beneficiaryProviceCode)
       );
@@ -66,8 +67,11 @@ const ModalBeneficiary = (props) => {
       );
       dispatch(SubscriberFilterList());
     } else {
+      console.log("Fetch Add")
       dispatch(FetchCountryList());
       dispatch(FetchProvinceBeneList(764));
+      dispatch(FetchDistrictBeneList());
+      dispatch(FetchSubDistrictBeneList())
       dispatch(FetchPostcodeBeneList());
       dispatch(SubscriberFilterList());
     }
@@ -110,6 +114,19 @@ const ModalBeneficiary = (props) => {
   const [isCheckBoxConfirmAdd, setIsCheckBoxConfirmAdd] = useState(false);
   const [isCheckBoxConfirmEdit, setIsCheckBoxCOnfirmEdit] = useState(false);
   const [isErrorCheckBox, setIsErrorCheckBox] = useState(false);
+
+  const handleKeyDown = (e) =>{
+    if(e.key === "Enter"){
+      e.preventDefault()
+    }
+  }
+
+  useEffect(()=>{
+    window.addEventListener("keydown",handleKeyDown)
+    return ()=>{
+      window.removeEventListener("keydown",handleKeyDown)
+    }
+  },[])
 
   const onChangeCheckBoxConfirmAdd = () => {
     setIsCheckBoxConfirmAdd(!isCheckBoxConfirmAdd);
@@ -367,6 +384,7 @@ const ModalBeneficiary = (props) => {
   const onlyPositiveNum = /^[+]?\d+([.]\d+)?$/;
 
   const onClickOk = (formData) => {
+    
     let beneficiaryDataParam = {};
     const param = {
       beneficiaryName: formData.beneficiaryName,
@@ -454,6 +472,7 @@ const ModalBeneficiary = (props) => {
       withCloseButton={false}
       closeOnClickOutside={false}
       centered
+      onKeyDown={handleKeyDown}
     >
       <div className="pt-4 px-4 pb-2">
         <h3 className="text-PRIMARY_TEXT font-semibold text-center">
@@ -471,7 +490,9 @@ const ModalBeneficiary = (props) => {
                     control={control}
                     rules={{
                       required: "This field is required",
-                      validate: (value) => value.trim() !== "" || "Input cannot be just spaces",
+                      validate: (value) =>
+                                    value.trim() !== "" ||
+                                    "Input cannot be just spaces",
                     }}
                     render={({ field }) => (
                       <Input

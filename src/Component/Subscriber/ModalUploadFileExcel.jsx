@@ -44,6 +44,19 @@ export default function ModalUploadFileExcel(props) {
     type: "application/vnd.ms-excel",
   });
 
+  const handleKeyDown = (e) =>{
+    if(e.key === "Enter"){
+      e.preventDefault()
+    }
+  }
+
+  useEffect(()=>{
+    window.addEventListener("keydown",handleKeyDown)
+    return ()=>{
+      window.removeEventListener("keydown",handleKeyDown)
+    }
+  },[])
+
   function downloadTemplateFile() {
     const base64Content = templateFile.binary//.split(",")[1];
     const binaryString = atob(base64Content);
@@ -528,6 +541,7 @@ export default function ModalUploadFileExcel(props) {
       withCloseButton={false}
       closeOnClickOutside={false}
       centered
+      onKeyDown={handleKeyDown}
     >
       {/* <div className="pt-4 px-4 pb-2">
         <h6 className="text-PRIMARY_TEXT font-semibold">

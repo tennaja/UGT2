@@ -79,6 +79,19 @@ const ModalBeneficiaryEdit = (props) => {
     }
   }, []);
 
+  const handleKeyDown = (e) =>{
+    if(e.key === "Enter"){
+      e.preventDefault()
+    }
+  }
+
+  useEffect(()=>{
+    window.addEventListener("keydown",handleKeyDown)
+    return ()=>{
+      window.removeEventListener("keydown",handleKeyDown)
+    }
+  },[])
+
   const countryBeneficiaryList = useSelector(
     (state) => state.dropdrow.countryListAdd
   );
@@ -448,6 +461,7 @@ const ModalBeneficiaryEdit = (props) => {
       withCloseButton={false}
       closeOnClickOutside={false}
       centered
+      onKeyDown={handleKeyDown}
     >
       <div className="pt-4 px-4 pb-2">
         <h3 className="text-PRIMARY_TEXT font-semibold text-center">

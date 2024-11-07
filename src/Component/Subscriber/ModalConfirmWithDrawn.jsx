@@ -20,6 +20,19 @@ const ModalConfirmWithdrawn = (props) => {
 
   const [isCheckBox,setIsCheckBox] = useState(false)
 
+  const handleKeyDown = (e) =>{
+    if(e.key === "Enter"){
+      e.preventDefault()
+    }
+  }
+
+  useEffect(()=>{
+    window.addEventListener("keydown",handleKeyDown)
+    return ()=>{
+      window.removeEventListener("keydown",handleKeyDown)
+    }
+  },[])
+
   const onChangeCheckBox=()=>{
     setIsCheckBox(!isCheckBox)
     console.log(isCheckBox)
@@ -61,6 +74,7 @@ const ModalConfirmWithdrawn = (props) => {
         withCloseButton={false}
         closeOnClickOutside={false}
         centered
+        onKeyDown={handleKeyDown}
       >
         <div className="pt-2 pb-1">
           <div className="text-center sm:mt-4">

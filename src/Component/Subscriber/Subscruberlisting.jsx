@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import SubscriberLOGO01 from "../assets/3-user.svg";
+import SubscriberLOGO01 from "../assets/3-User.svg";
 import Calendar from "../assets/calendars.svg";
 import User from "../assets/3 User.svg";
 import Clock from "../assets/Clock.svg";
@@ -43,6 +43,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import MySelectSubscriber from "./SelectSubscriber";
 import { message } from "antd";
 import { MdOutlineContentCopy } from "react-icons/md";
+import DataTableSubscriber from "./components/DataTableSubscriber";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
@@ -470,6 +471,7 @@ const Subscriberlisting = (props) => {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
       align: "right",
+      maxWidth: "250px",
       //maxWidth: "100px",
       render: (row) => (
           <span>
@@ -492,6 +494,7 @@ const Subscriberlisting = (props) => {
     {
       id: "portfolio",
       label: "Portfolio",
+      maxWidth: "250px",
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
@@ -521,13 +524,13 @@ const Subscriberlisting = (props) => {
               highlightTag={Highlight}
               searchWords={[searchQueryAssigned]}
               autoEscape={true}
-              textToHighlight={/*row?.portfolioCode ||*/ "xxx"}
+              textToHighlight={row?.portfolioCode}
             />
             
             
           </label>
           <button>
-              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard("xxx"/*row?.portfolioCode == null?"xxx":row?.portfolioCode*/)}/>
+              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.portfolioCode == null?"xxx":row?.portfolioCode)}/>
             </button>
           </div>
         </div>
@@ -551,6 +554,7 @@ const Subscriberlisting = (props) => {
     {
       id: "subscriberStatusId",
       label: "Status",
+      maxWidth: "150px",
       render: (row) => (
         // StatusLabel(row?.subscriberStatusId == 1 ? "Inactive" : "Active"),
         <StatusLabel
@@ -570,6 +574,7 @@ const Subscriberlisting = (props) => {
     {
       id: "manage",
       label: "",
+      maxWidth:"120px",
       render: (row) => (
         <Link
           type="button"
@@ -652,6 +657,7 @@ const Subscriberlisting = (props) => {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
       align: "right",
+      maxWidth: "250px",
       render: (row) => (
         <span>
           <Highlighter
@@ -674,6 +680,7 @@ const Subscriberlisting = (props) => {
     {
       id: "portfolio",
       label: "Portfolio",
+      maxWidth: "250px",
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
@@ -693,7 +700,7 @@ const Subscriberlisting = (props) => {
               textToHighlight={row.portfolio}
             />
           </div>
-          {row?.portfolioCode !== null && 
+          {row?.portfolioCode !== "-" && 
           <div>
             <label
               className={`${"bg-[#FFDAE1] text-[#FE3C90]"} rounded w-max px-3 py-1 mt-1 text-xs font-bold`}
@@ -732,6 +739,7 @@ const Subscriberlisting = (props) => {
     {
       id: "subscriberStatusId",
       label: "Status",
+      maxWidth: "150px",
       render: (row) => (
         // StatusLabel(row?.subscriberStatusId == 1 ? "Inactive" : "Active"),
         <StatusLabel
@@ -761,6 +769,7 @@ const Subscriberlisting = (props) => {
     {
       id: "manage",
       label: "",
+      maxWidth: "120px",
       render: (row) => (
         <Link
           type="button"
@@ -900,13 +909,13 @@ const Subscriberlisting = (props) => {
               highlightTag={Highlight}
               searchWords={[searchQueryAssigned]}
               autoEscape={true}
-              textToHighlight={/*row?.portfolioCode ||*/ "xxx"}
+              textToHighlight={row?.portfolioCode }
             />
             
             
           </label>
           <button>
-              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard("xxx"/*row?.portfolioCode == null?"xxx":row?.portfolioCode*/)}/>
+              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.portfolioCode == null?"xxx":row?.portfolioCode)}/>
             </button>
           </div>
         </div>
@@ -2127,7 +2136,7 @@ const Subscriberlisting = (props) => {
                 </div>
 
                 <div className="relative overflow-x-auto sm:rounded-lg">
-                  <DataTable
+                  <DataTableSubscriber
                     data={getAssignOBJ}
                     columns={userData?.userGroup?.id === USER_GROUP_ID.EGAT_DEVICE_MNG || userData?.userGroup?.id === USER_GROUP_ID.MEA_DEVICE_MNG || userData?.userGroup?.id === USER_GROUP_ID.PEA_DEVICE_MNG?columnsAssignedNoMng:columnsAssigned}
                     searchData={searchQueryAssigned}
@@ -2250,7 +2259,7 @@ const Subscriberlisting = (props) => {
                   </div>
                 </div>
                 <div className="relative overflow-x-auto sm:rounded-lg">
-                  <DataTable
+                  <DataTableSubscriber
                     data={getUnassignOBJ}
                     columns={userData?.userGroup?.id === USER_GROUP_ID.EGAT_DEVICE_MNG || userData?.userGroup?.id === USER_GROUP_ID.MEA_DEVICE_MNG || userData?.userGroup?.id === USER_GROUP_ID.PEA_DEVICE_MNG?columnsUnAssignedNoMng:columnsUnAssigned}
                     searchData={searchQueryUnAssigned}

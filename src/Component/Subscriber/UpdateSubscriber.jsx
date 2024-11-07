@@ -66,6 +66,8 @@ import { LiaDownloadSolid } from "react-icons/lia";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { BiErrorCircle } from "react-icons/bi";
+import CollapsInfoSubscriberEdit from "./CollapsInfoSubscriberEdit";
+
 
 const UpdateSubscriber = () => {
   const {
@@ -4313,7 +4315,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                               <div className="mt-3 mb-4 md:col-span-6">
                               {benefitList.length > 0 && (
                               <>
-                                <div className="grid grid-cols-3 text-center mt-4 md:col-span-6 text-GRAY_BUTTON font-semibold">
+                                <div className="grid grid-cols-[450px_275px_200px] text-center mt-4 md:col-span-6 text-GRAY_BUTTON font-semibold">
                                   <div>
                                     <p>Name</p>
                                   </div>
@@ -4332,7 +4334,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                   key={index}
                                   className="px-4 md:col-span-6 text-sm"
                                 >
-                                  <CollapsSubscriberEdit
+                                  <CollapsInfoSubscriberEdit
                                     onClickEditBtn={() => {
                                       onClickEditBeneBtn(item, index);
                                     }}
@@ -4345,14 +4347,14 @@ function downloadAllFileAggregate(outputZipFilename) {
                                     isShowDelete={item.id === 0 ?true:false}
                                   >
                                     <BeneficiaryEdit beneficiaryDataEdit={item} editStatus={true}/>
-                                  </CollapsSubscriberEdit>
+                                  </CollapsInfoSubscriberEdit>
                                 </div>:
                                 item.status === statusFilterBene ?
                                 <div
                                 key={index}
                                 className="px-4 md:col-span-6 text-sm"
                               >
-                                <CollapsSubscriberEdit
+                                <CollapsInfoSubscriberEdit
                                   onClickEditBtn={() => {
                                     onClickEditBeneBtn(item, index);
                                   }}
@@ -4365,7 +4367,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                   isShowDelete={item.id === 0 ?true:false}
                                 >
                                   <BeneficiaryEdit beneficiaryDataEdit={item} editStatus={true}/>
-                                </CollapsSubscriberEdit>
+                                </CollapsInfoSubscriberEdit>
                               </div>:undefined
                               )):
                               <div className="text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]">

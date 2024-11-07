@@ -4,7 +4,7 @@ import down from "../assets/down.svg";
 import { FaTrashAlt } from "react-icons/fa";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
-const CollapsEdit = ({
+const CollapsInfoSubscriber = ({
   title,
   total,
   children,
@@ -20,7 +20,7 @@ const CollapsEdit = ({
   return (
     <div className="">
       <div
-        className="grid grid-cols-3 bg-MAIN_SCREEN_BG items-center  px-4 py-2 cursor-pointer"
+        className="grid grid-cols-[400px_300px_200px] bg-MAIN_SCREEN_BG items-center  px-4 py-2 cursor-pointer"
         onClick={toggleCollapse}
       >
         
@@ -71,4 +71,4 @@ const CollapsEdit = ({
   );
 };
 
-export default CollapsEdit;
+export default CollapsInfoSubscriber;

@@ -44,7 +44,7 @@ const Row = (props) => {
                 <TableRow>
                   <TableCell style={{ fontWeight: "bold" }}>Month</TableCell>
                   <TableCell align="right" style={{ fontWeight: "bold" }}>
-                    Contracted Energy Amounth (kWh)
+                    Contracted Energy Amount (kWh)
                   </TableCell>
                   <TableCell />
                 </TableRow>

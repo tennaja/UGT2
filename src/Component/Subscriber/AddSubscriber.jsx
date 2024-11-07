@@ -63,6 +63,7 @@ import { saveAs } from "file-saver";
 import { LiaDownloadSolid } from "react-icons/lia";
 import { BiErrorCircle } from "react-icons/bi";
 import CollapsEdit from "./CollapsEdit";
+import CollapsInfoSubscriber from "./CollapsInfoSubscriber";
 
 const AddSubscriber = () => {
   const {
@@ -354,7 +355,7 @@ const AddSubscriber = () => {
     }
   };
 
-  const addAllowcatedClose = () => {
+  const addAllowcatedClose = (event) => {
     setIsEdit(false);
     setShowModalConfirm(false);
   };
@@ -3718,7 +3719,7 @@ const AddSubscriber = () => {
                             <div className="mt-3 mb-4 md:col-span-6">
                             {benefitList.length > 0 && (
                               <>
-                                <div className="grid grid-cols-3 text-center mt-4 md:col-span-6 text-GRAY_BUTTON font-semibold">
+                                <div className="grid grid-cols-[450px_310px_200px] text-center mt-4 md:col-span-6 text-GRAY_BUTTON font-semibold">
                                   <div>
                                     <p>Name</p>
                                   </div>
@@ -3737,7 +3738,7 @@ const AddSubscriber = () => {
                                     key={index}
                                     className="px-4 md:col-span-6 text-sm"
                                   >
-                                    <CollapsEdit
+                                    <CollapsInfoSubscriber
                                       onClickEditBtn={() => {
                                         onClickEditBeneBtn(item, index);
                                       }}
@@ -3751,7 +3752,7 @@ const AddSubscriber = () => {
                                         beneficiaryDataEdit={item}
                                         editStatus={true}
                                       />
-                                    </CollapsEdit>
+                                    </CollapsInfoSubscriber>
                                   </div>
                                 ))
                               ) : (

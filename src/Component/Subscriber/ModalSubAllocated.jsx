@@ -93,6 +93,19 @@ const ModalSubAllocated = (props) => {
     }
   }, []);
 
+  const handleKeyDown = (e) =>{
+    if(e.key === "Enter"){
+      e.preventDefault()
+    }
+  }
+
+  useEffect(()=>{
+    window.addEventListener("keydown",handleKeyDown)
+    return ()=>{
+      window.removeEventListener("keydown",handleKeyDown)
+    }
+  },[])
+
   const MONTHLY = [
     "JAN",
     "FEB",
@@ -301,6 +314,7 @@ const ModalSubAllocated = (props) => {
       withCloseButton={false}
       closeOnClickOutside={false}
       centered
+      onKeyDown={handleKeyDown}
     >
       <div className="pt-4 px-4 pb-2">
         <h6 className="text-PRIMARY_TEXT font-semibold">

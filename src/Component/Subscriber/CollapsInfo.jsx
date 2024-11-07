@@ -32,7 +32,7 @@ const CollapsInfo = ({
         </div>
         <div className="col-start-2">
             <div className="ml-24 items-center">
-            <h2 className="ml-20 text-sm mb-0 pl-4 text-center font-semibold ">
+            <h2 className="ml-20 text-sm mb-0 text-center font-semibold ">
             {total}
           </h2>
             </div>
