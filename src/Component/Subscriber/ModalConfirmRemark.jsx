@@ -1,5 +1,5 @@
 import { Modal } from "@mantine/core";
-import {useRef, useState} from 'react'
+import {useRef, useState,useEffect} from 'react'
 import { useForm, Controller } from "react-hook-form";
 import Textarea from "../Control/Textarea";
 import TextareaNoteSubscriber from "./TextareaNoteSubscriber";

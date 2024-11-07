@@ -1,5 +1,5 @@
 import { Modal } from "@mantine/core";
-import {useRef, useState} from 'react'
+import {useRef, useState,useEffect} from 'react'
 import WarningIcon from "../assets/WarningIcon.svg"
 
 const ModalConfirmWithdrawn = (props) => {

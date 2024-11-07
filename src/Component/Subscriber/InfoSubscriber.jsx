@@ -59,7 +59,7 @@ const InfoSubscriber = () => {
   const isError = useSelector((state)=>state.subscriber.isOpenFailModal)
   const errorMessage = useSelector((state)=>state.subscriber.errmessage)
   const isOpen = useSelector((state)=>state.subscriber.isOpen)
-
+console.log(state)
   
   const {
     setValue,
