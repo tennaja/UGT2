@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "react-dropzone-uploader/dist/styles.css";
 import Dropzone from "react-dropzone-uploader";
-
 import jpgIcon from "../assets/jpg.png";
 import pngIcon from "../assets/png.png";
 import csvIcon from "../assets/csv.png";
