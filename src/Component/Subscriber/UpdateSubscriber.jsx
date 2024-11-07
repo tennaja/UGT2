@@ -4209,7 +4209,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                   </CollapsSubscriberEdit>
                                 </div>
                               )):
-                              <div>
+                              <div className="md:col-span-6">
                               <div className={allowcatedEnergyList?.length == 0?"text-center md:col-span-6 p-10 border-2 border-red-500 rounded-[10px]":"text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]"}>
                                 <label className="text-gray-400">There is no data to display.</label>
                               </div>
@@ -5117,7 +5117,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                   </CollapsSubscriberEdit>
                                 </div>
                               )):
-                              <div>
+                              <div className="md:col-span-6">
                               <div className={allowcatedEnergyList?.length == 0?"text-center md:col-span-6 p-10 border-2 border-red-500 rounded-[10px]":"text-center md:col-span-6 p-10 border-2 border-gray-200 rounded-[10px]"}>
                                 <label className="text-gray-400">There is no data to display.</label>
                               </div>
@@ -6145,7 +6145,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             ))}
                             {allowcatedEnergyList?.length == 0 && (
                               <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                <div>
+                                <div className="md:col-span-6">
                                   <h6 className="text-red-500 font-semibold">
                                     This field is required
                                   </h6>
@@ -6854,7 +6854,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                             ))}
                             {allowcatedEnergyList?.length == 0 && (
                               <div className="grid grid-cols-3 text-center mt-4 md:col-span-6">
-                                <div>
+                                <div className="md:col-span-6">
                                   <h6 className="text-red-500 font-semibold">
                                     This field is required
                                   </h6>

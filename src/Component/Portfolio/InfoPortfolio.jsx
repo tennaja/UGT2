@@ -380,69 +380,82 @@ const InfoPortfolio = () => {
     console.log("Cancle Delete");
   };
   const handleChangeDeviceStatus = (value) => {
-    if (value?.length == 1) {
-      if (value[0]?.id == 1) {
-        console.log("deviceList == ", deviceList);
-        const now = new Date();
-        const filtered = deviceList.filter((item) => {
-          console.log("item == ", item);
-          const [day, month, year] = item.endDate.split("/");
-          const endDate = new Date(`${year}-${month}-${day}`);
-          return endDate >= now;
-        });
-        console.log("filtered ===", filtered);
-        setDeviceList(filtered);
-      } else {
-        const now = new Date();
-        const filtered = deviceList.filter((item) => {
-          console.log("item == ", item);
-          const [day, month, year] = item.endDate.split("/");
-          const endDate = new Date(`${year}-${month}-${day}`);
-          return endDate < now;
-        });
-        setDeviceList(filtered);
-      }
-    } else {
-      const formatDate = (timestamp) => {
-        const dateObject = new Date(timestamp);
-        const day = dateObject.getDate().toString().padStart(2, "0");
-        const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
-        const year = dateObject.getFullYear();
-        return `${day}/${month}/${year}`;
-      };
-      const formattedDataArray = details?.device.map(
-        ({
-          deviceTechnologiesId, // Removed from final object
-          assignedUtilityId, // Removed from final object
-          commissioningDate, // Removed from final object
-          portfolioId, // Removed from final object
-          ...item // Keep the rest of the properties
-        }) => ({
-          ...item,
-          startDate: formatDate(item.ugtStartDate),
-          endDate: formatDate(item.ugtEndDate),
-        })
-      );
+    const now = new Date();
 
-      setDeviceList(formattedDataArray);
+    if (value?.length === 1) {
+        if (value[0]?.id === 1) {
+            // Filter devices with startDate <= now and endDate >= now
+            const filtered = deviceList.filter((item) => {
+                const [startDay, startMonth, startYear] = item.startDate.split("/");
+                const [endDay, endMonth, endYear] = item.endDate.split("/");
+                const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
+                const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
+
+                return startDate >= now ;
+            });
+            setDeviceList(filtered);
+        } else {
+            // Filter devices with endDate < now
+            const filtered = deviceList.filter((item) => {
+              const [startDay, startMonth, startYear] = item.startDate.split("/");
+              const [endDay, endMonth, endYear] = item.endDate.split("/");
+              const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
+              const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
+
+              return startDate <= now 
+            });
+            setDeviceList(filtered);
+        }
+    } else {
+        // Format function to convert timestamp to DD/MM/YYYY
+        const formatDate = (timestamp) => {
+            const dateObject = new Date(timestamp);
+            const day = dateObject.getDate().toString().padStart(2, "0");
+            const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
+            const year = dateObject.getFullYear();
+            return `${day}/${month}/${year}`;
+        };
+
+        // Map and format device data
+        const formattedDataArray = details?.device.map(
+            ({
+                deviceTechnologiesId, // Removed from final object
+                assignedUtilityId, // Removed from final object
+                commissioningDate, // Removed from final object
+                portfolioId, // Removed from final object
+                ...item // Keep the rest of the properties
+            }) => ({
+                ...item,
+                startDate: formatDate(item.ugtStartDate),
+                endDate: formatDate(item.ugtEndDate),
+            })
+        );
+
+        setDeviceList(formattedDataArray);
     }
-  };
+};
+
   const handleChangeSubscriberStatus = (value) => {
     if (value?.length == 1) {
       if (value[0]?.id == 1) {
         const now = new Date();
         const filtered = subscriberList.filter((item) => {
-          const [day, month, year] = item.endDate.split("/");
-          const endDate = new Date(`${year}-${month}-${day}`);
-          return endDate >= now;
+          const [startDay, startMonth, startYear] = item.startDate.split("/");
+                const [endDay, endMonth, endYear] = item.endDate.split("/");
+                const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
+                const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
+                return startDate >= now ;
         });
         setSubscriberList(filtered);
       } else {
         const now = new Date();
         const filtered = subscriberList.filter((item) => {
-          const [day, month, year] = item.endDate.split("/");
-          const endDate = new Date(`${year}-${month}-${day}`);
-          return endDate < now;
+          const [startDay, startMonth, startYear] = item.startDate.split("/");
+              const [endDay, endMonth, endYear] = item.endDate.split("/");
+              const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
+              const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
+
+              return startDate <= now 
         });
         setSubscriberList(filtered);
       }
