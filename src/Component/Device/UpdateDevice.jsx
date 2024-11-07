@@ -114,8 +114,9 @@ const UpdateDevice = () => {
   const [currentDistrict, setCurrentDistrict] = useState(null);
   const [currentDistrictcheck, setCurrentDistrictcheck] = useState(false);
   const [currentSubDistrict, setCurrentSubDistrict] = useState(null);
-  const [currentSubDistrictcheck, setCurrentSubDistrictcheck] = useState(null);
+  const [currentSubDistrictcheck, setCurrentSubDistrictcheck] = useState(false);
   const [currentPostCode, setCurrentPostCode] = useState(null);
+  const [currentPostCodecheck, setCurrentPostCodecheck] = useState(false);
   const [currentOnsite, setCurrentOnsite] = useState({ id: null, Name: '' });
   const [currentPublicfunding, setPublicfunding] = useState({ id: null, Name: '' });
   const [currentEnergySourch, setEnergySourch] = useState({ id: null, Name: '' });
@@ -470,7 +471,7 @@ const UpdateDevice = () => {
       (item) => item.subdistrictCode == deviceobj?.subdistrictCode
     );
     if (filteredSubDistrictList.length > 0) {
-      setCurrentSubDistrict(currentSubDistrictcheck ? null :filteredSubDistrictList[0]);
+      setCurrentSubDistrict(currentSubDistrictcheck ? null : filteredSubDistrictList[0]);
     }
 
     setValue(
@@ -517,7 +518,7 @@ const UpdateDevice = () => {
           initialvalueForSelectField(
             postCodeFilter,
             "postalCode",
-            deviceobj?.postcode
+            currentPostCodecheck ? null : deviceobj?.postcode
           )
         );
       }
@@ -699,7 +700,7 @@ const UpdateDevice = () => {
         setCurrentSubDistrictcheck(true)
         resetField("postCode"); // รีเซ็ต postCode
         setCurrentPostCode(null); // รีเซ็ต currentPostCode
-
+        setCurrentPostCodecheck(true)
         setPostCodeListForDisplay([]); // clear post code list option
 
       dispatch(FetchDistrictList(null));
@@ -732,26 +733,38 @@ const UpdateDevice = () => {
     setCurrentProvicne(value);
 };
 
-
-
-
-
-
-
 const onChangeDistrict = (value) => {
-  if (currentSubDistrict?.id) {
+  if (value?.districtCode === deviceobj?.districtCode) {
+  
     setValue("subdistrictCode", null); //set value to null
+    setCurrentSubDistrictcheck(true)
     setCurrentSubDistrict(null);
 
     setValue("postCode", null); //set value to null
     setCurrentPostCode(null);
+    setCurrentPostCodecheck(true)
     setPostCodeListForDisplay([]); // clear post code list option
-  }
+  
+
+  setCurrentDistrict(value);
+  dispatch(
+    FetchSubDistrictList(value?.districtCode, currentProvince?.provinceCode)
+  );}else {
+    setValue("subdistrictCode", null); //set value to null
+    setCurrentSubDistrictcheck(true)
+    setCurrentSubDistrict(null);
+
+    setValue("postCode", null); //set value to null
+    setCurrentPostCode(null);
+    setCurrentPostCodecheck(true)
+    setPostCodeListForDisplay([]); // clear post code list option
+  
 
   setCurrentDistrict(value);
   dispatch(
     FetchSubDistrictList(value?.districtCode, currentProvince?.provinceCode)
   );
+  }
 };
 
   const onChangeSubDistrict = (value) => {
@@ -764,6 +777,7 @@ const onChangeDistrict = (value) => {
     if (postCodeFilter.length > 0) {
       const newPostCodeListForDisplay = _.uniqBy(postCodeFilter, "postalCode");
       setPostCodeListForDisplay(newPostCodeListForDisplay);
+      setCurrentPostCodecheck(true)
     } else {
       setPostCodeListForDisplay([]);
     }
