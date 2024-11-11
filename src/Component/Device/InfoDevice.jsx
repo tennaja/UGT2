@@ -502,7 +502,6 @@ const handleClickDownloadFile = async (item) => {
   try {
     // setIsOpenLoading(true);
     showLoading();
-
     const fileID = item?.evidentFileID;
     const fileName = item?.name;
     const requestParameter = {
@@ -628,7 +627,7 @@ const handleClickPreviewFile = async (item) => {
               })
             );
             dispatch (
-              sendEmailByUserGroup(21,titleemail,titleemail,emailBodywhenSubmited,() => {
+              sendEmailByUserGroup(21,titleemail,emailBodywhenSubmited,() => {
                 
                 // dispatch(clearModal());
               })
