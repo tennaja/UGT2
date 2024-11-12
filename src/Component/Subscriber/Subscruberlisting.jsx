@@ -404,16 +404,14 @@ const Subscriberlisting = (props) => {
       id: "subcriberName",
       label: "Subscriber Name",
       align: "left",
-      maxWidth: "200px",
+      
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className="font-semibold	break-words"
+            className="font-semibold break-words"
             style={{
-              //  whiteSpace: "nowrap",
-              // overflow: "hidden",
-              // textOverflow: "ellipsis",
-              maxWidth: "200px",
+              width: "250px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
             <Highlighter
@@ -455,8 +453,15 @@ const Subscriberlisting = (props) => {
     {
       id: "utilityContractAbbr",
       label: "Utility Contract",
+      align: "center",
       render: (row) => (
-        <span>
+        <div
+            className="break-words"
+            style={{
+              width: "100px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
           <Highlighter
             highlightClassName="highlight"
             highlightTag={Highlight}
@@ -464,17 +469,21 @@ const Subscriberlisting = (props) => {
             autoEscape={true}
             textToHighlight={row.utilityContractAbbr}
           />
-        </span>
+        </div>
       ),
     },
     {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
-      align: "right",
-      maxWidth: "250px",
-      //maxWidth: "100px",
+      align: "center",
       render: (row) => (
-          <span>
+        <div
+            className="break-words"
+            style={{
+              width: "100px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
           <Highlighter
             highlightClassName="highlight"
             highlightTag={Highlight}
@@ -488,22 +497,21 @@ const Subscriberlisting = (props) => {
                 : "-"
             }
           />
-          </span>
+          </div>
       ),
     },
     {
       id: "portfolio",
       label: "Portfolio",
-      maxWidth: "250px",
+      align: "center",
       render: (row) => (
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col items-center justify-center">
+          
           <div
             className="font-semibold break-words"
             style={{
-              // whiteSpace: "nowrap",
-              // overflow: "hidden",
-              // textOverflow: "ellipsis",
-              maxWidth: "350px",
+              width: "200px",
+              wordWrap: "break-word", 
             }}
           >
             <Highlighter
@@ -513,9 +521,10 @@ const Subscriberlisting = (props) => {
               autoEscape={true}
               textToHighlight={row.portfolio}
             />
-          </div>
           
-          <div>
+          
+          
+          
           <label
             className={`${"bg-[#FFDAE1] text-[#FE3C90]"} rounded w-max px-3 py-1 mt-1 text-xs font-bold`}
           >
@@ -532,8 +541,8 @@ const Subscriberlisting = (props) => {
           <button>
               <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.portfolioCode == null?"xxx":row?.portfolioCode)}/>
             </button>
-          </div>
-        </div>
+          </div></div>
+        
       ),
     },
     /*{
@@ -554,9 +563,13 @@ const Subscriberlisting = (props) => {
     {
       id: "subscriberStatusId",
       label: "Status",
-      maxWidth: "150px",
+      align: "center",
       render: (row) => (
         // StatusLabel(row?.subscriberStatusId == 1 ? "Inactive" : "Active"),
+        <div className="break-words" style={{
+          width: "100px",
+          wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+        }}>
         <StatusLabel
           status={
             row?.subscriberStatusId == 1
@@ -568,14 +581,18 @@ const Subscriberlisting = (props) => {
               : "Expired"
           }
           searchQuery={searchQueryAssigned}
-        />
+        /></div>
       ),
     },
     {
       id: "manage",
       label: "",
-      maxWidth:"120px",
+     
       render: (row) => (
+        <div className="break-words" style={{
+          width: "100px",
+          wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+        }}>
         <Link
           type="button"
           state={{ id: row.id, contract: 0 }}
@@ -585,7 +602,7 @@ const Subscriberlisting = (props) => {
           <label className="m-auto cursor-pointer text-white font-semibold">
             {"Manage"}
           </label>
-        </Link>
+        </Link></div>
       ),
     },
     // Add more columns as needed
@@ -596,16 +613,14 @@ const Subscriberlisting = (props) => {
       id: "subcriberName",
       label: "Subscriber Name",
       align: "left",
-      maxWidth: "200px",
+      
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
             className="font-semibold break-words"
             style={{
-              // whiteSpace: "nowrap",
-              // overflow: "hidden",
-              // textOverflow: "ellipsis",
-              maxWidth: "200px",
+              width: "250px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
             <Highlighter
@@ -641,8 +656,15 @@ const Subscriberlisting = (props) => {
     {
       id: "utilityContractAbbr",
       label: "Utility Contract",
+      align: "center",
       render: (row) => (
-        <span>
+        <div
+            className="break-words"
+            style={{
+              width: "100px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
           <Highlighter
             highlightClassName="highlight"
             highlightTag={Highlight}
@@ -650,16 +672,22 @@ const Subscriberlisting = (props) => {
             autoEscape={true}
             textToHighlight={row.utilityContractAbbr}
           />
-        </span>
+        </div>
       ),
     },
     {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
       align: "right",
-      maxWidth: "250px",
+      align: "center",
       render: (row) => (
-        <span>
+        <div
+            className="break-words"
+            style={{
+              width: "100px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
           <Highlighter
             highlightClassName="highlight"
             highlightTag={Highlight}
@@ -673,23 +701,22 @@ const Subscriberlisting = (props) => {
                 : "-"
             }
           />
-        </span>
+        </div>
       ),
     },
     // { id: "portfolio", label: "Portfolio" },
     {
       id: "portfolio",
       label: "Portfolio",
-      maxWidth: "250px",
+      align: "center",
       render: (row) => (
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col items-center justify-center">
+          
           <div
             className="font-semibold break-words"
             style={{
-              // whiteSpace: "nowrap",
-              // overflow: "hidden",
-              // textOverflow: "ellipsis",
-              maxWidth: "350px",
+              width: "200px",
+              wordWrap: "break-word", 
             }}
           >
             <Highlighter
@@ -699,7 +726,7 @@ const Subscriberlisting = (props) => {
               autoEscape={true}
               textToHighlight={row.portfolio}
             />
-          </div>
+          
           {row?.portfolioCode !== "-" && 
           <div>
             <label
@@ -718,7 +745,7 @@ const Subscriberlisting = (props) => {
               <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.portfolioCode == null?"":row?.portfolioCode)}/>
             </button>
           </div>}
-        </div>
+        </div></div>
       ),
     },
    /* {
@@ -739,9 +766,13 @@ const Subscriberlisting = (props) => {
     {
       id: "subscriberStatusId",
       label: "Status",
-      maxWidth: "150px",
+      align: "center",
       render: (row) => (
         // StatusLabel(row?.subscriberStatusId == 1 ? "Inactive" : "Active"),
+        <div className="break-words" style={{
+          width: "100px",
+          wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+        }}>
         <StatusLabel
           status={
             row?.subscriberStatusId == 1
@@ -753,7 +784,7 @@ const Subscriberlisting = (props) => {
               : "Expired"
           }
           searchQuery={searchQueryUnAssigned}
-        />
+        /></div>
       ),
       // render: (row) => (
       //   <div
@@ -769,8 +800,12 @@ const Subscriberlisting = (props) => {
     {
       id: "manage",
       label: "",
-      maxWidth: "120px",
+      align: "center",
       render: (row) => (
+      <div className="break-words" style={{
+          width: "100px",
+          wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+        }}>
         <Link
           type="button"
           state={{ id: row.id, contract: 0 }}
@@ -780,7 +815,7 @@ const Subscriberlisting = (props) => {
           <label className="m-auto cursor-pointer text-white font-semibold">
             {"Manage"}
           </label>
-        </Link>
+        </Link></div>
       ),
     },
     // Add more columns as needed
@@ -885,10 +920,8 @@ const Subscriberlisting = (props) => {
           <div
             className="font-semibold break-words"
             style={{
-              // whiteSpace: "nowrap",
-              // overflow: "hidden",
-              // textOverflow: "ellipsis",
-              maxWidth: "350px",
+              width: "200px",
+              wordWrap: "break-word", 
             }}
           >
             <Highlighter

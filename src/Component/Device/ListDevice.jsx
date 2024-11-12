@@ -117,7 +117,7 @@ const ListDevice = (props) => {
           <div
             className="font-semibold break-words"
             style={{
-              width: "300px",
+              width: "250px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
@@ -131,7 +131,7 @@ const ListDevice = (props) => {
           <div
             className="font-semibold break-words"
             style={{
-              width: "300px",
+              width: "250px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
@@ -154,7 +154,7 @@ const ListDevice = (props) => {
         <div
             className="break-words"
             style={{
-              width: "130px",
+              width: "100px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
@@ -174,7 +174,7 @@ const ListDevice = (props) => {
         <div
             className="break-words"
             style={{
-              width: "130px",
+              width: "100px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
@@ -212,7 +212,7 @@ const ListDevice = (props) => {
         <div
             className="break-words"
             style={{
-              width: "250px",
+              width: "200px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
@@ -261,7 +261,7 @@ const ListDevice = (props) => {
           <div
             className="font-semibold break-words"
             style={{
-              width: "300px",
+              width: "250px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
@@ -275,7 +275,7 @@ const ListDevice = (props) => {
           <div
             className="font-semibold break-words"
             style={{
-              width: "300px",
+              width: "250px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
@@ -298,7 +298,7 @@ const ListDevice = (props) => {
         <div
             className="break-words"
             style={{
-              width: "130px",
+              width: "100px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
@@ -318,7 +318,7 @@ const ListDevice = (props) => {
         <div
             className="break-words"
             style={{
-              width: "130px",
+              width: "100px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
@@ -357,7 +357,7 @@ const ListDevice = (props) => {
         <div
             className="break-words"
             style={{
-              width: "250px",
+              width: "200px",
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
