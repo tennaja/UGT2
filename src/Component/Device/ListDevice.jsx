@@ -116,7 +116,10 @@ const ListDevice = (props) => {
         <div className="flex flex-col justify-center">
           <div
             className="font-semibold break-words"
-            style={{ maxWidth: "300px" }}
+            style={{
+              width: "300px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
           >
             <Highlighter
               highlightTag={Highlight}
@@ -125,6 +128,13 @@ const ListDevice = (props) => {
               textToHighlight={row.name?.length > 100 ? row.name?.substring(0, 100) + "..." : row.name}
             />
           </div>
+          <div
+            className="font-semibold break-words"
+            style={{
+              width: "300px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
           <label className="text-[#2e8d8d] bg-[#f0f8ff] rounded w-max px-2 py-1 mt-1 text-xs font-normal">
             <Highlighter
               highlightTag={Highlight}
@@ -132,7 +142,7 @@ const ListDevice = (props) => {
               autoEscape={true}
               textToHighlight={row?.typeName ?? ""}
             />
-          </label>
+          </label></div>
         </div>
       ),
     },
@@ -141,12 +151,19 @@ const ListDevice = (props) => {
       label: "Utility Contract",
       align: "center",
       render: (row) => (
+        <div
+            className="break-words"
+            style={{
+              width: "130px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
         <Highlighter
           highlightTag={Highlight}
           searchWords={[searchQueryAssigned]}
           autoEscape={true}
           textToHighlight={row.utilityContractAbbr}
-        />
+        /></div>
       ),
     },
     {
@@ -154,12 +171,19 @@ const ListDevice = (props) => {
       label: "Capacity (MW)",
       align: "center",
       render: (row) => (
+        <div
+            className="break-words"
+            style={{
+              width: "130px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
         <Highlighter
           highlightTag={Highlight}
           searchWords={[searchQueryAssigned]}
           autoEscape={true}
           textToHighlight={numeral(row.capacity).format("0,0.00")}
-        />
+        /></div>
       ),
     },
     {
@@ -167,7 +191,10 @@ const ListDevice = (props) => {
       label: "Portfolio",
       align: "center",
       render: (row) => (
-        <div className="break-words" style={{ maxWidth: "200px" }}>
+        <div className="break-words" style={{
+          width: "100px",
+          wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+        }}>
           <Highlighter
             highlightTag={Highlight}
             searchWords={[searchQueryAssigned]}
@@ -182,7 +209,22 @@ const ListDevice = (props) => {
       label: "Status",
       align: "center",
       render: (row) => (
+        <div
+            className="break-words"
+            style={{
+              width: "250px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
         <StatusLabel status={row.statusName} searchQuery={searchQueryAssigned} />
+        {row.isApproved === "True" && (
+            <StatusLabel
+              key={row.id} // Assuming each item has a unique id
+              status="Approved"
+              searchQuery={searchQueryUnAssigned}
+            />
+          )}
+        </div>
       ),
     },
     {
@@ -190,6 +232,13 @@ const ListDevice = (props) => {
       label: "",
       align: "center",
       render: (row) => (
+        <div
+            className="break-words"
+            style={{
+              width: "100px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
         <Link
           type="button"
           state={{ code: row.id }}
@@ -197,7 +246,7 @@ const ListDevice = (props) => {
           className="flex no-underline rounded text-center p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33] w-24"
         >
           <label className="cursor-pointer text-white font-semibold">Manage</label>
-        </Link>
+        </Link></div>
       ),
     },
   ];
@@ -211,7 +260,10 @@ const ListDevice = (props) => {
         <div className="flex flex-col justify-center">
           <div
             className="font-semibold break-words"
-            style={{ maxWidth: "300px" }}
+            style={{
+              width: "300px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
           >
             <Highlighter
               highlightTag={Highlight}
@@ -220,6 +272,13 @@ const ListDevice = (props) => {
               textToHighlight={row.name?.length > 100 ? row.name?.substring(0, 100) + "..." : row.name}
             />
           </div>
+          <div
+            className="font-semibold break-words"
+            style={{
+              width: "300px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
           <label className="text-[#2e8d8d] bg-[#f0f8ff] rounded w-max px-2 py-1 mt-1 text-xs font-normal">
             <Highlighter
               highlightTag={Highlight}
@@ -227,7 +286,7 @@ const ListDevice = (props) => {
               autoEscape={true}
               textToHighlight={row?.typeName ?? ""}
             />
-          </label>
+          </label></div>
         </div>
       ),
     },
@@ -236,12 +295,19 @@ const ListDevice = (props) => {
       label: "Utility Contract",
       align: "center",
       render: (row) => (
+        <div
+            className="break-words"
+            style={{
+              width: "130px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
         <Highlighter
           highlightTag={Highlight}
           searchWords={[searchQueryUnAssigned]}
           autoEscape={true}
           textToHighlight={row.utilityContractAbbr}
-        />
+        /></div>
       ),
     },
     {
@@ -249,14 +315,20 @@ const ListDevice = (props) => {
       label: "Capacity (MW)",
       align: "center",
       render: (row) => (
-        <span className="text-right">
+        <div
+            className="break-words"
+            style={{
+              width: "130px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
           <Highlighter
             highlightTag={Highlight}
             searchWords={[searchQueryUnAssigned]}
             autoEscape={true}
             textToHighlight={numeral(row.capacity).format("0,0.00")}
           />
-        </span>
+        </div>
       ),
     },
     {
@@ -264,7 +336,10 @@ const ListDevice = (props) => {
       label: "Portfolio",
       align: "center",
       render: (row) => (
-        <div className="break-words" style={{ maxWidth: "200px" }}>
+        <div className="break-words" style={{
+          width: "100px",
+          wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+        }}>
           <Highlighter
             highlightTag={Highlight}
             searchWords={[searchQueryUnAssigned]}
@@ -279,7 +354,13 @@ const ListDevice = (props) => {
       label: "Status",
       align: "center",
       render: (row) => (
-        <>
+        <div
+            className="break-words"
+            style={{
+              width: "250px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
           <StatusLabel
             status={row.statusName}
             searchQuery={searchQueryUnAssigned}
@@ -291,7 +372,7 @@ const ListDevice = (props) => {
               searchQuery={searchQueryUnAssigned}
             />
           )}
-        </>
+        </div>
       ),
     },
     {
@@ -299,6 +380,13 @@ const ListDevice = (props) => {
       label: "",
       align: "center",
       render: (row) => (
+        <div
+            className="break-words"
+            style={{
+              width: "100px",
+              wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+            }}
+          >
         <Link
           type="button"
           state={{ code: row.id }}
@@ -306,7 +394,7 @@ const ListDevice = (props) => {
           className="flex no-underline rounded text-center p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33] w-24"
         >
           <label className="cursor-pointer text-white font-semibold">Manage</label>
-        </Link>
+        </Link></div>
       ),
     },
   ];
