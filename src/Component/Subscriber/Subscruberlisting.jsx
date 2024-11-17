@@ -505,7 +505,7 @@ const Subscriberlisting = (props) => {
       label: "Portfolio",
       align: "center",
       render: (row) => (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col justify-center">
           
           <div
             className="font-semibold break-words"
@@ -517,32 +517,30 @@ const Subscriberlisting = (props) => {
             <Highlighter
               highlightClassName="highlight"
               highlightTag={Highlight}
-              searchWords={[searchQueryAssigned]}
+              searchWords={[searchQueryUnAssigned]}
               autoEscape={true}
               textToHighlight={row.portfolio}
             />
-          
-          
-          
-          
-          <label
-            className={`${"bg-[#FFDAE1] text-[#FE3C90]"} rounded w-max px-3 py-1 mt-1 text-xs font-bold`}
-          >
-            <Highlighter
-              highlightClassName="highlight"
-              highlightTag={Highlight}
-              searchWords={[searchQueryAssigned]}
-              autoEscape={true}
-              textToHighlight={row?.portfolioCode}
-            />
-            
-            
-          </label>
-          <button>
-              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.portfolioCode == null?"xxx":row?.portfolioCode)}/>
+          </div>
+          {row?.portfolioCode !== "-" && 
+          <div>
+            <label
+              className={`${"bg-[#FFDAE1] text-[#FE3C90]"} rounded w-max px-3 py-1 mt-1 text-xs font-bold`}
+            >
+              <Highlighter
+                highlightClassName="highlight"
+                highlightTag={Highlight}
+                searchWords={[searchQueryUnAssigned]}
+                autoEscape={true}
+                textToHighlight={row?.portfolioCode || ""}
+              />
+              
+            </label>
+            <button>
+              <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.portfolioCode == null?"":row?.portfolioCode)}/>
             </button>
-          </div></div>
-        
+          </div>}
+        </div>
       ),
     },
     /*{
@@ -710,7 +708,7 @@ const Subscriberlisting = (props) => {
       label: "Portfolio",
       align: "center",
       render: (row) => (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col justify-center">
           
           <div
             className="font-semibold break-words"
@@ -726,7 +724,7 @@ const Subscriberlisting = (props) => {
               autoEscape={true}
               textToHighlight={row.portfolio}
             />
-          
+          </div>
           {row?.portfolioCode !== "-" && 
           <div>
             <label
@@ -745,7 +743,7 @@ const Subscriberlisting = (props) => {
               <MdOutlineContentCopy className="inline-block ml-2" onClick={()=>copyToClipboard(row?.portfolioCode == null?"":row?.portfolioCode)}/>
             </button>
           </div>}
-        </div></div>
+        </div>
       ),
     },
    /* {
