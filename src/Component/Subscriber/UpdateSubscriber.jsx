@@ -2743,7 +2743,7 @@ const createPdfPDFForm1 = () => {
     image: { type: 'jpeg', quality: 50 },
     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
     html2canvas: { scale: 2}, // เพิ่ม scale เพื่อเพิ่มความละเอียด
-    jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait'},
+    jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait'},
   };
 
   // สร้าง PDF ด้วย html2pdf และดึง base64 string
@@ -2883,7 +2883,7 @@ const createPdfPDFForm2 = () => {
     image: { type: 'jpeg', quality: 50 },
     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
     html2canvas: { scale: 2}, // เพิ่ม scale เพื่อเพิ่มความละเอียด
-    jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait'},
+    jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait'},
   };
 
   // สร้าง PDF ด้วย html2pdf และดึง base64 string
