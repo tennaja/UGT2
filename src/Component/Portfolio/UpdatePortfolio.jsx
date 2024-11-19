@@ -652,6 +652,7 @@ const UpdatePortfolio = () => {
       id: "deviceName",
       label: "Device Name",
       align: "left",
+      
       render: (row) => (
         <Highlighter
           highlightTag={Highlight}

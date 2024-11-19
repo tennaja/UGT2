@@ -822,7 +822,8 @@ if (checkStartDate) {
                         style={{
                           textAlign: "center",
                           backgroundColor: "#F3F6F9",
-                          padding: "10px",
+                          padding: "1rem",
+                          fontSize : "98%"
                         }}
                       >
                         <strong> {isTotal} </strong>
@@ -836,6 +837,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
+                    fontSize : "98%"
                         }}
                       >
                         <strong>
@@ -856,6 +858,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
+                    fontSize : "98%"
                         }}
                       >
                         <strong>
@@ -874,6 +877,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
+                    
                         }}
                       >
                         <strong>
@@ -892,6 +896,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
+                    
                         }}
                       >
                         <strong>
@@ -909,7 +914,8 @@ if (checkStartDate) {
                         style={{
                           textAlign: "center",
                           backgroundColor: "#F3F6F9",
-                          padding: "10px",
+                          padding: "1rem",
+                    
                         }}
                       />
                     );

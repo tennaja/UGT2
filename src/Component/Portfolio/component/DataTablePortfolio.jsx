@@ -711,7 +711,8 @@ if (checkStartDate) {
                   style={{
                     textAlign: "center",
                     backgroundColor: "#F3F6F9",
-                    padding: "10px",
+                    padding: "1rem",
+                    fontSize : "98%"
                   }}
                 >
                   <strong> {isTotal} </strong>
@@ -725,6 +726,7 @@ if (checkStartDate) {
                     textAlign: "right",
                     backgroundColor: "#F3F6F9",
                     padding: "1rem",
+                    fontSize : "98%"
                   }}
                 >
                   <strong>
@@ -735,13 +737,14 @@ if (checkStartDate) {
             } else if (isTotal === "Total Contracted Energy" && index === 2) {
               return (
                 <TableCell
-                  key={`footer-total-capacity`}
-                  style={{
-                    textAlign: "right",
-                    backgroundColor: "#F3F6F9",
-                    padding: "1rem",
-                  }}
-                >
+                key={`footer-total-capacity`}
+                style={{
+                  textAlign: "right",
+                  backgroundColor: "#F3F6F9",
+                  padding: "1rem",
+                  fontSize : "98%"
+                }}
+              >
                   <strong>
                     {totalValue ? numeral(totalValue).format("0,0.00") : ""}
                   </strong>
@@ -755,6 +758,7 @@ if (checkStartDate) {
                     textAlign: "right",
                     backgroundColor: "#F3F6F9",
                     padding: "1rem",
+                    fontSize : "98%"
                   }}
                 >
                   <strong>
@@ -770,6 +774,7 @@ if (checkStartDate) {
                     textAlign: "right",
                     backgroundColor: "#F3F6F9",
                     padding: "1rem",
+                    fontSize : "98%"
                   }}
                 >
                   <strong>
