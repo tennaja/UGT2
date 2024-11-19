@@ -51,6 +51,8 @@ import RedemptionInfo from "./Component/EAC/Redemption/RedemptionInfo";
 import RenewDevice from "./Component/Device/RenewDevice";
 import HistoryPortfolio from "./Component/Portfolio/HistoryPortfolio";
 
+import SettlementListing from "./Component/Settlement/SettlementListing";
+
 function App() {
   return (
     <Provider store={Store}>
@@ -183,6 +185,11 @@ function App() {
                 <Route
                   path={webURL.EAC_REDEMPTION_INFO}
                   element={<RedemptionInfo></RedemptionInfo>}
+                />
+
+                <Route
+                  path={webURL.SETTLEMENT_INFO}
+                  element={<SettlementListing></SettlementListing>}
                 />
 
                 <Route path="/map2" element={<Map />}></Route>

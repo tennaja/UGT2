@@ -38,3 +38,7 @@ export const EAC_TRANSFER = '/eac/transfer'
 export const EAC_TRANSFER_INFO = '/eac/transfer/info'
 export const EAC_REDEMPTION = '/eac/redemption'
 export const EAC_REDEMPTION_INFO = '/eac/redemption/info'
+
+export const SETTLEMENT_INFO = '/settlement/info'
+export const SETTLEMENT_DATA = '/settlement/datasettlement'
+

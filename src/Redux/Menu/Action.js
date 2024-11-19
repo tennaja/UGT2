@@ -167,6 +167,8 @@ export const FetchSubMenuList = (menuId) => {
         });
     };
   } else if (menuId == 6) {
-    return async (dispatch) => {};
+    return async (dispatch) => {
+      dispatch(setSubMenuList([{id:1,name:"Settlement Info"}]))
+    };
   }
 };

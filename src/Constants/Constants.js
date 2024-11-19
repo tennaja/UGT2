@@ -6,6 +6,7 @@ export const MENU_ID = {
   SUBSCRIBER: 3,
   PORTFOLIO: 4,
   EAC_TRACKING: 5,
+  SETTLEMENT: 6,
 };
 
 export const SUB_MENU_ID = {
@@ -16,6 +17,8 @@ export const SUB_MENU_ID = {
   PORTFOLIO_LIST_INFO: 1,
   PORTFOLIO_REGISTRATION: 2,
   EAC_TRACKING_INFO: 1,
+  EAC_TRACKING_INFO: 1,
+  DATA_FOR_SETTLEMENT: 2,
 };
 
 export const DEVICE_STATUS = {
