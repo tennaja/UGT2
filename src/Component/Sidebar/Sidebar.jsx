@@ -63,6 +63,9 @@ import EacTrackingLOGO05Selected from "../assets/file-submenu-selected.svg";
 import submenuPortfolioLogoAdd from "../assets/pieplus.svg";
 import submenuPortfolioLogoAddSelected from "../assets/pieplus_selected.svg";
 
+import Settlement from "../assets/Settlement.svg"
+import Settlement_Selected from "../assets/Settlement_Selected.svg"
+
 import submenuPortfolioLogoInfo from "../assets/graphInfo.svg";
 import submenuPortfolioLogoInfoSelected from "../assets/graphInfo_selected.svg";
 import dayjs from "dayjs";
@@ -86,7 +89,7 @@ const Sidebar2 = ({ children }) => {
   const [defaultSubMenuID, setDefaultSubMenuID] = useState(1);
   const [submenu, setSubmenu] = useState([]);
   const [mainMenu, setMainMenu] = useState([]);
-console.log(currentSubMenuList)
+  console.log(currentSubMenuList)
   const setDefaultMenu = (userData) => {
     let userGroupID = userData?.userGroup?.id;
     let defaultMenu = null;
@@ -210,6 +213,7 @@ console.log(currentSubMenuList)
   
 
   useEffect(() => {
+    console.log(selectedMenuID)
     if (currentSubMenuList?.length > 0) {
       if (selectedMenuID == 2) {
         if (
@@ -252,6 +256,9 @@ console.log(currentSubMenuList)
       }
       if (selectedMenuID == 5) {
         setSubmenu(currentSubMenuList);
+      }
+      if(selectedMenuID == 6){
+        setSubmenu(currentSubMenuList)
       }
     }
   }, [currentSubMenuList]);
@@ -312,10 +319,21 @@ console.log(currentSubMenuList)
           break;
       }
     }
+    else if (selectedMenu == MENU_ID.SETTLEMENT){
+      switch (submenuID){
+        case 1 :
+          path = WEB_URL.SETTLEMENT_INFO;
+          break;
+        case 2 :
+          path = WEB_URL.SETTLEMENT_DATA;
+          break;
+      }
+    }
     return path;
   };
 
   const onCLickMenuList = (id) => {
+    console.log("Click Main Menu")
     console.log("onClickMenuList", id);
     console.log("selectedMenuID", selectedMenuID);
     if (id == selectedMenuID) {
@@ -345,6 +363,9 @@ console.log(currentSubMenuList)
           navigate(WEB_URL.PORTFOLIO_LIST);
         } else if (id == 5) {
           navigate(WEB_URL.EAC_INFO);
+        }
+        else if (id == 6){
+          navigate(WEB_URL.SETTLEMENT_INFO)
         }
       } else {
         // onClickSubmenu(currentSubmenu);
@@ -393,6 +414,11 @@ console.log(currentSubMenuList)
       if (selectedMenuID == menuId) {
         logo = eacTrackingLogoSelected;
       } else logo = eacTrackingLogo;
+    }
+    else if (menuId == MENU_ID.SETTLEMENT) {
+      if(selectedMenuID == menuId) {
+        logo = Settlement_Selected;
+      }else logo = Settlement
     }
 
     return logo;
@@ -487,6 +513,24 @@ console.log(currentSubMenuList)
             logo = EacTrackingLOGO05;
           }
           break;
+      }
+    }
+    else if (selectedMenuID == MENU_ID.SETTLEMENT){
+      switch(submenuId){
+        case 1:
+          if (selectedSubMenu == submenuId) {
+            logo = Settlement_Selected;
+          } else {
+            logo = Settlement;
+          }
+          break;
+        /*case 2:
+          if (selectedSubMenu == submenuId) {
+            logo = submenuPortfolioLogoAddSelected;
+          } else {
+            logo = submenuPortfolioLogoAdd;
+          }
+          break;*/
       }
     }
     return logo;
