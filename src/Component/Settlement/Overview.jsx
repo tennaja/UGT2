@@ -310,7 +310,7 @@ const Overview = (props) => {
           <FaChevronCircleLeft
             className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
             size="30"
-            onClick={() => navigate(WEB_URL.PORTFOLIO_LIST)}
+            onClick={() => navigate(WEB_URL.SETTLEMENT_INFO)}
           />
 
           <div>
@@ -694,7 +694,7 @@ const Overview = (props) => {
           <FaChevronCircleLeft
             className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
             size="30"
-            onClick={() => navigate(WEB_URL.PORTFOLIO_LIST)}
+            onClick={() => navigate(WEB_URL.SETTLEMENT_INFO)}
           />
 
           <div>
