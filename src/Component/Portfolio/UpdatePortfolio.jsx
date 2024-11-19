@@ -1084,7 +1084,7 @@ const UpdatePortfolio = () => {
         console.log(res);
         if (res?.isPass) { // Check validation status from response
           dispatch(
-            PortfolioManagementUpdate(paramsCreate, (createRes) => {
+            PortfolioManagementUpdate(paramsCreate,userData?.firstName + " " + userData?.lastName, (createRes) => {
               console.log("res === ", createRes);
               if (res?.portfolioInfo !== null) {
                 setShowModalComplete(true);

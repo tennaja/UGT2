@@ -387,12 +387,12 @@ export const getPortfolioManagementUpdateSubscriberStatus = (data) => {
     payload: data,
   };
 };
-export const PortfolioManagementUpdate = (params, callback) => {
+export const PortfolioManagementUpdate = (params,createby, callback) => {
   const param = params;
   console.log("param ===== ", param);
   const URL = `${PORTFOLIO_UPDATE_URL}/${param.id}`;
   const URL_DEVICE = `${PORTFOLIO_UPDATE_LIST_URL}/${param.id}/portfoliodetaildevice`;
-  const URL_SUBSCRIBER = `${PORTFOLIO_UPDATE_LIST_URL}/${param.id}/portfoliodetailSubscriber`;
+  const URL_SUBSCRIBER = `${PORTFOLIO_UPDATE_LIST_URL}/${param.id}/portfoliodetailSubscriber?CreateBy=${createby}`;
   const URL_CREATE_HISTORY = `${PORTFOLIO_CREATE_HISTORY_LOG}/${param.id}`
   
   return async (dispatch) => {
