@@ -391,7 +391,7 @@ const InfoPortfolio = () => {
                 const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
                 const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
 
-                return startDate >= now ;
+                return startDate >= now || endDate <= now;
             });
             setDeviceList(filtered);
         } else {
@@ -402,7 +402,7 @@ const InfoPortfolio = () => {
               const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
               const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
 
-              return startDate <= now 
+              return startDate <= now || endDate >= now
             });
             setDeviceList(filtered);
         }
@@ -444,7 +444,7 @@ const InfoPortfolio = () => {
                 const [endDay, endMonth, endYear] = item.endDate.split("/");
                 const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
                 const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
-                return startDate >= now ;
+                return startDate >= now && endDate <= now;
         });
         setSubscriberList(filtered);
       } else {
@@ -455,7 +455,7 @@ const InfoPortfolio = () => {
               const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
               const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
 
-              return startDate <= now 
+              return startDate <= now || endDate >= now
         });
         setSubscriberList(filtered);
       }

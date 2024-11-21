@@ -823,7 +823,7 @@ if (checkStartDate) {
                           textAlign: "center",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
-                          fontSize : "98%"
+                          fontSize : "99%"
                         }}
                       >
                         <strong> {isTotal} </strong>
@@ -837,7 +837,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
-                    fontSize : "98%"
+                    fontSize : "99%"
                         }}
                       >
                         <strong>
@@ -858,7 +858,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
-                    fontSize : "98%"
+                    fontSize : "99%"
                         }}
                       >
                         <strong>

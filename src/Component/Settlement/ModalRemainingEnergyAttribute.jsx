@@ -22,7 +22,7 @@ export default function ModalRemainingEnergyAttribute({
       align: "right",
       render: (row) => (
         <span className="text-right">
-          {numeral(row.remainingEnergyAttribute).format("0,0.00")}
+          {numeral(row.remainingEnergyAttribute).format("0,0.000")}
         </span>
       ),
     },
