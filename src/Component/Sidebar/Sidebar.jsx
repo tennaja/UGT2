@@ -194,9 +194,9 @@ const Sidebar2 = ({ children }) => {
         userData?.userGroup?.id !== USER_GROUP_ID?.ALL_MODULE_VIEWER && 
         userData?.userGroup?.id !== USER_GROUP_ID?.WHOLE_SALEER_ADMIN 
       ) {
-        data = data.filter((item) => item.menuId !== "4" && item.menuId !== "5");
+        data = data.filter((item) => item.menuId !== "4" && item.menuId !== "6");
       } else if (userData?.userGroup?.id === USER_GROUP_ID?.ALL_MODULE_VIEWER) {
-        data = data.filter((item) => item.menuId !== "5");
+        data = data.filter((item) => item.menuId !== "6");
       }
       
       // Additional condition for EGAT_DEVICE_MNG user group
@@ -275,8 +275,15 @@ const Sidebar2 = ({ children }) => {
   };
 
   const getPath = (submenuID) => {
+    console.log("Get Path")
+    console.log("Select Menu",selectedMenuID)
+    console.log("MenuId",MENU_ID.SETTLEMENT)
+    console.log(selectedMenuID == MENU_ID.SETTLEMENT)
+    console.log(submenuID)
+    
     let path = "#";
     if (selectedMenuID == MENU_ID.DEVICE) {
+      console.log("Navigate Settlement",submenuID)
       switch (submenuID) {
         case 1:
           path = WEB_URL.DEVICE_LIST;
@@ -286,6 +293,7 @@ const Sidebar2 = ({ children }) => {
           break;
       }
     } else if (selectedMenuID == MENU_ID.SUBSCRIBER) {
+      console.log("Navigate Settlement",submenuID)
       switch (submenuID) {
         case 1:
           path = WEB_URL.SUBSCRIBER_LIST;
@@ -295,6 +303,7 @@ const Sidebar2 = ({ children }) => {
           break;
       }
     } else if (selectedMenuID == MENU_ID.PORTFOLIO) {
+      console.log("Navigate Settlement",submenuID)
       switch (submenuID) {
         case 1:
           path = WEB_URL.PORTFOLIO_LIST;
@@ -303,7 +312,15 @@ const Sidebar2 = ({ children }) => {
           path = WEB_URL.PORTFOLIO_ADD;
           break;
       }
+    } else if (selectedMenuID == MENU_ID.SETTLEMENT) {
+      console.log("Navigate Settlement",submenuID)
+      switch (submenuID) {
+        case 1:
+          path = WEB_URL.SETTLEMENT_INFO;
+          break;
+      }
     } else if (selectedMenuID == MENU_ID.EAC_TRACKING) {
+      console.log("Navigate Settlement",submenuID)
       switch (submenuID) {
         case 1:
           path = WEB_URL.EAC_INFO;
@@ -319,16 +336,7 @@ const Sidebar2 = ({ children }) => {
           break;
       }
     }
-    else if (selectedMenu == MENU_ID.SETTLEMENT){
-      switch (submenuID){
-        case 1 :
-          path = WEB_URL.SETTLEMENT_INFO;
-          break;
-        case 2 :
-          path = WEB_URL.SETTLEMENT_DATA;
-          break;
-      }
-    }
+    console.log(path)
     return path;
   };
 
@@ -375,8 +383,10 @@ const Sidebar2 = ({ children }) => {
   };
 
   const onClickSubmenu = (submenuID) => {
+    console.log("Set Submenu",submenuID)
     let currentSubmenu = getCookie("currentSubmenu");
     if (currentSubmenu != submenuID) {
+      console.log("Set")
       // ถ้าย้าย submenu ให้เซ็ตเป็น default ใหม่
       dispatch(setSelectedYear(dayjs().year()));
       dispatch(setSelectedMonth(dayjs().month() + 1));
