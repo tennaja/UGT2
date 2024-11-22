@@ -5,8 +5,8 @@ export const MENU_ID = {
   DEVICE: 2,
   SUBSCRIBER: 3,
   PORTFOLIO: 4,
-  EAC_TRACKING: 5,
-  SETTLEMENT: 6,
+  EAC_TRACKING: 6,
+  SETTLEMENT: 5,
 };
 
 export const SUB_MENU_ID = {

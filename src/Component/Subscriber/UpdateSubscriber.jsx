@@ -4108,7 +4108,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                 <>
                                   <div className="flex flex-col ml-2 col-span-6">
                                     <label className="mt-3 text-[#6B7280] text-xs">
-                                      Total Contracted Energy (kWh)
+                                      Total Contracted Energy Amount (kWh)
                                     </label>
                                     <span className="">
                                       <div className="break-words	font-bold">
@@ -5016,7 +5016,7 @@ function downloadAllFileAggregate(outputZipFilename) {
                                 <>
                                   <div className="flex flex-col ml-2 col-span-6">
                                     <label className="mt-3 text-[#6B7280] text-xs">
-                                      Total Contracted Energy (kWh)
+                                      Total Contracted Energy Amount (kWh)
                                     </label>
                                     <span className="">
                                       <div className="break-words	font-bold">
