@@ -154,7 +154,7 @@ export const FetchSubMenuList = (menuId) => {
           dispatch(failRequest(err.message));
         });
     };
-  } else if (menuId == 5) {
+  } else if (menuId == 6) {
     return async (dispatch) => {
       // subMenuListEacTrackingURL
       await axios
@@ -166,7 +166,7 @@ export const FetchSubMenuList = (menuId) => {
           dispatch(failRequest(err.message));
         });
     };
-  } else if (menuId == 6) {
+  } else if (menuId == 5) {
     return async (dispatch) => {
       dispatch(setSubMenuList([{id:1,name:"Settlement Info"}]))
     };

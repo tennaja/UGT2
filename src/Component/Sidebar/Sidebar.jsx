@@ -254,10 +254,10 @@ const Sidebar2 = ({ children }) => {
           setSubmenu(currentSubMenuList);
         }
       }
-      if (selectedMenuID == 5) {
+      if (selectedMenuID == 6) {
         setSubmenu(currentSubMenuList);
       }
-      if(selectedMenuID == 6){
+      if(selectedMenuID == 5){
         setSubmenu(currentSubMenuList)
       }
     }
@@ -361,10 +361,10 @@ const Sidebar2 = ({ children }) => {
           navigate(WEB_URL.SUBSCRIBER_LIST);
         } else if (id == 4) {
           navigate(WEB_URL.PORTFOLIO_LIST);
-        } else if (id == 5) {
+        } else if (id == 6) {
           navigate(WEB_URL.EAC_INFO);
         }
-        else if (id == 6){
+        else if (id == 5){
           navigate(WEB_URL.SETTLEMENT_INFO)
         }
       } else {
