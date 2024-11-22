@@ -380,29 +380,48 @@ const InfoPortfolio = () => {
     console.log("Cancle Delete");
   };
   const handleChangeDeviceStatus = (value) => {
-    const now = new Date();
+    const today = new Date();
+    const now = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
     if (value?.length === 1) {
-        if (value[0]?.id === 1) {
-            // Filter devices with startDate <= now and endDate >= now
-            const filtered = deviceList.filter((item) => {
-                const [startDay, startMonth, startYear] = item.startDate.split("/");
-                const [endDay, endMonth, endYear] = item.endDate.split("/");
-                const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
-                const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
 
-                return startDate >= now ;
-            });
-            setDeviceList(filtered);
-        } else {
+      if (value[0]?.id === 1) {
+        // Filter devices with startDate <= now or endDate >= now
+        const filtered = deviceList.filter((item) => {
+            const [startDay, startMonth, startYear] = item.startDate.split("/");
+            const [endDay, endMonth, endYear] = item.endDate.split("/");
+    
+            // Create date objects without time
+            const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
+            const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
+            console.log("CURRENT DAY (No Time):", now);
+            console.log("START DATE:", startDate);
+            console.log("END DATE:", endDate);
+            console.log("START DATE >= NOW:", startDate >= now);
+            console.log("END DATE <= NOW:", endDate <= now);
+    
+            // If either condition is met, include the item
+            return endDate >= now; 
+        });
+    
+        setDeviceList(filtered);
+    }
+    
+         else {
             // Filter devices with endDate < now
             const filtered = deviceList.filter((item) => {
+              console.log(item)
               const [startDay, startMonth, startYear] = item.startDate.split("/");
               const [endDay, endMonth, endYear] = item.endDate.split("/");
               const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
               const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
 
-              return startDate <= now 
+console.log("CURRENT DAY (No Time):", now);
+console.log("START DATE:", startDate);
+console.log("END DATE:", endDate);
+console.log("START DATE >= NOW:", startDate <= now);
+console.log("END DATE <= NOW:", endDate >= now);
+              return  endDate < now;
             });
             setDeviceList(filtered);
         }
@@ -438,24 +457,26 @@ const InfoPortfolio = () => {
   const handleChangeSubscriberStatus = (value) => {
     if (value?.length == 1) {
       if (value[0]?.id == 1) {
-        const now = new Date();
+        const today = new Date();
+    const now = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         const filtered = subscriberList.filter((item) => {
           const [startDay, startMonth, startYear] = item.startDate.split("/");
                 const [endDay, endMonth, endYear] = item.endDate.split("/");
                 const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
                 const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
-                return startDate >= now ;
+                return endDate >= now;
         });
         setSubscriberList(filtered);
       } else {
-        const now = new Date();
+        const today = new Date();
+    const now = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         const filtered = subscriberList.filter((item) => {
           const [startDay, startMonth, startYear] = item.startDate.split("/");
               const [endDay, endMonth, endYear] = item.endDate.split("/");
               const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
               const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
 
-              return startDate <= now 
+              return endDate < now;
         });
         setSubscriberList(filtered);
       }

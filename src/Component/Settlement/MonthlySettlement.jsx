@@ -47,7 +47,7 @@ const MonthlySettlement = (props) => {
       } else {
         dispatch(setSelectedMonth(monthListData?.defaultMonth));
       }
-      setLatestMonthHasData(monthListData.defaultMonth); // เอาไว้เช็ค dropdown และ set disable ไว้
+      setLatestMonthHasData(monthListData?.defaultMonth); // เอาไว้เช็ค dropdown และ set disable ไว้
     }
 
     setHasSettlementData(monthListData.defaultMonth ? true : false); //
@@ -56,7 +56,6 @@ const MonthlySettlement = (props) => {
   const handleChangeSettlementMonth = (month) => {
     Swal.fire({
       title: "Please Wait...",
-      html: `กำลังโหลด...`,
       allowOutsideClick: false,
       showConfirmButton: false,
       timerProgressBar: true,
@@ -87,6 +86,7 @@ const MonthlySettlement = (props) => {
 
           <Form layout="horizontal" size="large">
             <div className="grid grid-cols-4 gap-4">
+            <div className="cols-span-1"></div>
               <Form.Item className="col-span-1">
                 <Select
                   size="large"
@@ -126,12 +126,12 @@ const MonthlySettlement = (props) => {
                   })}
                 </Select>
               </Form.Item>
-              <Button
+              {/* <Button
                 className="bg-[#F5F4E9] text-[#4D6A00]"
                 rightSection={<AiOutlineExport size={14} />}
               >
                 Export
-              </Button>
+              </Button> */}
             </div>
           </Form>
         </div>

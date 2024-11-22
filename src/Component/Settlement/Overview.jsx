@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import { Button, Card, Title, Group, Divider, Badge } from "@mantine/core";
 import { Form, Select } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import {
   setSelectedYear,
@@ -10,6 +9,7 @@ import {
   getSettlementOverview,
   getSettlementOverviewSummary,
   getPortfolioYearList,
+  getSettlementApproval,
 } from "../../Redux/Settlement/Action";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -38,7 +38,6 @@ import { IoBriefcaseOutline } from "react-icons/io5";
 import { AiOutlineExport } from "react-icons/ai";
 import { TbLineDashed } from "react-icons/tb";
 import { BsDashLg } from "react-icons/bs";
-import { FaChevronLeft } from "react-icons/fa6";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import noContent from "../assets/no-content.png";
 
@@ -63,21 +62,11 @@ const customLegendLine = [
 const Overview = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { state } = useLocation();
   const { ugtGroupId, portfolioId, portfolioName, hasSettlementData } = props;
 
-  const [isModuleViewerUser, setIsModuleViewerUser] = useState(false);
+  // redux
   const userData = useSelector((state) => state.login.userobj);
-
-  useEffect(() => {
-    if (ugtGroupId !== undefined) {
-      if (userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER) {
-        setIsModuleViewerUser(true);
-      }
-    }
-  }, [ugtGroupId, userData]);
-
-  // console.log(ugtGroupId, portfolioId, portfolioName);
-
   const yearListData = useSelector((state) => state.settlement.yearList);
   const settlementYear = useSelector((state) => state.settlement.selectedYear);
   const settlementOverviewData = useSelector(
@@ -86,7 +75,11 @@ const Overview = (props) => {
   const settlementOverviewSummaryData = useSelector(
     (state) => state.settlement.settlementOverviewSummary
   );
+  const getSettlementApproveData = useSelector(
+    (state) => state.settlement.getSettlementApproval
+  );
 
+  // all state
   const [tmpOverviewChartData, setTmpOverviewChartData] = useState();
   const [overviewDataUnit, setOverviewDataUnit] = useState(
     CONVERT_UNIT[1].unit
@@ -102,7 +95,7 @@ const Overview = (props) => {
       dispatch(getPortfolioYearList(ugtGroupId, portfolioId));
     }
   }, [ugtGroupId]);
-  const [canViewSettlementDetail, setCanViewSettlementDetail] = useState(false);
+  const [canApproveSettlement, setCanApproveSettlement] = useState(false);
 
   useEffect(() => {
     // set selected year
@@ -140,32 +133,31 @@ const Overview = (props) => {
   }, [settlementYear]);
 
   useEffect(() => {
-    if (
-      settlementOverviewData !== undefined &&
-      settlementOverviewData?.length > 0
-    ) {
-      handleChangeOverviewUnit(CONVERT_UNIT[1].unit);
-      setCanViewSettlementDetail(true);
-    } else {
-      setTmpOverviewChartData([]);
-      setCanViewSettlementDetail(false);
+    if (ugtGroupId !== undefined) {
+      if (settlementOverviewData?.length > 0) {
+        handleChangeOverviewUnit(CONVERT_UNIT[1].unit);
+
+        const isUserCanApprove =
+          userData?.userGroup?.id !== USER_GROUP_ID.EGAT_DEVICE_MNG &&
+          userData?.userGroup?.id !== USER_GROUP_ID.ALL_MODULE_VIEWER;
+        setCanApproveSettlement(isUserCanApprove);
+      } else {
+        setTmpOverviewChartData([]);
+        setCanApproveSettlement(false);
+      }
     }
-    // if user is ModuleViewer then can view only.
-    if (isModuleViewerUser !== undefined && isModuleViewerUser) {
-      setCanViewSettlementDetail(false);
-    }
-  }, [settlementOverviewData]);
+  }, [ugtGroupId, userData, settlementOverviewData]);
 
   useEffect(() => {
     // เช็ค มีข้อมูล settlement ของเดือนหรือไม่
     // ถ้ามี สามารถดูได้
     // ถ้าไม่มี ไม่สามารถดูได้
-    if (hasSettlementData && !isModuleViewerUser) {
-      setCanViewSettlementDetail(true);
+    if (hasSettlementData && canApproveSettlement) {
+      setCanApproveSettlement(true);
     } else {
-      setCanViewSettlementDetail(false);
+      setCanApproveSettlement(false);
     }
-  });
+  }, [hasSettlementData, canApproveSettlement]);
 
   const handleChangeOverviewYear = (year) => {
     dispatch(setSelectedYear(year));
@@ -217,28 +209,29 @@ const Overview = (props) => {
     if (active && payload && payload.length) {
       const _matchedEnergy =
         payload?.[0]?.payload?.matchedEnergy > 0
-          ? convertData(payload[0].payload.matchedEnergy)
+          ? convertDecimalPlace(payload[0].payload.matchedEnergy)
           : "-";
       const _netDeliverables =
         payload[0].payload.netDeliverables > 0
-          ? convertData(payload[0].payload.netDeliverables)
+          ? convertDecimalPlace(payload[0].payload.netDeliverables)
           : "-";
       const _actualGeneration =
         payload[0].payload.actualGeneration > 0
-          ? convertData(payload[0].payload.actualGeneration)
+          ? convertDecimalPlace(payload[0].payload.actualGeneration)
           : "-";
       const _actualSolar =
-        payload[0].value > 0 ? convertData(payload[0].value) : "-";
+        payload[0].value > 0 ? convertDecimalPlace(payload[0].value) : "-";
       const _actualWind =
-        payload[1].value > 0 ? convertData(payload[1].value) : "-";
+        payload[1].value > 0 ? convertDecimalPlace(payload[1].value) : "-";
       const _actualHydro =
-        payload[2].value > 0 ? convertData(payload[2].value) : "-";
-      const _ugt1Inventory =
-        payload[3].value > 0 ? convertData(payload[3].value) : "-";
+        payload[2].value > 0 ? convertDecimalPlace(payload[2].value) : "-";
       const _ugt2Inventory =
-        payload[4].value > 0 ? convertData(payload[4].value) : "-";
+        payload[3].value > 0 ? convertDecimalPlace(payload[3].value) : "-";
+      const _ugt1Inventory =
+        payload[4].value > 0 ? convertDecimalPlace(payload[4].value) : "-";
+
       const _grid =
-        payload[5].value > 0 ? convertData(payload[5].value) : "-";
+        payload[5].value > 0 ? convertDecimalPlace(payload[5].value) : "-";
 
       return (
         <div className="bg-[#F5F4E9] rounded p-3 text-left">
@@ -281,10 +274,10 @@ const Overview = (props) => {
     return null;
   };
 
-  const convertData = (value) => {
+  const convertDecimalPlace = (value) => {
     let decFixed = 2;
     if (overviewDataUnit == "kWh") {
-      decFixed = 2;
+      decFixed = 3;
     } else if (overviewDataUnit == "MWh") {
       decFixed = 6;
     } else if (overviewDataUnit == "GWh") {
@@ -294,8 +287,9 @@ const Overview = (props) => {
     if (value) {
       if (decFixed == 2) {
         return numeral(value).format("0,0.00");
-      }
-      if (decFixed == 6) {
+      } else if (decFixed == 3) {
+        return numeral(value).format("0,0.000");
+      } else if (decFixed == 6) {
         return numeral(value).format("0,0.000000");
       }
     } else {
@@ -304,8 +298,8 @@ const Overview = (props) => {
   };
 
   return settlementYear ? (
-    <Card shadow="md" radius="lg" className="flex" padding="xl">
-      <div className="flex justify-between pb-3">
+    <Card shadow="md" radius="lg" className="flex w-full h-full" padding="0">
+      <div className="flex justify-between p-4">
         <div className="text-left flex gap-3 items-center">
           <FaChevronCircleLeft
             className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
@@ -313,46 +307,52 @@ const Overview = (props) => {
             onClick={() => navigate(WEB_URL.SETTLEMENT_INFO)}
           />
 
-          <div>
+          <span className="text-xl	mr-14 	leading-tight">
+            <b> View Settlement</b>
+          </span>
+
+          {/* <div>
             <div className="text-sm font-semibold text-[#4D6A00]">
               Summary of
             </div>
             <div className="text-xl font-bold ">{portfolioName}</div>
-          </div>
+          </div> */}
         </div>
 
-        <Button
-          className={`bg-[#87BE33] hover:bg-[#4D6A00] 
-          ${!canViewSettlementDetail && "opacity-20"}`}
-          onClick={() =>
-            navigate(WEB_URL.SETTLEMENT_APPROVAL, {
-              state: {
-                ugtGroupId: ugtGroupId,
-                portfolioId: portfolioId,
-                portfolioName: portfolioName,
-                prevSelectedYear: settlementYear,
-              },
-            })
-          }
-          disabled={!canViewSettlementDetail}
-        >
-          <span className="font-semobold text-white ">Settlement Approval</span>
-        </Button>
+        {canApproveSettlement && (
+          <Button
+            className={`bg-[#87BE33] hover:bg-[#4D6A00] `}
+            onClick={() =>
+              navigate(WEB_URL.SETTLEMENT_APPROVAL, {
+                state: {
+                  ugtGroupId: ugtGroupId,
+                  portfolioId: portfolioId,
+                  portfolioName: portfolioName,
+                  prevSelectedYear: settlementYear,
+                },
+              })
+            }
+          >
+            <span className="font-semobold text-white ">
+              Settlement Approval
+            </span>
+          </Button>
+        )}
       </div>
       <Divider orientation="horizontal" size={"xs"} />
 
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center px-4">
         <div className="text-xl font-semibold text-[#4D6A00]">Overview</div>
 
         <Form layout="horizontal" size="large">
           <div className={`grid gap-4 pt-4 grid-cols-4`}>
+            <div className="cols-span-1"></div>
             <Form.Item className="col-span-1">
               <Select
                 size="large"
                 value={overviewDataUnit}
                 variant="borderless"
                 onChange={(value) => handleChangeOverviewUnit(value)}
-                className={`${!canViewSettlementDetail && "opacity-20"}`}
               >
                 {CONVERT_UNIT?.map((item, index) => (
                   <Select.Option key={index} value={item.unit}>
@@ -380,21 +380,21 @@ const Overview = (props) => {
               </Select>
             </Form.Item>
 
-            <Button
+            {/* <Button
               className={`bg-[#F5F4E9] text-[#4D6A00] ${
-                !canViewSettlementDetail && "opacity-20"
+                !canApproveSettlement && "opacity-20"
               }`}
               rightSection={<AiOutlineExport size={14} />}
-              disabled={!canViewSettlementDetail}
+              disabled={!canApproveSettlement}
             >
               Export
-            </Button>
+            </Button> */}
           </div>
         </Form>
       </div>
 
       {tmpOverviewChartData?.length > 0 ? (
-        <>
+        <div className="p-4">
           <div className="grid grid-cols-4 gap-8 mt-3">
             <div className="col-span-3">
               <div className="text-md font-semibold mb-10 text-left">
@@ -547,7 +547,7 @@ const Overview = (props) => {
                   Accumulated Generation
                 </div>
                 <div className="text-xl font-bold">
-                  {convertData(
+                  {convertDecimalPlace(
                     settlementOverviewSummaryData?.accumulatedGeneration *
                       convertUnit
                   )}
@@ -565,7 +565,7 @@ const Overview = (props) => {
                   Accumulated Actual Consumption
                 </div>
                 <div className="text-xl font-bold">
-                  {convertData(
+                  {convertDecimalPlace(
                     settlementOverviewSummaryData?.accumulatedActualConsumtion *
                       convertUnit
                   )}
@@ -583,7 +583,7 @@ const Overview = (props) => {
                   Accumulated Net Deliverables
                 </div>
                 <div className="text-xl font-bold">
-                  {convertData(
+                  {convertDecimalPlace(
                     settlementOverviewSummaryData?.accumulatedNetDeliverables *
                       convertUnit
                   )}
@@ -609,7 +609,7 @@ const Overview = (props) => {
                 </div>
               </div>
               <div className="text-xl font-bold">
-                {convertData(
+                {convertDecimalPlace(
                   settlementOverviewSummaryData?.contractedConsumption *
                     convertUnit
                 )}
@@ -629,7 +629,7 @@ const Overview = (props) => {
                 </div>
               </div>
               <div className="text-xl font-bold">
-                {convertData(
+                {convertDecimalPlace(
                   settlementOverviewSummaryData?.matchedEnergyPercentage *
                     convertUnit
                 )}
@@ -667,8 +667,8 @@ const Overview = (props) => {
                 </div>
               </div>
               <div className="text-xl font-bold">
-                {convertData(
-                  settlementOverviewSummaryData?.Inventory * convertUnit
+                {convertDecimalPlace(
+                  settlementOverviewSummaryData?.inventory * convertUnit
                 )}
               </div>
 
@@ -677,7 +677,7 @@ const Overview = (props) => {
               </div>
             </div>
           </div>
-        </>
+        </div>
       ) : (
         <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4">
           <img src={noContent} alt="React Logo" width={50} height={50} />
@@ -688,8 +688,8 @@ const Overview = (props) => {
       )}
     </Card>
   ) : (
-    <Card shadow="md" radius="lg" className="flex" padding="xl">
-      <div className="flex justify-between pb-3">
+    <Card shadow="md" radius="lg" className="flex w-full h-full" padding="0">
+      <div className="flex justify-between p-4">
         <div className="text-left flex gap-3 items-center">
           <FaChevronCircleLeft
             className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
@@ -707,7 +707,7 @@ const Overview = (props) => {
       </div>
       <Divider orientation="horizontal" size={"xs"} />
 
-      <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4">
+      <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 my-4">
         <img src={noContent} alt="React Logo" width={50} height={50} />
         <div>No Settlement Data.</div>
       </div>
