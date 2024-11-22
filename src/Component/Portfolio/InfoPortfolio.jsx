@@ -401,7 +401,7 @@ const InfoPortfolio = () => {
             console.log("END DATE <= NOW:", endDate <= now);
     
             // If either condition is met, include the item
-            return endDate >= now; 
+            return startDate >= now; 
         });
     
         setDeviceList(filtered);
@@ -421,7 +421,7 @@ console.log("START DATE:", startDate);
 console.log("END DATE:", endDate);
 console.log("START DATE >= NOW:", startDate <= now);
 console.log("END DATE <= NOW:", endDate >= now);
-              return  endDate < now;
+              return  startDate < now;
             });
             setDeviceList(filtered);
         }
@@ -464,7 +464,7 @@ console.log("END DATE <= NOW:", endDate >= now);
                 const [endDay, endMonth, endYear] = item.endDate.split("/");
                 const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
                 const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
-                return endDate >= now;
+                return startDate >= now;
         });
         setSubscriberList(filtered);
       } else {
@@ -476,7 +476,7 @@ console.log("END DATE <= NOW:", endDate >= now);
               const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
               const endDate = new Date(`${endYear}-${endMonth}-${endDay}`);
 
-              return endDate < now;
+              return startDate < now;
         });
         setSubscriberList(filtered);
       }
