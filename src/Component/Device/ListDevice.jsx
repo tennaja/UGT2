@@ -841,8 +841,9 @@ console.log(filteredSearchResults);
 
             <div className="flex sm:flex-col lg:flex-row w-full h-auto gap-3">
               {/* {'left content'} */}
-              {/* Total Active Devices Card */}
-                <div className="w-full h-auto flex justify-start items-start">
+              <div className="flex flex-col w-full h-auto gap-3">
+                {/* Total Active Devices Card */}
+                <div className="w-full h-56 flex justify-start items-start">
                   <Card
                     shadow="md"
                     radius="lg"
@@ -881,91 +882,8 @@ console.log(filteredSearchResults);
                     </div>
                   </Card>
               </div>
-                {/* Total Active Capacity Card */}
-                <div className=" w-full h-auto flex justify-start items-start ">
-                  <Card
-                    shadow="md"
-                    radius="lg"
-                    className="flex w-full h-full"
-                    padding="lg"
-                  >
-                    <div className="w-full">
-                      <div className="flex justify-between">
-                        <div
-                          style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[75px] h-[75px] bg-[#3583CD26] mb-2 "
-                        >
-                          <img
-                            alt={"ig"}
-                            src={ActiveCapcity}
-                            width={50}
-                            height={50}
-                          ></img>
-                        </div>
-                        <div>
-                          <p className="text-3xl font-semibold m-0 text-end">
-                            {numeral(totalCapacity).format("0,0.00")}
-                          </p>
-                          <span> </span>
-                          <p className="text-lg font-medium text-slate-500 text-end">
-                            MW
-                          </p>
-                        </div>
-                      </div>
-                      <div className="font-bold mt-2">
-                        Total Active Capacity
-                      </div>
-                      <div className="text-gray-500 text-xs">
-                      Monitor your entire power production capacity in real-time.
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-                {/* Registration Tracking Card */}
-                <div className="w-full h-auto flex justify-start items-end ">
-                  <Card
-                    shadow="md"
-                    radius="lg"
-                    className="flex w-full h-full"
-                    padding="lg"
-                  >
-                    <div className="w-full">
-                      <div className="flex justify-between">
-                        <div
-                          style={{ borderRadius: "50%" }}
-                          className="flex justify-center w-[75px] h-[75px] bg-[#F9974126] mb-2 "
-                        >
-                          <img
-                            alt={"ig"}
-                            src={RegistrationTracking}
-                            width={50}
-                            height={50}
-                          ></img>
-                        </div>
-                        <div>
-                          <p className="text-3xl font-semibold m-0 text-end">
-                           {totalRegistration}
-                          </p>
-                          <span> </span>
-                          <p className="text-lg font-medium text-slate-500 text-end">
-                          {totalRegistration > 1 ? "Devices" : "Device"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="font-bold mt-2">
-                      Registration Tracking
-                      </div>
-                      <div className="text-gray-500 text-xs">
-                      Track all in-process device registration.
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-              
-              {/*Right Content*/}
-              <div className="flex flex-col w-full h-auto gap-3">
                 {/* Total Inactive Devices Card */}
-              <div className="w-full h-full flex justify-start items-end ">
+              <div className="w-full h-56 flex justify-start items-end ">
                   <Card
                     shadow="md"
                     radius="lg"
@@ -1004,8 +922,54 @@ console.log(filteredSearchResults);
                     </div>
                   </Card>
                 </div> 
+                
+</div>
+         
+              
+              {/*Right Content*/}
+              <div className="flex flex-col w-full h-auto gap-3">
+                {/* Registration Tracking Card */}
+                <div className="w-full h-56 flex justify-start items-end ">
+                  <Card
+                    shadow="md"
+                    radius="lg"
+                    className="flex w-full h-full"
+                    padding="lg"
+                  >
+                    <div className="w-full">
+                      <div className="flex justify-between">
+                        <div
+                          style={{ borderRadius: "50%" }}
+                          className="flex justify-center w-[75px] h-[75px] bg-[#F9974126] mb-2 "
+                        >
+                          <img
+                            alt={"ig"}
+                            src={RegistrationTracking}
+                            width={50}
+                            height={50}
+                          ></img>
+                        </div>
+                        <div>
+                          <p className="text-3xl font-semibold m-0 text-end">
+                           {totalRegistration}
+                          </p>
+                          <span> </span>
+                          <p className="text-lg font-medium text-slate-500 text-end">
+                          {totalRegistration > 1 ? "Devices" : "Device"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="font-bold mt-2">
+                      Registration Tracking
+                      </div>
+                      <div className="text-gray-500 text-xs">
+                      Track all in-process device registration.
+                      </div>
+                    </div>
+                  </Card>
+                </div>
                 {/* About to Expire Card */}
-                <div className="w-full h-auto flex justify-start items-end">
+                <div className="w-full h-56 flex justify-start items-end">
                   <Card
                     shadow="md"
                     radius="lg"
@@ -1044,7 +1008,46 @@ console.log(filteredSearchResults);
                     </div>
                   </Card>
                 </div>
-</div>
+</div>{/* Total Active Capacity Card */}
+                <div className="w-auto h-auto flex justify-start items-start ">
+                  <Card
+                    shadow="md"
+                    radius="lg"
+                    className="flex w-full h-full"
+                    padding="lg"
+                  >
+                    <div className="w-full">
+                      <div className="flex justify-between">
+                        <div
+                          style={{ borderRadius: "50%" }}
+                          className="flex justify-center w-[75px] h-[75px] bg-[#3583CD26] mb-2 "
+                        >
+                          <img
+                            alt={"ig"}
+                            src={ActiveCapcity}
+                            width={50}
+                            height={50}
+                          ></img>
+                        </div>
+                        <div>
+                          <p className="text-3xl font-semibold m-0 text-end">
+                            {numeral(totalCapacity).format("0,0.00")}
+                          </p>
+                          <span> </span>
+                          <p className="text-lg font-medium text-slate-500 text-end">
+                            MW
+                          </p>
+                        </div>
+                      </div>
+                      <div className="font-bold mt-2">
+                        Total Active Capacity
+                      </div>
+                      <div className="text-gray-500 text-xs">
+                      Monitor your entire power production capacity in real-time.
+                      </div>
+                    </div>
+                  </Card>
+                </div>
               {/* {'End Right Content'} */}
               
             </div>
