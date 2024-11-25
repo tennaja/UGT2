@@ -245,7 +245,7 @@ const InfoPortfolio = () => {
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.capacity).format("0,0.000000")}
+          textToHighlight={numeral(row?.capacity).format("0,0.00")}
         />
       ),
     },
@@ -666,7 +666,7 @@ console.log("END DATE <= NOW:", endDate >= now);
                             <div className="break-words	font-bold">
                               {numeral(
                                 details?.portfolioInfo?.totalCapacity
-                              ).format("0,0.000000") || "-"}{" "}
+                              ).format("0,0.00") || "-"}{" "}
                               MW
                             </div>
                           </span>
