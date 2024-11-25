@@ -820,7 +820,7 @@ if (checkStartDate) {
                       <TableCell
                         key={`footer-label`}
                         style={{
-                          textAlign: "center",
+                          textAlign: "left",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
                           fontSize : "99%"
