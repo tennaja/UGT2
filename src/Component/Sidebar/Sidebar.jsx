@@ -89,7 +89,7 @@ const Sidebar2 = ({ children }) => {
   const [defaultSubMenuID, setDefaultSubMenuID] = useState(1);
   const [submenu, setSubmenu] = useState([]);
   const [mainMenu, setMainMenu] = useState([]);
-  console.log(currentSubMenuList)
+  //console.log(currentSubMenuList)
   const setDefaultMenu = (userData) => {
     let userGroupID = userData?.userGroup?.id;
     let defaultMenu = null;
@@ -213,7 +213,7 @@ const Sidebar2 = ({ children }) => {
   
 
   useEffect(() => {
-    console.log(selectedMenuID)
+    //console.log(selectedMenuID)
     if (currentSubMenuList?.length > 0) {
       if (selectedMenuID == 2) {
         if (
@@ -275,15 +275,15 @@ const Sidebar2 = ({ children }) => {
   };
 
   const getPath = (submenuID) => {
-    console.log("Get Path")
-    console.log("Select Menu",selectedMenuID)
-    console.log("MenuId",MENU_ID.SETTLEMENT)
-    console.log(selectedMenuID == MENU_ID.SETTLEMENT)
-    console.log(submenuID)
+    //console.log("Get Path")
+   // console.log("Select Menu",selectedMenuID)
+   // console.log("MenuId",MENU_ID.SETTLEMENT)
+   // console.log(selectedMenuID == MENU_ID.SETTLEMENT)
+   // console.log(submenuID)
     
     let path = "#";
     if (selectedMenuID == MENU_ID.DEVICE) {
-      console.log("Navigate Settlement",submenuID)
+     // console.log("Navigate Settlement",submenuID)
       switch (submenuID) {
         case 1:
           path = WEB_URL.DEVICE_LIST;
@@ -293,7 +293,7 @@ const Sidebar2 = ({ children }) => {
           break;
       }
     } else if (selectedMenuID == MENU_ID.SUBSCRIBER) {
-      console.log("Navigate Settlement",submenuID)
+     // console.log("Navigate Settlement",submenuID)
       switch (submenuID) {
         case 1:
           path = WEB_URL.SUBSCRIBER_LIST;
@@ -303,7 +303,7 @@ const Sidebar2 = ({ children }) => {
           break;
       }
     } else if (selectedMenuID == MENU_ID.PORTFOLIO) {
-      console.log("Navigate Settlement",submenuID)
+     // console.log("Navigate Settlement",submenuID)
       switch (submenuID) {
         case 1:
           path = WEB_URL.PORTFOLIO_LIST;
@@ -313,14 +313,14 @@ const Sidebar2 = ({ children }) => {
           break;
       }
     } else if (selectedMenuID == MENU_ID.SETTLEMENT) {
-      console.log("Navigate Settlement",submenuID)
+      //console.log("Navigate Settlement",submenuID)
       switch (submenuID) {
         case 1:
           path = WEB_URL.SETTLEMENT_INFO;
           break;
       }
     } else if (selectedMenuID == MENU_ID.EAC_TRACKING) {
-      console.log("Navigate Settlement",submenuID)
+      //console.log("Navigate Settlement",submenuID)
       switch (submenuID) {
         case 1:
           path = WEB_URL.EAC_INFO;
@@ -336,7 +336,7 @@ const Sidebar2 = ({ children }) => {
           break;
       }
     }
-    console.log(path)
+    //console.log(path)
     return path;
   };
 

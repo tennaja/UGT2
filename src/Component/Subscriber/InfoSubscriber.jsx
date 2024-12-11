@@ -405,11 +405,11 @@ function CheckActionManageButton(){
         if(details?.subscriberDetail?.renewStatus === "N"){
           if(details?.subscriberDetail?.canEdit === true){
             showAction = [
-              {
+              /*{
                 icon: <FaRegEdit />,
                 label: "Edit",
                 onClick: onClickEdit,
-              },
+              },*/
               {
                 icon: <MdOutlineHistory />,
                 label: "History",
@@ -436,11 +436,11 @@ function CheckActionManageButton(){
             label: "Renew",
             onClick: onClickRenew,
           },  
-          {
+          /*{
             icon: <FaRegEdit />,
             label: "Edit",
             onClick: onClickEdit,
-          },
+          },*/
           {
             icon: <MdOutlineHistory />,
             label: "History",
