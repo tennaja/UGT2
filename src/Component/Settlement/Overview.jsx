@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import { Button, Card, Title, Group, Divider, Badge } from "@mantine/core";
 import { Form, Select } from "antd";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import {
   setSelectedYear,
@@ -9,7 +10,6 @@ import {
   getSettlementOverview,
   getSettlementOverviewSummary,
   getPortfolioYearList,
-  getSettlementApproval,
 } from "../../Redux/Settlement/Action";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -38,6 +38,7 @@ import { IoBriefcaseOutline } from "react-icons/io5";
 import { AiOutlineExport } from "react-icons/ai";
 import { TbLineDashed } from "react-icons/tb";
 import { BsDashLg } from "react-icons/bs";
+import { FaChevronLeft } from "react-icons/fa6";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import noContent from "../assets/no-content.png";
 
@@ -50,7 +51,7 @@ const customLegendBarRow1 = [
 const customLegendBarRow2 = [
   { name: "UGT2 Inventory", color: "#33BFBF" },
   { name: "UGT1 Inventory", color: "#F7A042" },
-  { name: "Grid", color: "#B0BAC9" },
+  { name: "Unmatched Energy", color: "#B0BAC9" },
 ];
 
 const customLegendLine = [
@@ -62,11 +63,21 @@ const customLegendLine = [
 const Overview = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { state } = useLocation();
   const { ugtGroupId, portfolioId, portfolioName, hasSettlementData } = props;
 
-  // redux
+  const [isModuleViewerUser, setIsModuleViewerUser] = useState(false);
   const userData = useSelector((state) => state.login.userobj);
+
+  useEffect(() => {
+    if (ugtGroupId !== undefined) {
+      if (userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER) {
+        setIsModuleViewerUser(true);
+      }
+    }
+  }, [ugtGroupId, userData]);
+
+  // console.log(ugtGroupId, portfolioId, portfolioName);
+
   const yearListData = useSelector((state) => state.settlement.yearList);
   const settlementYear = useSelector((state) => state.settlement.selectedYear);
   const settlementOverviewData = useSelector(
@@ -75,19 +86,19 @@ const Overview = (props) => {
   const settlementOverviewSummaryData = useSelector(
     (state) => state.settlement.settlementOverviewSummary
   );
-  const getSettlementApproveData = useSelector(
-    (state) => state.settlement.getSettlementApproval
-  );
 
-  // all state
   const [tmpOverviewChartData, setTmpOverviewChartData] = useState();
   const [overviewDataUnit, setOverviewDataUnit] = useState(
-    CONVERT_UNIT[1].unit
+    CONVERT_UNIT[0].unit
   );
-  const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[1].convertValue);
+  const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[0].convertValue);
   const [latestYearHasData, setLatestYearHasData] = useState(
     yearListData.latestYearHasData
   );
+
+  //console.log("Data Unit",CONVERT_UNIT)
+
+  //console.log("Unit",overviewDataUnit,convertUnit)
 
   useEffect(() => {
     // get year list
@@ -95,7 +106,7 @@ const Overview = (props) => {
       dispatch(getPortfolioYearList(ugtGroupId, portfolioId));
     }
   }, [ugtGroupId]);
-  const [canApproveSettlement, setCanApproveSettlement] = useState(false);
+  const [canViewSettlementDetail, setCanViewSettlementDetail] = useState(false);
 
   useEffect(() => {
     // set selected year
@@ -133,31 +144,32 @@ const Overview = (props) => {
   }, [settlementYear]);
 
   useEffect(() => {
-    if (ugtGroupId !== undefined) {
-      if (settlementOverviewData?.length > 0) {
-        handleChangeOverviewUnit(CONVERT_UNIT[1].unit);
-
-        const isUserCanApprove =
-          userData?.userGroup?.id !== USER_GROUP_ID.EGAT_DEVICE_MNG &&
-          userData?.userGroup?.id !== USER_GROUP_ID.ALL_MODULE_VIEWER;
-        setCanApproveSettlement(isUserCanApprove);
-      } else {
-        setTmpOverviewChartData([]);
-        setCanApproveSettlement(false);
-      }
+    if (
+      settlementOverviewData !== undefined &&
+      settlementOverviewData?.length > 0
+    ) {
+      handleChangeOverviewUnit(CONVERT_UNIT[0].unit);
+      setCanViewSettlementDetail(true);
+    } else {
+      setTmpOverviewChartData([]);
+      setCanViewSettlementDetail(false);
     }
-  }, [ugtGroupId, userData, settlementOverviewData]);
+    // if user is ModuleViewer then can view only.
+    if (isModuleViewerUser !== undefined && isModuleViewerUser) {
+      setCanViewSettlementDetail(true);
+    }
+  }, [settlementOverviewData]);
 
   useEffect(() => {
     // เช็ค มีข้อมูล settlement ของเดือนหรือไม่
     // ถ้ามี สามารถดูได้
     // ถ้าไม่มี ไม่สามารถดูได้
-    if (hasSettlementData && canApproveSettlement) {
-      setCanApproveSettlement(true);
+    if (hasSettlementData && isModuleViewerUser) {
+      setCanViewSettlementDetail(true);
     } else {
-      setCanApproveSettlement(false);
+      setCanViewSettlementDetail(false);
     }
-  }, [hasSettlementData, canApproveSettlement]);
+  });
 
   const handleChangeOverviewYear = (year) => {
     dispatch(setSelectedYear(year));
@@ -173,6 +185,7 @@ const Overview = (props) => {
   };
 
   const handleChangeOverviewUnit = (unit) => {
+    //console.log("Handle unit",unit)
     const unitObj = CONVERT_UNIT.filter((obj) => {
       return obj.unit == unit;
     });
@@ -199,6 +212,12 @@ const Overview = (props) => {
         ugt1Inventory: item.ugt1Inventory * convertUnit,
         ugt2Inventory: item.ugt2Inventory * convertUnit,
         grid: item.grid * convertUnit,
+        totalContractedLoad: item.totalContractedLoad * convertUnit,
+        totalLoad: item.totalLoad * convertUnit,
+        totalGeneration: item.totalGeneration * convertUnit,
+        netGreenDeliverables: item.netGreenDeliverables * convertUnit,
+        generationMatched: item.generationMatched * convertUnit,
+        unmatchedEnergy : item.unmatchedEnergy * convertUnit
       };
       return new_item;
     });
@@ -206,66 +225,77 @@ const Overview = (props) => {
   };
 
   const CustomTooltip = ({ active, payload, label }) => {
+    //console.log("Payload",payload)
     if (active && payload && payload.length) {
-      const _matchedEnergy =
+      let datafilter = settlementOverviewData.filter((item)=> item.year == payload[0].payload.year && item.month == payload[0].payload.month)
+
+      const _totalContractLoad = payload?.[0]?.payload?.totalContractedLoad > 0 ? convertData(payload?.[0]?.payload?.totalContractedLoad) : "-";
+      const _totalLoad = payload?.[0]?.payload?.totalLoad > 0?convertData(payload?.[0]?.payload?.totalLoad) : "-";
+      const _totalGeneration = payload?.[0]?.payload?.totalGeneration > 0 ? convertData(payload?.[0]?.payload?.totalGeneration) : "-";
+      const _netGreenDeliverabled = payload?.[0]?.payload?.netGreenDeliverables > 0 ? convertData(payload?.[0]?.payload?.netGreenDeliverables) : "-";
+      const _generationMatched = payload?.[0]?.payload?.generationMatched > 0 ?convertData(payload?.[0]?.payload?.generationMatched) : "-";
+      const _ugt2InventoryNew = payload[4].value > 0 ? convertData(payload[4].value) : "-";
+      const _ugt1InventoryNew = payload[3].value > 0 ? convertData(payload[3].value) : "-";
+      const _unmatchedEnergy = payload?.[0]?.payload?.unmatchedEnergy > 0? convertData(payload?.[0]?.payload?.unmatchedEnergy) : "-";
+
+      //console.log("Data",datafilter?.totalContractedLoad,datafilter?.totalLoad,datafilter?.totalGeneration,datafilter?.netGreenDeliverables,datafilter?.generationMatched,datafilter?.ugt2Inventory,datafilter?.ugt1Inventory,datafilter?.unmatchedEnergy)
+      
+      //console.log("Data filter",datafilter)
+      /*const _matchedEnergy =
         payload?.[0]?.payload?.matchedEnergy > 0
-          ? convertDecimalPlace(payload[0].payload.matchedEnergy)
+          ? convertData(payload[0].payload.matchedEnergy)
           : "-";
       const _netDeliverables =
         payload[0].payload.netDeliverables > 0
-          ? convertDecimalPlace(payload[0].payload.netDeliverables)
+          ? convertData(payload[0].payload.netDeliverables)
           : "-";
       const _actualGeneration =
         payload[0].payload.actualGeneration > 0
-          ? convertDecimalPlace(payload[0].payload.actualGeneration)
+          ? convertData(payload[0].payload.actualGeneration)
           : "-";
       const _actualSolar =
-        payload[0].value > 0 ? convertDecimalPlace(payload[0].value) : "-";
+        payload[0].value > 0 ? convertData(payload[0].value) : "-";
       const _actualWind =
-        payload[1].value > 0 ? convertDecimalPlace(payload[1].value) : "-";
+        payload[1].value > 0 ? convertData(payload[1].value) : "-";
       const _actualHydro =
-        payload[2].value > 0 ? convertDecimalPlace(payload[2].value) : "-";
-      const _ugt2Inventory =
-        payload[3].value > 0 ? convertDecimalPlace(payload[3].value) : "-";
+        payload[2].value > 0 ? convertData(payload[2].value) : "-";
       const _ugt1Inventory =
-        payload[4].value > 0 ? convertDecimalPlace(payload[4].value) : "-";
-
+        payload[3].value > 0 ? convertData(payload[3].value) : "-";
+      const _ugt2Inventory =
+        payload[4].value > 0 ? convertData(payload[4].value) : "-";
       const _grid =
-        payload[5].value > 0 ? convertDecimalPlace(payload[5].value) : "-";
+        payload[5].value > 0 ? convertData(payload[5].value) : "-";*/
 
       return (
         <div className="bg-[#F5F4E9] rounded p-3 text-left">
           <div className="pb-2">
             <div className="text-sm font-bold">{getTooltipLabel(label)}</div>
-            <div className="text-xs">{`Matched Energy: ${
-              _matchedEnergy + " " + overviewDataUnit
+            <div className="text-xs">{`Total Contracted: ${
+              _totalContractLoad + " " + overviewDataUnit
             }`}</div>
-            <div className="text-xs">{`Net Deliverables: ${
-              _netDeliverables + " " + overviewDataUnit
+            <div className="text-xs">{`Total Load: ${
+              _totalLoad + " " + overviewDataUnit
             }`}</div>
-            <div className="text-xs">{`Actual Generation: ${
-              _actualGeneration + " " + overviewDataUnit
+            <div className="text-xs">{`Total Generation: ${
+              _totalGeneration + " " + overviewDataUnit
+            }`}</div>
+            <div className="text-xs">{`Net Green Deliverables: ${
+              _netGreenDeliverabled + " " + overviewDataUnit
             }`}</div>
           </div>
           <Divider orientation="horizontal" size={"xs"} />
           <div className="pt-2">
-            <div className="text-xs">{`Solar: ${
-              _actualSolar + " " + overviewDataUnit
+            <div className="text-xs">{`Generation Matched: ${
+              _generationMatched + " " + overviewDataUnit
             }`}</div>
-            <div className="text-xs">{`Wind: ${
-              _actualWind + " " + overviewDataUnit
+            <div className="text-xs">{`UGT 2 Inventory: ${
+              _ugt2InventoryNew + " " + overviewDataUnit
             }`}</div>
-            <div className="text-xs">{`Hydro: ${
-              _actualHydro + " " + overviewDataUnit
+            <div className="text-xs">{`UGT 1 Inventory: ${
+              _ugt1InventoryNew + " " + overviewDataUnit
             }`}</div>
-            <div className="text-xs">{`UGT2 Inventory: ${
-              _ugt2Inventory + " " + overviewDataUnit
-            }`}</div>
-            <div className="text-xs">{`UGT1 Inventory: ${
-              _ugt1Inventory + " " + overviewDataUnit
-            }`}</div>
-            <div className="text-xs">{`Grid: ${
-              _grid + " " + overviewDataUnit
+            <div className="text-xs">{`Unmatched Energy: ${
+              _unmatchedEnergy + " " + overviewDataUnit
             }`}</div>
           </div>
         </div>
@@ -274,8 +304,8 @@ const Overview = (props) => {
     return null;
   };
 
-  const convertDecimalPlace = (value) => {
-    let decFixed = 2;
+  const convertData = (value) => {
+    let decFixed = 3;
     if (overviewDataUnit == "kWh") {
       decFixed = 3;
     } else if (overviewDataUnit == "MWh") {
@@ -285,11 +315,10 @@ const Overview = (props) => {
     }
 
     if (value) {
-      if (decFixed == 2) {
-        return numeral(value).format("0,0.00");
-      } else if (decFixed == 3) {
+      if (decFixed == 3) {
         return numeral(value).format("0,0.000");
-      } else if (decFixed == 6) {
+      }
+      if (decFixed == 6) {
         return numeral(value).format("0,0.000000");
       }
     } else {
@@ -298,8 +327,8 @@ const Overview = (props) => {
   };
 
   return settlementYear ? (
-    <Card shadow="md" radius="lg" className="flex w-full h-full" padding="0">
-      <div className="flex justify-between p-4">
+    <Card shadow="md" radius="lg" className="flex" padding="xl">
+      <div className="flex justify-between pb-3">
         <div className="text-left flex gap-3 items-center">
           <FaChevronCircleLeft
             className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
@@ -307,52 +336,44 @@ const Overview = (props) => {
             onClick={() => navigate(WEB_URL.SETTLEMENT_INFO)}
           />
 
-          <span className="text-xl	mr-14 	leading-tight">
-            <b> View Settlement</b>
-          </span>
-
-          {/* <div>
-            <div className="text-sm font-semibold text-[#4D6A00]">
-              Summary of
-            </div>
-            <div className="text-xl font-bold ">{portfolioName}</div>
-          </div> */}
+          <div>
+            <div className="text-xl font-bold ">Settlement Dashboard</div>
+          </div>
         </div>
 
-        {canApproveSettlement && (
-          <Button
-            className={`bg-[#87BE33] hover:bg-[#4D6A00] `}
-            onClick={() =>
-              navigate(WEB_URL.SETTLEMENT_APPROVAL, {
-                state: {
-                  ugtGroupId: ugtGroupId,
-                  portfolioId: portfolioId,
-                  portfolioName: portfolioName,
-                  prevSelectedYear: settlementYear,
-                },
-              })
-            }
-          >
-            <span className="font-semobold text-white ">
-              Settlement Approval
-            </span>
-          </Button>
-        )}
+        {/*<Button
+          className={`bg-[#87BE33] hover:bg-[#4D6A00] 
+          ${!canViewSettlementDetail && "opacity-20"}`}
+          onClick={() =>
+            navigate(WEB_URL.SETTLEMENT_APPROVAL, {
+              state: {
+                ugtGroupId: ugtGroupId,
+                portfolioId: portfolioId,
+                portfolioName: portfolioName,
+                prevSelectedYear: settlementYear,
+              },
+            })
+          }
+          disabled={!canViewSettlementDetail}
+        >
+          <span className="font-semobold text-white ">View</span>
+        </Button>*/}
       </div>
       <Divider orientation="horizontal" size={"xs"} />
 
-      <div className="flex justify-between items-center px-4">
+      <div className="flex justify-between items-center">
         <div className="text-xl font-semibold text-[#4D6A00]">Overview</div>
 
         <Form layout="horizontal" size="large">
-          <div className={`grid gap-4 pt-4 grid-cols-4`}>
-            <div className="cols-span-1"></div>
+          <div className={`grid gap-4 pt-4 grid-cols-2`}>
+            {/*Select Unit Filter convert */}
             <Form.Item className="col-span-1">
               <Select
                 size="large"
                 value={overviewDataUnit}
                 variant="borderless"
                 onChange={(value) => handleChangeOverviewUnit(value)}
+                //className={`${!canViewSettlementDetail && "opacity-20"}`}
               >
                 {CONVERT_UNIT?.map((item, index) => (
                   <Select.Option key={index} value={item.unit}>
@@ -361,8 +382,8 @@ const Overview = (props) => {
                 ))}
               </Select>
             </Form.Item>
-
-            <Form.Item className="col-span-2">
+            {/*Select Year filter */}
+            <Form.Item className="col-span-1">
               <Select
                 size="large"
                 value={settlementYear}
@@ -380,21 +401,21 @@ const Overview = (props) => {
               </Select>
             </Form.Item>
 
-            {/* <Button
+            {/*<Button
               className={`bg-[#F5F4E9] text-[#4D6A00] ${
-                !canApproveSettlement && "opacity-20"
+                !canViewSettlementDetail && "opacity-20"
               }`}
               rightSection={<AiOutlineExport size={14} />}
-              disabled={!canApproveSettlement}
+              disabled={!canViewSettlementDetail}
             >
               Export
-            </Button> */}
+            </Button>*/}
           </div>
         </Form>
       </div>
 
       {tmpOverviewChartData?.length > 0 ? (
-        <div className="p-4">
+        <>
           <div className="grid grid-cols-4 gap-8 mt-3">
             <div className="col-span-3">
               <div className="text-md font-semibold mb-10 text-left">
@@ -544,16 +565,16 @@ const Overview = (props) => {
             <div className="col-span-1 flex flex-col justify-around text-left">
               <div>
                 <div className="text-sm font-normal">
-                  Accumulated Generation
+                  Accumulated Total Contracted Load
                 </div>
                 <div className="text-xl font-bold">
-                  {convertDecimalPlace(
-                    settlementOverviewSummaryData?.accumulatedGeneration *
+                  {convertData(
+                    settlementOverviewSummaryData?.accumulatedTotalContractedLoad *
                       convertUnit
                   )}
                 </div>
 
-                <div className="text-xl font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#848789]">
                   {overviewDataUnit}
                 </div>
               </div>
@@ -562,16 +583,16 @@ const Overview = (props) => {
 
               <div>
                 <div className="text-sm font-normal">
-                  Accumulated Actual Consumption
+                  Accumulated Total Load
                 </div>
                 <div className="text-xl font-bold">
-                  {convertDecimalPlace(
-                    settlementOverviewSummaryData?.accumulatedActualConsumtion *
+                  {convertData(
+                    settlementOverviewSummaryData?.accumulatedTotalLoad *
                       convertUnit
                   )}
                 </div>
 
-                <div className="text-xl font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#848789]">
                   {overviewDataUnit}
                 </div>
               </div>
@@ -580,106 +601,131 @@ const Overview = (props) => {
 
               <div>
                 <div className="text-sm font-normal">
-                  Accumulated Net Deliverables
+                  Accumulated Total Generation
                 </div>
                 <div className="text-xl font-bold">
-                  {convertDecimalPlace(
-                    settlementOverviewSummaryData?.accumulatedNetDeliverables *
+                  {convertData(
+                    settlementOverviewSummaryData?.accumulatedTotalGeneration *
                       convertUnit
                   )}
                 </div>
 
-                <div className="text-xl font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#848789]">
                   {overviewDataUnit}
+                </div>
+              </div>
+
+              <Divider orientation="horizontal" size={"xs"} />
+
+              <div>
+                <div className="text-sm font-normal">
+                  Accumulated Net Green Deliverables
+                </div>
+                <div className="text-xl font-bold">
+                  {convertData(
+                    settlementOverviewSummaryData?.accumulatedNetGreenDeliverables *
+                      convertUnit
+                  )}
+                </div>
+
+                <div className="text-xs font-normal text-[#848789]">
+                  {overviewDataUnit}
+                </div>
+
+                <div className="text-right inline-block w-full">
+                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedNetGreenDeliverablesofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-4 container mx-auto gap-8 mt-20 text-left">
+          <div className="grid grid-cols-4 container mx-auto gap-2 mt-10 text-left">
             <div className="border-r-2">
-              <div className="flex justify-between items-center pr-10">
+              <div className="mr-2">
                 <div className="text-sm font-normal">
-                  Contracted Consumption
+                Accumulated Actual Generation Matched
                 </div>
-                <div>
-                  <div className="flex w-10 h-10 rounded-large items-center justify-center bg-[#8A55D8] ">
-                    <LuFileCheck color="#FFF" size="20" />
-                  </div>
+                <div className="text-xl font-bold">
+                  {convertData(
+                    settlementOverviewSummaryData?.accumulatedActualGenerationMatched *
+                      convertUnit
+                  )}
                 </div>
-              </div>
-              <div className="text-xl font-bold">
-                {convertDecimalPlace(
-                  settlementOverviewSummaryData?.contractedConsumption *
-                    convertUnit
-                )}
-              </div>
 
-              <div className="text-sm font-normal text-[#848789]">
-                {overviewDataUnit} per Year
+                <div className="text-xs font-normal text-[#848789]">
+                  {overviewDataUnit}
+                </div>
+
+                <div className="text-right inline-block w-full">
+                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedActualGenerationMatchedofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="border-r-2">
+            <div className="mr-2">
+                <div className="text-sm font-normal">
+                Accumulated UGT2 Inventory Matched
+                </div>
+                <div className="text-xl font-bold">
+                  {convertData(
+                    settlementOverviewSummaryData?.accumulatedUGT2InventoryMatched *
+                      convertUnit
+                  )}
+                </div>
+
+                <div className="text-xs font-normal text-[#848789]">
+                  {overviewDataUnit}
+                </div>
+                <div className="text-right inline-block w-full">
+                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedUGT2InventoryMatchedofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
+                </div>
               </div>
             </div>
             <div className="border-r-2">
-              <div className="flex justify-between items-center pr-10">
-                <div className="text-sm font-normal">Matched Energy</div>
-                <div>
-                  <div className="w-10 h-10 bg-[#F7A042] rounded-large flex items-center justify-center">
-                    <LuFileCheck color="#FFF" size="20" />
-                  </div>
+            <div className="mr-2">
+                <div className="text-sm font-normal">
+                Accumulated UGT1 Inventory Matched
+                </div>
+                <div className="text-xl font-bold">
+                  {convertData(
+                    settlementOverviewSummaryData?.accumulatedUGT1InventoryMatched *
+                      convertUnit
+                  )}
+                </div>
+
+                <div className="text-xs font-normal text-[#848789]">
+                  {overviewDataUnit}
+                </div>
+                <div className="text-right inline-block w-full">
+                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedUGT1InventoryMatchedofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
                 </div>
               </div>
-              <div className="text-xl font-bold">
-                {convertDecimalPlace(
-                  settlementOverviewSummaryData?.matchedEnergyPercentage *
-                    convertUnit
-                )}
-                <span className="font-bold"> %</span>
-              </div>
-
-              <div className="text-sm font-normal text-[#848789]">
-                of Total Consumption
-              </div>
-            </div>
-            <div className="border-r-2">
-              <div className="flex justify-between items-center pr-10">
-                <div className="text-sm font-normal">Total Issued REC</div>
-                <div>
-                  <div className="w-10 h-10 bg-[#33BFBF] rounded-large flex items-center justify-center">
-                    <LuFileCheck color="#FFF" size="20" />
-                  </div>
-                </div>
-              </div>
-              <div className="text-xl font-bold">
-                {numeral(
-                  settlementOverviewSummaryData?.totalRECIssued * 0.001
-                ).format("0,0.000000")}
-              </div>
-
-              <div className="text-sm font-normal text-[#848789]">RECs</div>
             </div>
             <div>
-              <div className="flex justify-between items-center pr-10">
-                <div className="text-sm font-normal">UGT1 Inventory</div>
-                <div>
-                  <div className="w-10 h-10 bg-[#FF6150] rounded-large flex items-center justify-center">
-                    <IoBriefcaseOutline color="#FFF" size="20" />
-                  </div>
+            <div>
+                <div className="text-sm font-normal">
+                Accumulated Unmatched Energy
                 </div>
-              </div>
-              <div className="text-xl font-bold">
-                {convertDecimalPlace(
-                  settlementOverviewSummaryData?.inventory * convertUnit
-                )}
-              </div>
+                <div className="text-xl lg:mt-[20px] font-bold">
+                  {convertData(
+                    settlementOverviewSummaryData?.accumulatedUnmatchedEnergy *
+                      convertUnit
+                  )}
+                </div>
 
-              <div className="text-sm font-normal text-[#848789]">
-                {overviewDataUnit}
+                <div className="text-xs font-normal text-[#848789]">
+                  {overviewDataUnit}
+                </div>
+                <div className="text-right inline-block w-full">
+                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedUnmatchedEnergyofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
       ) : (
-        <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4">
+        <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4 h-[400px]">
           <img src={noContent} alt="React Logo" width={50} height={50} />
           <div>No Settlement Data.</div>
         </div>
@@ -688,8 +734,8 @@ const Overview = (props) => {
       )}
     </Card>
   ) : (
-    <Card shadow="md" radius="lg" className="flex w-full h-full" padding="0">
-      <div className="flex justify-between p-4">
+    <Card shadow="md" radius="lg" className="flex" padding="xl">
+      <div className="flex justify-between pb-3">
         <div className="text-left flex gap-3 items-center">
           <FaChevronCircleLeft
             className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
@@ -698,16 +744,13 @@ const Overview = (props) => {
           />
 
           <div>
-            <div className="text-sm font-semibold text-[#4D6A00]">
-              Summary of
-            </div>
-            <div className="text-xl font-bold ">{portfolioName}</div>
+            <div className="text-xl font-bold ">Settlement Dashboard</div>
           </div>
         </div>
       </div>
       <Divider orientation="horizontal" size={"xs"} />
 
-      <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 my-4">
+      <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4 h-[400px]">
         <img src={noContent} alt="React Logo" width={50} height={50} />
         <div>No Settlement Data.</div>
       </div>

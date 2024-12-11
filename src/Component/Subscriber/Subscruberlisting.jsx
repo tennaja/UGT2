@@ -676,7 +676,7 @@ const Subscriberlisting = (props) => {
     {
       id: "contractedEnergy",
       label: "Contracted Energy Amount (kWh)",
-      align: "right",
+      //align: "right",
       align: "center",
       render: (row) => (
         <div

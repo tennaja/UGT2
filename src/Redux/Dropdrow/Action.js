@@ -11,6 +11,7 @@ import {
   SET_DISTRICT_LIST,
   SET_SUB_DISTRICT_LIST,
   GET_COUNTRY_LIST_ADD,
+  GET_UTILITY_CONTRACT_LIST
 } from "../../Redux/ActionType";
 import {
   SUB_DISTRICT_LIST_URL,
@@ -19,6 +20,7 @@ import {
   FORM_MASTTER_URL,
   COUNTRY_LIST_URL,
   POSTCODE_LIST_URL,
+  UTILITY_CONTRACT_LIST
 } from "../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../Utils/FuncUtils";
 
@@ -236,6 +238,33 @@ export const FetchPostcodeList = (provinceCode) => {
         const datas = postCodeList
           datas.sort((a,b)=>a.id - b.id)
         dispatch(setPostcodeList(datas));
+      })
+      .catch((err) => {
+        dispatch(failRequest(err.message));
+      });
+    // }, 2000);
+  };
+};
+
+export const setUtilityContract = (data) => {
+  return {
+    type: GET_UTILITY_CONTRACT_LIST,
+    payload: data,
+  };
+};
+
+export const FetchUtilityContractList = () => {
+  return async (dispatch) => {
+    //dispatch(makeRequest());
+    //setTimeout(() => {
+    // const fromMasterURL = FORM_MASTTER_URL
+    // const fromMasterURL =  'http://10.40.76.217/dev/api/ugt/v1/device-management/form-master'
+    const URL = `${UTILITY_CONTRACT_LIST}`;
+    await axios
+      .get(URL, getHeaderConfig())
+      .then((res) => {
+        console.log("Utility",res.data)
+        dispatch(setUtilityContract(res.data));
       })
       .catch((err) => {
         dispatch(failRequest(err.message));

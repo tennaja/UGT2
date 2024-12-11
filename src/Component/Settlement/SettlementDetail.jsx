@@ -40,8 +40,8 @@ const SettlementDetail = ({
     );
   }, [settlementYear, settlementMonth]);
 
-  const convertDecimalPlace = (value) => {
-    let decFixed = 2;
+  const convertData = (value) => {
+    let decFixed = 3;
     if (unit == "kWh") {
       decFixed = 3;
     } else if (unit == "MWh") {
@@ -51,11 +51,10 @@ const SettlementDetail = ({
     }
 
     if (value) {
-      if (decFixed == 2) {
-        return numeral(value).format("0,0.00");
-      } else if (decFixed == 3) {
+      if (decFixed == 3) {
         return numeral(value).format("0,0.000");
-      } else if (decFixed == 6) {
+      }
+      if (decFixed == 6) {
         return numeral(value).format("0,0.000000");
       }
     } else {
@@ -77,9 +76,7 @@ const SettlementDetail = ({
           <div className="flex gap-4">
             <div className="text-sm font-bold">Matched</div>
             <div className="text-sm">
-              {convertDecimalPlace(detailData?.matched * convertUnit) +
-                " " +
-                unit}
+              {convertData(detailData?.matched * convertUnit) + " " + unit}
             </div>
           </div>
         </div>
@@ -100,21 +97,15 @@ const SettlementDetail = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {detailData?.deviceList?.length == 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center">No Settlement Data.</TableCell>
-              </TableRow>
-            ) : (
-              detailData?.deviceList?.map((row, index) => (
-                <Row
-                  key={index}
-                  rowindex={index}
-                  row={row}
-                  convertUnit={convertUnit}
-                  convertDecimalPlace={convertDecimalPlace}
-                />
-              ))
-            )}
+            {detailData?.deviceList?.map((row, index) => (
+              <Row
+                key={index}
+                rowindex={index}
+                row={row}
+                convertUnit={convertUnit}
+                convertData={convertData}
+              />
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -123,7 +114,7 @@ const SettlementDetail = ({
 };
 
 const Row = (props) => {
-  const { row, convertUnit, convertDecimalPlace, rowindex } = props;
+  const { row, convertUnit, convertData, rowindex } = props;
   const [open, setOpen] = React.useState(rowindex == 0 ? true : false);
   return (
     <>
@@ -140,7 +131,7 @@ const Row = (props) => {
         <TableCell className="text-center" style={{ width: "10%" }} />
         <TableCell className="text-center" style={{ width: "10%" }} />
         <TableCell align="right" style={{ fontWeight: "bold" }}>
-          {convertDecimalPlace(row.matchedSupply * convertUnit)}
+          {convertData(row.matchedSupply * convertUnit)}
         </TableCell>
         <TableCell>{!open ? <IoChevronDown /> : <IoChevronUp />}</TableCell>
       </TableRow>
@@ -172,7 +163,7 @@ const Row = (props) => {
                       {item.type == "Y" ? "Inventory" : "-"}
                     </TableCell>
                     <TableCell align="right">
-                      {convertDecimalPlace(item.matched * convertUnit)}
+                      {convertData(item.matched * convertUnit)}
                     </TableCell>
                     <TableCell />
                   </TableRow>

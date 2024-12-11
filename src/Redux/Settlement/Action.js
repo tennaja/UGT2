@@ -13,7 +13,9 @@ import {
     REMAIN_ENERGY_ATTRIBUTE_LIST_URL,
     SETTLEMENT_MONTHLY_DETAIL_URL,
     SETTLEMENT_APPROVAL_URL,
-    SETTLEMENT_GET_APPROVAL_URL
+    SETTLEMENT_GET_APPROVAL_URL,
+    SETTLEMENT_GET_DASHBOARD,
+    SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL
 } from '../../Constants/ServiceURL'
 
 import {
@@ -31,7 +33,10 @@ import {
     SETTLEMENT_APPROVAL,
     GET_SETTLEMENT_APPROVAL,
     SET_SELECTED_YEAR,
-    SET_SELECTED_MONTH
+    SET_SELECTED_MONTH,
+    GET_SETTLEMENT_DASHBOARD,
+    GET_SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER,
+    GET_SETTLEMENT_DETAIL
 } from "../ActionType"
 
 import { getHeaderConfig } from "../../Utils/FuncUtils"
@@ -65,7 +70,7 @@ export const _getPortfolioYearList = (data) => {
 
 export const getPortfolioYearList = (ugtGroupId, portfolioId) => {
     const URL = `${PORTFOLIO_YEAR_LIST_URL}/${ugtGroupId}?portfolioId=${portfolioId}`
-    console.log('URL', URL)
+    //console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
@@ -87,7 +92,7 @@ export const _getPortfolioMonthList = (data) => {
 export const getPortfolioMonthList = (ugtGroupId, portfolioId, year) => {
 
     const URL = `${PORTFOLIO_MONTH_LIST_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}`
-    console.log('URL', URL)
+    //console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
@@ -138,6 +143,12 @@ export const getSettlementOverview = (ugtGroupId, portfolioId, year) => {
                     row.ugt1Inventory = row.ugt1Inventory ? row.ugt1Inventory : 0
                     row.ugt2Inventory = row.ugt2Inventory ? row.ugt2Inventory : 0
                     row.grid = row.grid ? row.grid : 0
+                    row.totalContractedLoad = row.totalContractedLoad ? row.totalContractedLoad : 0
+                    row.totalLoad = row.totalLoad ? row.totalLoad : 0
+                    row.totalGeneration = row.totalGeneration ? row.totalGeneration : 0
+                    row.netGreenDeliverables = row.netGreenDeliverables ? row.netGreenDeliverables : 0
+                    row.generationMatched = row.generationMatched ? row.generationMatched : 0
+                    row.unmatchedEnergy = row.unmatchedEnergy ? row.unmatchedEnergy : 0
 
                     return row
                 })
@@ -165,6 +176,12 @@ export const getSettlementOverview = (ugtGroupId, portfolioId, year) => {
                                 ugt1Inventory: 0,
                                 ugt2Inventory: 0,
                                 grid: 0,
+                                totalContractedLoad: 0,
+                                totalLoad: 0,
+                                totalGeneration: 0,
+                                netGreenDeliverables: 0,
+                                generationMatched: 0,
+                                unmatchedEnergy: 0,
                             }
                             overviewDataAllMonth.push(obj_empty)
                         }
@@ -221,7 +238,7 @@ export const _getSettlementMonthlySummary = (data) => {
 
 export const getSettlementMonthlySummary = (ugtGroupId, portfolioId, year, month) => {
     const URL = `${SETTLEMENT_MONTHLY_SUMMARY_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
-    console.log('URL', URL)
+    //console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
@@ -248,7 +265,7 @@ export const _getSettlementMonthlyGeneration = (data) => {
 export const getSettlementMonthlyGeneration = (ugtGroupId, portfolioId, year, month, sortBy = 'deviceName', sortDi = 'asc') => {
 
     const URL = `${SETTLEMENT_MONTHLY_GENERATION_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&sortBy=${sortBy}&sortDi=${sortDi}`
-    console.log('URL', URL)
+    //console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
@@ -271,7 +288,7 @@ export const _getSettlementMonthlyConsumtion = (data) => {
 export const getSettlementMonthlyConsumtion = (ugtGroupId, portfolioId, year, month, sortBy = 'subscriberName', sortDi = 'asc') => {
 
     const URL = `${SETTLEMENT_MONTHLY_CONSUMPTION_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&sortBy=${sortBy}&sortDi=${sortDi}`
-    console.log('URL', URL)
+    //console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
@@ -294,7 +311,7 @@ export const _getInventorySupplyUsage = (data) => {
 export const getInventorySupplyUsage = (ugtGroupId, portfolioId, year, month) => {
 
     const URL = `${INVENTORY_SUPPLY_USAGE_LIST_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
-    console.log('URL', URL)
+    //console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
@@ -317,7 +334,7 @@ export const _getRemainingEnergyttribute = (data) => {
 export const getRemainingEnergyttribute = (ugtGroupId, portfolioId, year, month) => {
 
     const URL = `${REMAIN_ENERGY_ATTRIBUTE_LIST_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
-    console.log('URL', URL)
+    //console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
@@ -340,11 +357,34 @@ export const _getSettlementMonthlyDetail = (data) => {
 export const getSettlementMonthlyDetail = (ugtGroupId, portfolioId, year, month) => {
 
     const URL = `${SETTLEMENT_MONTHLY_DETAIL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
-    console.log('URL', URL)
+    //console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
             dispatch(_getSettlementMonthlyDetail(response.data));
+        }, (error) => {
+            dispatch(failRequest(error.message))
+        });
+    }
+
+    // return _getSettlementMonthlyDetail(settlementMonthlyDetail)
+}
+
+export const _getSettlementMonthlyDetailSubscriber = (data) => {
+    return {
+        type: GET_SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER,
+        payload: data
+    }
+}
+
+export const getSettlementMonthlyDetailSubscriber = (ugtGroupId, portfolioId, year, month) => {
+
+    const URL = `${SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+    //console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getSettlementMonthlyDetailSubscriber(response.data));
         }, (error) => {
             dispatch(failRequest(error.message))
         });
@@ -360,9 +400,9 @@ export const _settlementApproval = (data) => {
     }
 }
 
-export const settlementApproval = (ugtGroupId, portfolioId, year, month) => {
+export const settlementApproval = (ugtGroupId, portfolioId, year, month, utilityId) => {
 
-    const URL = `${SETTLEMENT_APPROVAL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+    const URL = `${SETTLEMENT_APPROVAL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&utilityId=${utilityId}`
     console.log('URL', URL)
 
     return async (dispatch) => {
@@ -384,7 +424,7 @@ export const _getSettlementApproval = (data) => {
 export const getSettlementApproval = (ugtGroupId, portfolioId, year, month) => {
 
     const URL = `${SETTLEMENT_GET_APPROVAL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
-    console.log('URL', URL)
+    //console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
@@ -393,4 +433,48 @@ export const getSettlementApproval = (ugtGroupId, portfolioId, year, month) => {
             dispatch(failRequest(error.message))
         });
     }
+}
+
+export const _getSettlementDashboard =(data)=>{
+    return {
+        type: GET_SETTLEMENT_DASHBOARD,
+        payload: data
+    }
+}
+
+export const getSettlementDashboard =(ugtGroupId)=>{
+    const URL = `${SETTLEMENT_GET_DASHBOARD}/${ugtGroupId}`
+    console.log("URL DASHBOARD",URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getSettlementDashboard(response.data));
+        }, (error) => {
+            dispatch(failRequest(error.message))
+        });
+    }
+}
+
+
+export const _getSettlementDetail = (data) => {
+    return {
+        type: GET_SETTLEMENT_DETAIL,
+        payload: data
+    }
+}
+
+export const getSettlementDetail = (ugtGroupId, portfolioId, year, month) => {
+
+    const URL = `${SETTLEMENT_MONTHLY_DETAIL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+    //console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getSettlementDetail(response.data));
+        }, (error) => {
+            dispatch(failRequest(error.message))
+        });
+    }
+
+    // return _getSettlementMonthlyDetail(settlementMonthlyDetail)
 }

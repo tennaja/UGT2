@@ -8,30 +8,80 @@ import { MONTH_LIST, CONVERT_UNIT } from "../../Constants/Constants";
 import {
   getPortfolioMonthList,
   setSelectedMonth,
+  getSettlementDetail
 } from "../../Redux/Settlement/Action";
+import { useNavigate } from "react-router-dom";
+import * as WEB_URL from "../../Constants/WebURL";
+import { USER_GROUP_ID } from "../../Constants/Constants";
 
 // Icon import
 import { AiOutlineExport } from "react-icons/ai";
 
 const MonthlySettlement = (props) => {
   const dispatch = useDispatch();
-  const { ugtGroupId, portfolioId, portfolioName, setHasSettlementData } =
-    props;
+  const navigate = useNavigate();
+  const {
+    ugtGroupId,
+    portfolioId,
+    portfolioName,
+    setHasSettlementData,
+    isShowDetail,
+  } = props;
   const [unit, setUnit] = useState("MWh");
-  const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[1].convertValue);
+ 
+  const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[0].convertValue);
   const monthListData = useSelector((state) => state.settlement.monthList);
   const settlementYear = useSelector((state) => state.settlement.selectedYear);
+  const userData = useSelector((state) => state.login.userobj);
   const settlementMonth = useSelector(
     (state) => state.settlement.selectedMonth
+  );
+  const settlementMonthlySummaryData = useSelector(
+    (state) => state.settlement.settlementDetail
   );
   const [latestMonthHasData, setLatestMonthHasData] = useState(
     monthListData.defaultMonth
   );
+  
+
+  const [isShowView,setIsShowView] = useState(false)
+  console.log(settlementYear,settlementMonth)
+  useEffect(()=>{
+    if(settlementYear != null && settlementMonth != null){
+      dispatch(
+        getSettlementDetail(
+          ugtGroupId,
+          portfolioId,
+          settlementYear,
+          settlementMonth
+        )
+      );
+    }
+  },[settlementMonth,settlementYear])
+
+  useEffect(()=>{
+    if(settlementMonthlySummaryData && userData){
+      if(userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+      ){
+        setIsShowView(true)
+      }
+      else{
+        if(settlementMonthlySummaryData?.approveStatus == true){
+          setIsShowView(true)
+        }
+        else{
+          setIsShowView(false)
+        }
+      }
+    }
+  },[userData,settlementMonthlySummaryData])
 
   useEffect(() => {
     // get month list
     if (settlementYear) {
-      handleChangeUnit(CONVERT_UNIT[1].unit);
+      handleChangeUnit(CONVERT_UNIT[0].unit);
       dispatch(getPortfolioMonthList(ugtGroupId, portfolioId, settlementYear));
     }
   }, [settlementYear]);
@@ -47,7 +97,7 @@ const MonthlySettlement = (props) => {
       } else {
         dispatch(setSelectedMonth(monthListData?.defaultMonth));
       }
-      setLatestMonthHasData(monthListData?.defaultMonth); // เอาไว้เช็ค dropdown และ set disable ไว้
+      setLatestMonthHasData(monthListData.defaultMonth); // เอาไว้เช็ค dropdown และ set disable ไว้
     }
 
     setHasSettlementData(monthListData.defaultMonth ? true : false); //
@@ -56,6 +106,7 @@ const MonthlySettlement = (props) => {
   const handleChangeSettlementMonth = (month) => {
     Swal.fire({
       title: "Please Wait...",
+      html: `กำลังโหลด...`,
       allowOutsideClick: false,
       showConfirmButton: false,
       timerProgressBar: true,
@@ -85,9 +136,24 @@ const MonthlySettlement = (props) => {
           </div>
 
           <Form layout="horizontal" size="large">
-            <div className="grid grid-cols-4 gap-4">
-            <div className="cols-span-1"></div>
-              <Form.Item className="col-span-1">
+            <div className="grid grid-cols-[80px_80px_120px] gap-2">
+              {isShowView && <Button
+                className="bg-[#87BE33] hover:bg-[#4D6A00] w-20 h-[39px]"
+                 
+                onClick={() =>
+                  navigate(WEB_URL.SETTLEMENT_APPROVAL, {
+                    state: {
+                      ugtGroupId: ugtGroupId,
+                      portfolioId: portfolioId,
+                      portfolioName: portfolioName,
+                      prevSelectedYear: settlementYear,
+                    },
+                  })
+                }
+              >
+                <span className="font-semobold text-white text-base">View</span>
+              </Button>}
+              <Form.Item className="col-span-1 col-start-2">
                 <Select
                   size="large"
                   value={unit}
@@ -102,7 +168,7 @@ const MonthlySettlement = (props) => {
                 </Select>
               </Form.Item>
 
-              <Form.Item className="col-span-2">
+              <Form.Item className="col-start-3">
                 <Select
                   size="large"
                   value={settlementMonth}
@@ -126,12 +192,12 @@ const MonthlySettlement = (props) => {
                   })}
                 </Select>
               </Form.Item>
-              {/* <Button
+              {/*<Button
                 className="bg-[#F5F4E9] text-[#4D6A00]"
                 rightSection={<AiOutlineExport size={14} />}
               >
                 Export
-              </Button> */}
+              </Button>*/}
             </div>
           </Form>
         </div>
@@ -146,6 +212,7 @@ const MonthlySettlement = (props) => {
           showWaitApprove={true}
           settlementYear={settlementYear}
           settlementMonth={settlementMonth}
+          isShowDetail={isShowDetail}
         />
       </Card>
     )

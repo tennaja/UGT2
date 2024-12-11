@@ -12,7 +12,10 @@ import {
     SETTLEMENT_APPROVAL,
     GET_SETTLEMENT_APPROVAL,
     SET_SELECTED_YEAR,
-    SET_SELECTED_MONTH
+    SET_SELECTED_MONTH,
+    GET_SETTLEMENT_DASHBOARD,
+    GET_SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER,
+    GET_SETTLEMENT_DETAIL
 } from "../ActionType"
 
 const initialstate = {
@@ -30,18 +33,28 @@ const initialstate = {
     settlementApproval: {},
     getSettlementApproval: {},
     selectedYear: null,
-    selectedMonth: null
+    selectedMonth: null,
+    settlementDashboard: [],
+    settlementMonthlyDetailSubscriber: [],
+    settlementDetail: [],
 }
 
 export const SettlementReducer = (state = initialstate, action) => {
-
+    
     switch (action.type) {
 
         case GET_PORTFOLIO_YEAR_LIST: return {
             ...state,
             yearList: action.payload
         }
-
+        case GET_SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER: return {
+            ...state,
+            settlementMonthlyDetailSubscriber: action.payload
+        }
+        case GET_SETTLEMENT_DETAIL: return {
+            ...state,
+            settlementDetail: action.payload
+        }
         case GET_PORTFOLIO_MONTH_LIST: return {
             ...state,
             monthList: action.payload
@@ -105,6 +118,10 @@ export const SettlementReducer = (state = initialstate, action) => {
         case SET_SELECTED_MONTH: return {
             ...state,
             selectedMonth: action.payload
+        }
+        case GET_SETTLEMENT_DASHBOARD: return{
+            ...state,
+            settlementDashboard : action.payload
         }
 
         default: return state

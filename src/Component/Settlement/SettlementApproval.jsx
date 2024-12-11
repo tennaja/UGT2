@@ -10,12 +10,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import ModalConfirm from "../Control/Modal/ModalConfirm";
 import {
+  USER_GROUP_ID,
   MONTH_LIST,
   CONVERT_UNIT,
-  USER_GROUP_ID,
   UTILITY_GROUP_ID,
 } from "../../Constants/Constants";
-import { FaChevronCircleLeft } from "react-icons/fa";
 import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -26,32 +25,22 @@ import {
   setSelectedYear,
   setSelectedMonth,
 } from "../../Redux/Settlement/Action";
+import { FetchUtilityContractList } from "../../Redux/Dropdrow/Action";
+import { AiOutlineExport } from "react-icons/ai";
+//import { useLocation } from "react-router-dom";
 
-const sample_SettlementApproveData = [
-  {
-    utilityId: 1,
-    approvedBy: "EGAT",
-    approveStatus: "W",
-    approveDate: null,
-  },
-  {
-    utilityId: 2,
-    approvedBy: "PEA",
-    approveStatus: "W",
-    approveDate: null,
-  },
-  {
-    utilityId: 3,
-    approvedBy: "MEA",
-    approveStatus: "Y",
-    approveDate: new Date(),
-  },
-];
+// icon import
+import { FaCheck } from "react-icons/fa";
+import { FaChevronCircleLeft } from "react-icons/fa";
+import SettlementMenu from "./SettlementMenu";
+import { FaRegFilePdf } from "react-icons/fa";
+import { FaRegFileExcel } from "react-icons/fa";
 
 export default function SettlementApproval() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { state } = useLocation();
 
   const {
     ugtGroupId,
@@ -60,24 +49,27 @@ export default function SettlementApproval() {
     prevSelectedYear,
     prevSelectedMonth,
   } = location.state;
-
-  // redux
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
-  const userData = useSelector((state) => state.login.userobj);
+
   const settlementApprovalResponse = useSelector(
-    // response หลังกด Approve
     (state) => state.settlement.settlementApproval
   );
   const getSettlementApproveData = useSelector(
     (state) => state.settlement.getSettlementApproval
   );
+
+  const userData = useSelector((state) => state.login.userobj);
+
+  const utilityContractListData = useSelector(
+    (state) => state.dropdrow.utilityCOntractList
+  );
+  //console.log(utilityContractListData)
+
   const yearListData = useSelector((state) => state.settlement.yearList);
   const monthListData = useSelector((state) => state.settlement.monthList);
   const tmpSelectedYear = useSelector(
     (state) => state.settlement?.selectedYear
   );
-
-  // all state
   const [settlementYear, setSettlementYear] = useState(prevSelectedYear);
   const [settlementMonth, setSettlementMonth] = useState(prevSelectedMonth);
   const [prevMonth, setPrevMonth] = useState(prevSelectedMonth);
@@ -87,36 +79,71 @@ export default function SettlementApproval() {
   const [latestMonthHasData, setLatestMonthHasData] = useState(
     monthListData.defaultMonth
   );
-  const [unit, setUnit] = useState(CONVERT_UNIT[1].unit);
-  const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[1].convertValue);
-  const [openModalConfirm, setOpenModalConfirm] = useState(false);
-  const [approveDetail, setApproveDetail] = useState([]);
-  const [showModalComplete, setShowModalComplete] = useState(false);
-  const [userGroupUtilityID, setUserGroupUtilityID] = useState("");
-  const [isClickApprove, setIsClickApprove] = useState(false);
 
-  // get utilityID
+  const [unit, setUnit] = useState(CONVERT_UNIT[1].unit);
+  const [openModalConfirm, setOpenModalConfirm] = useState(false);
+  const [approveStatus, setApproveStatus] = useState(false);
+  const [approveDate, setApproveDate] = useState(null);
+  const [showModalComplete, setShowModalComplete] = useState(false);
+
+  const [overviewDataUnit, setOverviewDataUnit] = useState(
+    CONVERT_UNIT[0].unit
+  );
+
+  const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[0].convertValue);
+  const [canViewSettlementDetail, setCanViewSettlementDetail] = useState(false);
+  const [listOptionUtility, setListOptionUtility] = useState([
+    { id: 0, abbr: "All", name: "All" },
+  ]);
+  const [selectOptionUtility, setSelectOptionUtility] = useState(
+    listOptionUtility[0].abbr
+  );
+  const [selectOptionUtilityID, setSelectOptionSelectID] = useState(
+    listOptionUtility[0].id
+  );
+  const [approveDetail, setApproveDetail] = useState([]);
+  const [isClickApprove, setIsClickApprove] = useState(false);
+  const [userGroupUtilityID, setUserGroupUtilityID] = useState("");
+
+  useEffect(() => {
+    // Re-Load ใหม่ กรณีที่ refresh
+    dispatch(getPortfolioYearList(ugtGroupId, portfolioId));
+    dispatch(FetchUtilityContractList());
+  }, []);
+
   useEffect(() => {
     const userGroupID = userData?.userGroup?.id;
     let user_utilityID = "";
-    if (userGroupID == USER_GROUP_ID.PORTFOLIO_MNG) {
+    if (userGroupID == USER_GROUP_ID.WHOLE_SALEER_ADMIN) {
+      console.log("Egat")
       user_utilityID = UTILITY_GROUP_ID.EGAT; // EGAT 1
-    } else if (userGroupID == USER_GROUP_ID.PEA_CONTRACTOR_MNG) {
+    } else if (userGroupID == USER_GROUP_ID.PEA_SUBSCRIBER_MNG) {
+      console.log("PEA")
       user_utilityID = UTILITY_GROUP_ID.PEA; // PEA 2
-    } else if (userGroupID == USER_GROUP_ID.MEA_CONTRACTOR_MNG) {
+    } else if (userGroupID == USER_GROUP_ID.MEA_SUBSCRIBER_MNG) {
+      console.log("MEA")
       user_utilityID = UTILITY_GROUP_ID.MEA; // MEA 3
     }
 
     setUserGroupUtilityID(user_utilityID);
   }, [userData]);
 
-  // 1st Load
   useEffect(() => {
-    dispatch(getPortfolioYearList(ugtGroupId, portfolioId));
-  }, []);
+    console.log(utilityContractListData);
+    console.log(selectOptionUtility);
+    if (utilityContractListData.length > 0) {
+      console.log("Come to Set");
+      let tmpUtility = [];
+      tmpUtility.push({ id: 0, abbr: "All", name: "All" });
+      utilityContractListData?.map((items) => tmpUtility.push(items));
+      setListOptionUtility(tmpUtility);
+    }
+  }, [utilityContractListData]);
 
-  // Re-Load ใหม่ กรณีที่ refresh และมีเปลี่ยนปี
+  //console.log(listOptionUtility)
+
   useEffect(() => {
+    // Re-Load ใหม่ กรณีที่ refresh และมีเปลี่ยนปี
     if (!tmpSelectedYear) {
       setSettlementYear(prevSelectedYear);
     } else {
@@ -124,12 +151,12 @@ export default function SettlementApproval() {
     }
   }, [tmpSelectedYear]);
 
-  // Re-Load ใหม่ กรณีที่ refresh
   useEffect(() => {
+    // Re-Load ใหม่ กรณีที่ refresh
     dispatch(getPortfolioMonthList(ugtGroupId, portfolioId, settlementYear));
   }, [settlementYear]);
 
-  // Fetch approve status กรณีเลือกเดือน
+  // Fetch approve status
   useEffect(() => {
     if (settlementMonth) {
       dispatch(
@@ -142,9 +169,57 @@ export default function SettlementApproval() {
       );
     }
   }, [settlementMonth]);
-
-  // set default month
+  // approve status
   useEffect(() => {
+    if (getSettlementApproveData) {
+      const approveData = getSettlementApproveData?.utilityList?.filter(
+        // const approveData = sample_SettlementApproveData?.filter(
+        (item) => item.approveStatus !== null
+      );
+      setApproveDetail(approveData);
+    } /*else {
+      setApproveStatus(false);
+      setApproveDate(null);
+    }*/
+  }, [getSettlementApproveData]);
+
+  // หลังกด approve แล้ว Fetch approve status ล่าสุดอีกรอบ
+  useEffect(() => {
+    if (isClickApprove && settlementApprovalResponse?.status) {
+      setShowModalComplete(true);
+      // get status อีกรอบ
+      dispatch(
+        getSettlementApproval(
+          ugtGroupId,
+          portfolioId,
+          settlementYear,
+          settlementMonth
+        )
+      );
+    }
+  }, [settlementApprovalResponse]);
+
+  const isUserCanApprove = (item) => {
+    console.log(userGroupUtilityID)
+    if (userGroupUtilityID == item.utilityId && item.approveStatus == "W") {
+      return true;
+    }
+    return false;
+  };
+
+  // approve status
+  /*useEffect(() => {
+    if (getSettlementApproveData) {
+      const approveData = getSettlementApproveData?.utilityList?.filter(
+        // const approveData = sample_SettlementApproveData?.filter(
+        (item) => item.approveStatus !== null
+      );
+      setApproveDetail(approveData);
+    }
+  }, [getSettlementApproveData]);*/
+
+  useEffect(() => {
+    // set default month
     if (monthListData?.monthList?.length > 0) {
       if (!prevMonth) {
         // กรณีกดจากปุ่ม Pending Approval
@@ -168,43 +243,10 @@ export default function SettlementApproval() {
     setLatestMonthHasData(monthListData.defaultMonth);
   }, [monthListData]);
 
-  // หลังกด approve แล้ว Fetch approve status ล่าสุดอีกรอบ
-  useEffect(() => {
-    if (isClickApprove && settlementApprovalResponse?.status) {
-      setShowModalComplete(true);
-      // get status อีกรอบ
-      dispatch(
-        getSettlementApproval(
-          ugtGroupId,
-          portfolioId,
-          settlementYear,
-          settlementMonth
-        )
-      );
-    }
-  }, [settlementApprovalResponse]);
-
-  // approve status
-  useEffect(() => {
-    if (getSettlementApproveData) {
-      const approveData = getSettlementApproveData?.utilityList?.filter(
-        // const approveData = sample_SettlementApproveData?.filter(
-        (item) => item.approveStatus !== null
-      );
-      setApproveDetail(approveData);
-    }
-  }, [getSettlementApproveData]);
-
-  const isUserCanApprove = (item) => {
-    if (userGroupUtilityID == item.utilityId && item.approveStatus == "W") {
-      return true;
-    }
-    return false;
-  };
-
   const handleChangeSettlementYear = (year) => {
     Swal.fire({
       title: "Please Wait...",
+      html: `กำลังโหลด...`,
       allowOutsideClick: false,
       showConfirmButton: false,
       timerProgressBar: true,
@@ -221,6 +263,7 @@ export default function SettlementApproval() {
   const handleChangeSettlementMonth = (month) => {
     Swal.fire({
       title: "Please Wait...",
+      html: `กำลังโหลด...`,
       allowOutsideClick: false,
       showConfirmButton: false,
       timerProgressBar: true,
@@ -243,6 +286,15 @@ export default function SettlementApproval() {
         userGroupUtilityID
       )
     );
+    /*dispatch(
+      settlementApproval(
+        ugtGroupId,
+        portfolioId,
+        settlementYear,
+        settlementMonth,
+        userGroupUtilityID
+      )
+    );*/
     setIsClickApprove(true);
   };
 
@@ -265,306 +317,453 @@ export default function SettlementApproval() {
     });
   };
 
+  /*useEffect(() => {
+    if (settlementApprovalResponse.status) {
+      setApproveStatus(true);
+      setApproveDate(settlementApprovalResponse.approveDate);
+      setOpenModalConfirm(false);
+      setShowModalComplete(true);
+    } else {
+      console.log("approved failed");
+    }
+  }, [settlementApprovalResponse]);*/
+
   const handleCloseModalConfirm = () => {
     setOpenModalConfirm(false);
   };
 
-  const handleChangeUnit = (unit) => {
+  const handleChangeOverviewUnit = (unit) => {
+    console.log("Handle unit", unit);
     const unitObj = CONVERT_UNIT.filter((obj) => {
       return obj.unit == unit;
     });
-    setUnit(unit);
+    setOverviewDataUnit(unit);
     setConvertUnit(unitObj[0].convertValue);
+    /*setTmpOverviewChartData(
+      convertChartData(settlementOverviewData, unitObj[0].convertValue)
+    );*/
   };
+
+  const handleChangeUtility = (value) => {
+    console.log(value);
+
+    const findIDUtility = listOptionUtility.filter((obj) => {
+      return obj.id == value;
+    });
+    console.log(findIDUtility);
+    console.log(findIDUtility[0].id);
+    setSelectOptionUtility(findIDUtility[0].abbr);
+    setSelectOptionSelectID(value);
+    console.log(selectOptionUtilityID);
+  };
+
+  const exportTablePDf = () => {};
+
+  const exportTableExcel = () => {};
+
+  const exportScreenPDF = () => {};
+
+  const exportScreenExcel = () => {};
 
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
         <div className="container max-w-screen-lg mx-auto">
-          <div className="text-left flex flex-col gap-3">
-            <div className="grid gap-4 gap-y-2">
-              <div className="">
-                <h2 className="font-semibold text-xl text-black truncate">
-                  {portfolioName}
-                </h2>
-                <p className={`text-BREAD_CRUMB text-sm font-normal`}>
-                  {currentUGTGroup?.name} / Portfolio & Settlement Management /
-                  Settlement Approval / {portfolioName}
-                </p>
-              </div>
-            </div>
+          <div className="text-left flex flex-col">
+            <h2 className="font-semibold text-xl text-black">
+              View Settlement
+            </h2>
+            <p className={`text-BREAD_CRUMB text-sm mb-6 font-normal`}>
+              {currentUGTGroup?.name} / Settlement Approval /{portfolioName}
+            </p>
+          </div>
 
-            <Card
-              shadow="md"
-              radius="lg"
-              className="flex w-full h-full"
-              padding="0"
-            >
-              <div className="flex justify-between items-center p-4">
+          <Card shadow="md" radius="lg" className="flex" padding="xl">
+            <div className="flex justify-between">
+              <div className="content-center">
                 <div className="text-left flex gap-3 items-center">
                   <FaChevronCircleLeft
                     className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
                     size="30"
-                    onClick={() => {
+                    onClick={() =>
                       navigate(WEB_URL.SETTLEMENT, {
                         state: {
-                          id: portfolioId,
-                          name: portfolioName,
+                          id: state?.portfolioId,
+                          name: state?.portfolioName,
                         },
-                      });
-                    }}
+                      })
+                    }
                   />
 
-                  <span className="text-xl	mr-14 	leading-tight">
-                    <b> Settlement Approval</b>
-                  </span>
-
-                  {/* <div>
-                    <div className="text-sm font-semibold text-[#4D6A00]">
-                      Settlement Approval
+                  <div>
+                    <div className="text-xl font-bold ">
+                      Settlement Confirmation
                     </div>
-                    <div className="text-xl font-bold ">{portfolioName}</div>
-                  </div> */}
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="text-sm font-bold">Settlement Period</div>
-
-                  <div className="mb-0 h-9">
-                    <Form layout="horizontal" size="large">
-                      <div className="flex items-center gap-3">
-                        <Form.Item>
-                          <Select
-                            size="large"
-                            value={settlementYear}
-                            onChange={(value) =>
-                              handleChangeSettlementYear(value)
-                            }
-                            showSearch
-                            style={{ width: 140 }}
-                          >
-                            {yearListData?.yearList?.map((item, index) => (
-                              <Select.Option
-                                key={index}
-                                value={item}
-                                disabled={item > latestYearHasData}
-                              >
-                                {item}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
-
-                        <Form.Item>
-                          <Select
-                            size="large"
-                            value={settlementMonth}
-                            onChange={(value) =>
-                              handleChangeSettlementMonth(value)
-                            }
-                            showSearch
-                            filterOption={(input, option) =>
-                              (option.children ?? "")
-                                .toLowerCase()
-                                .includes(input.toLowerCase())
-                            }
-                            style={{ width: 140 }}
-                          >
-                            {monthListData?.monthList?.map((item, index) => {
-                              return (
-                                <Select.Option
-                                  key={index}
-                                  value={MONTH_LIST[item - 1].month}
-                                  disabled={item > latestMonthHasData}
-                                >
-                                  {MONTH_LIST[item - 1].name}
-                                </Select.Option>
-                              );
-                            })}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                    </Form>
                   </div>
                 </div>
               </div>
-              <Divider orientation="horizontal" size={"xs"} />
 
-              <div className="flex justify-between items-center px-4 mt-7">
-                <div className="flex justify-between items-center">
-                  <div className="text-xl font-semibold text-[#4D6A00]">
-                    Settlement Information
+              <div className="content-center">
+                {/*<div className="flex items-center justify-content-end gap-4">
+                  <div className="flex items-center text-sm">
+                    <span>
+                      Status :{" "}
+                      <b>{approveStatus ? "Approved" : "Not Approved"}</b>
+                    </span>
                   </div>
                 </div>
 
-                <div>
-                  <Form layout="horizontal" size="large">
-                    <Form.Item className="mb-3">
+                {approveStatus && (
+                  <div className="mt-1 text-right">
+                    <div className="text-xs text-slate-500 italic">
+                      Approved{" "}
+                      {dayjs(approveDate).format(
+                        "dddd, D MMMM YYYY h:mm A [(GMT+7)]"
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div
+                  className="flex items-center justify-content-end text-sm text-[#4D6A00] underline cursor-pointer"
+                  onClick={() =>
+                    navigate(WEB_URL.SETTLEMENT, {
+                      state: {
+                        id: portfolioId,
+                        name: portfolioName,
+                      },
+                    })
+                  }
+                >
+                  Go to Summary
+                </div>*/}
+                <Form layout="horizontal" size="large">
+                  <div className="grid grid-cols-6 gap-4 items-center pt-2">
+                    <div className="col-span-2 text-sm font-bold">
+                      Settlement Period
+                    </div>
+
+                    <Form.Item className="col-span-2 pt-3">
                       <Select
                         size="large"
-                        value={unit}
-                        variant="borderless"
-                        onChange={(value) => handleChangeUnit(value)}
+                        value={settlementYear}
+                        onChange={(value) => handleChangeSettlementYear(value)}
+                        showSearch
                       >
-                        {CONVERT_UNIT?.map((item, index) => (
-                          <Select.Option key={index} value={item.unit}>
-                            {item.unit}
+                        {yearListData?.yearList?.map((item, index) => (
+                          <Select.Option
+                            key={index}
+                            value={item}
+                            disabled={item > latestYearHasData}
+                          >
+                            {item}
                           </Select.Option>
                         ))}
                       </Select>
                     </Form.Item>
-                  </Form>
-                </div>
-              </div>
 
-              <div className="text-right px-4">
-                <a
-                  className="text-[#4D6A00] cursor-pointer text-sm"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const targetElement =
-                      document.getElementById("approveInformation");
-                    if (targetElement) {
-                      targetElement.scrollIntoView({ behavior: "smooth" });
-                    }
-                  }}
-                >
-                  View Approval Details {">"}
-                </a>
-              </div>
-
-              <div className="p-4">
-                <SettlementInfo
-                  ugtGroupId={ugtGroupId}
-                  portfolioId={portfolioId}
-                  portfolioName={portfolioName}
-                  unit={unit}
-                  convertUnit={convertUnit}
-                  showSeeDetailButton={true}
-                  showWaitApprove={false}
-                  settlementYear={settlementYear}
-                  settlementMonth={settlementMonth}
-                />
-              </div>
-            </Card>
-
-            <Card
-              id="approveInformation"
-              shadow="md"
-              radius="lg"
-              className="flex w-full h-full mb-10"
-              padding="lg"
-            >
-              <div className="pt-2 flex items-center gap-4">
-                <div className="text-xl font-semibold text-[#4D6A00] ">
-                  Approval Details
-                </div>
-                {approveDetail?.length == 0 && (
-                  <div className="text-xl font-normal text-center text-secondary">
-                    -- Awaiting for Approval --
-                  </div>
-                )}
-              </div>
-
-              {approveDetail?.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3">
-                  {approveDetail?.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className={`p-3 rounded shadow-md ${
-                          item.approveStatus == "Y"
-                            ? "bg-[#E9F8E9]"
-                            : "bg-[#FFE5E4]"
-                        }`}
+                    <Form.Item className="col-span-2 pt-3">
+                      <Select
+                        size="large"
+                        value={settlementMonth}
+                        onChange={(value) => handleChangeSettlementMonth(value)}
+                        showSearch
+                        filterOption={(input, option) =>
+                          (option.children ?? "")
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
                       >
-                        <div className="flex justify-between items-center">
-                          <div className="flex flex-col gap-1">
-                            <div className="text-left text-sm">
-                              <b
-                                className={`${
-                                  item.approveStatus === "Y"
-                                    ? "text-[#2BA228]"
-                                    : "text-[#E41D12]"
-                                }`}
-                              >
-                                {item.approveStatus === "Y"
-                                  ? "Approved"
-                                  : "Waiting for Approval"}
-                              </b>
-                            </div>
-                            <div className="text-xs text-slate-700 italic text-left">
-                              By <b>{item.approvedBy}</b>
-                            </div>
-                            <div className="text-xs text-slate-700 italic text-left">
-                              {item.approveStatus == "Y" && (
-                                <span>
-                                  At{" "}
-                                  {dayjs(item.approveDate).format(
-                                    "dddd, D MMMM YYYY h:mm A [(GMT+7)]"
-                                  )}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-
-                          {isUserCanApprove(item) && (
-                            <Button
-                              size="sm"
-                              className="bg-[#87BE33] text-white px-3"
-                              onClick={() => onClickApprove()}
+                        {monthListData?.monthList?.map((item, index) => {
+                          return (
+                            <Select.Option
+                              key={index}
+                              value={MONTH_LIST[item - 1].month}
+                              disabled={item > latestMonthHasData}
                             >
-                              Approve
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {openModalConfirm && (
-                <ModalConfirm
-                  onClickConfirmBtn={handleApprove}
-                  onCloseModal={handleCloseModalConfirm}
-                  title={"Are you sure?"}
-                  content={"Do you confirm this approval ?"}
-                />
-              )}
-
-              <Modal
-                opened={showModalComplete}
-                onClose={() => setShowModalComplete(!showModalComplete)}
-                withCloseButton={false}
-                centered
-                closeOnClickOutside={false}
-              >
-                <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
-                  <img
-                    className="w-32 object-cover rounded-full flex items-center justify-center"
-                    src={AlmostDone}
-                    alt="Current profile photo"
-                  />
-
-                  <div className="text-2xl font-bold text-center pt-2">
-                    Settlement Approval Completed
+                              {MONTH_LIST[item - 1].name}
+                            </Select.Option>
+                          );
+                        })}
+                      </Select>
+                    </Form.Item>
                   </div>
-                  <div className="flex gap-4">
-                    <Button
-                      className="text-[#69696A] bg-[#E6EAEE] mt-12 px-10"
-                      onClick={() => {
-                        setShowModalComplete(!showModalComplete);
-                      }}
+                </Form>
+              </div>
+            </div>
+            <Divider className="mt-3" orientation="horizontal" size={"xs"} />
+
+            <div className="flex justify-between items-center my-2">
+              <div className="text-xl font-semibold text-[#4D6A00]"></div>
+
+              <Form layout="horizontal" size="large">
+                <div className={`grid gap-4 pt-4 grid-cols-3`}>
+                  <Form.Item className="col-span-1"></Form.Item>
+                  {/*Select Year filter */}
+                  <Form.Item className="col-span-1">
+                    <Select
+                      size="large"
+                      value={selectOptionUtilityID}
+                      onChange={(value) => handleChangeUtility(value)}
                     >
-                      Close
-                    </Button>
-                  </div>
+                      {listOptionUtility.map((item, index) => (
+                        <Select.Option
+                          key={index}
+                          value={item.id}
+                          //disabled={item > latestYearHasData}
+                        >
+                          {item.abbr}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+
+                  {/*Select Unit Filter convert */}
+                  <Form.Item className="col-span-1">
+                    <Select
+                      size="large"
+                      value={overviewDataUnit}
+                      variant="borderless"
+                      onChange={(value) => handleChangeOverviewUnit(value)}
+                      className={
+                        /*`${!canViewSettlementDetail && "opacity-20"}`*/ ""
+                      }
+                    >
+                      {CONVERT_UNIT?.map((item, index) => (
+                        <Select.Option key={index} value={item.unit}>
+                          {item.unit}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+
+                  {/*<SettlementMenu
+                    labelBtn={"Export"}
+                    actionList={[
+                      {
+                        icon: <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]"/>,
+                        label: "Table",
+                        onClick: exportTablePDf,
+                        rightTxt:"(.pdf)",
+                      },
+                      {
+                        icon: <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]"/>,
+                        label: "Screen",
+                        onClick: exportScreenPDF,
+                        rightTxt:"(.pdf)",
+                      },
+                      {
+                        icon: <FaRegFileExcel  className="text-green-600 w-[20px] h-[20px]"/>,
+                        label: "Table",
+                        onClick: exportTableExcel,
+                        rightTxt:"(.xls)",
+                      },
+                      {
+                        icon: <FaRegFileExcel  className="text-green-600 w-[20px] h-[20px]"/>,
+                        label: "Screen",
+                        onClick: exportScreenExcel,
+                        rightTxt:"(.xls)",
+                      }
+
+                    ]}
+                  />*/}
                 </div>
-              </Modal>
-            </Card>
-          </div>
+              </Form>
+            </div>
+
+            <SettlementInfo
+              ugtGroupId={ugtGroupId}
+              portfolioId={portfolioId}
+              portfolioName={portfolioName}
+              unit={overviewDataUnit}
+              convertUnit={convertUnit}
+              showSeeDetailButton={true}
+              showWaitApprove={false}
+              settlementYear={settlementYear}
+              settlementMonth={settlementMonth}
+            />
+          </Card>
+
+          {/*<div className="flex flex-col items-center mt-5">
+            <div className="flex items-center gap-5">
+              <Button
+                size="xl"
+                className={`${
+                  approveStatus ? "bg-[#CCD1D9]" : "bg-[#87BE33]"
+                } text-white px-8`}
+                onClick={() => setOpenModalConfirm(true)}
+                disabled={approveStatus}
+              >
+                {approveStatus && <FaCheck />}
+                <span className="pl-2">Approve{approveStatus && "d"}</span>
+              </Button>
+            </div>
+
+            {approveStatus && (
+              <div className="mt-4 text-right">
+                <div className="text-xs text-slate-500 italic">
+                  Approved{" "}
+                  {dayjs(approveDate).format(
+                    "dddd, D MMMM YYYY h:mm A [(GMT+7)]"
+                  )}
+                </div>
+              </div>
+            )}
+          </div>*/}
+
+          <Card
+            id="approveInformation"
+            shadow="md"
+            radius="lg"
+            className="flex w-full h-full mb-10 mt-4"
+            padding="lg"
+          >
+            <div className="pt-2 flex items-center gap-4">
+              <div className="text-xl font-semibold text-[#4D6A00] ">
+                Approval Details
+              </div>
+              {approveDetail?.length == 0 && (
+                <div className="text-xl font-normal text-center text-secondary">
+                  -- Awaiting for Approval --
+                </div>
+              )}
+            </div>
+
+            {approveDetail?.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3">
+                {approveDetail?.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`p-3 rounded shadow-md ${
+                        item.approveStatus == "Y"
+                          ? "bg-[#E9F8E9]"
+                          : "bg-[#FFE5E4]"
+                      }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div className="flex flex-col gap-1">
+                          <div className="text-left text-sm">
+                            <b
+                              className={`${
+                                item.approveStatus === "Y"
+                                  ? "text-[#2BA228]"
+                                  : "text-[#E41D12]"
+                              }`}
+                            >
+                              {item.approveStatus === "Y"
+                                ? "Approved"
+                                : "Waiting for Approval"}
+                            </b>
+                          </div>
+                          <div className="text-xs text-slate-700 italic text-left">
+                            By <b>{item.approvedBy}</b>
+                          </div>
+                          <div className="text-xs text-slate-700 italic text-left">
+                            {item.approveStatus == "Y" && (
+                              <span>
+                                At{" "}
+                                {dayjs(item.approveDate).format(
+                                  "dddd, D MMMM YYYY h:mm A [(GMT+7)]"
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {isUserCanApprove(item) && (
+                          <Button
+                            size="sm"
+                            className="bg-[#87BE33] text-white px-3"
+                            onClick={() => onClickApprove()}
+                          >
+                            Approve
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {openModalConfirm && (
+              <ModalConfirm
+                onClickConfirmBtn={handleApprove}
+                onCloseModal={handleCloseModalConfirm}
+                title={"Are you sure?"}
+                content={"Do you confirm this approval ?"}
+              />
+            )}
+
+            <Modal
+              opened={showModalComplete}
+              onClose={() => setShowModalComplete(!showModalComplete)}
+              withCloseButton={false}
+              centered
+              closeOnClickOutside={false}
+            >
+              <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
+                <img
+                  className="w-32 object-cover rounded-full flex items-center justify-center"
+                  src={AlmostDone}
+                  alt="Current profile photo"
+                />
+
+                <div className="text-2xl font-bold text-center pt-2">
+                  Settlement Approval Completed
+                </div>
+                <div className="flex gap-4">
+                  <Button
+                    className="text-[#69696A] bg-[#E6EAEE] mt-12 px-10"
+                    onClick={() => {
+                      setShowModalComplete(!showModalComplete);
+                    }}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            </Modal>
+          </Card>
         </div>
+
+        {/*  {openModalConfirm && (
+          <ModalConfirm
+            onClickConfirmBtn={handleApprove}
+            onCloseModal={handleCloseModalConfirm}
+            title={"Are you sure?"}
+            content={"Do you confirm this approval ?"}
+          />
+        )}
+
+        <Modal
+          opened={showModalComplete}
+          onClose={() => setShowModalComplete(!showModalComplete)}
+          withCloseButton={false}
+          centered
+          closeOnClickOutside={false}
+        >
+          <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
+            <img
+              className="w-32 object-cover rounded-full flex items-center justify-center"
+              src={AlmostDone}
+              alt="Current profile photo"
+            />
+
+            <div className="text-2xl font-bold text-center pt-2">
+              Settlement Approval Completed
+            </div>
+            <div className="flex gap-4">
+              <Button
+                className="text-[#69696A] bg-[#E6EAEE] mt-12 px-10"
+                onClick={() => setShowModalComplete(!showModalComplete)}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </Modal>*/}
       </div>
     </div>
   );

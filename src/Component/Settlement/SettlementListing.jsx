@@ -16,6 +16,7 @@ import {
   PortfolioManagementDashboard,
   PortfolioManagementDashboardList,
 } from "../../Redux/Portfolio/Action";
+import { getSettlementDashboard } from "../../Redux/Settlement/Action"
 import { setSelectedYear } from "../../Redux/Settlement/Action";
 import { setCookie } from "../../Utils/FuncUtils";
 import { setSelectedSubMenu } from "../../Redux/Menu/Action";
@@ -40,6 +41,7 @@ const Portfoliolisting = (props) => {
   } = useForm();
 
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
+  const settlementDashboard = useSelector((state)=> state.settlement.settlementDashboard)
   const [isPortManager, setIsPortManager] = useState(false);
   const userData = useSelector((state) => state.login.userobj);
 
@@ -68,6 +70,7 @@ const Portfoliolisting = (props) => {
     if (currentUGTGroup?.id) {
       dispatch(PortfolioManagementDashboard(currentUGTGroup?.id));
       dispatch(PortfolioManagementDashboardList(currentUGTGroup?.id));
+      dispatch(getSettlementDashboard(currentUGTGroup?.id))
     }
   }, [currentUGTGroup?.id]);
 
@@ -316,7 +319,7 @@ useEffect(() => {
   <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
     {userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER || userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ? (
       <>
-        {"Settlement"} <MdOutlineRemoveRedEye className="text-white" />
+        {"Settlement"} 
       </>
     ) : (
       "Settlement"
@@ -479,7 +482,7 @@ useEffect(() => {
   <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
     {userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER || userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ? (
       <>
-        {"Settlement"} <MdOutlineRemoveRedEye className="text-white" />
+        {"Settlement"} {/*<MdOutlineRemoveRedEye className="text-white" />*/}
       </>
     ) : (
       "Settlement"
@@ -614,7 +617,7 @@ useEffect(() => {
                     </div>
                     <div className="text-end">
                       <label className="text-4xl font-semibold flex justify-end">
-                        {numeral(dashboardData?.totalPortfoilo).format("0,0.000")}
+                        {numeral(settlementDashboard?.totalLoad).format("0,0.000")}
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
@@ -650,7 +653,7 @@ useEffect(() => {
                     </div>
                     <div className="text-end">
                       <label className="text-4xl font-semibold flex justify-end">
-                        {numeral(dashboardData?.totalDevice).format("0,0.000")}
+                        {numeral(settlementDashboard?.totalGeneration).format("0,0.000")}
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
@@ -686,7 +689,7 @@ useEffect(() => {
                     </div>
                     <div className="text-end">
                       <label className="text-4xl font-semibold flex justify-end">
-                        {numeral(dashboardData?.totalSubscriber).format("0,0.000")}
+                        {numeral(settlementDashboard?.netDeliverables).format("0,0.000")}
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
@@ -696,43 +699,16 @@ useEffect(() => {
                   </div>
                     <div className="flex justify-between">
                       <div className="font-bold mt-2">Net Deliverables</div>
-                  <div>
-                  <div className="font-bold mt-2 flex">100%<div className="text-gray-500 text-xs mt-1 ml-1"> of Total Load</div> </div>
+                  <div className="mt-2">
+                  {/*<div className="font-bold mt-2 flex">{settlementDashboard?.netDeliverablesTotalLoad+" %"}<div className="text-gray-500 text-xs mt-1 ml-1"> of Total Load</div> </div>*/}
+                  <div className="font-bold w-full">{settlementDashboard?.netDeliverablesTotalLoad+"% "}<label className="text-xs text-gray-500">of Total Load</label></div>
                   </div>
                     </div>
                   
                 </div>
               </Card>
             </div>
-            {isPortManager && (
-                        <div className="grid col-span-4 grid-cols-12 mr-2 mt-3">
-                          <div className="col-span-9"></div>
-                          <div className="text-sm col-span-3">
-                          <div
-                            type="button"
-                            onClick={handleClickAddPortfolio}
-                            className={`w-full h-[40px] hover:bg-[#4D6A00] bg-[#87BE33]  rounded no-underline	`}
-                          >
-                            <div className="flex justify-center items-center">
-                              <img
-                                src={submenuPortfolioLogoAddSelectedwhite}
-                                alt="React Logo"
-                                width={20}
-                                height={20}
-                                className={"text-white mr-2"}
-                              />
-
-                              <button
-                                className="h-[40px] text-white  cursor-pointer items-center rounded font-semibold"
-                                type="button"
-                              >
-                                Add New Portfolio
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        </div>
-                      )}
+            
             {/* Active */}
             <Card
               shadow="md"
@@ -831,11 +807,12 @@ useEffect(() => {
                       </label>
                     </span>
                   </div>
-
+                  
                   <div className="grid col-span-4 grid-cols-12">
                     <form className="grid col-span-12 grid-cols-12 gap-2 ">
                       {/* <div className="col-span-3 px-2"></div> */}
                       {/* {!isPortManager && <div className="col-span-4"></div>} */}
+                      <div className="col-span-4"></div>
                       <div className="col-span-4"></div>
                       <div className="col-span-4">
                         <Controller
@@ -851,7 +828,7 @@ useEffect(() => {
                         />
                       </div>
 
-                      <div className="col-span-4">
+                      {/*<div className="col-span-4">
                         <Controller
                           name="status"
                           control={control}
@@ -871,7 +848,7 @@ useEffect(() => {
                             />
                           )}
                         />
-                      </div>
+                      </div>*/}
 
                       
                     </form>

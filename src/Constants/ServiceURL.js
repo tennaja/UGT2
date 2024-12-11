@@ -39,6 +39,7 @@ export const GET_SUB_MENU_EAC_TRACKING_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac
 
 //Dropdrow
 export const UGT_GROUP_LIST = `${DOMAIN_URL}/ugt/v1/ugtgroup-list`;
+export const UTILITY_CONTRACT_LIST = `${DOMAIN_URL}/ugt/v1/menu-list/UtilityContracts`;
 
 export const PROVINCE_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/provinces.json`;
 export const DISTRICT_LIST_URL = `${DOMAIN_URL}/ugt/v1/geography/districts.json`;
@@ -127,5 +128,9 @@ export const SETTLEMENT_MONTHLY_CONSUMPTION_URL = `${DOMAIN_URL_EGAT}/ugt/v1/por
 export const INVENTORY_SUPPLY_USAGE_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/inventorySupplyUsage`;
 export const REMAIN_ENERGY_ATTRIBUTE_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/remainingEnergyAttribute`;
 export const SETTLEMENT_MONTHLY_DETAIL_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/settlementDetail`;
-export const SETTLEMENT_APPROVAL_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/setSettlementApprove`;
-export const SETTLEMENT_GET_APPROVAL_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/getSettlementApprove`;
+export const SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/settlementDetail/Subscribers`;
+//export const SETTLEMENT_APPROVAL_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/setSettlementApprove`;
+//export const SETTLEMENT_GET_APPROVAL_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/getSettlementApprove`;
+export const SETTLEMENT_APPROVAL_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/setSettlementApproveByUtility`;
+export const SETTLEMENT_GET_APPROVAL_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/monthly/getSettlementApproveStatus`;
+export const SETTLEMENT_GET_DASHBOARD = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/dashboard`;
