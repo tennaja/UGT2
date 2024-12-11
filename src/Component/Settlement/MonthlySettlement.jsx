@@ -67,6 +67,11 @@ const MonthlySettlement = (props) => {
       ){
         setIsShowView(true)
       }
+      else if(userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG || 
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG || 
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG){
+        setIsShowView(false)
+       }
       else{
         if(settlementMonthlySummaryData?.approveStatus == true){
           setIsShowView(true)
