@@ -176,7 +176,6 @@ console.log("Formatted number:", formattedNumber); // Log formatted output
         // const pdfWindow = window.open(url, '_blank');
         // if (pdfWindow) pdfWindow.focus();
   
-        
         // Dispatch the generated PDF Blob for storage
         dispatch(setSF02(pdfFile));
         
