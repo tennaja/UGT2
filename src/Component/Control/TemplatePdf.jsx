@@ -191,15 +191,15 @@ console.log("Formatted number:", formattedNumber); // Log formatted output
         hideLoading();
         setload(false);
       })
-      // .catch((error) => {
-      //   console.error('Error generating PDF:', error);
-      //   // Hide the content again if there's an error
-      //   element.style.display = 'none';
-      //   setload(false);
-      //   hideLoading();
-      //   // Display an alert to the user (optional)
-      //   alert('An error occurred while generating the PDF. Please try again.');
-      // });
+      .catch((error) => {
+        console.error('Error generating PDF:', error);
+        // Hide the content again if there's an error
+        element.style.display = 'none';
+        setload(false);
+        hideLoading();
+        // Display an alert to the user (optional)
+        alert('An error occurred while generating the PDF. Please try again.');
+      });
   };
  if(load){
   return ""
