@@ -1,5 +1,6 @@
 import { Modal } from "@mantine/core";
 import { useState } from 'react';
+import PdfTablePreview from '../TemplatePdf';
 const ModalSignStep2 = (props) => {
   const {
     data,
@@ -19,6 +20,7 @@ const ModalSignStep2 = (props) => {
   const onClickOk = () => {
     onClickConfirmBtn();
   };
+  
 
   const getButtonColor = () => {
     switch (buttonTypeColor) {
@@ -32,6 +34,7 @@ const ModalSignStep2 = (props) => {
   };
   return (
     <>
+    
       <Modal
         size="lg"
         opened={true}

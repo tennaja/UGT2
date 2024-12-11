@@ -6,10 +6,20 @@ import pdfIcon from '../assets/EV.png';
 import '../Control/Css/page.css'
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import { IoMdCheckmark } from "react-icons/io";
-const PdfFormPreview = (data,aftersign,Sign,Status) => {
-  console.log(data.data)
-  console.log(data.Sign)
-  console.log(data.aftersign)
+const PdfFormPreview = (props) => {
+  const {
+    data,
+    aftersign,
+    Sign,
+    Status,
+    isFirst,
+    setupsetIsfirst,
+    Modalclose,
+    ModalOpen
+  } = props;
+  console.log(data)
+  console.log(Sign)
+  console.log(aftersign)
   const dispatch = useDispatch();
   const filesf02 = useSelector((state)=> state.device.filesf02) 
   const count = useSelector((state) => state.device.count)
@@ -53,9 +63,9 @@ function parseDateStringRequesteffect(dateString) {
   return { dayrequest, monthrequest, yearrequest };
 }
 
-const dateStringcom = data?.data?.commissioningDate;
-const dateStringfund = data?.data?.fundingReceive;
-const datStringRequesteffect = data?.data?.registrationDate;
+const dateStringcom = data?.commissioningDate;
+const dateStringfund = data?.fundingReceive;
+const datStringRequesteffect = data?.registrationDate;
 const { daycom, monthcom, yearcom } = parseDateStringCommission(dateStringcom);
 const { dayfund, monthfund, yearfund } = parseDateStringFunding(dateStringfund);
 const { dayrequest, monthrequest, yearrequest } = parseDateStringRequesteffect(datStringRequesteffect);
@@ -70,7 +80,7 @@ function getDay(date) {
 function getMonth(date) {
     return (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
 }
-console.log(data?.data?.capacity)
+console.log(data?.capacity)
 // Function to get the year part
 function getYear(date) {
     return date.getFullYear();
@@ -103,7 +113,7 @@ const formatNumber = (value) => {
 };
 
 // Log capacity before formatting
-const capacity = data?.data?.capacity;
+const capacity = data?.capacity;
 console.log("Raw capacity:", capacity); // Log raw value of capacity
 
 // Format number only if capacity is valid
@@ -117,11 +127,15 @@ console.log("Formatted number:", formattedNumber); // Log formatted output
 
   const pdfContentRef = useRef("");
   
-  useEffect(()=>{
-    generatePdf();
-  },[])
+  useEffect(() => {
+    if (isFirst) {
+      generatePdf();
+    }
+  }, [isFirst]);
 
   const generatePdf = () => {
+    
+    
     showLoading();
     setload(true);
     const element = pdfContentRef.current;
@@ -190,11 +204,12 @@ console.log("Formatted number:", formattedNumber); // Log formatted output
         // element.style.display = 'none';
         hideLoading();
         setload(false);
+        setupsetIsfirst();
       })
       .catch((error) => {
         console.error('Error generating PDF:', error);
         // Hide the content again if there's an error
-        element.style.display = 'none';
+        // element.style.display = 'none';
         setload(false);
         hideLoading();
         // Display an alert to the user (optional)
@@ -231,9 +246,9 @@ console.log("Formatted number:", formattedNumber); // Log formatted output
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left w-1/3">Date</td>
-                <td className="border p-2 text-left ">{data?.Sign == "" ? "" : getDay(now)}</td>
-                <td className="border p-2 text-left ">{data?.Sign == "" ? "" : getMonth(now)}</td>
-                <td className="border p-2 text-left ">{data?.Sign == "" ? "" : getYear(now)}</td>
+                <td className="border p-2 text-left ">{Sign == "" ? "" : getDay(now)}</td>
+                <td className="border p-2 text-left ">{Sign == "" ? "" : getMonth(now)}</td>
+                <td className="border p-2 text-left ">{Sign == "" ? "" : getYear(now)}</td>
               </tr>
             </thead>
             <tbody>
@@ -247,7 +262,7 @@ console.log("Formatted number:", formattedNumber); // Log formatted output
                             <tr>
                             <td className="border p-2 font-bold w-1/3 ">New</td>
                             <td className="border p-2 text-center break-all ">{
-                              data?.data?.isApproved === null || data?.data?.isApproved === "False" || data?.data?.isApproved ==="" ? 
+                              data?.isApproved === null || data?.isApproved === "False" || data?.isApproved ==="" ? 
                               <IoMdCheckmark /> : ""
                               }</td>
                             
@@ -256,7 +271,7 @@ console.log("Formatted number:", formattedNumber); // Log formatted output
                             <td className="border p-2 font-bold w-1/3  ">Change of details</td>
                             <td className="border p-2 text-left break-all " >
                             {
-                              data?.data?.isApproved === "True" ? 
+                              data?.isApproved === "True" ? 
                               <IoMdCheckmark /> : ""
                               }
                             </td>
@@ -292,13 +307,13 @@ submission`})</em></p>
             </thead>
             <tbody>
               {[
-                ['Organisation ID/code', `${data?.aftersign == "" ? "" : data?.aftersign.organisationId == null ? "" : data?.aftersign.organisationId}`],
-                ['Organisation name', `${data?.aftersign == "" ? "" : data?.aftersign.organisationName == null ? "" : data?.aftersign.organisationName}`],
-                ['Contact person', `${data?.aftersign == "" ? "" : data?.aftersign.contactPerson == null ? "" : data?.aftersign.contactPerson} `],
-                ['Business address', `${data?.aftersign == "" ? "" : data?.aftersign.businessAddress == null ? "" : data?.aftersign.businessAddress}`],
-                ['Country', `${data?.aftersign == "" ? "" : data?.aftersign.country == null ? "" : data?.aftersign.country }`],
-                ['e-mail', `${data?.aftersign == "" ? "" : data?.aftersign.email == null ? "" : data?.aftersign.email}`],
-                ['Telephone', `${data?.aftersign == "" ? "" : data?.aftersign.telephone == null ? "" : data?.aftersign.telephone}`]
+                ['Organisation ID/code', `${aftersign == "" ? "" : aftersign?.organisationId == null ? "" : aftersign?.organisationId}`],
+                ['Organisation name', `${aftersign == "" ? "" : aftersign?.organisationName == null ? "" : aftersign?.organisationName}`],
+                ['Contact person', `${aftersign == "" ? "" : aftersign?.contactPerson == null ? "" : aftersign?.contactPerson} `],
+                ['Business address', `${aftersign == "" ? "" : aftersign?.businessAddress == null ? "" : aftersign?.businessAddress}`],
+                ['Country', `${aftersign == "" ? "" : aftersign?.country == null ? "" : aftersign?.country }`],
+                ['e-mail', `${aftersign == "" ? "" : aftersign?.email == null ? "" : aftersign?.email}`],
+                ['Telephone', `${aftersign == "" ? "" : aftersign?.telephone == null ? "" : aftersign?.telephone}`]
               ].map((row, index) => (
                 <tr key={index}>
                   <td className="border p-2 font-bold break-all w-1/3">{row[0]}</td>
@@ -346,31 +361,31 @@ submission`})</em></p>
                 <td className="border p-2 font-bold w-1/2" >Facility name
                 <p className='text-[8px] text-gray-600'><em>({`including postal or zip code`})</em></p>
                 </td>
-                <td className="border p-2 text-left break-all " colSpan={3}>{data?.data?.name}</td>
+                <td className="border p-2 text-left break-all " colSpan={3}>{data?.name}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Facility address</td>
                 <td className="border p-2 text-left break-all" colSpan={3}>
                 <div className='flex flex-col'>
-                  <p>{data?.data?.address}</p>
-                  <p>{data?.data?.subdistrictName}</p>
-                  <p>{data?.data?.districtName}</p>
-                  <p>{data?.data?.proviceName}</p>
-                  <p>{data?.data?.postcode}</p>
+                  <p>{data?.address}</p>
+                  <p>{data?.subdistrictName}</p>
+                  <p>{data?.districtName}</p>
+                  <p>{data?.proviceName}</p>
+                  <p>{data?.postcode}</p>
                 </div>
                 </td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Country</td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.countryCode}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.countryCode}</td>
               </tr>
               <tr>
                 <td className="border p-2  font-bold"><div className="flex text-left"><p>Latitude</p><p className='text-[8px] text-gray-500 ml-1'><em>(±n.nnnnnn)</em></p></div></td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.latitude}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.latitude}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold"><div className="flex text-left"><p>Longitude</p><p className='text-[8px] text-gray-500 ml-1'><em>(±n.nnnnnn)</em></p></div></td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.longitude}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.longitude}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Installed capacity</td>
@@ -379,7 +394,7 @@ submission`})</em></p>
                 <table className='w-full text-xs'>
   <tbody>
     <tr>
-      <td className="border p-2 font-bold w-1/2 text-left">{data?.data?.capacity} MW</td>
+      <td className="border p-2 font-bold w-1/2 text-left">{data?.capacity} MW</td>
       <td className="border p-2 text-left text-xs break-all w-1/2">
         <em>Up to 6 decimal places</em>
       </td>
@@ -404,10 +419,10 @@ submission`})</em></p>
               <tr>
                 <td className="border p-2 font-bold ">Meter or Measurement ID(s)</td>
                 <td className="border p-2 text-left break-all" colSpan={3}>
-                {data?.data?.deviceMeasurements?.map ((itm,index) => (
+                {data?.deviceMeasurements?.map ((itm,index) => (
                   <span key={index}>
                   {itm.description}
-                  {index < data.data.deviceMeasurements.length - 1 && ", "}
+                  {index < data?.deviceMeasurements.length - 1 && ", "}
                 </span>
                 )
                  
@@ -417,7 +432,7 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold ">Number of generating units</td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.generatingUnit}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.generatingUnit}</td>
               </tr>
               <tr>
                 
@@ -429,7 +444,7 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Owner of the network to which the Production Device is connected and the voltage of that connection</td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.ownerNetwork}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.ownerNetwork}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">If the Production Device is not connected directly to the grid, specify the circumstances, and additional relevant meter registration numbers</td>
@@ -439,7 +454,7 @@ submission`})</em></p>
                 <td className="border p-2 font-bold">Expected form of volume evidence
                 <p className='text-[8px] text-gray-600'><em>({`if other please specify`})</em></p>
                 </td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.data?.isMeteringData == "True" ? "Metering data / " : ""}  {data.data.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data.data.isOther == "True" ? "Other : " : ""} {data.data.isOther == "True" ? data.data.otherDescription : ""}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.isMeteringData == "True" ? "Metering data / " : ""}  {data?.isContractSaleInvoice == "True" ? "Contract sales invoice / " : ""}  {data?.isOther == "True" ? "Other : " : ""} {data?.isOther == "True" ? data?.otherDescription : ""}</td>
               </tr>
             </tbody>
           </table>
@@ -494,10 +509,10 @@ submission`})</em></p>
                             </tr>
                             <tr>
                             <td className="border p-2 text-left break-all ">
-                            {data?.data?.deviceFuelCode}
+                            {data?.deviceFuelCode}
                             </td>
                             <td className="border p-2 text-left break-all ">
-                            {data?.data?.deviceFuelName}
+                            {data?.deviceFuelName}
                             </td>
                             </tr>
                         </tbody>
@@ -517,10 +532,10 @@ submission`})</em></p>
                             </tr>
                             <tr>
                             <td className="border p-2 text-left break-all">
-                            {data?.data?.deviceTechnologyCode}
+                            {data?.deviceTechnologyCode}
                             </td>
                             <td className="border p-2 text-left break-all">
-                            {data?.data?.deviceTechnologyName}
+                            {data?.deviceTechnologyName}
                             </td>
                             </tr>
                         
@@ -544,8 +559,8 @@ submission`})</em></p>
                 <p className='text-[8px] text-gray-600'><em>({`if yes please provide details`})</em></p></td>
                 <td className="border p-2 text-left break-all w-full" >
                 <div className='flex flex-col'>
-                  <p>{data?.data?.onSiteConsumer}</p>
-                  <p>{data?.data?.onSiteConsumerDetail}</p>
+                  <p>{data?.onSiteConsumer}</p>
+                  <p>{data?.onSiteConsumerDetail}</p>
                   </div>
                   </td>
               </tr>
@@ -556,18 +571,18 @@ submission`})</em></p>
                 <td className="border p-2 text-left break-all" colSpan="3">
                   
                 <div className='flex flex-col'>
-                  <p>{data?.data?.energySource}</p>
-                  <p>{data?.data?.energySourceDetail}</p>
+                  <p>{data?.energySource}</p>
+                  <p>{data?.energySourceDetail}</p>
                   </div>
                   </td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Please give details of how the site can import electricity by means other than through the meter(s) specified above</td>
-                <td className="border p-2 text-left break-all" colSpan="3">{data?.data?.otherImportEletricity}</td>
+                <td className="border p-2 text-left break-all" colSpan="3">{data?.otherImportEletricity}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Please give details (including registration id) of any carbon offset or energy tracking scheme for which the Production Facility is registered.  State ‘None’ if that is the case</td>
-                <td className="border p-2 text-left break-all" colSpan="3">{data?.data?.otherCarbonOffset}</td>
+                <td className="border p-2 text-left break-all" colSpan="3">{data?.otherCarbonOffset}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Please identify any Labelling Scheme(s) for which the Production Facility is accredited</td>
@@ -611,13 +626,13 @@ submission`})</em></p>
             
               <tr>
                 <td className="border p-2 font-bold w-1/2">Has the Production Facility ever received public (government) funding (e.g. Feed in Tariff)?</td>
-                <td className="border p-2 text-left break-all w-full" colSpan="3">{data?.data?.publicFunding}</td>
+                <td className="border p-2 text-left break-all w-full" colSpan="3">{data?.publicFunding}</td>
               </tr>
               <tr>
                 <td className="border p-2 text-left">(if public (government) funding has been received when did/will it finish?)</td>
-                <td className="border p-2 text-left ">{data?.data?.publicFunding == "Feed in Tariff" ? dayfund : ""}</td>
-                <td className="border p-2 text-left ">{data?.data?.publicFunding == "Feed in Tariff" ? monthfund : ""}</td>
-                <td className="border p-2 text-left w-36">{data?.data?.publicFunding == "Feed in Tariff" ? yearfund : ""}</td>
+                <td className="border p-2 text-left ">{data?.publicFunding == "Feed in Tariff" ? dayfund : ""}</td>
+                <td className="border p-2 text-left ">{data?.publicFunding == "Feed in Tariff" ? monthfund : ""}</td>
+                <td className="border p-2 text-left w-36">{data?.publicFunding == "Feed in Tariff" ? yearfund : ""}</td>
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Requested effective date of registration: (no earlier than 12 months prior to submitting this form)</td>
@@ -712,19 +727,19 @@ submission`})</em></p>
              
               <tr>
               <td className="border p-2 font-bold w-1/4" >Signature</td>
-              <td className="border p-2 text-left break-all" colSpan="3">{data?.Sign == "" ? "" :data?.Sign?.firstName + " " +data?.Sign?.lastName}</td>
+              <td className="border p-2 text-left break-all" colSpan="3">{Sign == "" ? "" :Sign?.firstName + " " +Sign?.lastName}</td>
                 
               </tr>
               <tr>
               <td className="border p-2 font-bold" >Name</td>
-              <td className="border p-2 text-left break-all" colSpan="3">{ data?.Sign == "" ? "" : data?.Sign?.firstName + " " +data?.Sign?.lastName}</td>
+              <td className="border p-2 text-left break-all" colSpan="3">{ Sign == "" ? "" : Sign?.firstName + " " +Sign?.lastName}</td>
                 
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Date</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getDay(now)}</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getMonth(now)}</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getYear(now)}</td>
+                <td className="border p-2 text-left">{Sign == "" ? "" : getDay(now)}</td>
+                <td className="border p-2 text-left">{Sign == "" ? "" : getMonth(now)}</td>
+                <td className="border p-2 text-left">{Sign == "" ? "" : getYear(now)}</td>
               </tr>
             </tbody>
           </table>
@@ -767,7 +782,7 @@ submission`})</em></p>
             <tr>
               <td className="border p-2 h-96 break-all" colSpan="4">
                 <div className='flex flex-col'>
-                <p className='break-all'>On behalf of the Registrant, {data?.aftersign == "" ? "" : data?.aftersign.organisationName == null ? "[ ]" :  `[${data.aftersign.organisationName}]`}, I agree to be subject to the I‑REC Code for Electricity and warrant that the information contained in this application is truthful and exhaustive.</p>
+                <p className='break-all'>On behalf of the Registrant, {aftersign == "" ? "" : aftersign?.organisationName == null ? "[ ]" :  `[${data.aftersign?.organisationName}]`}, I agree to be subject to the I‑REC Code for Electricity and warrant that the information contained in this application is truthful and exhaustive.</p>
                 <p className='break-all'>Any planned changes concerning the information given in this form will be announced in advance to the Facility Verifier (if any) and the Issuer. Any unplanned changes will be reported to the Facility Verifier (if any) and the Issuer at the first possible occasion.</p>
                 <p className='break-all'>The Production Facility Owner and the Registrant as their agent accept the possibility of unannounced control and auditing visits to their own premises and/or the premises of the Production Facility, as prescribed in the I‑REC Code for Electricity.</p>
                 <p className='break-all'>I confirm that all necessary permissions of the Production Facility Owner have been granted to the Registrant and we therefore undertake that, for the same units of electrical energy, our organisation will not receive or apply for any certificates or other instruments representing the associated renewable or carbon attributes or the calculated displacement (‘offset’) of these attributes from the electricity production. We also, to the best of our knowledge, have the right to separate renewable attributes from the associated physical electricity generation and are not required by legislation or contract to retain these attributes for any reason.</p>
@@ -779,18 +794,18 @@ submission`})</em></p>
              
               <tr>
               <td className="border p-2 font-bold w-1/4" >Signature</td>
-              <td className="border p-2 text-left break-all" colSpan="3">{data?.Sign == "" ? "" : data?.Sign?.firstName + " " +data?.Sign?.lastName}</td>
+              <td className="border p-2 text-left break-all" colSpan="3">{Sign == "" ? "" : Sign?.firstName + " " +Sign?.lastName}</td>
               </tr>
               <tr>
               <td className="border p-2 font-bold" ><div className="flex text-left"><p>Name</p><p className='text-[8px] text-gray-500 ml-1 mt-0'><em>(BLOCK   CAPITALS)</em></p></div></td>
-              <td className="border p-2 text-left break-all" colSpan="3">{data?.Sign == "" ? "" : data?.Sign?.firstName  + " " +data?.Sign?.lastName}</td>
+              <td className="border p-2 text-left break-all" colSpan="3">{Sign == "" ? "" : Sign?.firstName  + " " +Sign?.lastName}</td>
                 
               </tr>
               <tr>
                 <td className="border p-2 font-bold text-left">Date</td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getDay(now)}   </td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getMonth(now)} </td>
-                <td className="border p-2 text-left">{data?.Sign == "" ? "" : getYear(now)} </td>
+                <td className="border p-2 text-left">{Sign == "" ? "" : getDay(now)}   </td>
+                <td className="border p-2 text-left">{Sign == "" ? "" : getMonth(now)} </td>
+                <td className="border p-2 text-left">{Sign == "" ? "" : getYear(now)} </td>
               </tr>
             </tbody>
           </table>

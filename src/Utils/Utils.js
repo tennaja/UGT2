@@ -119,7 +119,7 @@ export async function showLoading(
       showConfirmButton: false,
       timerProgressBar: true,
       backdrop: `
-        rgba(0, 0, 0, 0.4)`, // Semi-transparent dark background
+        rgba(0, 0, 0, 0.4) url("path/to/your/loading-icon.gif") center no-repeat`, // Optionally add a loading spinner
       didOpen: () => {
         Swal.showLoading();
       },

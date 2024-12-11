@@ -1,5 +1,6 @@
 import { Modal } from "@mantine/core";
 import PdfTablePreview from '../TemplatePdf';
+import { useState } from "react";
 
 const ModalSignStep3 = (props) => {
   const {
@@ -14,10 +15,15 @@ const ModalSignStep3 = (props) => {
     buttonTypeColor = "primary",
   } = props;
 
+  const [isfirst,setIsFirst] = useState(true);
   const onClickOk = () => {
     onClickConfirmBtn();
   };
+ 
 
+  const setIsfirst = () => {
+    setIsFirst(false)
+  }
   const getButtonColor = () => {
     switch (buttonTypeColor) {
       case "primary":
@@ -29,10 +35,13 @@ const ModalSignStep3 = (props) => {
         return "bg-[#87BE33]";
     }
   };
+
+
   return (
     <>
-    <PdfTablePreview data={data} aftersign={registanstdetail} Sign={UserSign} Status ={"Submited"}/>
-      <Modal
+    <PdfTablePreview data={data} aftersign={registanstdetail} Sign={UserSign} Status ={"Submited"} isFirst={isfirst} setupsetIsfirst={setIsfirst} />
+    
+      {!isfirst && ( <Modal
         size="lg"
         opened={true}
         onClose={() => onClickOk && onClickOk(false)}
@@ -69,7 +78,7 @@ const ModalSignStep3 = (props) => {
             Sign & Submit
           </button>
         </div>
-      </Modal>
+      </Modal>)}
     </>
   );
 };

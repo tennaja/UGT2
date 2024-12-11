@@ -1,6 +1,6 @@
 import { Modal } from "@mantine/core";
 import PdfTablePreview from '../TemplatePdf';
-
+import { useState } from "react";
 const ModalConfirmVerified = (props) => {
   const {
     data,
@@ -13,11 +13,14 @@ const ModalConfirmVerified = (props) => {
     content = "Are you sure you would like to confirm this action?",
     buttonTypeColor = "primary",
   } = props;
-
+  const [isfirst,setIsFirst] = useState(true);
   const onClickOk = () => {
     onClickConfirmBtn();
   };
-
+  const setIsfirst = () => {
+    setIsFirst(false)
+  }
+  
   const getButtonColor = () => {
     switch (buttonTypeColor) {
       case "primary":
@@ -35,8 +38,10 @@ const ModalConfirmVerified = (props) => {
      data={data}
      aftersign={registanstdetail}
      Status ={"Verified"}
-     Sign={""}/>
-      <Modal
+     Sign={""}
+     isFirst={isfirst}
+     setupsetIsfirst={setIsfirst}/>
+      {!isfirst && (<Modal
         size="md"
         opened={true}
         onClose={() => onClickOk && onClickOk(false)}
@@ -77,7 +82,7 @@ const ModalConfirmVerified = (props) => {
             Verify
           </button>
         </div>
-      </Modal>
+      </Modal>)}
     </>
   );
 };
