@@ -340,7 +340,7 @@ console.log(isShowModalFail)
         cancelButton: "bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded w-[150px]", // ปุ่ม Cancel
       },
       cancelButtonColor: "#F3F6F9",
-      cancelButtonText: `<span class="text-[#666666]">Cancel</span>`,
+      cancelButtonText: `<span class="text-[#666666]">Back</span>`,
       confirmButtonColor: "#87BE33",
       confirmButtonText: "Confirm",
     }).then((result) => {
@@ -729,14 +729,14 @@ console.log(isShowModalFail)
                             By <b>{item.approvedBy}</b>
                           </div>
                           <div className="text-xs text-slate-700 italic text-left">
-                            {item.approveStatus == "Y" || item.approveStatus == "R" && (
+                            {item.approveStatus == "Y" || item.approveStatus == "R" ? (
                               <span>
                                 At{" "}
                                 {dayjs(item.approveDate).format(
                                   "dddd, D MMMM YYYY h:mm A [(GMT+7)]"
                                 )}
                               </span>
-                            )}
+                            ):undefined}
                           </div>
                         </div>
                         { settlementDetailData.rejectStatus == false || settlementDetailData.rejectStatus == null ?
