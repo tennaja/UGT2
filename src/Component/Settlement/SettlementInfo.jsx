@@ -2531,7 +2531,7 @@ const SettlementInfo = ({
                     <label className="font-bold text-sm">Matched</label>
                   </div>
                   <div className="col-start-4 text-left">
-                    <label className="text-sm">{selectTabSettlementDetail == "device"?renderValue(settlementDetailMonthlyDevice.matched * convertUnit) +" "+ unit:renderValue(settlementDetailMonthlySubscriber.matched * convertUnit) +" "+ unit}</label>
+                    <label className="text-sm">{selectTabSettlementDetail == "device"?renderValue(settlementDetailMonthlyDevice.matched ) +" "+ unit:renderValue(settlementDetailMonthlySubscriber.matched ) +" "+ unit}</label>
                   </div>
                 </div>
               </div>
