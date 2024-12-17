@@ -29,7 +29,8 @@ const ModalConfirmRemarkSettlement = (props) => {
     userLastName,
     remark,
     openCheckBox = true,
-    sizeModal = "lg"
+    sizeModal = "lg",
+    textButton = "Confirm"
 
   } = props;
 
@@ -105,8 +106,8 @@ const ModalConfirmRemarkSettlement = (props) => {
         centered
         onKeyDown={handleKeyDown}
       >
-        <div className="pt-4 pb-3">
-          <div className="text-center sm:mt-4">
+        <div className="pt-3 pb-3">
+          <div className="text-center sm:mt-3">
             <h6
               className="text-2xl leading-6 font-bold text-[#071437] "
               id="modal-headline"
@@ -169,7 +170,7 @@ const ModalConfirmRemarkSettlement = (props) => {
             className={`${getButtonColor()} w-50 rounded shadow-sm px-4 py-2 font-semibold text-white sm:text-sm ${getButtonColorHover()} `}
             disabled={openCheckBox?!isCheckBox:false}
           >
-            Confirm
+            {textButton}
           </button>
         </div>
       </Modal>

@@ -328,11 +328,17 @@ console.log(isShowModalFail)
   const onClickApprove = () => {
     Swal.fire({
       title:
-        "<span class='text-3xl font-semibold text-[#666666]'>Are you sure ?</span>",
-      html: "<span class='text-sm text-[#666666]'>Are you sure want to confirm this approval ?</span>",
-      icon: "warning",
+        "<span class='text-2xl font-semibold text-[#666666]'>Confirm this Settlement?</span>",
+      html: "<span class='text-sm text-[#666666]'>Would you like to confirm this Settlement Details?</span>",
+      //icon: "warning",
       iconColor: "#87BE33",
       showCancelButton: true,
+      reverseButtons: true, // สลับตำแหน่งปุ่ม
+      customClass: {
+        popup: "min-h-[225px] h-auto", // ปรับความสูง popup
+        confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-[150px]", // ปุ่ม Confirm
+        cancelButton: "bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded w-[150px]", // ปุ่ม Cancel
+      },
       cancelButtonColor: "#F3F6F9",
       cancelButtonText: `<span class="text-[#666666]">Cancel</span>`,
       confirmButtonColor: "#87BE33",
@@ -683,11 +689,11 @@ console.log(isShowModalFail)
           >
             <div className="pt-2 flex items-center gap-4">
               <div className="text-xl font-semibold text-[#4D6A00] ">
-                Approval Details
+                Confirmation Details
               </div>
               {approveDetail?.length == 0 && (
                 <div className="text-xl font-normal text-center text-secondary">
-                  -- Awaiting for Approval --
+                  -- Awaiting for Confirmation --
                 </div>
               )}
             </div>
@@ -775,11 +781,12 @@ console.log(isShowModalFail)
             onClickConfirmBtn={handleReject}
             onCloseModal={onCloseRejectPopup}
             title={"Reject this Settlement?"}
-            content={"Verified Settlement Details requires to be edited."}
+            content={"Settlement Details requires to be edited."}
             openCheckBox = {false}
             setRemark={RemarkReject}
             sizeModal={"md"}
             buttonTypeColor="danger"
+            textButton = "Reject"
             />}
 
             <Modal
