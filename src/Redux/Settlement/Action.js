@@ -420,7 +420,7 @@ export const settlementApproval = (ugtGroupId, portfolioId, year, month, utility
                 dispatch(_settlementApproval(response.data));
                 toast.success("Confirm Complete!", {
                     position: "top-right",
-                    autoClose: 3000,
+                    autoClose: 5000,
                     style: {
                       border: "1px solid #a3d744", // Green border similar to the one in your image
                       color: "#6aa84f", // Green text color
@@ -526,7 +526,7 @@ export const settlementReject = (ugtGroupId, portfolioId, year, month, utilityId
                 dispatch(_settlementReject(response.data));
                 toast.success("Reject Complete!", {
                     position: "top-right",
-                    autoClose: 3000,
+                    autoClose: 5000,
                     style: {
                       border: "1px solid #a3d744", // Green border similar to the one in your image
                       color: "#6aa84f", // Green text color
