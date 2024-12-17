@@ -379,6 +379,14 @@ console.log(isShowModalFail)
               settlementMonth
             )
           );
+          dispatch(
+            getSettlementApproval(
+              ugtGroupId,
+              portfolioId,
+              settlementYear,
+              settlementMonth
+            )
+          );
         }
     ))
     },1000)
