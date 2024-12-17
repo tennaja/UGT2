@@ -56,6 +56,7 @@ import { RxCaretDown } from "react-icons/rx";
 import SettlementDetail from "./SettlementDetail";
 import ModalInventorySupplyUsage from "./ModalInventorySupplyUsage";
 import ModalRemainingEnergyAttribute from "./ModalRemainingEnergyAttribute";
+import WaitApprove from "../assets/WaitApprove.png"
 
 const COLORS = [
   "#FF8042",
@@ -2678,15 +2679,15 @@ const SettlementInfo = ({
         <div className="w-full h-[400px] items-center content-center">
           <div className="flex justify-center items-center">
             <img
-              src={SettlementProgress}
-              alt="SettlementProgress"
+              src={WaitApprove}
+              alt="WaitApprove"
               width={100}
               height={100}
               className="content-center"
             />
           </div>
           <label className="text-[#000000CC] font-semibold">
-            Settlement in progress
+            Awaiting For Confirmation
           </label>
         </div>
       )}

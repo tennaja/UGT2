@@ -63,7 +63,10 @@ const MonthlySettlement = (props) => {
     if(settlementMonthlySummaryData && userData){
       if(userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
-        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+        userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN || 
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG || 
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
       ){
         setIsShowView(true)
       }
@@ -141,7 +144,7 @@ const MonthlySettlement = (props) => {
           </div>
 
           <Form layout="horizontal" size="large">
-            <div className="grid grid-cols-[80px_80px_120px] gap-2">
+            <div className="grid grid-cols-[80px_90px_120px] gap-2">
               {isShowView && <Button
                 className="bg-[#87BE33] hover:bg-[#4D6A00] w-20 h-[39px]"
                  
