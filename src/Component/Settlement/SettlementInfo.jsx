@@ -37,7 +37,7 @@ import {
   ResponsiveContainer,
   Cell,
   Label,
-  //Tooltip,
+  Tooltip as ChartTooltip,
   ComposedChart,
   Line,
   Bar,
@@ -2178,7 +2178,7 @@ const SettlementInfo = ({
                             position: "insideLeft",
                           }}
                         />
-                        <Tooltip content={<GenerationCustomTooltip />} />
+                        <ChartTooltip content={<GenerationCustomTooltip />} />
                         <Bar
                           dataKey="actualGeneration"
                           barSize={15}
@@ -2427,7 +2427,7 @@ const SettlementInfo = ({
                             return numeral(tick).format("0,0.[00]");
                           }}
                         />
-                        <Tooltip content={<ConsumptionCustomTooltip />} />
+                        <ChartTooltip content={<ConsumptionCustomTooltip />} />
                         <Bar
                           dataKey="actualConsumption"
                           barSize={15}

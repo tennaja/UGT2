@@ -480,12 +480,12 @@ useEffect(() => {
   className="flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]"
 >
   <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
-    {userData?.userGroup?.id === USER_GROUP_ID.ALL_MODULE_VIEWER || userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ? (
+  {userData?.userGroup?.id === USER_GROUP_ID.PORTFOLIO_MNG || userData?.userGroup?.id === USER_GROUP_ID.MEA_SUBSCRIBER_MNG || userData?.userGroup?.id === USER_GROUP_ID.EGAT_SUBSCRIBER_MNG || userData?.userGroup?.id === USER_GROUP_ID.PEA_SUBSCRIBER_MNG || userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ? (
       <>
-        {"Settlement"} {/*<MdOutlineRemoveRedEye className="text-white" />*/}
+        {"Settlement"} 
       </>
     ) : (
-      "Settlement"
+      "View"
     )}
   </label>
 </Link>
