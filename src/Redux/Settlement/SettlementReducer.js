@@ -15,11 +15,18 @@ import {
     SET_SELECTED_MONTH,
     GET_SETTLEMENT_DASHBOARD,
     GET_SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER,
-    GET_SETTLEMENT_DETAIL
+    GET_SETTLEMENT_DETAIL,
+    SETTLEMENT_REJECT,
+    SETTLEMENT_FAIL_REQUEST,
+    CLEAR_MODAL_FAIL_REQUEST,
+    GET_DATA_PDFSF04_SETTLEMENT,
+    GET_UNMATCHED_ENERGY_DATA,
 } from "../ActionType"
 
 const initialstate = {
     loading: true,
+    isFailRequest: false,
+    isSuccessRequest: false,
     yearList: {},
     monthList: {},
     settlementOverview: [],
@@ -37,6 +44,10 @@ const initialstate = {
     settlementDashboard: [],
     settlementMonthlyDetailSubscriber: [],
     settlementDetail: [],
+    settlementReject: {},
+    dataSF04PDF: {},
+    unmatchedEnergyData: [],
+    
 }
 
 export const SettlementReducer = (state = initialstate, action) => {
@@ -46,6 +57,26 @@ export const SettlementReducer = (state = initialstate, action) => {
         case GET_PORTFOLIO_YEAR_LIST: return {
             ...state,
             yearList: action.payload
+        }
+        case SETTLEMENT_REJECT: return{
+            ...state,
+            settlementReject: action.payload
+        }
+        case SETTLEMENT_FAIL_REQUEST: return {
+            ...state,
+            isFailRequest: true
+        }
+        case CLEAR_MODAL_FAIL_REQUEST: return {
+            ...state,
+            isFailRequest: false
+        }
+        case GET_UNMATCHED_ENERGY_DATA: return {
+            ...state,
+            unmatchedEnergyData: action.payload
+        }
+        case GET_DATA_PDFSF04_SETTLEMENT: return {
+            ...state,
+            dataSF04PDF: action.payload
         }
         case GET_SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER: return {
             ...state,

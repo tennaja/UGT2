@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import Swal from "sweetalert2";
 import AlmostDone from "../assets/done.png";
 import { Button, Card, Divider, Modal } from "@mantine/core";
@@ -24,10 +24,15 @@ import {
   getSettlementApproval,
   setSelectedYear,
   setSelectedMonth,
+  clearSettlementFailRequest,
+  settlementReject,
+  //clearSettlementSuccessRequest,
+  getSettlementDetail
 } from "../../Redux/Settlement/Action";
 import { FetchUtilityContractList } from "../../Redux/Dropdrow/Action";
 import { AiOutlineExport } from "react-icons/ai";
 //import { useLocation } from "react-router-dom";
+
 
 // icon import
 import { FaCheck } from "react-icons/fa";
@@ -35,6 +40,9 @@ import { FaChevronCircleLeft } from "react-icons/fa";
 import SettlementMenu from "./SettlementMenu";
 import { FaRegFilePdf } from "react-icons/fa";
 import { FaRegFileExcel } from "react-icons/fa";
+import ModalConfirmRemarkSettlement from "./ModalConfirmRemarkSettlement";
+import { hideLoading, showLoading } from "../../Utils/Utils";
+import ModalFail from "../Control/Modal/ModalFail";
 
 export default function SettlementApproval() {
   const dispatch = useDispatch();
@@ -70,6 +78,9 @@ export default function SettlementApproval() {
   const tmpSelectedYear = useSelector(
     (state) => state.settlement?.selectedYear
   );
+  const settlementDetailData = useSelector((state)=> state.settlement.settlementDetail)
+  const isShowModalFail = useSelector((state) => state.settlement.isFailRequest)
+  const isShowModalSuccess = useSelector((state)=> state.settlement.isSuccessRequest)
   const [settlementYear, setSettlementYear] = useState(prevSelectedYear);
   const [settlementMonth, setSettlementMonth] = useState(prevSelectedMonth);
   const [prevMonth, setPrevMonth] = useState(prevSelectedMonth);
@@ -104,6 +115,9 @@ export default function SettlementApproval() {
   const [approveDetail, setApproveDetail] = useState([]);
   const [isClickApprove, setIsClickApprove] = useState(false);
   const [userGroupUtilityID, setUserGroupUtilityID] = useState("");
+  const [isShowPopupReject,setIsShowPopupReject] = useState(false)
+
+  const RemarkReject = useRef("")
 
   useEffect(() => {
     // Re-Load ใหม่ กรณีที่ refresh
@@ -128,6 +142,19 @@ export default function SettlementApproval() {
     setUserGroupUtilityID(user_utilityID);
   }, [userData]);
 
+  useEffect(()=>{
+    if(settlementYear != null && settlementMonth != null){
+      dispatch(
+        getSettlementDetail(
+          ugtGroupId,
+          portfolioId,
+          settlementYear,
+          settlementMonth
+        )
+      );
+    }
+  },[settlementMonth,settlementYear])
+console.log(settlementDetailData)
   useEffect(() => {
     console.log(utilityContractListData);
     console.log(selectOptionUtility);
@@ -186,7 +213,7 @@ export default function SettlementApproval() {
   // หลังกด approve แล้ว Fetch approve status ล่าสุดอีกรอบ
   useEffect(() => {
     if (isClickApprove && settlementApprovalResponse?.status) {
-      setShowModalComplete(true);
+      //setShowModalComplete(true);
       // get status อีกรอบ
       dispatch(
         getSettlementApproval(
@@ -275,7 +302,7 @@ export default function SettlementApproval() {
     dispatch(setSelectedMonth(month));
     setSettlementMonth(month);
   };
-
+console.log(isShowModalFail)
   const handleApprove = () => {
     dispatch(
       settlementApproval(
@@ -316,6 +343,42 @@ export default function SettlementApproval() {
       }
     });
   };
+
+  const onClickReject = () => {
+    setIsShowPopupReject(true)
+  };
+
+  const onCloseRejectPopup =()=>{
+    setIsShowPopupReject(false)
+  }
+
+  const handleReject =()=>{
+    console.log(RemarkReject)
+    showLoading()
+    setTimeout(()=>{
+      dispatch(settlementReject(
+        ugtGroupId,
+        portfolioId,
+        settlementYear,
+        settlementMonth,
+        userGroupUtilityID,
+        RemarkReject.current, ()=>{
+          hideLoading()
+          setIsShowPopupReject(false)
+          dispatch(
+            getSettlementDetail(
+              ugtGroupId,
+              portfolioId,
+              settlementYear,
+              settlementMonth
+            )
+          );
+        }
+    ))
+    },1000)
+    
+    
+  }
 
   /*useEffect(() => {
     if (settlementApprovalResponse.status) {
@@ -637,30 +700,30 @@ export default function SettlementApproval() {
                       key={index}
                       className={`p-3 rounded shadow-md ${
                         item.approveStatus == "Y"
-                          ? "bg-[#E9F8E9]"
-                          : "bg-[#FFE5E4]"
+                          ? "bg-[#87BE3333]":item.approveStatus == "R"?"bg-[#EF483533]"
+                          : "bg-[#FF8B0E33]"
                       }`}
                     >
-                      <div className="flex justify-between items-center">
-                        <div className="flex flex-col gap-1">
+                      <div>
+                        <div className="flex flex-col gap-1 w-full">
                           <div className="text-left text-sm">
                             <b
                               className={`${
                                 item.approveStatus === "Y"
-                                  ? "text-[#2BA228]"
-                                  : "text-[#E41D12]"
+                                  ? "text-[#2BA228]":item.approveStatus === "R"?"text-[#EF4835]"
+                                  : "text-[#FF8B0E]"
                               }`}
                             >
                               {item.approveStatus === "Y"
-                                ? "Approved"
-                                : "Waiting for Approval"}
+                                ? "Confirmed":item.approveStatus === "R"?"Rejected"
+                                : "Waiting for Confirmation"}
                             </b>
                           </div>
                           <div className="text-xs text-slate-700 italic text-left">
                             By <b>{item.approvedBy}</b>
                           </div>
                           <div className="text-xs text-slate-700 italic text-left">
-                            {item.approveStatus == "Y" && (
+                            {item.approveStatus == "Y" || item.approveStatus == "R" && (
                               <span>
                                 At{" "}
                                 {dayjs(item.approveDate).format(
@@ -670,16 +733,27 @@ export default function SettlementApproval() {
                             )}
                           </div>
                         </div>
+                        { settlementDetailData.rejectStatus == false || settlementDetailData.rejectStatus == null ?
+                        isUserCanApprove(item) && (
+                          <div className="w-full text-right">
+                            <Button
+                            size="sm"
+                            className="bg-[#EF4835] text-white px-3 mr-2"
+                            onClick={() => onClickReject()}
+                          >
+                            Reject
+                          </Button>
 
-                        {isUserCanApprove(item) && (
                           <Button
                             size="sm"
                             className="bg-[#87BE33] text-white px-3"
                             onClick={() => onClickApprove()}
                           >
-                            Approve
+                            Confirm
                           </Button>
-                        )}
+                          </div>
+                        )
+                        :undefined}
                       </div>
                     </div>
                   );
@@ -695,6 +769,18 @@ export default function SettlementApproval() {
                 content={"Do you confirm this approval ?"}
               />
             )}
+
+            {isShowPopupReject &&
+            <ModalConfirmRemarkSettlement
+            onClickConfirmBtn={handleReject}
+            onCloseModal={onCloseRejectPopup}
+            title={"Reject this Settlement?"}
+            content={"Verified Settlement Details requires to be edited."}
+            openCheckBox = {false}
+            setRemark={RemarkReject}
+            sizeModal={"md"}
+            buttonTypeColor="danger"
+            />}
 
             <Modal
               opened={showModalComplete}
@@ -725,6 +811,46 @@ export default function SettlementApproval() {
                 </div>
               </div>
             </Modal>
+            {isShowModalSuccess &&
+              <Modal
+              opened={isShowModalSuccess}
+              onClose={() => dispatch(clearSettlementSuccessRequest())}
+              withCloseButton={false}
+              centered
+              closeOnClickOutside={false}
+            >
+              <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
+                <img
+                  className="w-32 object-cover rounded-full flex items-center justify-center"
+                  src={AlmostDone}
+                  alt="Current profile photo"
+                />
+
+                <div className="text-2xl font-bold text-center pt-2">
+                  Settlement Approval Completed
+                </div>
+                <div className="flex gap-4">
+                  <Button
+                    className="text-[#69696A] bg-[#E6EAEE] mt-12 px-10"
+                    onClick={() => {
+                      dispatch(clearSettlementSuccessRequest())
+                    }}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            </Modal>
+            }
+            {isShowModalFail && 
+            <ModalFail
+              onClickOk={() => {
+                dispatch(clearSettlementFailRequest())
+              }}
+            content={"Something went wrong. Please go back and try again."}
+          />
+
+            }
           </Card>
         </div>
 

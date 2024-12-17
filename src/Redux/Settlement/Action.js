@@ -15,7 +15,10 @@ import {
     SETTLEMENT_APPROVAL_URL,
     SETTLEMENT_GET_APPROVAL_URL,
     SETTLEMENT_GET_DASHBOARD,
-    SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL
+    SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL,
+    SETTLEMENT_REJECT_URL,
+    GET_DATA_PDF_SETTLEMENT,
+    UNMATCHED_ENERGY_DATA_URL
 } from '../../Constants/ServiceURL'
 
 import {
@@ -36,10 +39,16 @@ import {
     SET_SELECTED_MONTH,
     GET_SETTLEMENT_DASHBOARD,
     GET_SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER,
-    GET_SETTLEMENT_DETAIL
+    GET_SETTLEMENT_DETAIL,
+    SETTLEMENT_REJECT,
+    SETTLEMENT_FAIL_REQUEST,
+    CLEAR_MODAL_FAIL_REQUEST,
+    GET_DATA_PDFSF04_SETTLEMENT
 } from "../ActionType"
 
 import { getHeaderConfig } from "../../Utils/FuncUtils"
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const failRequest = (err) => {
     return {
@@ -92,7 +101,7 @@ export const _getPortfolioMonthList = (data) => {
 export const getPortfolioMonthList = (ugtGroupId, portfolioId, year) => {
 
     const URL = `${PORTFOLIO_MONTH_LIST_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}`
-    //console.log('URL', URL)
+    console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
@@ -400,16 +409,36 @@ export const _settlementApproval = (data) => {
     }
 }
 
-export const settlementApproval = (ugtGroupId, portfolioId, year, month, utilityId) => {
+export const settlementApproval = (ugtGroupId, portfolioId, year, month, utilityId,callback) => {
 
     const URL = `${SETTLEMENT_APPROVAL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&utilityId=${utilityId}`
     console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.post(URL, { ...getHeaderConfig() }).then((response) => {
-            dispatch(_settlementApproval(response.data));
+            if (response?.status == 200 || response?.status == 201) {
+                dispatch(_settlementApproval(response.data));
+                toast.success("Confirm Complete!", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    style: {
+                      border: "1px solid #a3d744", // Green border similar to the one in your image
+                      color: "#6aa84f", // Green text color
+                      fontSize: "16px", // Adjust font size as needed
+                      backgroundColor: "##FFFFFF", // Light green background
+                    }, // 3 seconds
+                  });
+            }
+            else{
+                dispatch(failRequest(error.message))
+                dispatch(settlementFailRequest())
+            }
+            callback && callback(response?.status);
+
         }, (error) => {
             dispatch(failRequest(error.message))
+            dispatch(settlementFailRequest())
+            callback && callback(response?.status);
         });
     }
 }
@@ -424,13 +453,14 @@ export const _getSettlementApproval = (data) => {
 export const getSettlementApproval = (ugtGroupId, portfolioId, year, month) => {
 
     const URL = `${SETTLEMENT_GET_APPROVAL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
-    //console.log('URL', URL)
+    console.log('URL', URL)
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
             dispatch(_getSettlementApproval(response.data));
         }, (error) => {
             dispatch(failRequest(error.message))
+            
         });
     }
 }
@@ -465,7 +495,7 @@ export const _getSettlementDetail = (data) => {
 
 export const getSettlementDetail = (ugtGroupId, portfolioId, year, month) => {
 
-    const URL = `${SETTLEMENT_MONTHLY_DETAIL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+    const URL = `${SETTLEMENT_MONTHLY_SUMMARY_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
     //console.log('URL', URL)
 
     return async (dispatch) => {
@@ -477,4 +507,103 @@ export const getSettlementDetail = (ugtGroupId, portfolioId, year, month) => {
     }
 
     // return _getSettlementMonthlyDetail(settlementMonthlyDetail)
+}
+
+export const _settlementReject = (data) =>{
+    return{
+        type: SETTLEMENT_REJECT,
+        payload: data
+    }
+}
+
+export const settlementReject = (ugtGroupId, portfolioId, year, month, utilityId, remark,callback) =>{
+    const URL = `${SETTLEMENT_REJECT_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&utilityId=${utilityId}&Remark=${remark}`
+    console.log(URL)
+
+    return async (dispatch) => {
+        await axios.post(URL, { ...getHeaderConfig() }).then((response) => {
+            if (response?.status == 200 || response?.status == 201) {
+                dispatch(_settlementReject(response.data));
+                toast.success("Reject Complete!", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    style: {
+                      border: "1px solid #a3d744", // Green border similar to the one in your image
+                      color: "#6aa84f", // Green text color
+                      fontSize: "16px", // Adjust font size as needed
+                      backgroundColor: "##FFFFFF", // Light green background
+                    }, // 3 seconds
+                  });
+            }
+            else{
+                dispatch(failRequest(error.message))
+                dispatch(settlementFailRequest())
+            }
+            callback && callback(response?.status);
+        }, (error) => {
+            dispatch(failRequest(error.message))
+            dispatch(settlementFailRequest())
+            callback && callback(response?.status);
+        });
+    }
+}
+
+export const settlementFailRequest = () =>{
+    return{
+        type: SETTLEMENT_FAIL_REQUEST,
+    }
+}
+
+export const clearSettlementFailRequest =()=>{
+    console.log("In action")
+    return{
+        type: CLEAR_MODAL_FAIL_REQUEST,
+        //payload: false
+    }
+}
+
+export const _getDataSettlement =(data)=>{
+    return{
+        type: GET_DATA_PDFSF04_SETTLEMENT,
+        payload: data
+    }
+}
+
+export const getDataSettlement =(deviceID)=>{
+    const URL = `${GET_DATA_PDF_SETTLEMENT}/${deviceID}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        try {
+          const response = await axios.get(URL, { ...getHeaderConfig() });
+          dispatch(_getDataSettlement(response.data)); // เก็บข้อมูลใน Redux
+          return response.data; // คืนค่าข้อมูล
+        } catch (error) {
+          dispatch(failRequest(error.message)); // จัดการข้อผิดพลาด
+          throw error; // โยนข้อผิดพลาดให้ตัวเรียกใช้งานจัดการ
+        }
+      };
+}
+
+export const _getUnmatchedEnergyData = (data) => {
+    return {
+        type: GET_UNMATCHED_ENERGY_DATA,
+        payload: data
+    }
+}
+
+export const getUnmatchedEnergyData = (ugtGroupId, portfolioId, year, month) => {
+
+    const URL = `${UNMATCHED_ENERGY_DATA_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getUnmatchedEnergyData(response.data));
+        }, (error) => {
+            dispatch(failRequest(error.message))
+        });
+    }
+
+    // return _getInventorySupplyUsage(inventorySupplyUsageData)
 }

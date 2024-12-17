@@ -134,3 +134,6 @@ export const SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL = `${DOMAIN_URL}/ugt/v1/po
 export const SETTLEMENT_APPROVAL_URL = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/monthly/setSettlementApproveByUtility`;
 export const SETTLEMENT_GET_APPROVAL_URL = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/monthly/getSettlementApproveStatus`;
 export const SETTLEMENT_GET_DASHBOARD = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/dashboard`;
+export const SETTLEMENT_REJECT_URL = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/monthly/setSettlementRejectByUtility`;
+export const GET_DATA_PDF_SETTLEMENT = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/sf04getdata`;
+export const UNMATCHED_ENERGY_DATA_URL = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/monthly/unmatchedEnergy`;
