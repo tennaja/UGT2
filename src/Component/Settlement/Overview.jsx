@@ -270,33 +270,33 @@ const Overview = (props) => {
         <div className="bg-[#F5F4E9] rounded p-3 text-left">
           <div className="pb-2">
             <div className="text-sm font-bold">{getTooltipLabel(label)}</div>
-            <div className="text-xs">{`Total Contracted: ${
+            <div className="text-xs">Total Contracted Load: <label className="text-[#4D6A00] font-semibold">{` ${
               _totalContractLoad + " " + overviewDataUnit
-            }`}</div>
-            <div className="text-xs">{`Total Load: ${
+            }`}</label></div>
+            <div className="text-xs">Total Load: <label className="text-[#4D6A00] font-semibold">{` ${
               _totalLoad + " " + overviewDataUnit
-            }`}</div>
-            <div className="text-xs">{`Total Generation: ${
+            }`}</label></div>
+            <div className="text-xs">Total Generation:<label className="text-[#4D6A00] font-semibold">{` ${
               _totalGeneration + " " + overviewDataUnit
-            }`}</div>
-            <div className="text-xs">{`Net Green Deliverables: ${
+            }`}</label></div>
+            <div className="text-xs">Net Green Deliverables:<label className="text-[#4D6A00] font-semibold">{` ${
               _netGreenDeliverabled + " " + overviewDataUnit
-            }`}</div>
+            }`}</label></div>
           </div>
           <Divider orientation="horizontal" size={"xs"} />
           <div className="pt-2">
-            <div className="text-xs">{`Generation Matched: ${
+            <div className="text-xs">Generation Matched:<label className="text-[#4D6A00] font-semibold">{` ${
               _generationMatched + " " + overviewDataUnit
-            }`}</div>
-            <div className="text-xs">{`UGT 2 Inventory: ${
+            }`}</label></div>
+            <div className="text-xs">UGT 2 Inventory: <label className="text-[#4D6A00] font-semibold">{` ${
               _ugt2InventoryNew + " " + overviewDataUnit
-            }`}</div>
-            <div className="text-xs">{`UGT 1 Inventory: ${
+            }`}</label></div>
+            <div className="text-xs">UGT 1 Inventory: <label className="text-[#4D6A00] font-semibold" >{` ${
               _ugt1InventoryNew + " " + overviewDataUnit
-            }`}</div>
-            <div className="text-xs">{`Unmatched Energy: ${
+            }`}</label></div>
+            <div className="text-xs">Unmatched Energy: <label className="text-[#4D6A00] font-semibold">{` ${
               _unmatchedEnergy + " " + overviewDataUnit
-            }`}</div>
+            }`}</label></div>
           </div>
         </div>
       );
