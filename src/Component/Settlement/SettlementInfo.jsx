@@ -1134,12 +1134,12 @@ const SettlementInfo = ({
     if(UGT2Inventory !== 0){
       label.push("UGT2 Inventory")
       datalabel.push(UGT2Inventory)
-      colorLabel.push("#FA6B6E")
+      colorLabel.push("#61ABFF")
     }
     if(UGT1Inventory !== 0){
       label.push("UGT1 Inventory")
       datalabel.push(UGT1Inventory)
-      colorLabel.push("#61ABFF")
+      colorLabel.push("#FA6B6E")
     }
     if(unmatched !== 0){
       label.push("Unmatched Energy")
@@ -1689,7 +1689,7 @@ const SettlementInfo = ({
               </div>
             </div>*/}
               <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#848789] break-words">
+                <div className="text-sm text-[#5B5C5C] break-words">
                   Total Contracted Load
                 </div>
                 <div className="text-lg font-bold break-words">
@@ -1697,19 +1697,19 @@ const SettlementInfo = ({
                     settlementMonthlySummaryData?.totalContractedLoad
                   )}
                 </div>
-                <div className="text-xs text-[#848789] break-words">{unit}</div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
               </div>
               <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#848789] break-words">
+                <div className="text-sm text-[#5B5C5C] break-words">
                   Total Generation
                 </div>
                 <div className="text-lg font-bold break-words">
                   {renderValue(settlementMonthlySummaryData?.totalGeneration)}
                 </div>
-                <div className="text-xs text-[#848789] break-words">{unit}</div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
               </div>
               <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#848789] break-words">
+                <div className="text-sm text-[#5B5C5C] break-words">
                   Beginning UGT2 Inventory
                 </div>
                 <div className="text-lg font-bold break-words">
@@ -1717,10 +1717,10 @@ const SettlementInfo = ({
                     settlementMonthlySummaryData?.beginningUgt2Inventory
                   )}
                 </div>
-                <div className="text-xs text-[#848789] break-words">{unit}</div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
               </div>
               <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#848789] break-words">
+                <div className="text-sm text-[#5B5C5C] break-words">
                   Beginning UGT1 Inventory
                 </div>
                 <div className="text-lg font-bold break-words">
@@ -1728,19 +1728,19 @@ const SettlementInfo = ({
                     settlementMonthlySummaryData?.beginningUgt1Inventory
                   )}
                 </div>
-                <div className="text-xs text-[#848789] break-words">{unit}</div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
               </div>
             </div>
 
             <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
               <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#848789] break-words">
+                <div className="text-sm text-[#5B5C5C] break-words">
                   Total Load
                 </div>
                 <div className="text-lg font-bold break-words">
                   {renderValue(settlementMonthlySummaryData?.totalLoad)}
                 </div>
-                <div className="text-xs text-[#848789] break-words">{unit}</div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
               </div>
 
               <div className="col-span-3 container mx-auto px-0 gap-2 text-left">
@@ -1749,7 +1749,7 @@ const SettlementInfo = ({
                     <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px] w-full">
                       <div className="flex justify-between break-all">
                         <div>
-                          <div className="text-sm text-[#848789] break-words">
+                          <div className="text-sm text-[#5B5C5C] break-words">
                             Actual Generation Matched
                           </div>
                           <div className="text-lg font-bold break-words">
@@ -1757,7 +1757,7 @@ const SettlementInfo = ({
                               settlementMonthlySummaryData?.actualGenerationMatched
                             )}
                           </div>
-                          <div className="text-xs text-[#848789] break-words">
+                          <div className="text-xs text-[#5B5C5C] break-words">
                             {unit}
                           </div>
                         </div>
@@ -1765,7 +1765,7 @@ const SettlementInfo = ({
                           <div className="text-lg font-bold break-words mt-3">
                             {settlementMonthlySummaryData?.actualGenerationMatchedPercentage?settlementMonthlySummaryData?.actualGenerationMatchedPercentage+"%":0+"%"}
                           </div>
-                          <div className="text-xs text-[#848789] break-words">
+                          <div className="text-xs text-[#5B5C5C] break-words">
                             of Total Load
                           </div>
                         </div>
@@ -1774,7 +1774,7 @@ const SettlementInfo = ({
                     <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
                       <div className="flex justify-between break-all">
                         <div>
-                          <div className="text-sm text-[#848789] break-words">
+                          <div className="text-sm text-[#5B5C5C] break-words">
                             UGT2 Inventory Matched
                           </div>
                           <div className="text-lg font-bold break-words">
@@ -1782,7 +1782,7 @@ const SettlementInfo = ({
                               settlementMonthlySummaryData?.ugt2InventoryMatched
                             )}
                           </div>
-                          <div className="text-xs text-[#848789] break-words">
+                          <div className="text-xs text-[#5B5C5C] break-words">
                             {unit}
                           </div>
                         </div>
@@ -1790,7 +1790,7 @@ const SettlementInfo = ({
                           <div className="text-lg font-bold break-words mt-3">
                             {settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage+"%":0+"%"}
                           </div>
-                          <div className="text-xs text-[#848789] break-words">
+                          <div className="text-xs text-[#5B5C5C] break-words">
                             of Total Load
                           </div>
                         </div>
@@ -1799,7 +1799,7 @@ const SettlementInfo = ({
                     <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
                       <div className="flex justify-between break-all">
                         <div>
-                          <div className="text-sm text-[#848789] break-words">
+                          <div className="text-sm text-[#5B5C5C] break-words">
                             UGT1 Inventory Matched
                           </div>
                           <div className="text-lg font-bold break-words">
@@ -1807,7 +1807,7 @@ const SettlementInfo = ({
                               settlementMonthlySummaryData?.ugt1InventoryMatched
                             )}
                           </div>
-                          <div className="text-xs text-[#848789] break-words">
+                          <div className="text-xs text-[#5B5C5C] break-words">
                             {unit}
                           </div>
                         </div>
@@ -1815,7 +1815,7 @@ const SettlementInfo = ({
                           <div className="text-lg font-bold break-words mt-3">
                           {settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage+"%":0+"%"}
                           </div>
-                          <div className="text-xs text-[#848789] break-words">
+                          <div className="text-xs text-[#5B5C5C] break-words">
                             of Total Load
                           </div>
                         </div>
@@ -1825,7 +1825,7 @@ const SettlementInfo = ({
                       <div className="flex justify-between break-all">
                         <div>
                           <div className="grid grid-col-2">
-                            <label className="col-start-1 text-sm text-[#848789] break-words">
+                            <label className="col-start-1 text-sm text-[#5B5C5C] break-words">
                               Unmatched Energy
                             </label>{" "}
                             <div className="col-start-2 ml-1 inline-block content-center">
@@ -1848,7 +1848,7 @@ const SettlementInfo = ({
                               settlementMonthlySummaryData?.unmatchedEnergy
                             )}
                           </div>
-                          <div className="text-xs text-[#848789] break-words">
+                          <div className="text-xs text-[#5B5C5C] break-words">
                             {unit}
                           </div>
                         </div>
@@ -1856,7 +1856,7 @@ const SettlementInfo = ({
                           <div className="text-lg font-bold break-words mt-3">
                           {settlementMonthlySummaryData?.unmatchedEnergyPercentage?settlementMonthlySummaryData?.unmatchedEnergyPercentage+"%":0+"%"}
                           </div>
-                          <div className="text-xs text-[#848789] break-words">
+                          <div className="text-xs text-[#5B5C5C] break-words">
                             of Total Load
                           </div>
                         </div>
@@ -1866,7 +1866,7 @@ const SettlementInfo = ({
                   {/*Donut Chart */}
                   <div className="col-start-3 col-span-2 px-4 py-4 rounded-[5px] border-2 border-solid border-[#CDCDCD]">
                     <div className="grid grid-cols-[200px_50px]">
-                      <label className="col-start-1 text-lg font-bold text-[#848789] break-words">
+                      <label className="col-start-1 text-lg font-bold text-[#5B5C5C] break-words">
                         Net Green Deliverables
                       </label>{" "}
                       <div className="col-start-2 ml-1 inline-block content-center">
@@ -1889,7 +1889,7 @@ const SettlementInfo = ({
                         settlementMonthlySummaryData?.netGreenDeliverables
                       )}
                     </div>
-                    <div className="text-base text-[#848789] break-words">
+                    <div className="text-base text-[#5B5C5C] break-words">
                       {unit}
                     </div>
                     <div>
@@ -1915,7 +1915,7 @@ const SettlementInfo = ({
             </div>
             <div className="grid grid-cols-3 container mx-auto px-0 gap-2 mt-3 text-left">
               <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#848789] break-words">
+                <div className="text-sm text-[#5B5C5C] break-words">
                   Remaining Actual Generation
                 </div>
                 <div className="text-lg font-bold break-words">
@@ -1923,11 +1923,11 @@ const SettlementInfo = ({
                     settlementMonthlySummaryData?.remainingActualGeneration
                   )}
                 </div>
-                <div className="text-xs text-[#848789] break-words">{unit}</div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
               </div>
 
               <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#848789] break-words">
+                <div className="text-sm text-[#5B5C5C] break-words">
                   Ending UGT2 Inventory
                 </div>
                 <div className="text-lg font-bold break-words">
@@ -1935,11 +1935,11 @@ const SettlementInfo = ({
                     settlementMonthlySummaryData?.endingUgt2Inventory
                   )}
                 </div>
-                <div className="text-xs text-[#848789] break-words">{unit}</div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
               </div>
 
               <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#848789] break-words">
+                <div className="text-sm text-[#5B5C5C] break-words">
                   Ending UGT1 Inventory
                 </div>
                 <div className="text-lg font-bold break-words">
@@ -1947,7 +1947,7 @@ const SettlementInfo = ({
                     settlementMonthlySummaryData?.endingUgt1Inventory
                   )}
                 </div>
-                <div className="text-xs text-[#848789] break-words">{unit}</div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
               </div>
             </div>
 

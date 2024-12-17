@@ -564,7 +564,7 @@ const Overview = (props) => {
 
             <div className="col-span-1 flex flex-col justify-around text-left">
               <div>
-                <div className="text-sm font-normal">
+                <div className="text-sm font-normal text-[#5B5C5C]">
                   Accumulated Total Contracted Load
                 </div>
                 <div className="text-xl font-bold">
@@ -574,7 +574,7 @@ const Overview = (props) => {
                   )}
                 </div>
 
-                <div className="text-xs font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#5B5C5C]">
                   {overviewDataUnit}
                 </div>
               </div>
@@ -582,7 +582,7 @@ const Overview = (props) => {
               <Divider orientation="horizontal" size={"xs"} />
 
               <div>
-                <div className="text-sm font-normal">
+                <div className="text-sm font-normal text-[#5B5C5C]">
                   Accumulated Total Load
                 </div>
                 <div className="text-xl font-bold">
@@ -592,7 +592,7 @@ const Overview = (props) => {
                   )}
                 </div>
 
-                <div className="text-xs font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#5B5C5C]">
                   {overviewDataUnit}
                 </div>
               </div>
@@ -600,7 +600,7 @@ const Overview = (props) => {
               <Divider orientation="horizontal" size={"xs"} />
 
               <div>
-                <div className="text-sm font-normal">
+                <div className="text-sm font-normal text-[#5B5C5C]">
                   Accumulated Total Generation
                 </div>
                 <div className="text-xl font-bold">
@@ -610,7 +610,7 @@ const Overview = (props) => {
                   )}
                 </div>
 
-                <div className="text-xs font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#5B5C5C]">
                   {overviewDataUnit}
                 </div>
               </div>
@@ -618,7 +618,7 @@ const Overview = (props) => {
               <Divider orientation="horizontal" size={"xs"} />
 
               <div>
-                <div className="text-sm font-normal">
+                <div className="text-sm font-normal text-[#5B5C5C]">
                   Accumulated Net Green Deliverables
                 </div>
                 <div className="text-xl font-bold">
@@ -628,12 +628,12 @@ const Overview = (props) => {
                   )}
                 </div>
 
-                <div className="text-xs font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#5B5C5C]">
                   {overviewDataUnit}
                 </div>
 
                 <div className="text-right inline-block w-full">
-                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedNetGreenDeliverablesofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
+                    <div className="text-xl font-bold w-full ">{settlementOverviewSummaryData?.accumulatedNetGreenDeliverablesofTotalLoad+"% "}<label className="text-xs font-normal text-[#5B5C5C]">of Total Load</label></div>
                 </div>
               </div>
             </div>
@@ -642,7 +642,7 @@ const Overview = (props) => {
           <div className="grid grid-cols-4 container mx-auto gap-2 mt-10 text-left">
             <div className="border-r-2">
               <div className="mr-2">
-                <div className="text-sm font-normal">
+                <div className="text-sm font-normal text-[#5B5C5C]">
                 Accumulated Actual Generation Matched
                 </div>
                 <div className="text-xl font-bold">
@@ -652,19 +652,19 @@ const Overview = (props) => {
                   )}
                 </div>
 
-                <div className="text-xs font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#5B5C5C]">
                   {overviewDataUnit}
                 </div>
 
                 <div className="text-right inline-block w-full">
-                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedActualGenerationMatchedofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
+                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedActualGenerationMatchedofTotalLoad+"% "}<label className="text-xs font-normal text-[#5B5C5C]">of Total Load</label></div>
                 </div>
               </div>
             </div>
             
             <div className="border-r-2">
             <div className="mr-2">
-                <div className="text-sm font-normal">
+                <div className="text-sm font-normal text-[#5B5C5C]">
                 Accumulated UGT2 Inventory Matched
                 </div>
                 <div className="text-xl font-bold">
@@ -674,17 +674,17 @@ const Overview = (props) => {
                   )}
                 </div>
 
-                <div className="text-xs font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#5B5C5C]">
                   {overviewDataUnit}
                 </div>
                 <div className="text-right inline-block w-full">
-                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedUGT2InventoryMatchedofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
+                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedUGT2InventoryMatchedofTotalLoad+"% "}<label className="text-xs font-normal text-[#5B5C5C]">of Total Load</label></div>
                 </div>
               </div>
             </div>
             <div className="border-r-2">
             <div className="mr-2">
-                <div className="text-sm font-normal">
+                <div className="text-sm font-normal text-[#5B5C5C]">
                 Accumulated UGT1 Inventory Matched
                 </div>
                 <div className="text-xl font-bold">
@@ -694,17 +694,17 @@ const Overview = (props) => {
                   )}
                 </div>
 
-                <div className="text-xs font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#5B5C5C]">
                   {overviewDataUnit}
                 </div>
                 <div className="text-right inline-block w-full">
-                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedUGT1InventoryMatchedofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
+                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedUGT1InventoryMatchedofTotalLoad+"% "}<label className="text-xs font-normal text-[#5B5C5C]">of Total Load</label></div>
                 </div>
               </div>
             </div>
             <div>
             <div>
-                <div className="text-sm font-normal">
+                <div className="text-sm font-normal text-[#5B5C5C]">
                 Accumulated Unmatched Energy
                 </div>
                 <div className="text-xl lg:mt-[20px] font-bold">
@@ -714,11 +714,11 @@ const Overview = (props) => {
                   )}
                 </div>
 
-                <div className="text-xs font-normal text-[#848789]">
+                <div className="text-xs font-normal text-[#5B5C5C]">
                   {overviewDataUnit}
                 </div>
                 <div className="text-right inline-block w-full">
-                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedUnmatchedEnergyofTotalLoad+"% "}<label className="text-xs font-normal text-[#848789]">of Total Load</label></div>
+                    <div className="text-xl font-bold w-full">{settlementOverviewSummaryData?.accumulatedUnmatchedEnergyofTotalLoad+"% "}<label className="text-xs font-normal text-[#5B5C5C]">of Total Load</label></div>
                 </div>
               </div>
             </div>
