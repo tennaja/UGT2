@@ -135,6 +135,7 @@ const handleGeneratePDF = async () => {
             </div>
             <div>
               {/*<button onClick={showbase}>File</button>*/}
+              
               <PdfFormPreviewSF04 data={tempData} aftersign={tempData}/>
             </div>
             {/* Overview */}
