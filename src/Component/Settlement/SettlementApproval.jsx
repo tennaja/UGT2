@@ -440,10 +440,10 @@ console.log(isShowModalFail)
         <div className="container max-w-screen-lg mx-auto">
           <div className="text-left flex flex-col">
             <h2 className="font-semibold text-xl text-black">
-              View Settlement
+            {portfolioName}
             </h2>
             <p className={`text-BREAD_CRUMB text-sm mb-6 font-normal`}>
-              {currentUGTGroup?.name} / Settlement Approval /{portfolioName}
+              {currentUGTGroup?.name} / Settlement Management / Settlement Confirmation /{portfolioName}
             </p>
           </div>
 
