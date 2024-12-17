@@ -1555,7 +1555,7 @@ const SettlementInfo = ({
             }}
           >
             <div className="grid gap-5 py-20">
-              <div className="text-xl font-semibold">Awaiting for Approval</div>
+              <div className="text-xl font-semibold">Awaiting for Confirmation</div>
 
               {isModuleViewerUser && (
                 <Button
@@ -1572,7 +1572,7 @@ const SettlementInfo = ({
                     })
                   }
                 >
-                  <span className="pl-2 text-lg font-bold">Go to Approve</span>
+                  <span className="pl-2 text-lg font-bold">Go to Confirm</span>
                 </Button>
               )}
             </div>
