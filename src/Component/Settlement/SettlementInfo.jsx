@@ -177,7 +177,7 @@ const SettlementInfo = ({
           "#87BE33",
           "#33BFBF",
           "#FA6B6E",
-          "#61ABFF",
+          "#70B2FF",
           "#B0BAC9",
         ],
         borderWidth: 1,
@@ -1107,6 +1107,7 @@ const SettlementInfo = ({
   }
 
   const convertToDonut=()=>{
+    console.log(settlementMonthlySummaryData)
     let actualSolar = settlementMonthlySummaryData.actualSolarPercentage?settlementMonthlySummaryData.actualSolarPercentage:0
     let actualWind = settlementMonthlySummaryData.actualWindPercentage?settlementMonthlySummaryData.actualWindPercentage:0
     let actualHydro = settlementMonthlySummaryData.actualHydroPercentage?settlementMonthlySummaryData.actualHydroPercentage:0
@@ -1135,7 +1136,7 @@ const SettlementInfo = ({
     if(UGT2Inventory !== 0){
       label.push("UGT2 Inventory")
       datalabel.push(UGT2Inventory)
-      colorLabel.push("#61ABFF")
+      colorLabel.push("#33BFBF")
     }
     if(UGT1Inventory !== 0){
       label.push("UGT1 Inventory")

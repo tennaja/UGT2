@@ -314,7 +314,7 @@ useEffect(() => {
   state={{ id: row?.id,
     name: row?.portfolioName, }}
   to={WEB_URL.SETTLEMENT}
-  className="flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]"
+  className="flex no-underline rounded p-2 cursor-pointer text-sm items-center w-[100px] justify-center hover:bg-[#4D6A00] bg-[#87BE33]"
 >
   <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
     {userData?.userGroup?.id === USER_GROUP_ID.PORTFOLIO_MNG || userData?.userGroup?.id === USER_GROUP_ID.MEA_SUBSCRIBER_MNG || userData?.userGroup?.id === USER_GROUP_ID.EGAT_SUBSCRIBER_MNG || userData?.userGroup?.id === USER_GROUP_ID.PEA_SUBSCRIBER_MNG || userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ? (
@@ -477,7 +477,7 @@ useEffect(() => {
   state={{ id: row?.id,
     name: row?.portfolioName, }}
   to={WEB_URL.SETTLEMENT}
-  className="flex no-underline rounded p-2 cursor-pointer text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]"
+  className="flex no-underline rounded p-2 cursor-pointer w-[100px] text-sm items-center justify-center hover:bg-[#4D6A00] bg-[#87BE33]"
 >
   <label className="flex items-center m-auto cursor-pointer text-white font-semibold gap-1">
   {userData?.userGroup?.id === USER_GROUP_ID.PORTFOLIO_MNG || userData?.userGroup?.id === USER_GROUP_ID.MEA_SUBSCRIBER_MNG || userData?.userGroup?.id === USER_GROUP_ID.EGAT_SUBSCRIBER_MNG || userData?.userGroup?.id === USER_GROUP_ID.PEA_SUBSCRIBER_MNG || userData?.userGroup?.id === USER_GROUP_ID.WHOLE_SALEER_ADMIN ? (
@@ -579,6 +579,8 @@ useEffect(() => {
     setCookie("currentSubmenu", 2);
     navigate(WEB_URL.PORTFOLIO_ADD);
   };
+
+  console.log(settlementDashboard)
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">

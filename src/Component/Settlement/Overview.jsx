@@ -45,12 +45,12 @@ import noContent from "../assets/no-content.png";
 const customLegendBarRow1 = [
   { name: "Actual Solar", color: "#4D6A00" },
   { name: "Actual Wind", color: "#87BE33" },
-  { name: "Actual Hydro", color: "#02C6F6" },
+  { name: "Actual Hydro", color: "#33BFBF" },
 ];
 
 const customLegendBarRow2 = [
-  { name: "UGT2 Inventory", color: "#33BFBF" },
-  { name: "UGT1 Inventory", color: "#F7A042" },
+  { name: "UGT2 Inventory", color: "#FA6B6E" },
+  { name: "UGT1 Inventory", color: "#70B2FF" },
   { name: "Unmatched Energy", color: "#B0BAC9" },
 ];
 
@@ -197,6 +197,7 @@ const Overview = (props) => {
   };
 
   const convertChartData = (overviewChartData, convertUnit) => {
+    //console.log(overviewChartData)
     const new_overviewChartData = overviewChartData.map((item) => {
       const new_item = {
         year: item.year,
@@ -252,7 +253,7 @@ const Overview = (props) => {
       const _actualGeneration =
         payload[0].payload.actualGeneration > 0
           ? convertData(payload[0].payload.actualGeneration)
-          : "-";
+          : "-";*/
       const _actualSolar =
         payload[0].value > 0 ? convertData(payload[0].value) : "-";
       const _actualWind =
@@ -264,7 +265,7 @@ const Overview = (props) => {
       const _ugt2Inventory =
         payload[4].value > 0 ? convertData(payload[4].value) : "-";
       const _grid =
-        payload[5].value > 0 ? convertData(payload[5].value) : "-";*/
+        payload[5].value > 0 ? convertData(payload[5].value) : "-";
 
       return (
         <div className="bg-[#F5F4E9] rounded p-3 text-left">
@@ -284,7 +285,7 @@ const Overview = (props) => {
             }`}</label></div>
           </div>
           <Divider orientation="horizontal" size={"xs"} />
-          <div className="pt-2">
+          {/*<div className="pt-2">
             <div className="text-xs">Generation Matched:<label className="text-[#4D6A00] font-semibold">{` ${
               _generationMatched + " " + overviewDataUnit
             }`}</label></div>
@@ -293,6 +294,26 @@ const Overview = (props) => {
             }`}</label></div>
             <div className="text-xs">UGT 1 Inventory: <label className="text-[#4D6A00] font-semibold" >{` ${
               _ugt1InventoryNew + " " + overviewDataUnit
+            }`}</label></div>
+            <div className="text-xs">Unmatched Energy: <label className="text-[#4D6A00] font-semibold">{` ${
+              _unmatchedEnergy + " " + overviewDataUnit
+            }`}</label></div>
+          </div>*/}
+          <div className="pt-2">
+            <div className="text-xs">Solar: <label className="text-[#4D6A00] font-semibold">{` ${
+              _actualSolar + " " + overviewDataUnit
+            }`}</label></div>
+            <div className="text-xs">Wind: <label className="text-[#4D6A00] font-semibold">{` ${
+              _actualWind + " " + overviewDataUnit
+            }`}</label></div>
+            <div className="text-xs">Hydro: <label className="text-[#4D6A00] font-semibold">{`${
+              _actualHydro + " " + overviewDataUnit
+            }`}</label></div>
+            <div className="text-xs">UGT2 Inventory: <label className="text-[#4D6A00] font-semibold">{` ${
+              _ugt2Inventory + " " + overviewDataUnit
+            }`}</label></div>
+            <div className="text-xs">UGT1 Inventory: <label className="text-[#4D6A00] font-semibold">{` ${
+              _ugt1Inventory + " " + overviewDataUnit
             }`}</label></div>
             <div className="text-xs">Unmatched Energy: <label className="text-[#4D6A00] font-semibold">{` ${
               _unmatchedEnergy + " " + overviewDataUnit
@@ -475,19 +496,19 @@ const Overview = (props) => {
                         dataKey="actualHydro"
                         stackId="a"
                         barSize={25}
-                        fill="#02C6F6"
+                        fill="#33BFBF"
                       />
                       <Bar
                         dataKey="ugt2Inventory"
                         stackId="a"
                         barSize={25}
-                        fill="#33BFBF"
+                        fill="#FA6B6E"
                       />
                       <Bar
                         dataKey="ugt1Inventory"
                         stackId="a"
                         barSize={25}
-                        fill="#F7A042"
+                        fill="#70B2FF"
                       />
                       <Bar
                         dataKey="grid"
@@ -707,7 +728,7 @@ const Overview = (props) => {
                 <div className="text-sm font-normal text-[#5B5C5C]">
                 Accumulated Unmatched Energy
                 </div>
-                <div className="text-xl lg:mt-[20px] font-bold">
+                <div className="text-xl font-bold">
                   {convertData(
                     settlementOverviewSummaryData?.accumulatedUnmatchedEnergy *
                       convertUnit

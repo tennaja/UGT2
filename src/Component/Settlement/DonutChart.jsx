@@ -21,8 +21,8 @@ const DonutChart = ({data,totalPercent}) => {
           "#4D6A00",
           "#87BE33",
           "#33BFBF",
-          "#61ABFF",
           "#FA6B6E",
+          "#70B2FF",
           "#B0BAC9",
         ],
         borderWidth: 1,
@@ -45,8 +45,8 @@ const DonutChart = ({data,totalPercent}) => {
     { label: "Actual Solar", value: 0, color: "#4D6A00" },
     { label: "Actual Wind", value: 0, color: "#87BE33" }, // ค่า 0 จะไม่ถูก plot
     { label: "Actual Hydro", value: 0, color: "#33BFBF" },
-    { label: "UGT2 Inventory", value: 0, color: "#61ABFF" }, // ค่า 0 จะไม่ถูก plot
-    { label: "UGT1 Inventory", value: 0, color: "#FA6B6E" },
+    { label: "UGT2 Inventory", value: 0, color: "#FA6B6E" }, // ค่า 0 จะไม่ถูก plot
+    { label: "UGT1 Inventory", value: 0, color: "#70B2FF" },
     { label: "Unmatched Energy", value: 0, color: "#B0BAC9" },
   ])
 

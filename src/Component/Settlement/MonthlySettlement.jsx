@@ -8,7 +8,7 @@ import { MONTH_LIST, CONVERT_UNIT } from "../../Constants/Constants";
 import {
   getPortfolioMonthList,
   setSelectedMonth,
-  getSettlementDetail
+  getSettlementDetail,
 } from "../../Redux/Settlement/Action";
 import { useNavigate } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
@@ -28,7 +28,7 @@ const MonthlySettlement = (props) => {
     isShowDetail,
   } = props;
   const [unit, setUnit] = useState("MWh");
- 
+
   const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[0].convertValue);
   const monthListData = useSelector((state) => state.settlement.monthList);
   const settlementYear = useSelector((state) => state.settlement.selectedYear);
@@ -42,12 +42,11 @@ const MonthlySettlement = (props) => {
   const [latestMonthHasData, setLatestMonthHasData] = useState(
     monthListData.defaultMonth
   );
-  
 
-  const [isShowView,setIsShowView] = useState(false)
-  console.log(settlementYear,settlementMonth)
-  useEffect(()=>{
-    if(settlementYear != null && settlementMonth != null){
+  const [isShowView, setIsShowView] = useState(false);
+  console.log(settlementYear, settlementMonth);
+  useEffect(() => {
+    if (settlementYear != null && settlementMonth != null) {
       dispatch(
         getSettlementDetail(
           ugtGroupId,
@@ -57,34 +56,34 @@ const MonthlySettlement = (props) => {
         )
       );
     }
-  },[settlementMonth,settlementYear])
+  }, [settlementMonth, settlementYear]);
 
-  useEffect(()=>{
-    if(settlementMonthlySummaryData && userData){
-      if(userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
+  useEffect(() => {
+    if (settlementMonthlySummaryData && userData) {
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
-        userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN || 
-        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG || 
+        userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
-      ){
-        setIsShowView(true)
-      }
-      else if(userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG || 
-        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG || 
-        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG){
-        setIsShowView(false)
-       }
-      else{
-        if(settlementMonthlySummaryData?.approveStatus == true){
-          setIsShowView(true)
-        }
-        else{
-          setIsShowView(false)
+      ) {
+        setIsShowView(true);
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG
+      ) {
+        setIsShowView(false);
+      } else {
+        if (settlementMonthlySummaryData?.approveStatus == true) {
+          setIsShowView(true);
+        } else {
+          setIsShowView(false);
         }
       }
     }
-  },[userData,settlementMonthlySummaryData])
+  }, [userData, settlementMonthlySummaryData]);
 
   useEffect(() => {
     // get month list
@@ -98,12 +97,28 @@ const MonthlySettlement = (props) => {
     // set selected month
     if (monthListData?.monthList?.length > 0) {
       if (
-        monthListData?.monthList.some((item) => item == settlementMonth) &&
-        settlementMonth <= monthListData?.defaultMonth
+        userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+        userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
       ) {
-        dispatch(setSelectedMonth(settlementMonth));
+        if (
+          monthListData?.monthList.some((item) => item == settlementMonth) &&
+          settlementMonth <= monthListData?.defaultMonth
+        ) {
+          dispatch(setSelectedMonth(settlementMonth));
+        } else {
+          dispatch(setSelectedMonth(monthListData?.defaultMonth));
+        }
       } else {
-        dispatch(setSelectedMonth(monthListData?.defaultMonth));
+        if (monthListData?.defaultMonth == 12) {
+          dispatch(setSelectedMonth(monthListData?.defaultMonth));
+        } else {
+          let defualtMonth = monthListData?.defaultMonth - 1;
+          dispatch(setSelectedMonth(defualtMonth));
+        }
       }
       setLatestMonthHasData(monthListData.defaultMonth); // เอาไว้เช็ค dropdown และ set disable ไว้
     }
@@ -135,6 +150,25 @@ const MonthlySettlement = (props) => {
     setConvertUnit(unitObj[0].convertValue);
   };
 
+  const checkMonth = (month) => {
+    if (
+      userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+    ) {
+      return month > latestMonthHasData;
+    } else {
+      if (latestMonthHasData == 12) {
+        return false;
+      } else {
+        return month >= latestMonthHasData;
+      }
+    }
+  };
+
   return (
     monthListData?.monthList?.length > 0 && (
       <Card shadow="md" radius="lg" className="flex mt-10" padding="xl">
@@ -145,22 +179,26 @@ const MonthlySettlement = (props) => {
 
           <Form layout="horizontal" size="large">
             <div className="grid grid-cols-[80px_90px_120px] gap-2">
-              {isShowView && <Button
-                className="bg-[#87BE33] hover:bg-[#4D6A00] w-20 h-[39px]"
-                 
-                onClick={() =>
-                  navigate(WEB_URL.SETTLEMENT_APPROVAL, {
-                    state: {
-                      ugtGroupId: ugtGroupId,
-                      portfolioId: portfolioId,
-                      portfolioName: portfolioName,
-                      prevSelectedYear: settlementYear,
-                    },
-                  })
-                }
-              >
-                <span className="font-semobold text-white text-base">View</span>
-              </Button>}
+              {isShowView && (
+                <Button
+                  className="bg-[#87BE33] hover:bg-[#4D6A00] w-20 h-[39px]"
+                  onClick={() =>
+                    navigate(WEB_URL.SETTLEMENT_APPROVAL, {
+                      state: {
+                        ugtGroupId: ugtGroupId,
+                        portfolioId: portfolioId,
+                        portfolioName: portfolioName,
+                        prevSelectedYear: settlementYear,
+                        prevSelectedMonth: settlementMonth,
+                      },
+                    })
+                  }
+                >
+                  <span className="font-semobold text-white text-base">
+                    View
+                  </span>
+                </Button>
+              )}
               <Form.Item className="col-span-1 col-start-2">
                 <Select
                   size="large"
@@ -192,7 +230,7 @@ const MonthlySettlement = (props) => {
                       <Select.Option
                         key={index}
                         value={MONTH_LIST[item - 1].month}
-                        disabled={item > latestMonthHasData}
+                        disabled={checkMonth(item)}
                       >
                         {MONTH_LIST[item - 1].name}
                       </Select.Option>

@@ -793,14 +793,14 @@ const CollapsDataTable = ({
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell style={{ width: "300px", borderBottom: "none" }} /*className="w-[250px]"*/><label className="text-xs text-[#848789]">{isDevice?"Device Name":"Subscriber Name"}</label></TableCell>
-                  <TableCell style={{ width: "200px", borderBottom: "none" }} /*className="w-[100px]"*/><label className="text-xs text-[#848789]">Utility</label></TableCell>
-                  <TableCell style={{ width: "300px", borderBottom: "none" }} /*className="w-[180px]"*/><label className="text-xs text-[#848789]">Period of Production</label></TableCell>
-                  <TableCell style={{ width: "200px", borderBottom: "none" }} align="center"/*className="w-[140px]"*/><label className="text-xs text-[#848789]">Settlement Type</label></TableCell>
-                  <TableCell style={{ width: "300px", borderBottom: "none" }} align="right" /*className="w-[140px]"*/>
-                  <label className="text-xs text-[#848789]">Matched Supply (kWh)</label>
+                  <TableCell style={{ width: "600px", borderBottom: "none" }} /*className="w-[250px]"*/><label className="text-sm text-[#848789] ">{isDevice?"Device Name":"Subscriber Name"}</label></TableCell>
+                  <TableCell style={{ width: "100px", borderBottom: "none" }} /*className="w-[100px]"*/><label className="text-sm text-[#848789]">Utility</label></TableCell>
+                  <TableCell style={{ width: "400px", borderBottom: "none" }} /*className="w-[180px]"*/><label className="text-sm text-[#848789]">Period of Production</label></TableCell>
+                  <TableCell style={{ width: "200px", borderBottom: "none" }} align="center"/*className="w-[140px]"*/><label className="text-sm text-[#848789]">Settlement Type</label></TableCell>
+                  <TableCell style={{ width: "400px", borderBottom: "none" }} align="right" /*className="w-[140px]"*/>
+                  <label className="text-sm text-[#848789]">Matched Supply ({unit})</label>
                   </TableCell>
-                  <TableCell style={{ width: "50px", borderBottom: "none" }} /*className="w-[30px]"*//>
+                  
                 </TableRow>
               </TableHead>
               <TableBody>

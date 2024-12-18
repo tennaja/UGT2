@@ -89,18 +89,18 @@ const RowSettlement = (props) => {
         <TableCell align="right" style={{ fontWeight: "bold" }}>
           {numeral(row.totalAmount).format("0,0.00")}
         </TableCell>*/}
-        <TableCell style={{ width: "300px", fontWeight: "bold" }} /*className="w-[250px]"*/>{headTxt}</TableCell>
-        <TableCell style={{ width: "200px", fontWeight: "bold" }} /*className="w-[100px]"*/></TableCell>
-        <TableCell style={{ width: "300px", fontWeight: "bold" }} /*className="w-[180px]"*/></TableCell>
+        <TableCell style={{ width: "600px", fontWeight: "bold" }} /*className="w-[250px]"*/>{headTxt}</TableCell>
+        <TableCell style={{ width: "100px", fontWeight: "bold" }} /*className="w-[100px]"*/></TableCell>
+        <TableCell style={{ width: "400px", fontWeight: "bold" }} /*className="w-[180px]"*/></TableCell>
         <TableCell style={{ width: "200px", fontWeight: "bold" }} /*className="w-[140px]"*/></TableCell>
-        <TableCell style={{ width: "300px", fontWeight: "bold" }} align="right" /*className="w-[140px]"*/>
+        <TableCell style={{ width: "400px", fontWeight: "bold" }} align="right" /*className="w-[140px]"*/>
         {renderValue(total)}
         </TableCell>
         <TableCell style={{ width: "50px", fontWeight: "bold" }}>{!open ? <IoChevronDown /> : <IoChevronUp />}</TableCell>
       </TableRow>
 
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0,paddingLeft: 5,paddingRight:5 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Table size="small">
               <TableBody>
@@ -108,9 +108,9 @@ const RowSettlement = (props) => {
                   row.map((item,index)=>{
                     return(
                       <TableRow key={index}>
-                        <TableCell style={{ width: "300px" }} /*className="w-[250px]"*/>{item.utilityContract}</TableCell>
-                        <TableCell style={{ width: "200px" }} /*className="w-[100px]"*/>{item.utility}</TableCell>
-                        <TableCell style={{ width: "300px" }} /*className="w-[180px]"*/>{item.periodStart+"-"+item.periodEnd}</TableCell>
+                        <TableCell style={{ width: "600px" }} /*className="w-[250px]"*/>{item.utilityContract}</TableCell>
+                        <TableCell style={{ width: "100px" }} /*className="w-[100px]"*/>{item.utility}</TableCell>
+                        <TableCell style={{ width: "400px" }} /*className="w-[180px]"*/>{item.periodStart+"-"+item.periodEnd}</TableCell>
                         <TableCell style={{ width: "200px",alignItems: "center" }} align="center"/*className="w-[140px]"*/>
                         <div className="flex justify-center">
                         <div className={getStyle(item.type,0)}>
@@ -118,7 +118,7 @@ const RowSettlement = (props) => {
                         </div>
                         </div>
                         </TableCell>
-                        <TableCell style={{ width: "300px" }} align="right" /*className="w-[140px]"*/>
+                        <TableCell style={{ width: "400px" }} align="right" /*className="w-[140px]"*/>
                         {renderValue(item.matched)}
                         </TableCell>
                         <TableCell style={{ width: "50px" }}></TableCell>

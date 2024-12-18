@@ -520,8 +520,12 @@ export const settlementReject = (ugtGroupId, portfolioId, year, month, utilityId
     const URL = `${SETTLEMENT_REJECT_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&utilityId=${utilityId}&Remark=${remark}`
     console.log(URL)
 
+    const param = {
+        remark: remark
+      }
+
     return async (dispatch) => {
-        await axios.post(URL, { ...getHeaderConfig() }).then((response) => {
+        await axios.post(URL, param).then((response) => {
             if (response?.status == 200 || response?.status == 201) {
                 dispatch(_settlementReject(response.data));
                 toast.success("Reject Complete!", {
@@ -545,7 +549,7 @@ export const settlementReject = (ugtGroupId, portfolioId, year, month, utilityId
             dispatch(settlementFailRequest())
             callback && callback(response?.status);
         });
-    }
+      };
 }
 
 export const settlementFailRequest = () =>{

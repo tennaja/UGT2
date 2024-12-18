@@ -57,6 +57,7 @@ export default function SettlementApproval() {
     prevSelectedYear,
     prevSelectedMonth,
   } = location.state;
+  console.log(location.state)
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
 
   const settlementApprovalResponse = useSelector(
@@ -83,6 +84,7 @@ export default function SettlementApproval() {
   const isShowModalSuccess = useSelector((state)=> state.settlement.isSuccessRequest)
   const [settlementYear, setSettlementYear] = useState(prevSelectedYear);
   const [settlementMonth, setSettlementMonth] = useState(prevSelectedMonth);
+  console.log(prevSelectedMonth)
   const [prevMonth, setPrevMonth] = useState(prevSelectedMonth);
   const [latestYearHasData, setLatestYearHasData] = useState(
     yearListData.latestYearHasData
@@ -248,6 +250,7 @@ console.log(settlementDetailData)
   useEffect(() => {
     // set default month
     if (monthListData?.monthList?.length > 0) {
+
       if (!prevMonth) {
         // กรณีกดจากปุ่ม Pending Approval
         setSettlementMonth(monthListData.defaultMonth);
@@ -442,6 +445,27 @@ console.log(isShowModalFail)
 
   const exportScreenExcel = () => {};
 
+  const checkMonth =(month)=>{
+    console.log(month)
+      if(userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+        userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN || 
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG || 
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ){
+        return month > latestMonthHasData
+      }
+      else{
+        if(latestMonthHasData == 12){
+          return false
+        }
+        else{
+          return month >= latestMonthHasData
+        }
+      }
+    }
+
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
@@ -556,7 +580,7 @@ console.log(isShowModalFail)
                             <Select.Option
                               key={index}
                               value={MONTH_LIST[item - 1].month}
-                              disabled={item > latestMonthHasData}
+                              disabled={checkMonth(item)}
                             >
                               {MONTH_LIST[item - 1].name}
                             </Select.Option>
