@@ -59,6 +59,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
 
   const [totalInventory, setTotalInventory] = useState(0);
   const [issueTransactionData, setIssueTransactionData] = useState();
+  console.log(issueTransactionData)
 
   const handleChangeTrackingYear = (year) => {
     // setTrackingYear(year);

@@ -1136,12 +1136,12 @@ const SettlementInfo = ({
     if(UGT2Inventory !== 0){
       label.push("UGT2 Inventory")
       datalabel.push(UGT2Inventory)
-      colorLabel.push("#33BFBF")
+      colorLabel.push("#FA6B6E")
     }
     if(UGT1Inventory !== 0){
       label.push("UGT1 Inventory")
       datalabel.push(UGT1Inventory)
-      colorLabel.push("#FA6B6E")
+      colorLabel.push("#70B2FF")
     }
     if(unmatched !== 0){
       label.push("Unmatched Energy")

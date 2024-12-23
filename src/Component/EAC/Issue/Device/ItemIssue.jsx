@@ -197,7 +197,7 @@ const ItemIssue = ({
       hideLoading();
     }
   }
-
+  console.log(issueRequest)
   async function removeFile(file) {
     try {
       showLoading();
