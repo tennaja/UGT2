@@ -321,6 +321,7 @@ const SettlementInfo = ({
   //console.log(centerTextPlugin)
 
   const [totalLoadPercentage,setTotalLoadPercentage] = useState(0)
+  const [additionalData,setAdditionalData] = useState([])
 
   const sumTotalPercent =()=>{
     let actualSolar = settlementMonthlySummaryData.actualGenerationMatchedPercentage?settlementMonthlySummaryData.actualGenerationMatchedPercentage:0
@@ -1114,40 +1115,128 @@ const SettlementInfo = ({
     let UGT2Inventory = settlementMonthlySummaryData.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData.ugt2InventoryMatchedPercentage:0
     let UGT1Inventory = settlementMonthlySummaryData.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData.ugt1InventoryMatchedPercentage:0
     let unmatched = settlementMonthlySummaryData.unmatchedEnergyPercentage?settlementMonthlySummaryData.unmatchedEnergyPercentage:0
+
+    let actualSolarData = settlementMonthlySummaryData.actualSolar?settlementMonthlySummaryData.actualSolar:0
+    let actualWindData = settlementMonthlySummaryData.actualWind?settlementMonthlySummaryData.actualWind:0
+    let actualHydroData = settlementMonthlySummaryData.actualHydro?settlementMonthlySummaryData.actualHydro:0
+    let UGT2InventoryData = settlementMonthlySummaryData.ugt2InventoryMatched?settlementMonthlySummaryData.ugt2InventoryMatched:0
+    let UGT1InventoryData = settlementMonthlySummaryData.ugt1InventoryMatched?settlementMonthlySummaryData.ugt1InventoryMatched:0
+    let unmatchedData = settlementMonthlySummaryData.unmatchedEnergy?settlementMonthlySummaryData.unmatchedEnergy:0
     //console.log(actualSolar,actualWind,actualHydro,UGT2Inventory,UGT1Inventory,unmatched)
     let label = []
     let datalabel=[]
     let colorLabel=[]
+    let additionalData =[]
+    
     if(actualSolar !== 0){
       label.push("Actual Solar")
       datalabel.push(actualSolar)
       colorLabel.push("#4D6A00")
+      additionalData.push({label:"Actual Solar",value: actualSolarData })
     }
     if(actualWind !== 0){
       label.push("Actual Wind")
       datalabel.push(actualWind)
       colorLabel.push("#87BE33")
+      additionalData.push({label:"Actual Wind",value: actualWindData })
     }
     if(actualHydro !== 0){
       label.push("Actual Hydro")
       datalabel.push(actualHydro)
       colorLabel.push("#33BFBF")
+      additionalData.push({label:"Actual Hydro",value: actualHydroData })
     }
     if(UGT2Inventory !== 0){
       label.push("UGT2 Inventory")
       datalabel.push(UGT2Inventory)
       colorLabel.push("#FA6B6E")
+      additionalData.push({label:"UGT2 Inventory",value: UGT2InventoryData })
     }
     if(UGT1Inventory !== 0){
       label.push("UGT1 Inventory")
       datalabel.push(UGT1Inventory)
       colorLabel.push("#70B2FF")
+      additionalData.push({label:"UGT1 Inventory",value: UGT1InventoryData })
     }
     if(unmatched !== 0){
       label.push("Unmatched Energy")
       datalabel.push(unmatched)
       colorLabel.push("#B0BAC9")
+      additionalData.push({label:"Unmatched Energy",value: unmatchedData })
     }
+    setAdditionalData(additionalData)
+    console.log("addition",additionalData)
+    let dataChart = {
+      labels: label,
+      datasets: [
+        {
+          data: datalabel,
+          backgroundColor: colorLabel,
+          borderWidth: 1,
+        },
+      ],
+    }
+    return dataChart
+  }
+  const additionalDataPie=()=>{
+    console.log(settlementMonthlySummaryData)
+    let actualSolar = settlementMonthlySummaryData.actualSolarPercentage?settlementMonthlySummaryData.actualSolarPercentage:0
+    let actualWind = settlementMonthlySummaryData.actualWindPercentage?settlementMonthlySummaryData.actualWindPercentage:0
+    let actualHydro = settlementMonthlySummaryData.actualHydroPercentage?settlementMonthlySummaryData.actualHydroPercentage:0
+    let UGT2Inventory = settlementMonthlySummaryData.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData.ugt2InventoryMatchedPercentage:0
+    let UGT1Inventory = settlementMonthlySummaryData.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData.ugt1InventoryMatchedPercentage:0
+    let unmatched = settlementMonthlySummaryData.unmatchedEnergyPercentage?settlementMonthlySummaryData.unmatchedEnergyPercentage:0
+
+    let actualSolarData = settlementMonthlySummaryData.actualSolar?settlementMonthlySummaryData.actualSolar:0
+    let actualWindData = settlementMonthlySummaryData.actualWind?settlementMonthlySummaryData.actualWind:0
+    let actualHydroData = settlementMonthlySummaryData.actualHydro?settlementMonthlySummaryData.actualHydro:0
+    let UGT2InventoryData = settlementMonthlySummaryData.ugt2InventoryMatched?settlementMonthlySummaryData.ugt2InventoryMatched:0
+    let UGT1InventoryData = settlementMonthlySummaryData.ugt1InventoryMatched?settlementMonthlySummaryData.ugt1InventoryMatched:0
+    let unmatchedData = settlementMonthlySummaryData.unmatchedEnergy?settlementMonthlySummaryData.unmatchedEnergy:0
+    //console.log(actualSolar,actualWind,actualHydro,UGT2Inventory,UGT1Inventory,unmatched)
+    let label = []
+    let datalabel=[]
+    let colorLabel=[]
+    let additionalData =[]
+
+    if(actualSolar !== 0){
+      label.push("Actual Solar")
+      datalabel.push(actualSolar)
+      colorLabel.push("#4D6A00")
+      additionalData.push({label:"Actual Solar",value: actualSolarData })
+    }
+    if(actualWind !== 0){
+      label.push("Actual Wind")
+      datalabel.push(actualWind)
+      colorLabel.push("#87BE33")
+      additionalData.push({label:"Actual Wind",value: actualWindData })
+    }
+    if(actualHydro !== 0){
+      label.push("Actual Hydro")
+      datalabel.push(actualHydro)
+      colorLabel.push("#33BFBF")
+      additionalData.push({label:"Actual Hydro",value: actualHydroData })
+    }
+    if(UGT2Inventory !== 0){
+      label.push("UGT2 Inventory")
+      datalabel.push(UGT2Inventory)
+      colorLabel.push("#FA6B6E")
+      additionalData.push({label:"UGT2 Inventory",value: UGT2InventoryData })
+    }
+    if(UGT1Inventory !== 0){
+      label.push("UGT1 Inventory")
+      datalabel.push(UGT1Inventory)
+      colorLabel.push("#70B2FF")
+      additionalData.push({label:"UGT1 Inventory",value: UGT1InventoryData })
+    }
+    if(unmatched !== 0){
+      label.push("Unmatched Energy")
+      datalabel.push(unmatched)
+      colorLabel.push("#B0BAC9")
+      additionalData.push({label:"Unmatched Energy",value: unmatchedData })
+    }
+    setAdditionalData(additionalData)
+    console.log("addition",additionalData)
     let dataChart = {
       labels: label,
       datasets: [
@@ -1905,6 +1994,9 @@ const SettlementInfo = ({
                         <DonutChart
                           data={data}
                           totalPercent={totalLoadPercentage}
+                          unit={unit}
+                          convertUnit={convertUnit}
+                          additional={additionalData}
                           //options={options}
                           //plugins={[centerTextPlugin]}
                           //ref={(chartInstance) => (chartRef.current = chartInstance?.chartInstance)} // เชื่อมต่อ ref

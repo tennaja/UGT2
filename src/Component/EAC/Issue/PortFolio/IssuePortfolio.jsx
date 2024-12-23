@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import DeviceTable from "./DeviceTable";
+import AlmostDone from "../../../assets/done.png";
 import { useDispatch, useSelector } from "react-redux";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Button, Card, CloseButton, Input } from "@mantine/core";
+import { Button, Card, CloseButton, Input, Modal } from "@mantine/core";
 import { Form, Select } from "antd";
 import {
   EAC_ISSUE_DEVICE_LIST_BY_PORT_URL,
   // EAC_DASHBOARD_MONTH_LIST_URL,
   // EAC_DASHBOARD_YEAR_LIST_URL,
   EAC_ISSUE_REQUEST_YEAR_MONTH_LIST_URL,
+  EAC_ISSUE_SYNC_ISSUE_ITEM,
+  EAC_ISSUE_SYNC_ISSUE_STATUS,
 } from "../../../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../../../Utils/FuncUtils";
 import axios from "axios";
@@ -30,6 +33,9 @@ import { useNavigate } from "react-router-dom";
 import { EAC_ISSUE } from "../../../../Constants/WebURL";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import numeral from "numeral";
+import { useDisclosure } from "@mantine/hooks";
+import ModalFail from "../../../Control/Modal/ModalFail";
+import { IoMdSync } from "react-icons/io";
 
 const mockMonthYear = [
   {
@@ -131,6 +137,10 @@ export default function IssuePortfolio({ portfolioData }) {
 
   const [filterDevice, setFilterDevice] = useState([]);
 
+  const [isSyncing, syncHandlers] = useDisclosure();
+  const [showModalSyncSuccess, modalSyncSuccessHandlers] = useDisclosure();
+  const [showModalSyncFail, modalSyncFailHandlers] = useDisclosure();
+
   const handleSearchChange = (searchValue) => {
     setValue(searchValue);
     const filterArray = device.filter((obj) => {
@@ -182,7 +192,7 @@ export default function IssuePortfolio({ portfolioData }) {
       return false;
     });
 
-    console.log("filterArray", filterArray);
+    // console.log("filterArray", filterArray);
     setFilterDevice(filterArray);
   };
 
@@ -245,24 +255,38 @@ export default function IssuePortfolio({ portfolioData }) {
       let yearIndex = yearMonthList.findIndex(
         (item) => item.year == trackingYear
       );
-      setMonthList(
-        yearMonthList.find((item) => item.year === trackingYear)?.month
-      );
-      // if yearMonthList has selectedMonth then set it as trackingMonth
-      if (
-        yearMonthList?.[yearIndex]?.month.some(
-          (item) => item.month == selectedMonth
-        )
-      ) {
-        setTrackingMonth(selectedMonth);
-        dispatch(setSelectedMonth(selectedMonth));
+      // ไม่เจอข้อมูล year month ให้เอาข้อมูลล่าสุด
+      if (yearIndex == -1) {
+        const lastItem = yearMonthList[yearMonthList.length - 1];
+
+        const year = lastItem.year;
+        const lastMonth = lastItem.month[lastItem.month.length - 1];
+
+        dispatch(setSelectedYear(year));
+
+        setMonthList(lastItem.month);
+        setTrackingMonth(lastMonth.month);
+        dispatch(setSelectedMonth(lastMonth.month));
       } else {
-        let monthLength = yearMonthList?.[yearIndex]?.month.length;
-        if (monthLength > 0)
-          setTrackingMonth(
-            yearMonthList?.[yearIndex]?.month?.[monthLength - 1]?.month
-          );
-        else setTrackingMonth(yearMonthList?.[yearIndex]?.month?.[0]?.month);
+        setMonthList(
+          yearMonthList.find((item) => item.year === trackingYear)?.month
+        );
+        // if yearMonthList has selectedMonth then set it as trackingMonth
+        if (
+          yearMonthList?.[yearIndex]?.month.some(
+            (item) => item.month == selectedMonth
+          )
+        ) {
+          setTrackingMonth(selectedMonth);
+          dispatch(setSelectedMonth(selectedMonth));
+        } else {
+          let monthLength = yearMonthList?.[yearIndex]?.month.length;
+          if (monthLength > 0)
+            setTrackingMonth(
+              yearMonthList?.[yearIndex]?.month?.[monthLength - 1]?.month
+            );
+          else setTrackingMonth(yearMonthList?.[yearIndex]?.month?.[0]?.month);
+        }
       }
     }
   }, [yearMonthList]);
@@ -375,6 +399,62 @@ export default function IssuePortfolio({ portfolioData }) {
     }
   }
 
+  const syncIssue = async () => {
+    try {
+      showLoading();
+      syncHandlers.open();
+
+      const params = {
+        year: trackingYear,
+        month: trackingMonth,
+        portfolioId: portfolioData?.id,
+        UgtGroupId: currentUGTGroup?.id,
+      };
+
+      const [resultItem, resultStatus] = await Promise.all([
+        syncIssueItem(params),
+        syncIssueStatus(params),
+      ]);
+
+      if (
+        (resultItem?.status == 200 || resultItem?.status == 404) &&
+        resultStatus?.status == 200
+      ) {
+        getDevice();
+        hideLoading();
+        syncHandlers.close();
+        modalSyncSuccessHandlers.open();
+      } else {
+        hideLoading();
+        syncHandlers.close();
+        modalSyncFailHandlers.open();
+      }
+    } catch (error) {
+      hideLoading();
+      syncHandlers.close();
+      modalSyncFailHandlers.open();
+    }
+  };
+
+  async function syncIssueItem(params) {
+    const res = await axios.get(`${EAC_ISSUE_SYNC_ISSUE_ITEM}`, {
+      params: params,
+      ...getHeaderConfig(),
+      validateStatus: function (status) {
+        return status >= 200 && status < 500;
+      },
+    });
+    return res;
+  }
+  async function syncIssueStatus(params) {
+    const res = await axios.get(`${EAC_ISSUE_SYNC_ISSUE_STATUS}`, {
+      params: params,
+      ...getHeaderConfig(),
+    });
+
+    return res;
+  }
+
   return (
     <Card shadow="md" radius="lg" className="flex" padding="xl">
       <div className="flex justify-between">
@@ -399,6 +479,7 @@ export default function IssuePortfolio({ portfolioData }) {
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-4">
             <Input
+              radius={6}
               placeholder="Search"
               value={value}
               onChange={(event) => handleSearchChange(event.target.value)}
@@ -457,9 +538,21 @@ export default function IssuePortfolio({ portfolioData }) {
                 </Select>
               </Form.Item>
             )}
+            {device.length > 0 && (
+              <Button
+                loading={isSyncing}
+                className="  text-white  hover:bg-[#4D6A00] bg-[#87BE33]"
+                onClick={() => syncIssue()}
+              >
+               <IoMdSync className="mr-1"/> Sync Status
+              </Button>
+            )}
           </div>
         </div>
       </div>
+      <div className="text-right w-full text-xs text-[#848789]">
+          <label className="font-normal">{"Last Uploaded in "}</label><label className="font-bold ml-1">{" DD/MM/YYYY 00:00"}</label>
+        </div>
       {device.length > 0 ? (
         <DeviceTable
           deviceData={filterDevice}
@@ -472,6 +565,38 @@ export default function IssuePortfolio({ portfolioData }) {
           portfolioData={portfolioData}
           searchValue={value}
         />
+      )}
+
+      <Modal
+        opened={showModalSyncSuccess}
+        onClose={modalSyncSuccessHandlers.close}
+        withCloseButton={false}
+        centered
+        closeOnClickOutside={false}
+      >
+        <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
+          <img
+            className="w-32 object-cover rounded-full flex items-center justify-center"
+            src={AlmostDone}
+            alt="Current profile photo"
+          />
+
+          <div className="text-3xl font-bold text-center pt-2">
+            Sync Status Success
+          </div>
+          <div className="flex gap-4">
+            <Button
+              className="text-white bg-PRIMARY_BUTTON mt-12 px-10"
+              onClick={() => modalSyncSuccessHandlers.close()}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {showModalSyncFail && (
+        <ModalFail onClickOk={modalSyncFailHandlers.close} />
       )}
     </Card>
   );

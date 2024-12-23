@@ -3,12 +3,14 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 
+import * as WEB_URL from "../../../Constants/WebURL"
+
 import DataTable from "../../Control/Table/DataTable";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
-import DataTableRedemption from "./DataTableRedemption";
+import DataTableRedemption from "../Redemption/DataTableRedemption";
 
-export default function PortfolioTable({ portData,search }) {
+export default function PortfolioTableCer({ portData,search }) {
   const navigate = useNavigate();
 
   const StatusIcon = (status) => {
@@ -45,7 +47,7 @@ export default function PortfolioTable({ portData,search }) {
 
   const ActionCell = (data) => {
     const handleClickRedeem = () => {
-      navigate("/eac/redemption/info", {
+      navigate(WEB_URL.EAC_REDEMPTION_CERT, {
         state: {
           portfolioID: data.id,
           portfolioName: data.portfolioName,
@@ -134,6 +136,6 @@ export default function PortfolioTable({ portData,search }) {
   ];
 
   return (
-    <DataTableRedemption data={portData} columns={columns} searchData={search} checkbox={false}/>
+    <DataTableRedemption data={portData} columns={columns} searchData={search}/>
   );
 }

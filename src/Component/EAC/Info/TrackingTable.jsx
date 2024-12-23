@@ -279,22 +279,6 @@ export default function TrackingTable() {
       //  <span>{row.portfolioName}</span>,
     },
     {
-      id: "currentSettlement",
-      label: "Current Settlement",
-      align: "center",
-      render: (row) => (
-        <Highlighter
-          highlightTag={Highlight}
-          searchWords={[value]}
-          autoEscape={true}
-          textToHighlight={row.currentSettlement}
-        />
-        /*    <span>
-          {dayjs(row.currentSettlement, "YYYY-M").format("MMMM YYYY")}
-        </span> */
-      ),
-    },
-    {
       id: "totalGeneration",
       label: "Total Generation (kWh)",
       align: "right",
@@ -316,7 +300,7 @@ export default function TrackingTable() {
     },
     {
       id: "matchedGeneration",
-      label: "Matched Generation (kWh)",
+      label: "Actual Generation Matched (kWh)",
       align: "right",
       render: (row) => (
         <Highlighter
@@ -329,7 +313,7 @@ export default function TrackingTable() {
     },
     {
       id: "mechanism",
-      label: "Mechanism",
+      label: "Inventory Match",
       align: "center",
       render: (row) => (
         <Highlighter
@@ -443,34 +427,6 @@ export default function TrackingTable() {
               ))}
             </Select>
           </Form.Item> */}
-
-          {trackingMonth !== undefined && (
-            <Form.Item className="mb-0">
-              <Select
-                size="large"
-                value={trackingMonth}
-                defaultValue={trackingMonth}
-                style={{ width: 140 }}
-                onChange={(value) => handleChangeTrackingMonth(value)}
-                showSearch
-                filterOption={(input, option) =>
-                  (option.children ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-              >
-                {monthArray?.map((item, index) => (
-                  <Select.Option
-                    key={index}
-                    value={item.month}
-                    disabled={!monthList.some((obj) => obj.month == item.month)}
-                  >
-                    {item.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          )}
         </div>
       </div>
       <div className="mt-4">

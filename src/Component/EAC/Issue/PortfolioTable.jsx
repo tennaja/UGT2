@@ -101,7 +101,7 @@ export default function PortfolioTable({ portData, searchValue }) {
     },
     {
       id: "currentSettlement",
-      label: "Current Settlement",
+      label: "Settlement Period",
       align: "center",
       render: (row) => (
         <Highlighter

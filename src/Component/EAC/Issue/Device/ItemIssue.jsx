@@ -1,11 +1,10 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { Button, Card, Input, ScrollArea, Table, Modal } from "@mantine/core";
+import { Button, Card, Input, ScrollArea, Table, Modal,Textarea } from "@mantine/core";
 import numeral from "numeral";
-import AlmostDone from "../../../assets/done.png";
+//import AlmostDone from "../../../assets/done.png";
 import Warning from "../../../assets/warning.png";
 import ModalFail from "../../../../Component/Control/Modal/ModalFail";
 import { useLocation, useNavigate } from "react-router-dom";
-import * as WEB_URL from "../../../../Constants/WebURL";
 import dayjs from "dayjs";
 import classNames from "classnames";
 import { Checkbox, message, Upload } from "antd";
@@ -14,12 +13,33 @@ import {
   EAC_ISSUE_REQUEST_CREATE_ISSUE_DETAIL_FILE,
   EAC_ISSUE_REQUEST_DELETE_FILE,
   EAC_ISSUE_REQUEST_DOWNLOAD_FILE,
+  EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE
 } from "../../../../Constants/ServiceURL";
+import { USER_GROUP_ID } from "../../../../Constants/Constants";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import { showLoading, hideLoading } from "../../../../Utils/Utils";
-import { Trash2 } from "lucide-react";
 import StatusLabel from "../../../Control/StatusLabel";
+import { useSelector,useDispatch } from "react-redux";
+import { FaRegTrashAlt } from "react-icons/fa";
+import jpgIcon from "../../../assets/jpg.png";
+import pngIcon from "../../../assets/png.png";
+import csvIcon from "../../../assets/csv.png";
+import docxIcon from "../../../assets/docx.png";
+import xlsIcon from "../../../assets/xls.png";
+import txtIcon from "../../../assets/txt.png";
+import pdfIcon from "../../../assets/pdf.png";
+import pptxIcon from "../../../assets/pptx.png";
+import svgIcon from "../../../assets/svg.png";
+import { RiDownloadLine } from "react-icons/ri";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import PdfFormPreviewSF04 from "../../../Settlement/TemplatePdfSF04";
+import {getDataSettlement} from "../../../../Redux/Settlement/Action";
+
+import AlmostDone from "../../../assets/almostdone.png";
+import { useDisclosure } from "@mantine/hooks";
+import ModalConfirmCheckBoxEAC from "./ModalConfirmCheckBoxEAC";
+
 
 const { Dragger } = Upload;
 
@@ -51,25 +71,64 @@ const beforeUpload = (file) => {
   return isValidFile && isLt2M;
 };
 
-const ItemIssue = ({
-  issueTransactionData,
-  issueRequest,
-  getIssueTransaction,
-}) => {
+const getIcon = (type) => {
+  console.log(type)
+  const extension = name?.split(".").pop();
+  console.log(extension)
+  if (type == "image/jpeg") {
+    return jpgIcon;
+  } else if (type === "image/png") {
+    return pngIcon;
+  } else if (type === "image/svg+xml") {
+    return svgIcon;
+  } else if (type === "application/pdf") {
+    return pdfIcon;
+  } else if (type === "application/msword" || type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ) {
+    return docxIcon;
+  } else if (type === "application/vnd.ms-excel" || type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+    return xlsIcon;
+  } else if (type === "text/csv") {
+    return csvIcon;
+  } else if (type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
+    return pptxIcon;
+  } else if (type === "text/plain") {
+    return txtIcon;
+  } else {
+    return jpgIcon;
+  }
+};
+
+const ItemIssue = ({ issueTransactionData, getIssueTransaction,device }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.login.userobj);
+  const issueRequest = issueTransactionData?.issueRequest;
+  const dataPDF = useSelector((state) => state.settlement?.dataSF04PDF)
+
+  console.log(issueTransactionData)
+
+  const issueRequestId = issueRequest?.issueRequestId;
+  const issueRequestDetailId = issueRequest?.issueRequestDetailId;
+
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [openModalUpload, setOpenModalUpload] = useState(false);
   const [showModalComplete, setShowModalComplete] = useState(false);
   const [showModalFail, setShowModalFail] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
+
+  const [showModalConfirm,setShowModalConfirm] = useState(false)
+  const [showModalSignAndSubmit,setShowModalSignAndSubmit] = useState(false)
+  const [showSignAndSubmitSuccess,modalSignAndSubmitSuccess] = useDisclosure()
+  const [isSign,setIsSign] = useState(false)
+  const [actual,setActual] = useState("Actual")
+
+
   const [note, setNote] = useState(issueRequest?.note ?? "");
   const [totalProduction, setTotalProduction] = useState(0);
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
 
-  const issueRequestDetailId = issueRequest?.issueRequestDetailId;
-
-  let issueRequestStatus =
-    issueTransactionData?.issueRequestDetail?.status ?? "";
+  // status
+  let issueRequestStatus = issueRequest?.status ?? "";
 
   if (issueRequestStatus === "") {
     issueRequestStatus = "Pending";
@@ -82,23 +141,35 @@ const ItemIssue = ({
     issueRequestStatus = "In Progress";
   } else if (issueRequestStatus.toLowerCase() === "completed") {
     issueRequestStatus = "Issued";
+  } else if (issueRequestStatus.toLowerCase() === "rejected") {
+    issueRequestStatus = "Rejected";
   }
 
+  // control action status
   let canSendIssue = false;
   let canUpload = false;
 
+  // check if user is Contractor , can view only.
   if (
-    issueRequestStatus?.toLowerCase() === "in progress" ||
-    issueRequestStatus?.toLowerCase() === "withdraw" ||
-    issueRequestStatus?.toLowerCase() === "withdrawn" ||
-    issueRequestStatus?.toLowerCase() === "completed" ||
-    issueRequestStatus?.toLowerCase() === "issued"
+    userData?.userGroup?.id == USER_GROUP_ID.MEA_CONTRACTOR_MNG ||
+    userData?.userGroup?.id == USER_GROUP_ID.PEA_CONTRACTOR_MNG
   ) {
     canSendIssue = false;
     canUpload = false;
   } else {
-    canSendIssue = true;
-    canUpload = true;
+    if (
+      issueRequestStatus?.toLowerCase() === "in progress" ||
+      issueRequestStatus?.toLowerCase() === "withdraw" ||
+      issueRequestStatus?.toLowerCase() === "withdrawn" ||
+      issueRequestStatus?.toLowerCase() === "completed" ||
+      issueRequestStatus?.toLowerCase() === "issued"
+    ) {
+      canSendIssue = false;
+      canUpload = false;
+    } else {
+      canSendIssue = true;
+      canUpload = true;
+    }
   }
 
   const props = {
@@ -149,6 +220,54 @@ const ItemIssue = ({
     onDrop(e) {
       // console.log("Dropped files", e.dataTransfer.files);
     },
+    itemRender: (originNode, file, fileList, actions) => {
+      console.log(file)
+      return (
+        <div
+          className="flex justify-between items-center p-2 border border-gray-300 rounded mb-2 mt-2"
+          style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+        >
+          <div className="flex items-center">
+            {/* Icon ของไฟล์ (สามารถเปลี่ยนเป็น URL ไอคอนได้) */}
+            <img
+              src={getIcon(file.type)} // เปลี่ยนเป็นไอคอนไฟล์ PDF หรือประเภทอื่น ๆ
+              alt="File Icon"
+              style={{  marginRight: "10px" }}
+              width={35}
+              height={35}
+            />
+            <span>{file.name}</span>
+          </div>
+          <div>
+            {/* ปุ่ม Download */}
+            <button
+              style={{
+                marginRight: "10px",
+                background: "transparent",
+                border: "none",
+                color: "#BFD39F",
+                cursor: "pointer",
+              }}
+              onClick={() => props.onPreview(file)}
+            >
+              <RiDownloadLine /> {/* ไอคอนดาวน์โหลด */}
+            </button>
+            {/* ปุ่ม Remove */}
+            <button
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "#BFD39F",
+                cursor: "pointer",
+              }}
+              onClick={() => actions.remove(file)}
+            >
+              <FaRegTrashAlt /> {/* ไอคอนลบ */}
+            </button>
+          </div>
+        </div>
+      );
+    },
   };
 
   async function uploadToEvident(options) {
@@ -197,7 +316,7 @@ const ItemIssue = ({
       hideLoading();
     }
   }
-  console.log(issueRequest)
+
   async function removeFile(file) {
     try {
       showLoading();
@@ -212,7 +331,8 @@ const ItemIssue = ({
       hideLoading();
     }
   }
-  const handleConfrimSubmitRequest = async () => {
+
+  const handleConfirmSubmitRequest = async () => {
     setIsConfirmChecked(false); // กลับสถานะให้ confirm checkbox เป็นค่าเริ่มต้น
     setOpenModalConfirm(!openModalConfirm);
 
@@ -226,6 +346,8 @@ const ItemIssue = ({
     );
 
     const paramsDraft = {
+      issueRequestId: issueRequestId,
+      deviceCode: issueTransactionData.deviceCode,
       issueRequestDetailId: issueRequestDetailId,
       issueUid: `/issues/${issueTransactionData.issueRequestUid}`,
       startDate: dayjs(issueRequest.startDate).format(
@@ -237,7 +359,8 @@ const ItemIssue = ({
       productionVolume: numeral(totalProduction).format("0.000000"),
       fuel: `/fuels/${issueTransactionData.fuelCode}`,
       recipientAccount: `/accounts/${issueRequest.tradeAccountCode}`,
-      status: `Draft`,
+      status:
+        issueRequestStatus?.toLowerCase() == "rejected" ? `Submitted` : `Draft`,
       notes: note,
       issuerNotes: note,
       files: fileUidArray,
@@ -266,6 +389,7 @@ const ItemIssue = ({
     } else {
       console.log("responseDraft", responseDraft);
       setShowModalFail(true);
+      hideLoading();
     }
   };
 
@@ -278,8 +402,11 @@ const ItemIssue = ({
   };
 
   useEffect(() => {
-    if (issueRequest?.settlementDetail) sumTotalProduction();
+    if (issueRequest?.settlementDetail) {
+      sumTotalProduction();
+    }
   }, [issueRequest]);
+
   useLayoutEffect(() => {
     if (issueRequest?.settlementDetail) prepareFileUploadData();
   }, [issueRequest]);
@@ -292,6 +419,7 @@ const ItemIssue = ({
 
     setTotalProduction(sumProduction / 1000);
   }
+
   async function prepareFileUploadData() {
     const fileUploadedArray = [];
     for (const item of issueRequest.fileUploaded) {
@@ -299,6 +427,7 @@ const ItemIssue = ({
         uid: item.uid,
         name: item.fileName,
         status: "done",
+        type: item.mimeType,
         // url: `https://api.sandbox.evident.dev/files/${item.uid}/download`, // รอเปลี่ยนเป็น API ของ Backend ที่ใช้สำหรับโหลดไฟล์
         url: `${EAC_ISSUE_REQUEST_DOWNLOAD_FILE}`,
       };
@@ -320,46 +449,186 @@ const ItemIssue = ({
     }
   }
 
-  // const StatusIcon = ({ status }) => {
-  //   let color;
+  const showbase = async ()=>{
+  
+    //setIsGenarate(true)
+    const fetchData = new Promise((resolve, reject) => {
+      dispatch(getDataSettlement(device))
+        .then(resolve)
+        .catch(reject);
+    });
+    await fetchData;
+    const base = await handleGeneratePDF()
+    //const form = await handleGeneratePDFFileForm()
+    console.log(base)
+    //setIsGenarate(false)
+    openPDFInNewTab(base.binaryBase,"application/pdf","test.pdf")
+    
+    console.log(base)
+  }
+  
+  const openPDFInNewTab = (base64String,type,name) => {
+    const extension = name.split(".").pop();
+      const pdfWindow = window.open("");
+      console.log("PDF",pdfWindow)
+      console.log(type)
+      if(extension === "pdf"){
+        if (pdfWindow) {
+          // Set the title of the new tab to the filename
+          pdfWindow.document.title = name;
+      
+          // Convert Base64 to raw binary data held in a string
+          const byteCharacters = atob(base64String);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+      
+          // Create a Blob from the byte array and set the MIME type
+          const blob = new Blob([byteArray], { type: type});
+          console.log("Blob",blob)
+      
+          // Create a URL for the Blob and set it as the iframe source
+          const blobURL = URL.createObjectURL(blob);
+          console.log("Blob url :" ,blobURL)
+          let names = name
+      
+          const iframe = pdfWindow.document.createElement("iframe");
+          
+          iframe.style.border = "none";
+          iframe.style.position = "fixed";
+          iframe.style.top = "0";
+          iframe.style.left = "0";
+          iframe.style.bottom = "0";
+          iframe.style.right = "0";
+          iframe.style.width = "100vw";
+          iframe.style.height = "100vh";
+          
+          // Use Blob URL as the iframe source
+          iframe.src = blobURL;
+      
+          // Remove any margin and scrollbars
+          pdfWindow.document.body.style.margin = "0";
+          pdfWindow.document.body.style.overflow = "hidden";
+      
+          // Append the iframe to the new window's body
+          pdfWindow.document.body.appendChild(iframe);
+  
+          // Optionally, automatically trigger file download with correct name
+        
+        } else {
+            alert('Unable to open new tab. Please allow popups for this website.');
+        }
+      }
+      else if(extension === "jpeg" || extension === "jpg" || extension === "png" || extension === "svg"){
+        if (pdfWindow) {
+          pdfWindow.document.write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
+              <img src="data:image/jpeg;base64,${base64String}" style="max-width:100%; height:auto;"/>
+          </body></html>`);
+          pdfWindow.document.title = "Image Preview";
+          pdfWindow.document.close();
+      }
+      }
+  };
 
-  //   switch (status?.toLowerCase()) {
-  //     case "pending":
-  //       color = STATUS_COLOR.PENDING;
-  //       break;
-  //     case "complete":
-  //       color = STATUS_COLOR.COMPLETE;
-  //       break;
-  //     case "in progress":
-  //       color = STATUS_COLOR.IN_PROGRESS;
-  //       break;
-  //     case "unavailable":
-  //       color = STATUS_COLOR.UNAVAILABLE;
-  //       break;
-  //     case "issued":
-  //       color = STATUS_COLOR.ISSUED;
-  //       break;
-  //     case "rejected":
-  //       color = STATUS_COLOR.REJECTED;
-  //       break;
-  //     default:
-  //       color = STATUS_COLOR.PENDING;
-  //       break;
-  //   }
+  const handleGeneratePDF = async () => {
+    try {
+      
+      const base64String = await PdfFormPreviewSF04.generatePdf();
+      //const fileForm = await PdfFormPreviewSF04.generatePdfFileForm()
+      //console.log(fileForm)
+      
+      //setPdfBase64(base64String);
+      //console.log("Generated Base64 PDF:", base64String);
+      return base64String
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
+    }
+  };
 
-  //   return (
-  //     <div className="text-center text-xs font-normal">
-  //       <span
-  //         className={classNames({
-  //           "px-3 py-1 rounded-large   text-white capitalize text-nowrap": true,
-  //         })}
-  //         style={{ background: color }}
-  //       >
-  //         {status ?? "Pending"}
-  //       </span>
-  //     </div>
-  //   );
-  // };
+  const handleGeneratePDFFileForm = async () => {
+    try {
+      
+      //const base64String = await PdfFormPreviewSF04.generatePdf();
+      const fileForm = await PdfFormPreviewSF04.generatePdfFileForm()
+      console.log(fileForm)
+      
+      //setPdfBase64(base64String);
+      //console.log("Generated Base64 PDF:", base64String);
+      return fileForm
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
+    }
+  };
+
+  const handleModalSignAndSubmit =()=>{
+    setShowModalSignAndSubmit(true)
+  }
+
+  const handleCloseModalSignAndSubmit=()=>{
+    setShowModalSignAndSubmit(false)
+  }
+
+  const handleModalConfirm=()=>{
+    setShowModalConfirm(true)
+  }
+  const handleCLodeModalConfirm=()=>{
+    setShowModalConfirm(false)
+  }
+
+  const actionSignAndSubmit=()=>{
+    console.log("Action Sign And Submit")
+    modalSignAndSubmitSuccess.open()
+    setShowModalConfirm(false)
+    setShowModalSignAndSubmit(false)
+    setIsSign(true)
+    handleTakeActionSignAndSubmit()
+
+  }
+
+  const handleTakeActionSignAndSubmit = async ()=>{
+    
+    const fetchData = new Promise((resolve, reject) => {
+      dispatch(getDataSettlement(device))
+        .then(resolve)
+        .catch(reject);
+    });
+    await fetchData;
+    const base = await handleGeneratePDF()
+    //const form = await handleGeneratePDFFileForm()
+    console.log(base)
+    //setIsGenarate(false)
+    //openPDFInNewTab(base.binaryBase,"application/pdf","test.pdf")
+    const params = new FormData();
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+    //let fileName = file.name?.replace(/\.[^/.]+$/, "");
+    params.append("issueRequestDetailId", issueRequestDetailId);
+    params.append("file", base.file);
+    params.append("name", base.file.name);
+    params.append("notes", "SF04");
+    try {
+      const res = await axios.post(
+        `${EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE}`,
+        params,
+        config
+      );
+      //onSuccess("Ok");
+      // เรียกข้อมูล issue ใหม่ เพื่อให้มี File List
+      console.log(res)
+      getIssueTransaction();
+    } catch (err) {
+      console.log("Error: ", err);
+      const error = new Error("Some error");
+      //onError({ err });
+    }
+    
+    console.log(base)
+  }
 
   return (
     <>
@@ -370,7 +639,9 @@ const ItemIssue = ({
             {issueTransactionData?.deviceName}
           </div>
           <div className="text-xs font-base">
-            {issueTransactionData?.deviceCode}
+            <label className="text-[#2e8d8d] bg-[#f0f8ff] rounded w-max px-2 py-1 text-xs font-normal">
+              {issueTransactionData?.deviceCode}
+            </label>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -401,7 +672,7 @@ const ItemIssue = ({
             Total Generation
           </div>
           <div className="text-sm font-semibold">
-            {numeral(issueTransactionData?.totalGeneration).format("0,0.00")}{" "}
+            {numeral(issueTransactionData?.totalGeneration).format("0,0.000")}{" "}
             kWh (
             {numeral(
               numeral(issueTransactionData?.totalGeneration).value() / 1000
@@ -414,7 +685,7 @@ const ItemIssue = ({
             Matched Generation
           </div>
           <div className="text-sm font-semibold">
-            {numeral(issueTransactionData?.matchedGeneration).format("0,0.00")}{" "}
+            {numeral(issueTransactionData?.matchedGeneration).format("0,0.000")}{" "}
             kWh (
             {numeral(
               numeral(issueTransactionData?.matchedGeneration).value() / 1000
@@ -423,10 +694,18 @@ const ItemIssue = ({
           </div>
         </div>
       </div>
-
+      <div className="text-right">
+            <Button
+              className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
+              onClick={showbase}
+            >
+              <IoDocumentTextOutline className="mr-1"/> Preview SF-04
+            </Button>
+            
+      </div>
       <Table stickyHeader verticalSpacing="sm" className="mt-10">
-        <Table.Thead>
-          <Table.Tr className="text-[#848789]">
+        <Table.Thead className="bg-[#F4F6F9]">
+          <Table.Tr className="text-[#071437]">
             <Table.Th className="text-center w-48">Period</Table.Th>
             <Table.Th className="text-center w-64 ">
               Recipient Account (Trade Account)
@@ -496,7 +775,7 @@ const ItemIssue = ({
           </Table.Tr>
         </Table.Tfoot>
       </Table>
-      <div className="flex justify-between pt-3">
+      <div className="grid grid-col-3 gap-5 pt-3 ">
         <div className="flex gap-2">
           {canUpload && (
             <Button
@@ -519,15 +798,18 @@ const ItemIssue = ({
             </Button>
           )}
         </div>
-        <div className="flex gap-2">
-          <div className="flex items-start gap-2">
-            <div className="text-sm font-normal text-[#91918A]">Note</div>
+        <div className="gap-2 col-start-3 h-auto">
+          <div>
+            <div className="text-sm font-normal mb-2 text-[#91918A]">Note</div>
             {canSendIssue ? (
               <div className="text-sm">
-                <Input
+                <Textarea
                   size="md"
                   value={note}
                   onChange={(event) => setNote(event.currentTarget.value)}
+                  //minRows={4}  // กำหนดจำนวนแถวเริ่มต้น
+                  //sx={{ height: 100 }}
+                  rows={4}
                 />
               </div>
             ) : (
@@ -536,15 +818,23 @@ const ItemIssue = ({
               </div>
             )}
           </div>
-          {canSendIssue && (
+          {/*canSendIssue && (
             <Button
               className="bg-[#87BE33] text-white px-8"
               onClick={() => setOpenModalConfirm(!openModalConfirm)}
             >
               Send
             </Button>
-          )}
+          )*/}
         </div>
+      </div>
+      <div className="mt-4 text-right">
+            <Button
+              className="bg-[#87BE33] text-white px-8"
+              onClick={() => handleModalConfirm()}
+            >
+              Sign & Submit
+            </Button>
       </div>
 
       <Modal
@@ -590,7 +880,7 @@ const ItemIssue = ({
             {isConfirmChecked ? (
               <Button
                 className="text-white bg-PRIMARY_BUTTON mt-12 px-10"
-                onClick={() => handleConfrimSubmitRequest()}
+                onClick={() => handleConfirmSubmitRequest()}
               >
                 Yes, Submit Request
               </Button>
@@ -605,6 +895,7 @@ const ItemIssue = ({
           </div>
         </div>
       </Modal>
+
       <Modal
         opened={showModalComplete}
         onClose={() => setShowModalComplete(!showModalComplete)}
@@ -667,7 +958,70 @@ const ItemIssue = ({
           </div>
         </div>
       </Modal>
+      <Modal
+        opened={showSignAndSubmitSuccess}
+        onClose={modalSignAndSubmitSuccess.close}
+        withCloseButton={false}
+        centered
+        closeOnClickOutside={false}
+      >
+        <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
+          <img
+            className="w-32 object-cover rounded-full flex items-center justify-center"
+            src={AlmostDone}
+            alt="Current profile photo"
+          />
 
+          <div className="text-2xl font-bold text-center pt-2">
+          Successfully
+          </div>
+          <div className="flex gap-4">
+            <Button
+              className="text-white bg-[#4197FD] mt-12 px-10 mr-2"
+              onClick={() => showbase()}
+            >
+              Preview SF-04
+            </Button>
+            <Button
+              className="text-white bg-PRIMARY_BUTTON mt-12 px-10"
+              onClick={() => modalSignAndSubmitSuccess.close()}
+            >
+              Confirm
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      
+      {showModalConfirm && (
+        <ModalConfirmCheckBoxEAC
+        onCloseModal={handleCLodeModalConfirm}
+        onClickConfirmBtn={handleModalSignAndSubmit}
+        title={"Submit Issue Request"}
+        content={"Are you sure you wish to submit this issue request?"}
+        textCheckBox={"I confirm all the required information is completed and the necessary supporting information and files are attached."}
+        sizeModal={"lg"}
+        textButton={"Yes, submit request"}
+        isHaveFile={issueTransactionData?.issueRequestDetail?.fileUploaded.length !== 0?true:false}
+        />
+      )}
+
+      {showModalSignAndSubmit && (
+        <ModalConfirmCheckBoxEAC
+        onCloseModal={handleCloseModalSignAndSubmit}
+        onClickConfirmBtn={actionSignAndSubmit}
+        title={"Sign & Submit?"}
+        content={"In signing, the Registrant warrants that the energy for which I-REC certificates are being applied has not and will not be submitted for any other energy attribute tracking methodology."}
+        content2={"The Registrant also warrants that, to the best of their knowledge, the consumption attributes contained within any I-REC certificate Issued in association with this request (including all rights to the specific electricity and/or emissions for the reporting of any indirect carbon account purposes) are not delivered to any other body either directly or in-directly without the component I-REC certificate."}
+        content3={"This includes but is not limited to electricity supply companies or the national governments."}
+        textCheckBox={"I have read and agree to the terms as described above."}
+        sizeModal={"lg"}
+        textButton={"Yes, submit request"}
+        isShowInfo={true}
+        textAlign={"left"}
+        isHaveFile={true}
+        />
+      )}
+      <PdfFormPreviewSF04 data={dataPDF} isSign={isSign} Sign={userData.firstName+" "+userData.lastName} period={actual} />
       {showModalFail && <ModalFail onClickOk={handleCloseFailModal} />}
     </>
   );

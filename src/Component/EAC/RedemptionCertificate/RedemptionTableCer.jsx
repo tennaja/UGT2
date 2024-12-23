@@ -1,23 +1,26 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getRedemptionRequestList } from "../../../Redux/EAC/Redemption/Action";
-import PortfolioTable from "./PortfolioTable";
+import { getRedemptionRequestListCerPage } from "../../../Redux/EAC/Redemption/Action";
+import PortfolioTable from "./PortfolioTableCer";
 import { FiSearch } from "react-icons/fi";
 import { CloseButton, Input, Card } from "@mantine/core";
 import { Form, Select } from "antd";
 import dayjs from "dayjs";
+import PortfolioTableCer from "./PortfolioTableCer";
 
 const yearObject = [{ name: "2024" }];
 
-export default function RedemptionTable() {
+export default function RedemptionTableCer() {
   const dispatch = useDispatch();
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
-  const portData = useSelector((state) => state.redeem.redemptionRequestList);
+  const portData = useSelector((state) => state.redeem.redemptionRequestListCerPage);
   const [search, setSearch] = useState("");
   const [trackingYear, setTrackingYear] = useState(2024);
 
+  console.log(portData)
+
   useEffect(() => {
-    dispatch(getRedemptionRequestList(1, trackingYear, search));
+    dispatch(getRedemptionRequestListCerPage(1, trackingYear, search));
   }, [trackingYear, search]);
 
   const handleChangeTrackingYear = (year) => {
@@ -25,7 +28,7 @@ export default function RedemptionTable() {
   };
 
   return (
-    <Card shadow="md" radius="lg" className="h-max" padding="xl">
+    <Card shadow="md" radius="lg" className="flex" padding="xl">
       <div className="flex justify-between">
         <div className="flex flex-col">
           <span className="font-bold text-lg">Portfolio</span>
@@ -66,8 +69,8 @@ export default function RedemptionTable() {
           </Form.Item>
         </div>
       </div>
-      <div className="ag-theme-material pt-4 mb-4" >
-        {<PortfolioTable portData={portData} search={search}/>}
+      <div className="ag-theme-material pt-4" >
+        {<PortfolioTableCer portData={portData} search={search}/>}
       </div>
     </Card>
   );

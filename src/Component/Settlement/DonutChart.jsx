@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import numeral from "numeral";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const DonutChart = ({data,totalPercent}) => {
+const DonutChart = ({data,totalPercent,unit,convertUnit,additional}) => {
+  console.log(additional)
   const [chartData, setChartData] = useState({
     labels: [
       "Actual Solar",
@@ -29,17 +31,30 @@ const DonutChart = ({data,totalPercent}) => {
       },
     ],
   });
+
+
   //console.log(data)
   const [totalLoadPercentage, setTotalLoadPercentage] = useState(0); // ค่าเริ่มต้น %
   const [chartKey, setChartKey] = useState(0);
+
+  const [additionalData,setAdditionalData] = useState([
+    { label: "Actual Solar", value: 0 },
+    { label: "Actual Wind", value: 0 }, // ค่า 0 จะไม่ถูก plot
+    { label: "Actual Hydro", value: 0 },
+    { label: "UGT2 Inventory", value: 0 }, // ค่า 0 จะไม่ถูก plot
+    { label: "UGT1 Inventory", value: 0 },
+    { label: "Unmatched Energy", value: 0 },
+  ])
 
   useEffect(() => {
     
       setChartData(data); // อัปเดตข้อมูลกราฟ
       setTotalLoadPercentage(totalPercent); // อัปเดตเปอร์เซ็นต์
       setChartKey((prevKey) => prevKey + 1);
-    
+      setAdditionalData(additional)
   }, [data]);
+
+  
 
   const [legendData,setlegendData] = useState([
     { label: "Actual Solar", value: 0, color: "#4D6A00" },
@@ -86,12 +101,67 @@ const DonutChart = ({data,totalPercent}) => {
       tooltip: {
         callbacks: {
           label: function (context) {
-            const label = context.label || "";
+            const label = context.label || "ไม่มีข้อมูล";
             const value = context.raw || 0;
-            return `${label}: ${value}%`;
+  
+            // ดึงข้อมูลเพิ่มเติมจาก custom data
+            const chart = context.chart;
+            const additionalInfo =
+            chart.config._config.options.plugins.additionalData?.[context.dataIndex]
+                ?.label || "ไม่มีข้อมูลเพิ่มเติม";
+            const additionalData = convertData(chart.config._config.options.plugins.additionalData?.[context.dataIndex]?.value * convertUnit)
+            console.log(context.dataIndex,chart.config._config.options.plugins.additionalData?.[context.dataIndex],additionalData)
+  
+            // แสดงข้อมูลรวมกับค่าของกราฟ
+            return [`${label}: ${value} %`,`${additionalInfo}: ${additionalData} ${unit}`];
           },
         },
       },
+      // เพิ่มข้อมูลเพิ่มเติมใน options
+      additionalData: additionalData,
+    },
+  };
+
+  const optionss = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: "55%",
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          usePointStyle: true,
+          boxWidth: 10,
+          generateLabels: (chart) => {
+            return legendData.map((item, index) => ({
+              text: item.label,
+              fillStyle: item.color,
+              lineWidth: 0,
+            }));
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const label = context.label || "ไม่มีข้อมูล";
+            const value = context.raw || 0;
+  
+            // ดึงข้อมูลเพิ่มเติมจาก custom data
+            const chart = context.chart;
+            const additionalInfo =
+            chart.config._config.options.plugins.additionalData?.[context.dataIndex]
+                ?.label || "ไม่มีข้อมูลเพิ่มเติม";
+            const additionalData = convertData(chart.config._config.options.plugins.additionalData?.[context.dataIndex]?.value * convertUnit)
+            console.log(context.dataIndex,chart.config._config.options.plugins.additionalData?.[context.dataIndex],additionalData)
+  
+            // แสดงข้อมูลรวมกับค่าของกราฟ
+            return [`${label}: ${value} %`,`${additionalInfo}: ${additionalData} ${unit}`];
+          },
+        },
+      },
+      // เพิ่มข้อมูลเพิ่มเติมใน options
+      additionalData: additionalData,
     },
   };
 
@@ -120,6 +190,28 @@ const DonutChart = ({data,totalPercent}) => {
       },
     },
   ];
+
+  const convertData = (value) => {
+      let decFixed = 3;
+      if (unit == "kWh") {
+        decFixed = 3;
+      } else if (unit == "MWh") {
+        decFixed = 6;
+      } else if (unit == "GWh") {
+        decFixed = 6;
+      }
+  
+      if (value) {
+        if (decFixed == 3) {
+          return numeral(value).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(value).format("0,0.000000");
+        }
+      } else {
+        return numeral(0).format("0,0.000");
+      }
+    };
 
   return (
     

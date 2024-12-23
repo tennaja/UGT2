@@ -1,7 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Divider, LoadingOverlay, Table } from "@mantine/core";
+import {
+  Button,
+  Card,
+  Divider,
+  LoadingOverlay,
+  Modal,
+  Table,
+} from "@mantine/core";
 import { Form, Select } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -10,11 +17,15 @@ import ItemIssue from "./ItemIssue";
 import ItemInventory from "./ItemInventory";
 import axios from "axios";
 
+import AlmostDone from "../../../assets/almostdone.png";
+
 import {
   EAC_ISSUE_TRANSACTION_BY_DEVICE_URL,
   EAC_DASHBOARD_MONTH_LIST_URL,
   EAC_DASHBOARD_YEAR_LIST_URL,
   EAC_ISSUE_REQUEST_YEAR_MONTH_LIST_URL,
+  EAC_ISSUE_SYNC_ISSUE_ITEM,
+  EAC_ISSUE_SYNC_ISSUE_STATUS,
 } from "../../../../Constants/ServiceURL";
 import { EAC_ISSUE } from "../../../../Constants/WebURL";
 import { getHeaderConfig } from "../../../../Utils/FuncUtils";
@@ -31,6 +42,12 @@ import { set } from "lodash";
 import Swal from "sweetalert2";
 import { hideLoading, showLoading } from "../../../../Utils/Utils";
 import { FaChevronCircleLeft } from "react-icons/fa";
+import { useDisclosure } from "@mantine/hooks";
+import ModalFail from "../../../Control/Modal/ModalFail";
+import ModalConfirmCheckBoxEAC from "./ModalConfirmCheckBoxEAC";
+import PdfFormPreviewSF04 from "../../../Settlement/TemplatePdfSF04";
+import {getDataSettlement} from "../../../../Redux/Settlement/Action";
+import { IoMdSync } from "react-icons/io";
 
 dayjs.extend(customParseFormat);
 
@@ -46,6 +63,8 @@ export default function IssueInfo({ portfolioData, deviceData }) {
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const trackingYear = useSelector((state) => state.menu?.selectedYear);
   const selectedMonth = useSelector((state) => state.menu?.selectedMonth);
+  const userData = useSelector((state) => state.login.userobj);
+  const dataPDF = useSelector((state) => state.settlement?.dataSF04PDF)
 
   // const [trackingYear, setTrackingYear] = useState();
   const [trackingMonth, setTrackingMonth] = useState();
@@ -59,7 +78,10 @@ export default function IssueInfo({ portfolioData, deviceData }) {
 
   const [totalInventory, setTotalInventory] = useState(0);
   const [issueTransactionData, setIssueTransactionData] = useState();
-  console.log(issueTransactionData)
+
+  const [isSyncing, syncHandlers] = useDisclosure();
+  const [showModalSyncSuccess, modalSyncSuccessHandlers] = useDisclosure();
+  const [showModalSyncFail, modalSyncFailHandlers] = useDisclosure();
 
   const handleChangeTrackingYear = (year) => {
     // setTrackingYear(year);
@@ -109,25 +131,38 @@ export default function IssueInfo({ portfolioData, deviceData }) {
       let yearIndex = yearMonthList.findIndex(
         (item) => item.year == trackingYear
       );
-      setMonthList(
-        yearMonthList.find((item) => item.year === trackingYear)?.month
-      );
-      // if yearMonthList has selectedMonth then set it as trackingMonth
+      if (yearIndex == -1) {
+        const lastItem = yearMonthList[yearMonthList.length - 1];
 
-      if (
-        yearMonthList?.[yearIndex]?.month.some(
-          (item) => item.month == selectedMonth
-        )
-      ) {
-        setTrackingMonth(selectedMonth);
-        dispatch(setSelectedMonth(selectedMonth));
+        const year = lastItem.year;
+        const lastMonth = lastItem.month[lastItem.month.length - 1];
+
+        dispatch(setSelectedYear(year));
+
+        setMonthList(lastItem.month);
+        setTrackingMonth(lastMonth.month);
+        dispatch(setSelectedMonth(lastMonth.month));
       } else {
-        let monthLength = yearMonthList?.[yearIndex]?.month.length;
-        if (monthLength > 0)
-          setTrackingMonth(
-            yearMonthList?.[yearIndex]?.month?.[monthLength - 1]?.month
-          );
-        else setTrackingMonth(yearMonthList?.[yearIndex]?.month?.[0]?.month);
+        setMonthList(
+          yearMonthList.find((item) => item.year === trackingYear)?.month
+        );
+        // if yearMonthList has selectedMonth then set it as trackingMonth
+
+        if (
+          yearMonthList?.[yearIndex]?.month.some(
+            (item) => item.month == selectedMonth
+          )
+        ) {
+          setTrackingMonth(selectedMonth);
+          dispatch(setSelectedMonth(selectedMonth));
+        } else {
+          let monthLength = yearMonthList?.[yearIndex]?.month.length;
+          if (monthLength > 0)
+            setTrackingMonth(
+              yearMonthList?.[yearIndex]?.month?.[monthLength - 1]?.month
+            );
+          else setTrackingMonth(yearMonthList?.[yearIndex]?.month?.[0]?.month);
+        }
       }
     }
   }, [yearMonthList]);
@@ -178,7 +213,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
       if (res?.status == 200) {
         setIssueTransactionData(res.data);
         const issueRequestDetailId =
-          res.data?.issueRequestDetail?.issueRequestDetailId;
+          res.data?.issueRequest?.issueRequestDetailId;
       }
     } catch (error) {
       // setIssueTransactionData(mockIssueTransactionData);
@@ -187,20 +222,78 @@ export default function IssueInfo({ portfolioData, deviceData }) {
     }
   }
 
+  const syncIssue = async () => {
+    try {
+      showLoading();
+      syncHandlers.open();
+
+      const params = {
+        year: trackingYear,
+        month: trackingMonth,
+        portfolioId: portfolioData?.id,
+        UgtGroupId: currentUGTGroup?.id,
+      };
+
+      const [resultItem, resultStatus] = await Promise.all([
+        syncIssueItem(params),
+        syncIssueStatus(params),
+      ]);
+
+      if (
+        (resultItem?.status == 200 || resultItem?.status == 404) &&
+        resultStatus?.status == 200
+      ) {
+        getIssueTransaction();
+        hideLoading();
+        syncHandlers.close();
+        modalSyncSuccessHandlers.open();
+      } else {
+        hideLoading();
+        syncHandlers.close();
+        modalSyncFailHandlers.open();
+      }
+    } catch (error) {
+      hideLoading();
+      syncHandlers.close();
+      modalSyncFailHandlers.open();
+    }
+  };
+
+  async function syncIssueItem(params) {
+    const res = await axios.get(`${EAC_ISSUE_SYNC_ISSUE_ITEM}`, {
+      params: params,
+      ...getHeaderConfig(),
+      validateStatus: function (status) {
+        return status >= 200 && status < 500;
+      },
+    });
+    return res;
+  }
+  async function syncIssueStatus(params) {
+    const res = await axios.get(`${EAC_ISSUE_SYNC_ISSUE_STATUS}`, {
+      params: params,
+      ...getHeaderConfig(),
+    });
+
+    return res;
+  }
+
   useEffect(() => {
-    getTotalInventory();
-  }, []);
+    if (issueTransactionData?.inventoryIssueRequest) getTotalInventory();
+  }, [issueTransactionData]);
 
   async function getTotalInventory() {
     let sum = 0;
-    for (const item of issueTransactionData?.InventoryTransaction) {
+    for (const item of issueTransactionData.inventoryIssueRequest) {
       for (const detail of item.inventorySettlementDetail) {
         sum += detail.production;
       }
     }
 
-    setTotalInventory(sum);
+    setTotalInventory(sum / 1000);
   }
+
+  
   return (
     <div>
       <Card shadow="md" radius="lg" className="flex" padding="xl">
@@ -237,12 +330,10 @@ export default function IssueInfo({ portfolioData, deviceData }) {
           </div>
 
           <Form layout="horizontal" size="large">
-            <div className="grid grid-cols-6 gap-4 items-center">
-              <div className="col-span-2 text-sm font-bold">
-                Settlement Period
-              </div>
+            <div className="grid grid-cols-4 gap-4 items-center">
+              <div className=" text-sm font-bold">Settlement Period</div>
 
-              <Form.Item className="col-span-2 pt-4">
+              <Form.Item className=" pt-4">
                 <Select
                   size="large"
                   value={trackingYear}
@@ -260,7 +351,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
               </Form.Item>
 
               {trackingMonth && (
-                <Form.Item className="col-span-2 pt-4">
+                <Form.Item className=" pt-4">
                   <Select
                     size="large"
                     value={trackingMonth}
@@ -288,6 +379,13 @@ export default function IssueInfo({ portfolioData, deviceData }) {
                   </Select>
                 </Form.Item>
               )}
+              <Button
+                loading={isSyncing}
+                className="  text-white  hover:bg-[#4D6A00] bg-[#87BE33]"
+                onClick={() => syncIssue()}
+              >
+                <IoMdSync className="mr-1"/> Sync Status
+              </Button>
             </div>
           </Form>
         </div>
@@ -303,51 +401,86 @@ export default function IssueInfo({ portfolioData, deviceData }) {
           {/* Issue Transaction */}
           {issueTransactionData && (
             <ItemIssue
+              key={issueTransactionData?.issueRequest?.issueRequestId}
               issueTransactionData={issueTransactionData}
-              issueRequest={issueTransactionData?.issueRequestDetail}
               getIssueTransaction={getIssueTransaction}
+              device={device}
             />
           )}
-          {issueTransactionData?.InventoryTransaction?.length > 0 && (
+
+          {issueTransactionData?.inventoryIssueRequest?.length > 0 && (
             <>
-              <div className="flex bg-[#4D6A00] justify-center py-1 mt-3">
+              <div className="flex bg-[#4D6A00] justify-center py-1 mt-4">
                 <div className="text-xl font-bold  text-white text-center">
                   Inventory
                 </div>
               </div>
-              {issueTransactionData?.InventoryTransaction?.map(
+              {issueTransactionData?.inventoryIssueRequest?.map(
                 (item, index) => {
                   return (
                     <ItemInventory
                       key={index}
                       issueTransactionData={issueTransactionData}
                       inventoryTransaction={item}
+                      getIssueTransaction={getIssueTransaction}
                     />
                   );
                 }
               )}
-              <Table stickyHeader verticalSpacing="sm">
+              <Table stickyHeader verticalSpacing="sm" className="mt-3">
                 <Table.Tfoot>
-                  <Table.Tr className=" bg-[#F4F6F9]">
-                    <Table.Th className="text-center w-48 ">
+                  <Table.Tr className="border-t border-slate-200 bg-[#F4F6F9]">
+                    <Table.Th className="text-center w-48">
                       Total Inventory
                     </Table.Th>
-                    <Table.Th className="text-center w-64 "></Table.Th>
-                    <Table.Th className="text-center w-64 "></Table.Th>
+                    <Table.Th className="text-center w-64"></Table.Th>
+                    <Table.Th className="text-center w-64"></Table.Th>
                     <Table.Th className="text-right min-w-64 max-w-full">
                       {numeral(numeral(totalInventory).value()).format(
                         "0,0.000000"
                       )}
                     </Table.Th>
-                    <Table.Th className="text-center w-32 "></Table.Th>
-                    <Table.Th className="text-center w-32 "></Table.Th>
-                    <Table.Th className="text-center w-32 "></Table.Th>
+                    <Table.Th className="text-center w-32"></Table.Th>
+                    <Table.Th className="text-center w-32"></Table.Th>
+                    <Table.Th className="text-center w-32"></Table.Th>
                   </Table.Tr>
                 </Table.Tfoot>
               </Table>
             </>
           )}
         </Card>
+      )}
+
+      <Modal
+        opened={showModalSyncSuccess}
+        onClose={modalSyncSuccessHandlers.close}
+        withCloseButton={false}
+        centered
+        closeOnClickOutside={false}
+      >
+        <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
+          <img
+            className="w-32 object-cover rounded-full flex items-center justify-center"
+            src={AlmostDone}
+            alt="Current profile photo"
+          />
+
+          <div className="text-3xl font-bold text-center pt-2">
+            Sync Status Success
+          </div>
+          <div className="flex gap-4">
+            <Button
+              className="text-white bg-PRIMARY_BUTTON mt-12 px-10"
+              onClick={() => modalSyncSuccessHandlers.close()}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {showModalSyncFail && (
+        <ModalFail onClickOk={modalSyncFailHandlers.close} />
       )}
     </div>
   );

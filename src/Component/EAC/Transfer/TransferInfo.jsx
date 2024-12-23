@@ -192,7 +192,7 @@ export default function TransferInfo() {
                 <Form layout="horizontal" size="large">
                   <div className="grid grid-cols-6 gap-4 items-center">
                     <div className="col-span-2 text-sm font-bold">
-                      Settlement Period
+                      
                     </div>
 
                     <Form.Item className="col-span-2 pt-4">

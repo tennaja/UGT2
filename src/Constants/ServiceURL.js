@@ -98,6 +98,12 @@ export const CREATE_RESERVATION_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/tr
 export const REDEMPTION_REQUEST_LIST_URL = `${DOMAIN_URL}/ugt/v1/eac-tracking/redemptionRequestList`;
 export const REDEMPTION_REQUEST_INFO_URL = `${DOMAIN_URL}/ugt/v1/eac-tracking/redemptionRequestInfo`;
 export const REDEMPTION_SUBSCRIBER_LIST_URL = `${DOMAIN_URL}/ugt/v1/eac-tracking/redemptionSubscriberList`;
+export const DOWNLOAD_REDEMPTION_STATEMENT_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/downloadRedemptionStatementFile`;
+// EAC Redemption Certificate
+export const REDEMPTION_CERT_YEAR_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/redemptionCertificationYearList`;
+export const REDEMPTION_CERT_PORT_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/redemptionCertificationPortfolioList`;
+export const REDEMPTION_CERT_UTILITY_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/redemptionCertificationUtilityList`;
+export const REDEMPTION_CERT_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/redemptionCertificationList`;
 // EAC Issue
 export const EAC_DASHBOARD_CARD_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/dashboard/card`;
 export const EAC_DASHBOARD_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/dashboard/table-list`;
@@ -112,6 +118,7 @@ export const EAC_ISSUE_REQUEST_CREATE_ISSUE_DETAIL_FILE = `${DOMAIN_URL_EGAT}/ug
 export const EAC_ISSUE_REQUEST_CREATE_ISSUE_DETAIL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/createIssueDetail`;
 export const EAC_ISSUE_REQUEST_DOWNLOAD_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/downloadIssueFile`;
 export const EAC_ISSUE_REQUEST_DELETE_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/deleteIssueFile`;
+export const EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/createIssueDetailSF04File`;
 // ScheduleSyncBack
 export const EAC_ISSUE_SYNC_ISSUE_ITEM = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/IssueItem`;
 export const EAC_ISSUE_SYNC_ISSUE_STATUS = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/IssueStatus`;

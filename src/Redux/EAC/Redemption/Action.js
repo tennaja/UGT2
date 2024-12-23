@@ -2,14 +2,23 @@ import axios from "axios"
 import {
     REDEMPTION_REQUEST_LIST_URL,
     REDEMPTION_REQUEST_INFO_URL,
-    REDEMPTION_SUBSCRIBER_LIST_URL
+    REDEMPTION_SUBSCRIBER_LIST_URL,
+    REDEMPTION_CERT_YEAR_LIST_URL,
+    REDEMPTION_CERT_PORT_LIST_URL,
+    REDEMPTION_CERT_UTILITY_LIST_URL,
+    REDEMPTION_CERT_LIST_URL
 } from '../../../Constants/ServiceURL'
 
 import {
     FAIL_REQUEST,
     GET_EAC_REDEMPTION_REQUEST_LIST,
+    GET_EAC_REDEMPTION_REQUEST_LIST_CER_PAGE,
     GET_EAC_REDEMPTION_REQUEST_INFO,
-    GET_EAC_REDEMPTION_SUBSCRIBER_LIST
+    GET_EAC_REDEMPTION_SUBSCRIBER_LIST,
+    GET_EAC_REDEMPTION_CERT_YEAR_LIST,
+  GET_EAC_REDEMPTION_CERT_PORT_LIST,
+  GET_EAC_REDEMPTION_CERT_UTILITY_LIST,
+  GET_EAC_REDEMPTION_CERT_LIST,
 } from "../../ActionType"
 
 import { getHeaderConfig } from "../../../Utils/FuncUtils"
@@ -43,6 +52,30 @@ export const getRedemptionRequestList = (ugtGroupId, year, search = '') => {
     // }
 
     return _getRedemptionRequestList(portData)
+}
+
+export const _getRedemptionRequestListCerPage = (data) => {
+    return {
+        type: GET_EAC_REDEMPTION_REQUEST_LIST_CER_PAGE,
+        payload: data
+    }
+}
+
+export const getRedemptionRequestListCerPage = (ugtGroupId, year, search = '') => {
+    let temp_search = search !== '' ? `&search=${search}` : ''
+
+    const URL = `${REDEMPTION_REQUEST_LIST_URL}/${ugtGroupId}?year=${year}&${temp_search}`
+    console.log('URL', URL)
+
+    // return async (dispatch) => {
+    //     await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+    //         dispatch(_getRedemptionRequestList(response.data));
+    //     }, (error) => {
+    //         dispatch(failRequest(error.message))
+    //     });
+    // }
+
+    return _getRedemptionRequestListCerPage(portData)
 }
 
 export const _getRedemptionRequestInfo = (data) => {
@@ -447,3 +480,101 @@ const redemptionSubscriberData = [
     }
 ]
 
+
+export const _getRedemptionCertList = (data) => {
+    return {
+      type: GET_EAC_REDEMPTION_CERT_LIST,
+      payload: data,
+    };
+  };
+  
+  export const getRedemptionCertList = (ugtGroupId, year, portfolioId, utilityId) => {
+    const URL = `${REDEMPTION_CERT_LIST_URL}?ugtGroupId=${ugtGroupId}&year=${year}&portfolioId=${portfolioId}&utilityId=${utilityId}`;
+  
+    return async (dispatch) => {
+      await axios.get(URL, { ...getHeaderConfig() }).then(
+        (response) => {
+          dispatch(_getRedemptionCertList(response.data));
+        },
+        (error) => {
+          dispatch(failRequest(error.message));
+        }
+      );
+    };
+  };
+
+  export const _getRedemptionCertPortfolioList = (data) => {
+    return {
+      type: GET_EAC_REDEMPTION_CERT_PORT_LIST,
+      payload: data,
+    };
+  };
+  
+  export const getRedemptionCertPortfolioList = (ugtGroupId, year) => {
+    const URL = `${REDEMPTION_CERT_PORT_LIST_URL}?ugtGroupId=${ugtGroupId}&year=${year}`;
+  
+    return async (dispatch) => {
+      await axios.get(URL, { ...getHeaderConfig() }).then(
+        (response) => {
+          // add select option
+          response.data.unshift({ portfolioId: '', portfolioName: '-- Select All --' });
+          dispatch(_getRedemptionCertPortfolioList(response.data));
+        },
+        (error) => {
+          dispatch(failRequest(error.message));
+        }
+      );
+    };
+  };
+
+  export const _getRedemptionCertUtilityList = (data) => {
+    return {
+      type: GET_EAC_REDEMPTION_CERT_UTILITY_LIST,
+      payload: data,
+    };
+  };
+  
+  export const getRedemptionCertUtilityList = (ugtGroupId, year, portfolioId) => {
+    let tmp_port = ''
+    if (portfolioId) {
+      tmp_port = `&portfolioId=${portfolioId}`
+    }
+    const URL = `${REDEMPTION_CERT_UTILITY_LIST_URL}?ugtGroupId=${ugtGroupId}&year=${year}` + tmp_port;
+  
+    return async (dispatch) => {
+      await axios.get(URL, { ...getHeaderConfig() }).then(
+        (response) => {
+          // add select option
+          response.data.unshift({ utilityId: '', utilityName: '-- Select All --' });
+          dispatch(_getRedemptionCertUtilityList(response.data));
+        },
+        (error) => {
+          dispatch(failRequest(error.message));
+        }
+      );
+    };
+  };
+
+  export const _getRedemptionCertYearList = (data) => {
+    return {
+      type: GET_EAC_REDEMPTION_CERT_YEAR_LIST,
+      payload: data,
+    };
+  };
+  
+  export const getRedemptionCertYearList = (ugtGroupId) => {
+    const URL = `${REDEMPTION_CERT_YEAR_LIST_URL}?ugtGroupId=${ugtGroupId}`;
+
+    console.log(URL)
+  
+    return async (dispatch) => {
+      await axios.get(URL, { ...getHeaderConfig() }).then(
+        (response) => {
+          dispatch(_getRedemptionCertYearList(response.data));
+        },
+        (error) => {
+          dispatch(failRequest(error.message));
+        }
+      );
+    };
+  };

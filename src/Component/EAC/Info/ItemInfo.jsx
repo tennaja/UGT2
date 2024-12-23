@@ -15,26 +15,29 @@ import React from "react";
 import numeral from "numeral";
 import dayjs from "dayjs";
 import { Select } from "antd";
+import ChartPie from "../../assets/ChartPie.svg"
+import TransferPending from "../../assets/TransferPending.svg"
+import RedemptionPending from "../../assets/RedemptionPending.svg"
 
 export default function ItemInfo({ data, color = "#d8d5d5" }) {
   const [opened, { open, close }] = useDisclosure(false);
 
   const RenderIcon = () => {
     switch ((data?.title ?? "").toLowerCase()) {
-      case "total portfolios":
+      case "issuance pending":
         return (
           <div
-            className={`flex rounded-large w-[40px] h-[40px] lg:w-[45px] lg:h-[45px] xl:w-[50px] xl:h-[50px] justify-center items-center p-1 bg-[#87BE33] text-white`}
+            className={`flex rounded-large w-[40px] h-[40px] lg:w-[45px] lg:h-[45px] xl:w-[50px] xl:h-[50px] justify-center items-center p-1 bg-[#87BE3326] text-white`}
           >
-            <ChartPieIcon className="w-[50px] h-[50px]" />
+            <img src={ChartPie} alt="ChartPie" width={30} height={30}/>
           </div>
         );
-      case "total issued recs":
+      case "transfer pending":
         return (
           <div
-            className={`flex rounded-large w-[40px] h-[40px] lg:w-[45px] lg:h-[45px] xl:w-[50px] xl:h-[50px] justify-center items-center p-1 bg-[#33BFBF] text-white`}
+            className={`flex rounded-large w-[40px] h-[40px] lg:w-[45px] lg:h-[45px] xl:w-[50px] xl:h-[50px] justify-center items-center p-1 bg-[#3370BF26] text-white`}
           >
-            <DocumentTextIcon className="w-[50px] h-[50px]" />
+            <img src={TransferPending} alt="TransferPending" width={30} height={30}/>
           </div>
         );
       case "unissued attribute":
@@ -45,12 +48,12 @@ export default function ItemInfo({ data, color = "#d8d5d5" }) {
             <ClockIcon className="w-[50px] h-[50px]" />
           </div>
         );
-      case "remaining energy attribute":
+      case "redemption pending":
         return (
           <div
-            className={`flex rounded-large w-[40px] h-[40px] lg:w-[45px] lg:h-[45px] xl:w-[50px] xl:h-[50px] justify-center items-center p-1 bg-[#F7A042] text-white`}
+            className={`flex rounded-large w-[40px] h-[40px] lg:w-[45px] lg:h-[45px] xl:w-[50px] xl:h-[50px] justify-center items-center p-1 bg-[#EF983526] text-white`}
           >
-            <BriefcaseIcon className="w-[50px] h-[50px]" />
+            <img src={RedemptionPending} alt="RedemptionPending" width={30} height={30}/>
           </div>
         );
       default:
@@ -85,15 +88,15 @@ export default function ItemInfo({ data, color = "#d8d5d5" }) {
         <span className="font-bold mt-3">{data?.title}</span>
         <span className="text-xs text-gray-500">{data?.description}</span>
       </div>
-      <div className="flex flex-col text-right justify-between">
+      {/*<div className="flex flex-col text-right justify-between">
         {data?.title.toLowerCase() == "remaining energy attribute" && (
           <div className="flex justify-end items-end">
             <EyeIcon className="w-6 h-6" onClick={open} />
           </div>
         )}
-      </div>
+      </div>*/}
 
-      <Modal
+      {/*<Modal
         opened={opened}
         onClose={close}
         centered
@@ -147,7 +150,7 @@ export default function ItemInfo({ data, color = "#d8d5d5" }) {
             </Table.Tbody>
           </Table>
         </div>
-      </Modal>
+      </Modal>*/}
       {/* </div> */}
     </Card>
   );

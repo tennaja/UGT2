@@ -228,6 +228,7 @@ const Overview = (props) => {
   const CustomTooltip = ({ active, payload, label }) => {
     //console.log("Payload",payload)
     if (active && payload && payload.length) {
+      console.log(payload)
       let datafilter = settlementOverviewData.filter((item)=> item.year == payload[0].payload.year && item.month == payload[0].payload.month)
 
       const _totalContractLoad = payload?.[0]?.payload?.totalContractedLoad > 0 ? convertData(payload?.[0]?.payload?.totalContractedLoad) : "-";
@@ -235,8 +236,8 @@ const Overview = (props) => {
       const _totalGeneration = payload?.[0]?.payload?.totalGeneration > 0 ? convertData(payload?.[0]?.payload?.totalGeneration) : "-";
       const _netGreenDeliverabled = payload?.[0]?.payload?.netGreenDeliverables > 0 ? convertData(payload?.[0]?.payload?.netGreenDeliverables) : "-";
       const _generationMatched = payload?.[0]?.payload?.generationMatched > 0 ?convertData(payload?.[0]?.payload?.generationMatched) : "-";
-      const _ugt2InventoryNew = payload[4].value > 0 ? convertData(payload[4].value) : "-";
-      const _ugt1InventoryNew = payload[3].value > 0 ? convertData(payload[3].value) : "-";
+      const _ugt2InventoryNew = payload[3].value > 0 ? convertData(payload[3].value) : "-";
+      const _ugt1InventoryNew = payload[4].value > 0 ? convertData(payload[4].value) : "-";
       const _unmatchedEnergy = payload?.[0]?.payload?.unmatchedEnergy > 0? convertData(payload?.[0]?.payload?.unmatchedEnergy) : "-";
 
       //console.log("Data",datafilter?.totalContractedLoad,datafilter?.totalLoad,datafilter?.totalGeneration,datafilter?.netGreenDeliverables,datafilter?.generationMatched,datafilter?.ugt2Inventory,datafilter?.ugt1Inventory,datafilter?.unmatchedEnergy)
@@ -310,10 +311,10 @@ const Overview = (props) => {
               _actualHydro + " " + overviewDataUnit
             }`}</label></div>
             <div className="text-xs">UGT2 Inventory: <label className="text-[#4D6A00] font-semibold">{` ${
-              _ugt2Inventory + " " + overviewDataUnit
+              _ugt2InventoryNew + " " + overviewDataUnit
             }`}</label></div>
             <div className="text-xs">UGT1 Inventory: <label className="text-[#4D6A00] font-semibold">{` ${
-              _ugt1Inventory + " " + overviewDataUnit
+              _ugt1InventoryNew + " " + overviewDataUnit
             }`}</label></div>
             <div className="text-xs">Unmatched Energy: <label className="text-[#4D6A00] font-semibold">{` ${
               _unmatchedEnergy + " " + overviewDataUnit

@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import PortfolioTable from "./PortfolioTable";
 import axios from "axios";
 import dayjs from "dayjs";
+import AlmostDone from "../../assets/done.png";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { CloseButton, Input, Card } from "@mantine/core";
+import { CloseButton, Input, Card, Button, Modal } from "@mantine/core";
 import { Form, Select } from "antd";
 import {
   EAC_ISSUE_REQUEST_LIST_URL,
   EAC_DASHBOARD_MONTH_LIST_URL,
   EAC_DASHBOARD_YEAR_LIST_URL,
+  EAC_ISSUE_SYNC_ISSUE_ITEM,
+  EAC_ISSUE_SYNC_ISSUE_STATUS,
 } from "../../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../../Utils/FuncUtils";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +23,10 @@ import {
   hideLoading,
   showLoading,
 } from "../../../Utils/Utils";
+import { is } from "date-fns/locale";
+import { useDisclosure } from "@mantine/hooks";
+import ModalFail from "../../Control/Modal/ModalFail";
+import { IoMdSync } from "react-icons/io";
 
 const mockPortData = [
   {
@@ -103,6 +110,11 @@ export default function IssueRequest() {
   const dispatch = useDispatch();
   const [yearList, setYearList] = useState([]);
   const [monthList, setMonthList] = useState([]);
+
+  const [isSyncing, syncHandlers] = useDisclosure();
+  const [showModalSyncSuccess, modalSyncSuccessHandlers] = useDisclosure();
+  const [showModalSyncFail, modalSyncFailHandlers] = useDisclosure();
+
   // const [trackingYear, setTrackingYear] = useState(2024);
   // const [trackingMonth, setTrackingMonth] = useState();
 
@@ -254,6 +266,73 @@ export default function IssueRequest() {
     }
   }
 
+  const syncIssue = async () => {
+    try {
+      showLoading();
+      syncHandlers.open();
+
+      const resultItemArray = [];
+      const resultStatusArray = [];
+      for (const portfolio of portData) {
+        const params = {
+          year: trackingYear,
+          month: trackingMonth,
+          portfolioId: portfolio?.id,
+          UgtGroupId: currentUGTGroup?.id,
+        };
+
+        const [resultItem, resultStatus] = await Promise.all([
+          syncIssueItem(params),
+          syncIssueStatus(params),
+        ]);
+
+        resultItemArray.push(resultItem);
+        resultStatusArray.push(resultStatus);
+      }
+
+      const resultItem = resultItemArray.find(
+        (item) => item?.status !== 200 && item?.status !== 404
+      );
+      const resultStatus = resultStatusArray.find(
+        (item) => item?.status !== 200
+      );
+
+      if (resultItem === undefined && resultStatus === undefined) {
+        getPortData();
+        hideLoading();
+        syncHandlers.close();
+        modalSyncSuccessHandlers.open();
+      } else {
+        hideLoading();
+        syncHandlers.close();
+        modalSyncFailHandlers.open();
+      }
+    } catch (error) {
+      hideLoading();
+      syncHandlers.close();
+      modalSyncFailHandlers.open();
+    }
+  };
+
+  async function syncIssueItem(params) {
+    const res = await axios.get(`${EAC_ISSUE_SYNC_ISSUE_ITEM}`, {
+      params: params,
+      ...getHeaderConfig(),
+      validateStatus: function (status) {
+        return status >= 200 && status < 500;
+      },
+    });
+    return res;
+  }
+  async function syncIssueStatus(params) {
+    const res = await axios.get(`${EAC_ISSUE_SYNC_ISSUE_STATUS}`, {
+      params: params,
+      ...getHeaderConfig(),
+    });
+
+    return res;
+  }
+
   return (
     <Card shadow="md" radius="lg" className="flex" padding="xl">
       <div className="flex justify-between">
@@ -267,6 +346,7 @@ export default function IssueRequest() {
         </div>
         <div className="flex items-center gap-4">
           <Input
+            radius={6}
             placeholder="Search"
             value={value}
             onChange={(event) => handleSearchChange(event.target.value)}
@@ -329,9 +409,51 @@ export default function IssueRequest() {
               </Form.Item>
             </>
           )}
+          <Button
+            loading={isSyncing}
+            className="  text-white  hover:bg-[#4D6A00] bg-[#87BE33]"
+            onClick={() => syncIssue()}
+          >
+            <IoMdSync className="mr-1"/> Sync Status
+          </Button>
         </div>
       </div>
+      <div className="text-right w-full text-xs text-[#848789]">
+          <label className="font-normal">{"Last Uploaded in "}</label><label className="font-bold ml-1">{" DD/MM/YYYY 00:00"}</label>
+        </div>
       <PortfolioTable portData={filterPortData} searchValue={value} />
+
+      <Modal
+        opened={showModalSyncSuccess}
+        onClose={modalSyncSuccessHandlers.close}
+        withCloseButton={false}
+        centered
+        closeOnClickOutside={false}
+      >
+        <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
+          <img
+            className="w-32 object-cover rounded-full flex items-center justify-center"
+            src={AlmostDone}
+            alt="Current profile photo"
+          />
+
+          <div className="text-3xl font-bold text-center pt-2">
+            Sync Status Success
+          </div>
+          <div className="flex gap-4">
+            <Button
+              className="text-white bg-PRIMARY_BUTTON mt-12 px-10"
+              onClick={() => modalSyncSuccessHandlers.close()}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {showModalSyncFail && (
+        <ModalFail onClickOk={modalSyncFailHandlers.close} />
+      )}
     </Card>
   );
 }

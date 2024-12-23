@@ -50,6 +50,8 @@ import Redemption from "./Component/EAC/Redemption/Redemption";
 import RedemptionInfo from "./Component/EAC/Redemption/RedemptionInfo";
 import RenewDevice from "./Component/Device/RenewDevice";
 import HistoryPortfolio from "./Component/Portfolio/HistoryPortfolio";
+import RedemptionCer from "./Component/EAC/RedemptionCertificate/RedemptionCer";
+import RedemptionCert from "./Component/EAC/RedemptionCertificate/RedemptionCert";
 
 import SettlementListing from "./Component/Settlement/SettlementListing";
 
@@ -145,6 +147,14 @@ function App() {
                 <Route
                   path={webURL.EAC_ISSUE_PORT_DEVICE}
                   element={<EacIssuePortDeviceIssue />}
+                ></Route>
+                <Route
+                  path={webURL.EAC_REDEMPTION_CERTIFICATE}
+                  element={<RedemptionCer />}
+                ></Route>
+                <Route
+                  path={webURL.EAC_REDEMPTION_CERT}
+                  element={<RedemptionCert />}
                 ></Route>
 
                 {/* <Route path={webURL.PORTFOLIO_EDIT} element={<UpdatePortfolio></UpdatePortfolio>}></Route>

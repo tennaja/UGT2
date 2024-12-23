@@ -71,7 +71,7 @@ export default function DeviceTable({
     },
     {
       id: "fuelType",
-      label: "Fuel Type",
+      label: "Devices Fuel",
       align: "center",
       render: (row) => (
         <Highlighter

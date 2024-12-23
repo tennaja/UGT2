@@ -6,11 +6,17 @@ import {
   EAC_DASHBOARD_CARD_URL,
   EAC_DASHBOARD_LIST_URL,
   EAC_DASHBOARD_YEAR_LIST_URL,
+  EAC_DASHBOARD_MONTH_LIST_URL,
 } from "../../../Constants/ServiceURL";
+import {
+  MONTH_LIST,
+  MONTH_LIST_WITH_KEY,
+  STATUS_COLOR,
+} from "../../../Constants/Constants";
 import { getHeaderConfig } from "../../../Utils/FuncUtils";
 import { Form, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedYear } from "../../../Redux/Menu/Action";
+import { setSelectedYear,setSelectedMonth } from "../../../Redux/Menu/Action";
 import { convertStatus, hideLoading, showLoading } from "../../../Utils/Utils";
 
 const mockData = [
@@ -130,9 +136,11 @@ const mockPortData = [
 const yearObject = [{ name: "2024" }];
 export default function Overview() {
   // const dispatch = useDispatch();
-
+  const monthObject = MONTH_LIST_WITH_KEY;
+  const monthArray = MONTH_LIST;
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const trackingYear = useSelector((state) => state.menu?.selectedYear);
+  const trackingMonth = useSelector((state) => state.menu?.selectedMonth);
 
   const dispatch = useDispatch();
 
@@ -140,6 +148,7 @@ export default function Overview() {
   const [portData, setPortData] = useState([]);
 
   const [yearList, setYearList] = useState([]);
+  const [monthList, setMonthList] = useState([]);
 
   const handleChangeTrackingYear = (year) => {
     // setTrackingYear(year);
@@ -150,6 +159,7 @@ export default function Overview() {
     if (currentUGTGroup?.id !== undefined) {
       getYearList();
       getSummaryData();
+      getMonthList()
     }
   }, [currentUGTGroup, trackingYear]);
 
@@ -172,6 +182,51 @@ export default function Overview() {
     }
   }
 
+  const handleChangeTrackingMonth = (month) => {
+    // setTrackingMonth(month);
+    dispatch(setSelectedMonth(month));
+  };
+
+  async function getMonthList() {
+    try {
+      const params = {
+        ugtGroupId: currentUGTGroup?.id,
+        year: trackingYear,
+      };
+      const res = await axios.get(`${EAC_DASHBOARD_MONTH_LIST_URL}`, {
+        ...getHeaderConfig(),
+        params: params,
+      });
+      if (res?.status == 200) {
+        if (res.data.monthList?.length > 0) {
+          // วนข้อมูลใน response
+          let tempMonthList = [];
+
+          for (const month of res.data.monthList) {
+            tempMonthList.push(monthObject[month]);
+          }
+          setMonthList(tempMonthList);
+
+          const alreadyHasMonth = tempMonthList.find(
+            (item) => item.month === trackingMonth
+          );
+          // setTrackingMonth(tempMonthList[0].month);
+          if (!alreadyHasMonth)
+            dispatch(
+              setSelectedMonth(tempMonthList[tempMonthList.length - 1].month)
+            );
+        } else {
+          // if no month data, reset month list and selected month
+          setMonthList([]);
+          dispatch(setSelectedMonth(null));
+        }
+      }
+    } catch (error) {
+      // setPortData(mockPortData);
+      // setFilterPortData(mockPortData);
+    }
+  }
+
   async function getSummaryData() {
     try {
       showLoading();
@@ -185,7 +240,7 @@ export default function Overview() {
       });
       if (res?.status == 200) {
         const _data = res.data.map((item) => {
-          if (item.title == "Total Portfolios") {
+          if (item.title == "Issuance Pending") {
             return {
               ...item,
               unit: item.value > 1 ? "Portfolios" : "Portfolio",
@@ -216,9 +271,35 @@ export default function Overview() {
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="col-span-2 text-sm font-bold">Settlement Year</div>
+          
 
           <Form.Item className="mb-0">
+            {/* Month */}
+            <Select
+                size="large"
+                value={trackingMonth}
+                defaultValue={trackingMonth}
+                style={{ width: 140 }}
+                onChange={(value) => handleChangeTrackingMonth(value)}
+                showSearch
+                filterOption={(input, option) =>
+                  (option.children ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                className="lg:mr-2"
+              >
+                {monthArray?.map((item, index) => (
+                  <Select.Option
+                    key={index}
+                    value={item.month}
+                    disabled={!monthList.some((obj) => obj.month == item.month)}
+                  >
+                    {item.name}
+                  </Select.Option>
+                ))}
+              </Select>
+              {/* Year */}
             <Select
               key={trackingYear}
               size="large"

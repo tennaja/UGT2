@@ -6,7 +6,9 @@ import pdfIcon from "../assets/EV.png";
 import "../Control/Css/page.css";
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import { IoMdCheckmark } from "react-icons/io";
-const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
+const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
+  console.log(data)
+  console.log(data.period)
   console.log(data.data);
   console.log(data.Sign);
   console.log(data.aftersign);
@@ -17,8 +19,11 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
   const [load, setload] = useState(false);
   const [list, setList] = useState();
   const [version, setVersion] = useState(count ?? 0);
+  console.log(data)
 
   const now = new Date();
+  
+  
   // const day = String(now.getDate()).padStart(2, '0'); // Day of the month with leading zero
   // const month = String(now.getMonth() + 1).padStart(2, '0'); // Month with leading zero
   // const year = now.getFullYear();
@@ -53,6 +58,20 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
     return { dayrequest, monthrequest, yearrequest };
   }
 
+  function convertToDateTime(){
+    const datetimeNow = new Date();
+    const day = String(datetimeNow.getDate()).padStart(2, '0');
+    const month = String(datetimeNow.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = String(datetimeNow.getFullYear()).slice(-2); // Get last 2 digits of the year
+    const hours = String(datetimeNow.getHours()).padStart(2, '0');
+    const minutes = String(datetimeNow.getMinutes()).padStart(2, '0');
+    const seconds = String(datetimeNow.getSeconds()).padStart(2, '0');
+
+// Format as dd_MM_yy_HH_mm_ss
+    const formattedDate = `${day}_${month}_${year}_${hours}_${minutes}_${seconds}`;
+    return formattedDate
+  }
+
   const dateStringcom = data?.data?.commissioningDate;
   const dateStringfund = data?.data?.fundingReceive;
   const datStringRequesteffect = data?.data?.registrationDate;
@@ -64,17 +83,32 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
     parseDateStringRequesteffect(datStringRequesteffect);
 
   function getDay(date) {
+    if(date == null){
+      return ""
+    }
+    else{
     return date.getDate().toString().padStart(2, "0");
+    }
   }
 
   // Function to get the month part
   function getMonth(date) {
+    if(date == null){
+      return ""
+    }
+    else{
     return (date.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-based
+    }
   }
-  console.log(data?.data?.capacity);
+  //console.log(data?.data?.capacity);
   // Function to get the year part
   function getYear(date) {
+    if(date == null){
+      return ""
+    }
+    else{
     return date.getFullYear();
+    }
   }
 
   const formatNumber = (value) => {
@@ -100,7 +134,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
   };
 
   // Log capacity before formatting
-  const capacity = data?.data?.capacity;
+  const capacity = data?.data?.totalProductionDuringPeriod;
   console.log("Raw capacity:", capacity); // Log raw value of capacity
 
   // Format number only if capacity is valid
@@ -121,10 +155,11 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
     showLoading();
     setload(true);
     const element = pdfContentRef.current;
+    console.log(element)
 
     const newVersion = version + 1;
     console.log("VERSION ---------------", newVersion);
-    dispatch(setCount(newVersion));
+    //dispatch(setCount(newVersion));
     // Ensure the content is visible temporarily for PDF generation
     element.style.display = "block";
 
@@ -216,17 +251,22 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
     // Create a File object from the Blob with a filename
     const pdfFile = new File(
       [pdfBlob],
-      `SF-02v${newVersion}(${data?.Status}).pdf`,
+      `SF-04_${convertToDateTime()}(${data?.period}).pdf`,
       { type: "application/pdf" }
     );
     console.log(pdfFile, data);
+
+    let filesForm = {
+      binaryBase: base64String,
+      file: pdfFile
+    }
     // Open the PDF in a new tab for preview
     //const url = URL.createObjectURL(pdfBlob);
     // const pdfWindow = window.open(url, '_blank');
     //if (pdfWindow) pdfWindow.focus();
 
     // Dispatch the generated PDF Blob for storage
-    dispatch(setSF02(pdfFile));
+    //dispatch(setSF02(pdfFile));
 
     console.log("Dispatched PDF File:", pdfFile);
 
@@ -237,7 +277,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
     element.style.display = "none";
     hideLoading();
     setload(false);
-    return base64String;
+    return filesForm;
     // .catch((error) => {
     //   console.error('Error generating PDF:', error);
     //   // Hide the content again if there's an error
@@ -248,6 +288,8 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
     //   alert('An error occurred while generating the PDF. Please try again.');
     // });
   };
+
+  
 
   // Expose the function to be called externally
   PdfFormPreviewSF04.generatePdf = generatePdf;
@@ -302,13 +344,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                 <tr>
                   <td className="border p-2 font-bold text-left w-1/3">Date</td>
                   <td className="border p-2 text-left ">
-                    {data?.Sign == "" ? "" : getDay(now)}
+                    {data.isSign ? getDay(now) : ""}
                   </td>
                   <td className="border p-2 text-left ">
-                    {data?.Sign == "" ? "" : getMonth(now)}
+                    {data.isSign ? getMonth(now) : ""}
                   </td>
                   <td className="border p-2 text-left ">
-                    {data?.Sign == "" ? "" : getYear(now)}
+                    {data.isSign ? getYear(now) : ""}
                   </td>
                 </tr>
               </thead>
@@ -351,55 +393,43 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                   [
                     "Organisation ID/code",
                     `${
-                      data?.aftersign == ""
+                        data?.data.organisationId == null
                         ? ""
-                        : data?.aftersign.organisationId == null
-                        ? ""
-                        : data?.aftersign.organisationId
+                        : data?.data.organisationId
                     }`,
                     "",
                   ],
                   [
                     "Organisation name",
                     `${
-                      data?.aftersign == ""
+                         data?.data.organisationName == null
                         ? ""
-                        : data?.aftersign.organisationName == null
-                        ? ""
-                        : data?.aftersign.organisationName
+                        : data?.data.organisationName
                     }`,
                     "",
                   ],
                   [
                     "Facility ID/code",
                     `${
-                      data?.aftersign == ""
+                       data?.data.facilityID == null
                         ? ""
-                        : data?.aftersign.contactPerson == null
-                        ? ""
-                        : data?.aftersign.contactPerson
+                        : data?.data.facilityID
                     } `,
                     "",
                   ],
                   [
                     "Facility name",
                     `${
-                      data?.aftersign == ""
+                      data?.data.facilityName == null
                         ? ""
-                        : data?.aftersign.businessAddress == null
-                        ? ""
-                        : data?.aftersign.businessAddress
+                        : data?.data.facilityName
                     }`,
                     "",
                   ],
                   [
                     "Request Labels",
                     `${
-                      data?.aftersign == ""
-                        ? ""
-                        : data?.aftersign.country == null
-                        ? ""
-                        : data?.aftersign.country
+                      "-"
                     }`,
                     "(only Labels recoded against the Facility registration are permitted)",
                   ],
@@ -441,13 +471,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     Period start date
                   </td>
                   <td className="border p-2 text-left ">
-                    {data?.Sign == "" ? "" : getDay(now)}
+                    {getDay(data.data.periodStartDate)}
                   </td>
                   <td className="border p-2 text-left ">
-                    {data?.Sign == "" ? "" : getMonth(now)}
+                    {getMonth(data.data.periodStartDate)}
                   </td>
                   <td className="border p-2 text-left ">
-                    {data?.Sign == "" ? "" : getYear(now)}
+                    {getYear(data.data.periodStartDate)}
                   </td>
                 </tr>
                 <tr>
@@ -455,13 +485,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     Period end date
                   </td>
                   <td className="border p-2 text-left ">
-                    {data?.Sign == "" ? "" : getDay(now)}
+                    {getDay(data.data.periodEndDate)}
                   </td>
                   <td className="border p-2 text-left ">
-                    {data?.Sign == "" ? "" : getMonth(now)}
+                    {getMonth(data.data.periodEndDate)}
                   </td>
                   <td className="border p-2 text-left ">
-                    {data?.Sign == "" ? "" : getYear(now)}
+                    {getYear(data.data.periodEndDate)}
                   </td>
                 </tr>
                 <tr>
@@ -630,10 +660,10 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                         </tr>
                         <tr>
                           <td className="border p-2 text-left break-all h-[75px]">
-                            {data?.data?.deviceFuelCode}
+                            {data?.data?.fuelCode}
                           </td>
                           <td className="border p-2 text-left break-all h-[75px]">
-                            {data?.data?.deviceFuelName}
+                            {data?.data?.fuelName}
                           </td>
                         </tr>
                       </tbody>
@@ -654,10 +684,10 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                       </tr>
                       <tr>
                         <td className="border p-2 text-left break-all h-[75px]">
-                          {data?.data?.deviceTechnologyCode}
+                          {data?.data?.technologyCode}
                         </td>
                         <td className="border p-2 text-left break-allh-[75px]">
-                          {data?.data?.deviceTechnologyName}
+                          {data?.data?.technologyName}
                         </td>
                       </tr>
                     </table>
@@ -699,8 +729,8 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                   </td>
                   <td className="border p-2 text-left break-all w-full h-[150px]">
                     <div className="flex flex-col">
-                      <p>{data?.data?.onSiteConsumer}</p>
-                      <p>{data?.data?.onSiteConsumerDetail}</p>
+                      <p>Settlement Metering Data</p>
+                      
                     </div>
                   </td>
                 </tr>
@@ -745,11 +775,11 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                   <td className="border p-2 font-bold w-64">
                     Organisation name
                   </td>
-                  <td className="border p-2 text-left break-all"></td>
+                  <td className="border p-2 text-left break-all">{data.isSign?data.data.organisationName:""}</td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold w-64">Signatory</td>
-                  <td className="border p-2 text-left break-all"></td>
+                  <td className="border p-2 text-left break-all">{data.isSign?data.Sign:""}</td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold w-64">
@@ -758,7 +788,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                       ({`BLOCK CAPITALS`})
                     </em>
                   </td>
-                  <td className="border p-2 text-left break-all"></td>
+                  <td className="border p-2 text-left break-all">{data.isSign?data.Sign:""}</td>
                 </tr>
               </tbody>
             </table>
@@ -828,8 +858,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                   </td>
                   <td className="border p-2 text-left break-all w-full">
                     <div className="flex flex-col">
-                      <p>{data?.data?.onSiteConsumer}</p>
-                      <p>{data?.data?.onSiteConsumerDetail}</p>
+                      <p>{data?.data?.receivingOrganisationName}</p>
                     </div>
                   </td>
                 </tr>
@@ -839,8 +868,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                   </td>
                   <td className="border p-2 text-left break-all w-full">
                     <div className="flex flex-col">
-                      <p>{data?.data?.onSiteConsumer}</p>
-                      <p>{data?.data?.onSiteConsumerDetail}</p>
+                    <p>{data?.data?.accountCode}</p>
                     </div>
                   </td>
                 </tr>
@@ -903,9 +931,9 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                 <tr>
                   <td className="border p-2 font-bold w-1/4">Signature</td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                    {data?.Sign == ""
+                    {data?.isSign == false
                       ? ""
-                      : data?.Sign?.firstName + " " + data?.Sign?.lastName}
+                      : data?.Sign}
                   </td>
                 </tr>
                 <tr>
@@ -918,21 +946,21 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     </div>
                   </td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                    {data?.Sign == ""
+                  {data?.isSign == false
                       ? ""
-                      : data?.Sign?.firstName + " " + data?.Sign?.lastName}
+                      : data?.Sign}
                   </td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold text-left">Date</td>
                   <td className="border p-2 text-left">
-                    {data?.Sign == "" ? "" : getDay(now)}{" "}
+                    {data?.isSign == false ? "" : getDay(now)}{" "}
                   </td>
                   <td className="border p-2 text-left">
-                    {data?.Sign == "" ? "" : getMonth(now)}{" "}
+                    {data?.isSign == false  ? "" : getMonth(now)}{" "}
                   </td>
                   <td className="border p-2 text-left">
-                    {data?.Sign == "" ? "" : getYear(now)}{" "}
+                    {data?.isSign == false  ? "" : getYear(now)}{" "}
                   </td>
                 </tr>
               </tbody>
@@ -970,6 +998,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
           </div>
 
           <div className="content">
+            {/* 1.9 */}
             <table className="w-full border-collapse mb-5 text-xs">
               <thead>
                 <tr>
@@ -1031,13 +1060,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     Period start date
                   </td>
                   <td className="border p-2 text-left" colSpan="1">
-                    {data?.Sign == "" ? "" : getDay(now)}{" "}
+                    {getDay(data?.data.periodStartDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {data?.Sign == "" ? "" : getMonth(now)}{" "}
+                    {getMonth(data?.data.periodStartDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="4">
-                    {data?.Sign == "" ? "" : getYear(now)}{" "}
+                    {getYear(data?.data.periodStartDate)}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1045,13 +1074,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     Period end date
                   </td>
                   <td className="border p-2 text-left" colSpan="1">
-                    {data?.Sign == "" ? "" : getDay(now)}{" "}
+                    {getDay(data?.data.periodEndDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {data?.Sign == "" ? "" : getMonth(now)}{" "}
+                    {getMonth(data?.data.periodEndDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="4">
-                    {data?.Sign == "" ? "" : getYear(now)}{" "}
+                    {getYear(data?.data.periodEndDate)}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1188,17 +1217,17 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     Facility ID/code
                   </td>
                   <td className="border p-2 text-left break-all" colSpan="9">
-                    {data?.Sign == ""
+                    {data?.isSign == false 
                       ? ""
-                      : data?.Sign?.firstName + " " + data?.Sign?.lastName}
+                      : data?.data.Sign}
                   </td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold w-1/4">Facility name</td>
                   <td className="border p-2 text-left break-all" colSpan="9">
-                    {data?.Sign == ""
+                    {data?.isSign == false 
                       ? ""
-                      : data?.Sign?.firstName + " " + data?.Sign?.lastName}
+                      : data?.data.Sign}
                   </td>
                 </tr>
                 <tr>
@@ -1206,13 +1235,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     Period start date
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {data?.Sign == "" ? "" : getDay(now)}{" "}
+                    {getDay(data?.data?.periodStartDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {data?.Sign == "" ? "" : getMonth(now)}{" "}
+                    {getMonth(data?.data?.periodStartDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="5">
-                    {data?.Sign == "" ? "" : getYear(now)}{" "}
+                    {getYear(data?.data?.periodStartDate)}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1220,13 +1249,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     Period end date
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {data?.Sign == "" ? "" : getDay(now)}{" "}
+                    {getDay(data?.data?.periodEndDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {data?.Sign == "" ? "" : getMonth(now)}{" "}
+                    {getMonth(data?.data?.periodEndDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="5">
-                    {data?.Sign == "" ? "" : getYear(now)}{" "}
+                    {getYear(data?.data?.periodEndDate)}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1444,17 +1473,17 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     Organisation name
                   </td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                    {data?.Sign == ""
+                    {data?.isSign == false
                       ? ""
-                      : data?.Sign?.firstName + " " + data?.Sign?.lastName}
+                      : data?.data?.organisationName}
                   </td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold w-1/4">Signature</td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                    {data?.Sign == ""
+                    {data?.isSign == false
                       ? ""
-                      : data?.Sign?.firstName + " " + data?.Sign?.lastName}
+                      : data?.data?.Sign}
                   </td>
                 </tr>
                 <tr>
@@ -1467,21 +1496,21 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status) => {
                     </div>
                   </td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                    {data?.Sign == ""
+                    {data?.isSign == false
                       ? ""
-                      : data?.Sign?.firstName + " " + data?.Sign?.lastName}
+                      : data?.data?.Sign}
                   </td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold text-left">Date</td>
                   <td className="border p-2 text-left">
-                    {data?.Sign == "" ? "" : getDay(now)}{" "}
+                    {data?.isSign == false ? "" : getDay(now)}{" "}
                   </td>
                   <td className="border p-2 text-left">
-                    {data?.Sign == "" ? "" : getMonth(now)}{" "}
+                    {data?.isSign == false ? "" : getMonth(now)}{" "}
                   </td>
                   <td className="border p-2 text-left">
-                    {data?.Sign == "" ? "" : getYear(now)}{" "}
+                    {data?.isSign == false ? "" : getYear(now)}{" "}
                   </td>
                 </tr>
               </tbody>
