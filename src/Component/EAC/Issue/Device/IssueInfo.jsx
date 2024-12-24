@@ -293,7 +293,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
     setTotalInventory(sum / 1000);
   }
 
-  
+
   return (
     <div>
       <Card shadow="md" radius="lg" className="flex" padding="xl">
@@ -405,6 +405,10 @@ export default function IssueInfo({ portfolioData, deviceData }) {
               issueTransactionData={issueTransactionData}
               getIssueTransaction={getIssueTransaction}
               device={device}
+              year={trackingYear}
+              month={trackingMonth}
+              UgtGroup={currentUGTGroup?.id}
+              portfolio={portfolio}
             />
           )}
 

@@ -1587,7 +1587,7 @@ const SettlementInfo = ({
 
     if (value) {
       if (decFixed == 2) {
-        return numeral(value).format("0,0.00");
+        return numeral(value).format("0,0.000");
       }
       if (decFixed == 6) {
         return numeral(value).format("0,0.000000");
@@ -2120,9 +2120,8 @@ const SettlementInfo = ({
                 <div>
                   <div className="text-sm font-normal">Actual Generation</div>
                   <div className="text-xl font-bold">
-                    {convertDecimalPlace(
-                      settlementMonthlyGenerationData.actualGeneration *
-                        convertUnit
+                    {renderValue(
+                      settlementMonthlyGenerationData.actualGeneration
                     )}
                   </div>
 
@@ -2362,9 +2361,8 @@ const SettlementInfo = ({
                     Net Actual Consumption
                   </div>
                   <div className="text-xl font-bold">
-                    {convertDecimalPlace(
-                      settlementMonthlyConsumptionData.actualConsumption *
-                        convertUnit
+                    {renderValue(
+                      settlementMonthlyConsumptionData.actualConsumption
                     )}
                   </div>
 

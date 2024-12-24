@@ -564,7 +564,7 @@ const ItemInventory = ({
 
   return (
     <div className="mb-4">
-       <div className="text-right">
+       <div className="text-right mt-4 mb-3">
             <Button
               className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
               onClick={showbase}
@@ -704,12 +704,12 @@ const ItemInventory = ({
       </div>
 
       <div className="text-right mt-5">
-        <Button
-          className="bg-gradient-to-t from-[#496B14] to-[#87BE33] shadow-2xl backdrop-blur-lg text-white text-lg h-[60px] w-[250px] rounded-[5px] px-[24px] py-[8px]"
-          onClick={() => handleModalConfirm()}
-        >
-          Sign & Submit
-        </Button>
+              <Button
+                className="bg-[#87BE33] text-white px-8"
+                onClick={() => handleModalConfirm()}
+              >
+                Sign & Submit
+              </Button>
       </div>
 
       <Modal

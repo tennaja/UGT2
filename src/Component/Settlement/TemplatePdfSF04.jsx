@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useImperativeHandle } from "react";
-import { useDispatch, useSelector } from "react-redux";
+//import { useDispatch, useSelector } from "react-redux";
 import { setSF02, setCount } from "../../Redux/Device/Action";
 import html2pdf from "html2pdf.js";
 import pdfIcon from "../assets/EV.png";
@@ -12,14 +12,14 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
   console.log(data.data);
   console.log(data.Sign);
   console.log(data.aftersign);
-  const dispatch = useDispatch();
-  const filesf02 = useSelector((state) => state.device.filesf02);
-  const count = useSelector((state) => state.device.count);
-  console.log(count);
+  //const dispatch = useDispatch();
+  //const filesf02 = useSelector((state) => state.device.filesf02);
+  //const count = useSelector((state) => state.device.count);
+  //console.log(count);
   const [load, setload] = useState(false);
   const [list, setList] = useState();
-  const [version, setVersion] = useState(count ?? 0);
-  console.log(data)
+  //const [version, setVersion] = useState(count ?? 0);
+  //console.log(data)
 
   const now = new Date();
   
@@ -111,6 +111,39 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
     }
   }
 
+  function convertToday(date){
+    if(date){
+      const dateData = date.split("T")[0]
+      const day = dateData.split("-")[2]
+      return day
+    }
+    else{
+      return ""
+    }
+  }
+
+  function convertToMonth(date){
+    if(date){
+      const dateData = date.split("T")[0]
+      const month = dateData.split("-")[1]
+      return month
+    }
+    else{
+      return ""
+    }
+  }
+
+  function convertToYear(date){
+    if(date){
+      const dateData = date.split("T")[0]
+      const year = dateData.split("-")[0]
+      return year
+    }
+    else{
+      return ""
+    }
+  }
+
   const formatNumber = (value) => {
     if (typeof value !== "number" || isNaN(value)) {
       console.log("Invalid input:", value); // Log invalid input
@@ -157,8 +190,8 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
     const element = pdfContentRef.current;
     console.log(element)
 
-    const newVersion = version + 1;
-    console.log("VERSION ---------------", newVersion);
+    //const newVersion = version + 1;
+    //console.log("VERSION ---------------", newVersion);
     //dispatch(setCount(newVersion));
     // Ensure the content is visible temporarily for PDF generation
     element.style.display = "block";
@@ -251,14 +284,14 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
     // Create a File object from the Blob with a filename
     const pdfFile = new File(
       [pdfBlob],
-      `SF-04_${convertToDateTime()}(${data?.period}).pdf`,
+      `SF-04_${convertToDateTime()}(${data?.data.dataType}).pdf`,
       { type: "application/pdf" }
     );
     console.log(pdfFile, data);
 
     let filesForm = {
       binaryBase: base64String,
-      file: pdfFile
+      file: pdfFile,
     }
     // Open the PDF in a new tab for preview
     //const url = URL.createObjectURL(pdfBlob);
@@ -471,13 +504,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period start date
                   </td>
                   <td className="border p-2 text-left ">
-                    {getDay(data.data.periodStartDate)}
+                    {convertToday(data.data.periodStartDate)}
                   </td>
                   <td className="border p-2 text-left ">
-                    {getMonth(data.data.periodStartDate)}
+                    {convertToMonth(data.data.periodStartDate)}
                   </td>
                   <td className="border p-2 text-left ">
-                    {getYear(data.data.periodStartDate)}
+                    {convertToYear(data.data.periodStartDate)}
                   </td>
                 </tr>
                 <tr>
@@ -485,13 +518,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period end date
                   </td>
                   <td className="border p-2 text-left ">
-                    {getDay(data.data.periodEndDate)}
+                    {convertToday(data.data.periodEndDate)}
                   </td>
                   <td className="border p-2 text-left ">
-                    {getMonth(data.data.periodEndDate)}
+                    {convertToMonth(data.data.periodEndDate)}
                   </td>
                   <td className="border p-2 text-left ">
-                    {getYear(data.data.periodEndDate)}
+                    {convertToYear(data.data.periodEndDate)}
                   </td>
                 </tr>
                 <tr>
@@ -1060,13 +1093,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period start date
                   </td>
                   <td className="border p-2 text-left" colSpan="1">
-                    {getDay(data?.data.periodStartDate)}{" "}
+                    {convertToday(data?.data.periodStartDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {getMonth(data?.data.periodStartDate)}{" "}
+                    {convertToMonth(data?.data.periodStartDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="4">
-                    {getYear(data?.data.periodStartDate)}{" "}
+                    {convertToYear(data?.data.periodStartDate)}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1074,13 +1107,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period end date
                   </td>
                   <td className="border p-2 text-left" colSpan="1">
-                    {getDay(data?.data.periodEndDate)}{" "}
+                    {convertToday(data?.data.periodEndDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {getMonth(data?.data.periodEndDate)}{" "}
+                    {convertToMonth(data?.data.periodEndDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="4">
-                    {getYear(data?.data.periodEndDate)}{" "}
+                    {convertToYear(data?.data.periodEndDate)}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1235,13 +1268,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period start date
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {getDay(data?.data?.periodStartDate)}{" "}
+                    {convertToday(data?.data?.periodStartDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {getMonth(data?.data?.periodStartDate)}{" "}
+                    {convertToMonth(data?.data?.periodStartDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="5">
-                    {getYear(data?.data?.periodStartDate)}{" "}
+                    {convertToYear(data?.data?.periodStartDate)}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1249,13 +1282,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period end date
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {getDay(data?.data?.periodEndDate)}{" "}
+                    {convertToday(data?.data?.periodEndDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {getMonth(data?.data?.periodEndDate)}{" "}
+                    {convertToMonth(data?.data?.periodEndDate)}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="5">
-                    {getYear(data?.data?.periodEndDate)}{" "}
+                    {convertToYear(data?.data?.periodEndDate)}{" "}
                   </td>
                 </tr>
                 <tr>

@@ -573,8 +573,8 @@ export const _getDataSettlement =(data)=>{
     }
 }
 
-export const getDataSettlement =(deviceID)=>{
-    const URL = `${GET_DATA_PDF_SETTLEMENT}/${deviceID}`
+export const getDataSettlement =(deviceID,portfolioId,year,month,ugtGroup,isActual)=>{
+    const URL = `${GET_DATA_PDF_SETTLEMENT}/${deviceID}?portfolioId=${portfolioId}&year=${year}&month=${month}&UgtGroupId=${ugtGroup}&IsActual=${isActual}`
     console.log('URL', URL)
 
     return async (dispatch) => {

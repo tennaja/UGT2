@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { Button, Card, Input, ScrollArea, Table, Modal,Textarea } from "@mantine/core";
 import numeral from "numeral";
 //import AlmostDone from "../../../assets/done.png";
@@ -98,7 +98,7 @@ const getIcon = (type) => {
   }
 };
 
-const ItemIssue = ({ issueTransactionData, getIssueTransaction,device }) => {
+const ItemIssue = ({ issueTransactionData, getIssueTransaction,device,year,month,UgtGroup,portfolio }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.login.userobj);
@@ -126,6 +126,8 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device }) => {
   const [note, setNote] = useState(issueRequest?.note ?? "");
   const [totalProduction, setTotalProduction] = useState(0);
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
+  const [fileSF04Preview,setFileSF04Preview] = useState({})
+  const setSign = useRef(false)
 
   // status
   let issueRequestStatus = issueRequest?.status ?? "";
@@ -272,6 +274,7 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device }) => {
 
   async function uploadToEvident(options) {
     const { file, onSuccess, onError } = options;
+    console.log(file)
     const params = new FormData();
     const config = {
       headers: {
@@ -453,7 +456,7 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device }) => {
   
     //setIsGenarate(true)
     const fetchData = new Promise((resolve, reject) => {
-      dispatch(getDataSettlement(device))
+      dispatch(getDataSettlement(device,portfolio,year,month,UgtGroup,true))
         .then(resolve)
         .catch(reject);
     });
@@ -579,24 +582,99 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device }) => {
 
   const actionSignAndSubmit=()=>{
     console.log("Action Sign And Submit")
-    modalSignAndSubmitSuccess.open()
+    
     setShowModalConfirm(false)
     setShowModalSignAndSubmit(false)
-    setIsSign(true)
+    
     handleTakeActionSignAndSubmit()
 
   }
 
+  const previewSF04AfterSign=()=>{
+    openPDFInNewTab(fileSF04Preview.binaryBase,fileSF04Preview.file.type,fileSF04Preview.file.name)
+    
+  }
+
+  const issueRequestDetailCreate= async (data)=>{
+    console.log(data)
+    let fileUidArray = []
+    console.log(issueTransactionData)
+    issueRequest.fileUploaded.map(
+      (item) => fileUidArray.push(`/files/${item.uid}`)
+    );
+    if(data.uid != ""){
+      fileUidArray.push(`/files/${data.uid}`)
+    }
+    console.log(fileUidArray)
+    const paramsDraft = {
+      issueRequestId: issueRequestId,
+      deviceCode: issueTransactionData.deviceCode,
+      issueRequestDetailId: issueRequestDetailId,
+      issueUid: `/issues/${issueTransactionData.issueRequest?.issueRequestUid}`,
+      startDate: dayjs(issueRequest.startDate).format(
+        "YYYY-MM-DDTHH:mm:ss[+00:00]"
+      ),
+      endDate: dayjs(issueRequest.endDate).format(
+        "YYYY-MM-DDTHH:mm:ss[+00:00]"
+      ),
+      productionVolume: numeral(totalProduction).format("0.000000"),
+      fuel: `/fuels/${issueTransactionData.fuelCode}`,
+      recipientAccount: `/accounts/${issueRequest.tradeAccountCode}`,
+      status:
+        issueRequestStatus?.toLowerCase() == "rejected" ? `Submitted` : `Draft`,
+      notes: note,
+      issuerNotes: note,
+      files: fileUidArray,
+    };
+
+    console.log("paramsDraft", paramsDraft);
+    // showSwal();
+    //showLoading();
+    /*const responseDraft = await createIssueDetail(paramsDraft);
+
+    if (responseDraft?.status === 200) {
+      // เรียก createIssueDetail อีกครั้งแต่ส่ง status: `Submitted`
+
+      hideLoading();
+      setShowModalComplete(true);
+
+      setTimeout(() => {
+        // To do.
+        // 1.call api fetch data again which status will be changed to Completed
+        getIssueTransaction();
+        // 2.close modal automatically
+        setShowModalComplete(false);
+
+        console.log("close modal complete");
+      }, 2000);
+    } else {
+      console.log("responseDraft", responseDraft);
+      setShowModalFail(true);
+      hideLoading();
+    }*/
+  }
+
+  const fetchDataSettlement=()=>{
+    try{
+      dispatch(getDataSettlement(device,portfolio,year,month,UgtGroup,true))
+    }
+    catch{
+      setShowModalFail(true)
+    }
+  }
+
   const handleTakeActionSignAndSubmit = async ()=>{
     
+    
     const fetchData = new Promise((resolve, reject) => {
-      dispatch(getDataSettlement(device))
-        .then(resolve)
-        .catch(reject);
+      fetchDataSettlement()
     });
     await fetchData;
+    setSign.current = true
     const base = await handleGeneratePDF()
+    showLoading()
     //const form = await handleGeneratePDFFileForm()
+    setFileSF04Preview(base)
     console.log(base)
     //setIsGenarate(false)
     //openPDFInNewTab(base.binaryBase,"application/pdf","test.pdf")
@@ -606,23 +684,37 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device }) => {
         "content-type": "multipart/form-data",
       },
     };
-    //let fileName = file.name?.replace(/\.[^/.]+$/, "");
+    let fileName = base.file.name?.replace(/\.[^/.]+$/, "");
     params.append("issueRequestDetailId", issueRequestDetailId);
     params.append("file", base.file);
-    params.append("name", base.file.name);
+    params.append("name", fileName);
     params.append("notes", "SF04");
+    console.log(base.file,fileName)
     try {
       const res = await axios.post(
         `${EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE}`,
         params,
         config
-      );
+      ).then((response) => {
+                  console.log(response)
+                  if(response.status == 200 || response.status == 201){
+                    modalSignAndSubmitSuccess.open()
+                    hideLoading()
+                    issueRequestDetailCreate(response.data)
+                  }
+                  else{
+                    setShowModalFail(true)
+                  }
+      
+              })
       //onSuccess("Ok");
       // เรียกข้อมูล issue ใหม่ เพื่อให้มี File List
       console.log(res)
       getIssueTransaction();
+      
     } catch (err) {
       console.log("Error: ", err);
+      setShowModalFail(true)
       const error = new Error("Some error");
       //onError({ err });
     }
@@ -978,7 +1070,7 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device }) => {
           <div className="flex gap-4">
             <Button
               className="text-white bg-[#4197FD] mt-12 px-10 mr-2"
-              onClick={() => showbase()}
+              onClick={() => previewSF04AfterSign()}
             >
               Preview SF-04
             </Button>
@@ -1021,7 +1113,7 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device }) => {
         isHaveFile={true}
         />
       )}
-      <PdfFormPreviewSF04 data={dataPDF} isSign={isSign} Sign={userData.firstName+" "+userData.lastName} period={actual} />
+      <PdfFormPreviewSF04 data={dataPDF} isSign={setSign.current} Sign={userData.firstName+" "+userData.lastName} />
       {showModalFail && <ModalFail onClickOk={handleCloseFailModal} />}
     </>
   );
