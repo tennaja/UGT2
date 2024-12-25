@@ -57,6 +57,7 @@ import SettlementDetail from "./SettlementDetail";
 import ModalInventorySupplyUsage from "./ModalInventorySupplyUsage";
 import ModalRemainingEnergyAttribute from "./ModalRemainingEnergyAttribute";
 import WaitApprove from "../assets/WaitApprove.png"
+import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const COLORS = [
   "#FF8042",
@@ -79,6 +80,7 @@ const SettlementInfo = ({
   settlementYear,
   settlementMonth,
   isShowDetail = true,
+  utilityId = 0,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -945,12 +947,14 @@ const SettlementInfo = ({
 
   useEffect(() => {
     if (settlementMonth && settlementYear) {
+      console.log(utilityId)
       dispatch(
         getSettlementMonthlySummary(
           ugtGroupId,
           portfolioId,
           settlementYear,
-          settlementMonth
+          settlementMonth,
+          utilityId
         )
       );
       dispatch(
@@ -1006,7 +1010,7 @@ const SettlementInfo = ({
         )
       )
     }
-  }, [settlementMonth, settlementYear]);
+  }, [settlementMonth, settlementYear,utilityId]);
 
   useEffect(()=>{
     //console.log(settlementDetailMonthlyDevice)

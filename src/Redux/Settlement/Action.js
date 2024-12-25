@@ -245,8 +245,8 @@ export const _getSettlementMonthlySummary = (data) => {
     }
 }
 
-export const getSettlementMonthlySummary = (ugtGroupId, portfolioId, year, month) => {
-    const URL = `${SETTLEMENT_MONTHLY_SUMMARY_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+export const getSettlementMonthlySummary = (ugtGroupId, portfolioId, year, month,utilityId) => {
+    const URL = `${SETTLEMENT_MONTHLY_SUMMARY_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&Utility=${utilityId}`
     //console.log('URL', URL)
 
     return async (dispatch) => {

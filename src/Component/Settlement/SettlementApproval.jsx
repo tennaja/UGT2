@@ -682,6 +682,7 @@ console.log(isShowModalFail)
               showWaitApprove={false}
               settlementYear={settlementYear}
               settlementMonth={settlementMonth}
+              utilityId={selectOptionUtilityID}
             />
           </Card>
 

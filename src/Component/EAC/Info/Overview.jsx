@@ -161,7 +161,7 @@ export default function Overview() {
       getSummaryData();
       getMonthList()
     }
-  }, [currentUGTGroup, trackingYear]);
+  }, [currentUGTGroup, trackingYear,trackingMonth]);
 
   async function getYearList() {
     try {
@@ -233,6 +233,7 @@ export default function Overview() {
       const params = {
         ugtGroupId: currentUGTGroup.id,
         currentYear: trackingYear,
+        currentMonth: trackingMonth,
       };
       const res = await axios.get(EAC_DASHBOARD_CARD_URL, {
         ...getHeaderConfig(),
