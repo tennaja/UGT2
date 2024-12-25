@@ -24,8 +24,8 @@ export default function PortfolioTable({ portData, search }) {
         },
       });
     };
-    if (data?.status.toLowerCase() == "pending") {
-      // มาแก้เป็น ==
+    if (data?.status.toLowerCase() !== "unavailable") {
+      // @30Aug2024 ทุกสถานะที่ไม่ใช่ Unavailable สามารถเข้าดูรายละเอียดได้
       return (
         <div className="text-center" onClick={handleClickTransfer}>
           <span className="px-3 py-2 rounded cursor-pointer text-nowrap text-sm font-semibold text-white  hover:bg-[#4D6A00] bg-[#87BE33]">
@@ -61,7 +61,6 @@ export default function PortfolioTable({ portData, search }) {
           textToHighlight={row.portfolioName}
         />
       ),
-      // <span>{row.portfolioName}</span>,
     },
     {
       id: "numberDevices",
@@ -75,7 +74,6 @@ export default function PortfolioTable({ portData, search }) {
           textToHighlight={(row.numberDevices ?? "").toString()}
         />
       ),
-      // <span>{row.numberDevices}</span>,
     },
     {
       id: "numberSubscribers",
@@ -89,7 +87,6 @@ export default function PortfolioTable({ portData, search }) {
           textToHighlight={(row.numberSubscribers ?? "").toString()}
         />
       ),
-      // <span>{row.numberSubscribers}</span>,
     },
     {
       id: "mechanism",
@@ -103,7 +100,6 @@ export default function PortfolioTable({ portData, search }) {
           textToHighlight={row.mechanism}
         />
       ),
-      // <span>{row.mechanism}</span>,
     },
     {
       id: "currentSettlement",
@@ -118,21 +114,6 @@ export default function PortfolioTable({ portData, search }) {
             textToHighlight={row.currentSettlement}
           />
         );
-
-        /*   const dateArr = row.currentSettlement.split("-");
-        let dateString = dateArr[0] + "-";
-        if (dateArr[1].length < 2) {
-          dateString += "0" + dateArr[1];
-        }
-        return (
-          <Highlighter
-            highlightTag={Highlight}
-            searchWords={[search]}
-            autoEscape={true}
-            textToHighlight={dayjs(dateString).format("MMMM YYYY")}
-          />
-        ); */
-        // return <span>{dayjs(dateString).format("MMMM YYYY")}</span>;
       },
     },
     {
@@ -140,7 +121,6 @@ export default function PortfolioTable({ portData, search }) {
       label: "Status",
       align: "center",
       render: (row) => <StatusLabel status={row.status} searchQuery={search} />,
-      // StatusLabel(row.status),
     },
     {
       id: "",

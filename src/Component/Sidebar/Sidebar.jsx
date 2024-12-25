@@ -168,6 +168,7 @@ const Sidebar2 = ({ children }) => {
   }, [openMenu]);
 
   useEffect(() => {
+    console.log("Change menu")
     dispatch(FetchSubMenuList(selectedMenuID));
   }, [selectedMenuID]);
 
@@ -334,9 +335,12 @@ const Sidebar2 = ({ children }) => {
         case 4:
           path = WEB_URL.EAC_REDEMPTION;
           break;
+        case 5:
+          path = WEB_URL.EAC_REDEMPTION_CERTIFICATE;
+          break;
       }
     }
-    //console.log(path)
+    console.log(path)
     return path;
   };
 

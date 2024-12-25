@@ -1,5 +1,5 @@
 const DOMAIN_URL = process.env.SERVICE_DOMAIN;
-const DOMAIN_URL_EGAT = process.env.SERVICE_DOMAIN_EGAT;
+const DOMAIN_URL_EGAT = process.env.SERVICE_DOMAIN;//process.env.SERVICE_DOMAIN_EGAT;
 
 export const LOGIN_URL = `${DOMAIN_URL}/ugt/v1/authen/login`;
 
@@ -95,9 +95,11 @@ export const TRANSFER_REQ_PORT_MONTH_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-t
 export const TRANSFER_REQ_INFO_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/transferRequestInfo`;
 export const CREATE_RESERVATION_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/transferRequestsProcess`;
 // EAC Redemption
-export const REDEMPTION_REQUEST_LIST_URL = `${DOMAIN_URL}/ugt/v1/eac-tracking/redemptionRequestList`;
+export const REDEMPTION_REQUEST_LIST_URL = `${DOMAIN_URL}/ugt/v1/eac-tracking/redemptionRequestsList`;
 export const REDEMPTION_REQUEST_INFO_URL = `${DOMAIN_URL}/ugt/v1/eac-tracking/redemptionRequestInfo`;
 export const REDEMPTION_SUBSCRIBER_LIST_URL = `${DOMAIN_URL}/ugt/v1/eac-tracking/redemptionSubscriberList`;
+export const REDEMPTION_REQ_PORT_YEAR_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/portfolioYearList_FromStartEndDate`;
+export const CREATE_RESERVATION_REDEEM_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/redemptionRequestsProcess`;
 export const DOWNLOAD_REDEMPTION_STATEMENT_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/downloadRedemptionStatementFile`;
 // EAC Redemption Certificate
 export const REDEMPTION_CERT_YEAR_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/redemptionCertificationYearList`;
@@ -115,7 +117,7 @@ export const EAC_ISSUE_TRANSACTION_BY_DEVICE_URL = `${DOMAIN_URL_EGAT}/ugt/v1/ea
 export const EAC_DASHBOARD_YEAR_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/portfolioYearList`;
 export const EAC_DASHBOARD_MONTH_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/portfolioMonthList`;
 export const EAC_ISSUE_REQUEST_CREATE_ISSUE_DETAIL_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/createIssueDetailFile`;
-export const EAC_ISSUE_REQUEST_CREATE_ISSUE_DETAIL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/createIssueDetail`;
+export const EAC_ISSUE_REQUEST_CREATE_ISSUE_DETAIL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/CreateIssue_IssueDetail`;
 export const EAC_ISSUE_REQUEST_DOWNLOAD_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/downloadIssueFile`;
 export const EAC_ISSUE_REQUEST_DELETE_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/deleteIssueFile`;
 export const EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/createIssueDetailSF04File`;
@@ -123,6 +125,7 @@ export const EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE = `${DOMAIN_URL_EGA
 export const EAC_ISSUE_SYNC_ISSUE_ITEM = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/IssueItem`;
 export const EAC_ISSUE_SYNC_ISSUE_STATUS = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/IssueStatus`;
 export const EAC_ISSUE_SYNC_DEVICE_STATUS = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/DeviceStatus`;
+export const EAC_ISSUE_SYNC_TRANSFER_ITEM = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/TransferItem`;
 
 // Settlement
 export const PORTFOLIO_YEAR_LIST_URL = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/portfolioYearList`;

@@ -19,6 +19,8 @@ import {
 
 import { getHeaderConfig } from "../../../Utils/FuncUtils";
 import { formatToFullMonthYear } from "../../../Utils/Utils";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const failRequest = (err) => {
   return {
@@ -174,6 +176,16 @@ export const createReservation = (reservationData) => {
       .finally(() => {
         setTimeout(() => {
           Swal.close();
+          toast.success("Transfer Complete!", {
+            position: "top-right",
+            autoClose: 5000,
+            style: {
+              border: "1px solid #a3d744", // Green border similar to the one in your image
+              color: "#6aa84f", // Green text color
+              fontSize: "16px", // Adjust font size as needed
+              backgroundColor: "##FFFFFF", // Light green background
+            }, // 3 seconds
+          });
         }, 300);
       });
   };

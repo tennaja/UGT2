@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { Button, Card, Input, ScrollArea, Table, Modal,Textarea } from "@mantine/core";
 import numeral from "numeral";
 //import AlmostDone from "../../../assets/done.png";
@@ -13,6 +13,7 @@ import {
   EAC_ISSUE_REQUEST_CREATE_ISSUE_DETAIL_FILE,
   EAC_ISSUE_REQUEST_DELETE_FILE,
   EAC_ISSUE_REQUEST_DOWNLOAD_FILE,
+  EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE
 } from "../../../../Constants/ServiceURL";
 import { USER_GROUP_ID } from "../../../../Constants/Constants";
 import axios from "axios";
@@ -38,6 +39,7 @@ import {getDataSettlement} from "../../../../Redux/Settlement/Action";
 import AlmostDone from "../../../assets/almostdone.png";
 import { useDisclosure } from "@mantine/hooks";
 import ModalConfirmCheckBoxEAC from "./ModalConfirmCheckBoxEAC";
+import { RiEyeLine } from "react-icons/ri";
 
 const { Dragger } = Upload;
 
@@ -100,7 +102,7 @@ const ItemInventory = ({
   issueTransactionData,
   inventoryTransaction,
   getIssueTransaction,
-  device,
+  device,year,month,UgtGroup,portfolio
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -123,6 +125,11 @@ const ItemInventory = ({
   const [showModalSignAndSubmit,setShowModalSignAndSubmit] = useState(false)
   const [showSignAndSubmitSuccess,modalSignAndSubmitSuccess] = useDisclosure()
   const [isSign,setIsSign] = useState(false)
+
+    const [fileSF04Preview,setFileSF04Preview] = useState({})
+    const setSign = useRef(true)
+    const pdfRef = useRef()
+    const [dataSF04,setDataSF04] = useState([])
 
   // status
   let issueRequestStatus = inventoryTransaction?.status ?? "";
@@ -174,9 +181,7 @@ const ItemInventory = ({
     // listType: "picture",
     beforeUpload: beforeUpload,
     customRequest: uploadToEvident,
-    onDownload: (file) => {
-      console.log("file", file);
-    },
+    onDownload: onPreviewFile,
     onPreview: previewFile,
     onRemove: removeFile,
 
@@ -237,30 +242,42 @@ const ItemInventory = ({
           </div>
           <div>
             {/* ปุ่ม Download */}
-            <button
-              style={{
-                marginRight: "10px",
-                background: "transparent",
-                border: "none",
-                color: "#BFD39F",
-                cursor: "pointer",
-              }}
-              onClick={() => props.onPreview(file)}
-            >
-              <RiDownloadLine /> {/* ไอคอนดาวน์โหลด */}
-            </button>
-            {/* ปุ่ม Remove */}
-            <button
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "#BFD39F",
-                cursor: "pointer",
-              }}
-              onClick={() => actions.remove(file)}
-            >
-              <FaRegTrashAlt /> {/* ไอคอนลบ */}
-            </button>
+                        <button
+                          style={{
+                            marginRight: "10px",
+                            background: "transparent",
+                            border: "none",
+                            color: "#BFD39F",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => actions.download(file)}
+                        >
+                          <RiDownloadLine /> {/* ไอคอนดาวน์โหลด */}
+                        </button>
+                        {checkShowPreview(file.type) && file.status == "done" ? <button
+                          style={{
+                            marginRight: "10px",
+                            background: "transparent",
+                            border: "none",
+                            color: "#BFD39F",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => props.onPreview(file)}
+                        >
+                          <RiEyeLine />
+                        </button>: undefined}
+                        {/* ปุ่ม Remove */}
+                        {canUpload &&<button
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            color: "#BFD39F",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => actions.remove(file)}
+                        >
+                          <FaRegTrashAlt /> {/* ไอคอนลบ */}
+                        </button>}
           </div>
         </div>
       );
@@ -328,6 +345,145 @@ const ItemInventory = ({
       hideLoading();
     }
   }
+
+  async function previewFile(file) {
+    try {
+      showLoading();
+      const res = await axios.post(
+        `${EAC_ISSUE_REQUEST_DOWNLOAD_FILE}?fileUid=${file.uid}`,
+        {},
+        { responseType: "blob" } // Important: indicate that the response type is a Blob
+      );
+      const name = getTypeFilename(file.type,file.name)
+
+      const blob = new Blob([res.data], { type: res.headers["content-type"] });
+      blobToBase64(blob)
+      .then(base64String => {
+        console.log(base64String); // เป็นสตริง Base64
+        previewFileUpload(base64String,file.type,name)
+        hideLoading()
+      })
+    } catch (err) {
+      console.log("Error: ", err);
+    } finally {
+      hideLoading();
+    }
+  }
+
+  async function  onPreviewFile (file){
+    console.log(file)
+    try {
+      showLoading();
+      const res = await axios.post(
+        `${EAC_ISSUE_REQUEST_DOWNLOAD_FILE}?fileUid=${file.uid}`,
+        {},
+        { responseType: "blob" } // Important: indicate that the response type is a Blob
+      );
+
+      const blob = new Blob([res.data], { type: res.headers["content-type"] });
+      saveAs(blob, file.name);
+    } catch (err) {
+      console.log("Error: ", err);
+    } finally {
+      hideLoading();
+    }
+  };
+
+  const checkShowPreview =(type)=>{
+    if (type == "image/jpeg") {
+      return true;
+    } else if (type === "image/png") {
+      return true;
+    } else if (type === "image/svg+xml") {
+      return true;
+    } else if (type === "application/pdf") {
+      return true;
+    }else if(type == "image/jpg"){
+      return true;
+    }else{
+      return false
+    }
+  }
+
+
+  const getTypeFilename =(type,name)=>{
+    if (type == "image/jpeg") {
+      return name+".jpeg";
+    } else if (type === "image/png") {
+      return name+".png";
+    } else if (type === "image/svg+xml") {
+      return name+".svg";
+    } else if (type === "application/pdf") {
+      return name+".pdf";
+    }else {
+      return name+".jpg";
+    }
+  }
+
+  const previewFileUpload = (base64String,type,name) => {
+    const extension = name.split(".").pop();
+      const pdfWindow = window.open("");
+      console.log("PDF",pdfWindow)
+      console.log(type)
+      if(type === "application/pdf"){
+        if (pdfWindow) {
+          // Set the title of the new tab to the filename
+          pdfWindow.document.title = name;
+      
+          // Convert Base64 to raw binary data held in a string
+          const byteCharacters = atob(base64String);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+      
+          // Create a Blob from the byte array and set the MIME type
+          const blob = new Blob([byteArray], { type: type});
+          console.log("Blob",blob)
+      
+          // Create a URL for the Blob and set it as the iframe source
+          const blobURL = URL.createObjectURL(blob);
+          console.log("Blob url :" ,blobURL)
+          let names = name
+      
+          const iframe = pdfWindow.document.createElement("iframe");
+          
+          iframe.style.border = "none";
+          iframe.style.position = "fixed";
+          iframe.style.top = "0";
+          iframe.style.left = "0";
+          iframe.style.bottom = "0";
+          iframe.style.right = "0";
+          iframe.style.width = "100vw";
+          iframe.style.height = "100vh";
+          
+          // Use Blob URL as the iframe source
+          iframe.src = blobURL;
+      
+          // Remove any margin and scrollbars
+          pdfWindow.document.body.style.margin = "0";
+          pdfWindow.document.body.style.overflow = "hidden";
+      
+          // Append the iframe to the new window's body
+          pdfWindow.document.body.appendChild(iframe);
+  
+          // Optionally, automatically trigger file download with correct name
+        
+        } else {
+            alert('Unable to open new tab. Please allow popups for this website.');
+        }
+      }
+      else if(type == "image/jpeg" || type == "image/jpg" || type == "image/png" || type === "image/svg+xml"){
+        if (pdfWindow) {
+          pdfWindow.document.write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
+              <img src="data:image/jpeg;base64,${base64String}" style="max-width:100%; height:auto;"/>
+          </body></html>`);
+          pdfWindow.document.title = "Image Preview";
+          pdfWindow.document.close();
+      }
+      }
+  };
 
   const handleConfirmSubmitRequest = async () => {
     setIsConfirmChecked(false); // กลับสถานะให้ confirm checkbox เป็นค่าเริ่มต้น
@@ -445,21 +601,60 @@ const ItemInventory = ({
   }
 
   const showbase = async ()=>{
-  
+    console.log("Preview PDF")
+
+    if(inventoryTransaction.fileSF04 == null){
+    //setSign.current = false
     //setIsGenarate(true)
-    const fetchData = new Promise((resolve, reject) => {
-      dispatch(getDataSettlement(device))
-        .then(resolve)
-        .catch(reject);
-    });
-    await fetchData;
+    await fetchSettlementData(device, portfolio, year, month, UgtGroup,false);
+    setDataSF04(dataPDF)
     const base = await handleGeneratePDF()
-    //setIsGenarate(false)
-    openPDFInNewTab(base,"application/pdf","test.pdf")
-    
+    //const form = await handleGeneratePDFFileForm()
     console.log(base)
+    //setIsGenarate(false)
+    openPDFInNewTab(base.binaryBase,"application/pdf","test.pdf")
+    
+    console.log(base)}
+    else if(inventoryTransaction.fileSF04){
+      showLoading();
+      const res = await axios.post(
+        `${EAC_ISSUE_REQUEST_DOWNLOAD_FILE}?fileUid=${inventoryTransaction.fileSF04.uid}`,
+        {},
+        { responseType: "blob" } // Important: indicate that the response type is a Blob
+      );
+
+      const blob = new Blob([res.data], { type: res.headers["content-type"] });
+      blobToBase64(blob)
+      .then(base64String => {
+        console.log(base64String); // เป็นสตริง Base64
+        openPDFInNewTab(base64String,"application/pdf",inventoryTransaction.fileSF04.fileName+".pdf")
+        hideLoading()
+      })
+      .catch(error => {
+        console.error('Error converting blob to base64:', error);
+        hideLoading()
+      });
+      //
+    }
   }
+
+  function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
   
+      reader.onloadend = () => {
+        // แปลงข้อมูลที่ได้จาก reader.result เป็น base64
+        resolve(reader.result.split(',')[1]); // เอาส่วนที่เป็น base64 ออก
+      };
+  
+      reader.onerror = (error) => {
+        reject(error);
+      };
+  
+      reader.readAsDataURL(blob); // เริ่มการอ่าน Blob เป็น data URL
+    });
+  }
+
   const openPDFInNewTab = (base64String,type,name) => {
     const extension = name.split(".").pop();
       const pdfWindow = window.open("");
@@ -548,19 +743,174 @@ const ItemInventory = ({
 
   const handleModalConfirm=()=>{
     setShowModalConfirm(true)
+    console.log(issueTransactionData)
+    console.log(inventoryTransaction)
   }
   const handleCLodeModalConfirm=()=>{
     setShowModalConfirm(false)
   }
 
   const actionSignAndSubmit=()=>{
-    console.log("Action Sign And Submit")
-    modalSignAndSubmitSuccess.open()
+    console.log("Action Sign And Submit",inventoryTransaction)
     setShowModalConfirm(false)
     setShowModalSignAndSubmit(false)
-    setIsSign(true)
+    handleTakeActionSignAndSubmit()
+
 
   }
+
+   const issueRequestDetailCreate= async (data)=>{
+      console.log(data)
+      
+      console.log(issueTransactionData)
+
+      let fileUidArray = []
+      console.log(inventoryTransaction)
+      inventoryTransaction.fileUploaded.map(
+        (item) => fileUidArray.push(`/files/${item.uid}`)
+      );
+      if(data.uid != ""){
+        fileUidArray.push(`/files/${data.uid}`)
+      }
+      console.log(fileUidArray)
+      const paramsDraft = {
+        issueRequestId: issueRequestId,
+        deviceCode: issueTransactionData.deviceCode,
+        issueRequestDetailId: issueRequestDetailId,
+        issueUid: `/issues/${inventoryTransaction?.issueRequestUid}`,
+        startDate: dayjs(inventoryTransaction.startDate).format(
+          "YYYY-MM-DDTHH:mm:ss[+00:00]"
+        ),
+        endDate: dayjs(inventoryTransaction.endDate).format(
+          "YYYY-MM-DDTHH:mm:ss[+00:00]"
+        ),
+        productionVolume: numeral(totalProduction).format("0.000000"),
+        fuel: `/fuels/${issueTransactionData.fuelCode}`,
+        recipientAccount: `/accounts/${inventoryTransaction.tradeAccountCode}`,
+        status:
+          issueRequestStatus?.toLowerCase() == "rejected" ? `Submitted` : `Draft`,
+        notes: note,
+        issuerNotes: note,
+        files: fileUidArray,
+      };
+      getIssueTransaction();
+      console.log("paramsDraft", paramsDraft);
+      // showSwal();
+      //showLoading();
+      const responseDraft = await createIssueDetail(paramsDraft);
+  
+      if (responseDraft?.status === 200) {
+        // เรียก createIssueDetail อีกครั้งแต่ส่ง status: `Submitted`
+  
+        
+        //setShowModalComplete(true);
+        modalSignAndSubmitSuccess.open();
+          // To do.
+          // 1.call api fetch data again which status will be changed to Completed
+          getIssueTransaction();
+          hideLoading();
+  
+        
+      } else {
+        try {
+          const res = await axios.delete(
+            `${EAC_ISSUE_REQUEST_DELETE_FILE}?fileUid=${file.uid}`
+          );
+          console.log("res", res);
+          getIssueTransaction();
+          console.log("responseDraft", responseDraft);
+          setShowModalFail(true);
+          hideLoading();
+        } catch (err) {
+          console.log("Error: ", err);
+        } 
+      }
+    }
+
+    const previewSF04AfterSign=()=>{
+      openPDFInNewTab(fileSF04Preview.binaryBase,fileSF04Preview.file.type,fileSF04Preview.file.name)
+      
+    }
+
+  const fetchSettlementData = (device, portfolio, year, month, UgtGroup,isSignSubmit) => {
+    return new Promise((resolve, reject) => {
+      dispatch(getDataSettlement(device, portfolio, year, month, UgtGroup, false,isSignSubmit))
+        .then(resolve)
+        .catch(reject);
+    });
+  };
+  //console.log(setSign)
+
+
+  const handleTakeActionSignAndSubmit = async () => {
+    try {
+      
+  
+      // ดึงข้อมูลที่จำเป็น
+      await fetchSettlementData(device, portfolio, year, month, UgtGroup,true);
+      setDataSF04(dataPDF)
+      //setSign.current = true
+      // สร้าง PDF ครั้งเดียว
+      const pdfResult = await handleGeneratePDFSign();
+      if (!pdfResult) {
+        console.error("Failed to generate PDF");
+        return;
+      }
+
+      setFileSF04Preview(pdfResult)
+      showLoading();
+      console.log(pdfResult)
+      // อัปโหลด PDF
+      const uploadResult = await uploadPdf(pdfResult);
+      if (uploadResult.success) {
+        
+        issueRequestDetailCreate(uploadResult.data);
+      } else {
+        console.error("Upload failed", uploadResult.error);
+        setShowModalFail(true);
+      }
+    } catch (error) {
+      console.error("Error during sign and submit", error);
+      setShowModalFail(true);
+    } finally {
+      hideLoading();
+    }
+  };
+
+  // ฟังก์ชันสร้าง PDF
+const handleGeneratePDFSign = async () => {
+  try {
+    // เรียกใช้ฟังก์ชัน generatePdf ของ TemplatePdfSF04
+    return await PdfFormPreviewSF04.generatePdf();
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return null;
+  }
+};
+
+  // ฟังก์ชันอัปโหลด PDF
+const uploadPdf = async (pdfResult) => {
+  const params = new FormData();
+  params.append("issueRequestDetailId", issueRequestDetailId);
+  params.append("file", pdfResult.file);
+  params.append("name", pdfResult.file.name.replace(/\.[^/.]+$/, ""));
+  params.append("notes", "SF04");
+
+  try {
+    const response = await axios.post(
+      `${EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE}`,
+      params,
+      { headers: { "content-type": "multipart/form-data" } }
+    );
+    if (response.status === 200 || response.status === 201) {
+      return { success: true, data: response.data };
+    }
+    return { success: false, error: response };
+  } catch (error) {
+    console.error("Error uploading PDF:", error);
+    return { success: false, error };
+  }
+};
 
   return (
     <div className="mb-4">
@@ -571,7 +921,7 @@ const ItemInventory = ({
             >
               <IoDocumentTextOutline className="mr-1"/> Preview SF-04
             </Button>
-            <PdfFormPreviewSF04 data={dataPDF} isSign={false} Sign={userData.firstName+" "+userData.lastName}/>
+            
       </div>
       <Table stickyHeader verticalSpacing="sm">
         <Table.Thead className="bg-[#F4F6F9]">
@@ -687,7 +1037,7 @@ const ItemInventory = ({
                 />
               </div>
             ) : (
-              <div className="w-52 lg:w-96 lg:break-words text-sm font-normal">
+              <div className="w-96 lg:break-words text-sm font-normal">
                 {note || "-"}
               </div>
             )}
@@ -703,14 +1053,14 @@ const ItemInventory = ({
         </div>
       </div>
 
-      <div className="text-right mt-5">
-              <Button
+          <div className="text-right mt-5">
+          {canSendIssue && (<Button
                 className="bg-[#87BE33] text-white px-8"
                 onClick={() => handleModalConfirm()}
               >
                 Sign & Submit
-              </Button>
-      </div>
+              </Button>)}
+          </div>
 
       <Modal
         opened={openModalConfirm}
@@ -856,7 +1206,7 @@ const ItemInventory = ({
           <div className="flex gap-4">
             <Button
               className="text-white bg-[#4197FD] mt-12 px-10 mr-2"
-              onClick={() => showbase()}
+              onClick={() => previewSF04AfterSign()}
             >
               Preview SF-04
             </Button>

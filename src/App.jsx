@@ -52,6 +52,7 @@ import RenewDevice from "./Component/Device/RenewDevice";
 import HistoryPortfolio from "./Component/Portfolio/HistoryPortfolio";
 import RedemptionCer from "./Component/EAC/RedemptionCertificate/RedemptionCer";
 import RedemptionCert from "./Component/EAC/RedemptionCertificate/RedemptionCert";
+import CertificateRedemption from "./Component/EAC/RedemptionCertificate/CertificateRedemption";
 
 import SettlementListing from "./Component/Settlement/SettlementListing";
 
@@ -150,7 +151,7 @@ function App() {
                 ></Route>
                 <Route
                   path={webURL.EAC_REDEMPTION_CERTIFICATE}
-                  element={<RedemptionCer />}
+                  element={<CertificateRedemption />}
                 ></Route>
                 <Route
                   path={webURL.EAC_REDEMPTION_CERT}

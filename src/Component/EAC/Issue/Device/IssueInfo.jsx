@@ -427,6 +427,11 @@ export default function IssueInfo({ portfolioData, deviceData }) {
                       issueTransactionData={issueTransactionData}
                       inventoryTransaction={item}
                       getIssueTransaction={getIssueTransaction}
+                      device={device}
+                      year={trackingYear}
+                      month={trackingMonth}
+                      UgtGroup={currentUGTGroup?.id}
+                      portfolio={portfolio}
                     />
                   );
                 }

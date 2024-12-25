@@ -1,8 +1,9 @@
 import {
     GET_EAC_REDEMPTION_REQUEST_LIST,
-    GET_EAC_REDEMPTION_REQUEST_LIST_CER_PAGE,
     GET_EAC_REDEMPTION_REQUEST_INFO,
     GET_EAC_REDEMPTION_SUBSCRIBER_LIST,
+    GET_EAC_REDEMPTION_REQ_PORT_YEAR_LIST,
+    CREATE_RESERVATION_REDEEM,
     GET_EAC_REDEMPTION_CERT_YEAR_LIST,
     GET_EAC_REDEMPTION_CERT_PORT_LIST,
     GET_EAC_REDEMPTION_CERT_UTILITY_LIST,
@@ -12,7 +13,6 @@ import {
 const initialstate = {
     loading: true,
     redemptionRequestList: [],
-    redemptionRequestListCerPage: [],
     redemptionRequestInfo: [],
     redemptionSubscriberList: [],
     redemptionReqPortYearList: [],
@@ -31,10 +31,6 @@ export const RedemptionReducer = (state = initialstate, action) => {
             ...state,
             redemptionRequestList: action.payload
         }
-        case GET_EAC_REDEMPTION_REQUEST_LIST_CER_PAGE: return {
-            ...state,
-            redemptionRequestListCerPage: action.payload
-        }
         case GET_EAC_REDEMPTION_REQUEST_INFO: return {
             ...state,
             redemptionRequestInfo: action.payload
@@ -42,6 +38,14 @@ export const RedemptionReducer = (state = initialstate, action) => {
         case GET_EAC_REDEMPTION_SUBSCRIBER_LIST: return {
             ...state,
             redemptionSubscriberList: action.payload
+        }
+        case GET_EAC_REDEMPTION_REQ_PORT_YEAR_LIST: return {
+            ...state,
+            redemptionReqPortYearList: action.payload
+        }
+        case CREATE_RESERVATION_REDEEM: return {
+            ...state,
+            createReservationRedeem: action.payload
         }
         case GET_EAC_REDEMPTION_CERT_YEAR_LIST: return {
             ...state,
@@ -59,8 +63,6 @@ export const RedemptionReducer = (state = initialstate, action) => {
             ...state,
             redemptionCertList: action.payload
         }
-        
-
 
         default: return state
     }

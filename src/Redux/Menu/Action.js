@@ -111,6 +111,7 @@ export const FetchMenuList = (menuListID) => {
 };
 
 export const FetchSubMenuList = (menuId) => {
+  console.log(menuId)
   const subMenuListDeviceURL = GET_SUB_MENU_DEVICE_LIST_URL;
   const subMenuListSubscriberURL = GET_SUB_MENU_SUBSCRIBER_LIST_URL;
   const subMenuListPorfolioURL = GET_SUB_MENU_PORTFOLIO_LIST_URL;
@@ -157,9 +158,11 @@ export const FetchSubMenuList = (menuId) => {
   } else if (menuId == 6) {
     return async (dispatch) => {
       // subMenuListEacTrackingURL
+      console.log(subMenuListEacTrackingURL)
       await axios
         .get(subMenuListEacTrackingURL, getHeaderConfig())
         .then((res) => {
+          console.log(res?.data?.submenuList)
           dispatch(setSubMenuList(res?.data?.submenuList));
         })
         .catch((err) => {

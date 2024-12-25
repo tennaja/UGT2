@@ -12,16 +12,18 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { CloseButton, Input, Card } from "@mantine/core";
 import { Form, Select } from "antd";
 import dayjs from "dayjs";
+import * as WEB_URL from "../../../Constants/WebURL";
 import { MONTH_LIST } from "../../../Constants/Constants";
 const monthArray = MONTH_LIST;
 
 export default function TransferTable() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
   let state = location.state;
   let selectedYear = state?.selectedYear ?? "";
   let selectedMonth = state?.selectedMonth ?? "";
- 
+
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const portData = useSelector((state) => state.transfer?.transferRequestList);
   const yearListData = useSelector((state) => state.eac?.yearList);
@@ -30,6 +32,18 @@ export default function TransferTable() {
   const [search, setSearch] = useState("");
   const [trackingYear, setTrackingYear] = useState(selectedYear);
   const [trackingMonth, setTrackingMonth] = useState(selectedMonth);
+
+  // Check is page is reloaded
+  useEffect(() => {
+    const navigationEntries = window.performance.getEntriesByType("navigation");
+    if (
+      navigationEntries.length > 0 &&
+      navigationEntries[0].type === "reload"
+    ) {
+      console.log("This page is reloaded");
+      navigate(WEB_URL.EAC_TRANSFER, { replace: true });
+    }
+  }, []);
 
   useEffect(() => {
     // get year list
@@ -47,16 +61,20 @@ export default function TransferTable() {
 
   useEffect(() => {
     // set default year dropdown with latest year
-    if (yearListData.yearList && trackingYear == "") {
-      const yearList = yearListData.yearList;
-      const latest_year = yearList.slice(-1);
-      setTrackingYear(latest_year);
+    if (yearListData.yearList) {
+      if (trackingYear !== "") {
+        setTrackingYear(trackingYear);
+      } else {
+        const yearList = yearListData.yearList;
+        const latest_year = yearList.slice(-1);
+        setTrackingYear(latest_year);
+      }
     }
   }, [yearListData]);
 
   useEffect(() => {
     // set default year dropdown with latest month
-    if (monthListData?.monthList?.length > 0 && trackingYear) {
+    if (trackingYear && monthListData?.monthList?.length > 0) {
       if (trackingMonth !== "") {
         setTrackingMonth(trackingMonth);
       } else {
@@ -68,12 +86,13 @@ export default function TransferTable() {
   }, [monthListData]);
 
   useEffect(() => {
-    if (trackingYear && trackingMonth) {
+    // get transfer data list
+    if (currentUGTGroup?.id !== undefined && trackingYear && trackingMonth) {
       dispatch(
         getTransferRequestList(currentUGTGroup?.id, trackingYear, trackingMonth)
       );
     }
-  }, [trackingYear, trackingMonth]);
+  }, [currentUGTGroup, trackingYear, trackingMonth]);
 
   const handleChangeTrackingYear = (year) => {
     setTrackingYear(year);
@@ -97,12 +116,12 @@ export default function TransferTable() {
         </div>
         <div className="flex items-center gap-4">
           <Input
+            radius={6}
             placeholder="Search"
             value={search}
             onChange={(event) => setSearch(event.currentTarget.value)}
             rightSectionPointerEvents="all"
             leftSection={<MagnifyingGlassIcon className="w-4 h-4" />}
-            // style={{ height: 20 }}
             rightSection={
               <CloseButton
                 aria-label="Clear input"

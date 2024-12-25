@@ -61,7 +61,7 @@ const Portfoliolisting = (props) => {
   const dashboardDataList = useSelector(
     (state) => state.portfolio.portfolioDashboardList
   );
-  console.log(dashboardDataList)
+  //console.log(dashboardDataList)
   const [dashboardList, setDashboardList] = useState([]);
   const [activeList, setActiveList] = useState([]);
   const [inactiveList, setInactiveList] = useState([]);
@@ -152,7 +152,7 @@ useEffect(() => {
       }
     );
   };
- console.log(dashboardDataList)
+ //console.log(dashboardDataList)
   useEffect(() => {}, [dashboardData]);
   const statusList = [
     {
@@ -580,7 +580,7 @@ useEffect(() => {
     navigate(WEB_URL.PORTFOLIO_ADD);
   };
 
-  console.log(settlementDashboard)
+  //console.log(settlementDashboard)
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">

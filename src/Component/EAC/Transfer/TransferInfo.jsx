@@ -55,7 +55,7 @@ export default function TransferInfo() {
 
   // get month list
   useEffect(() => {
-    if (currentUGTGroup?.id !== undefined) {
+    if (currentUGTGroup?.id !== undefined && trackingYear) {
       dispatch(
         getTransferReqPortfolioMonthList(
           currentUGTGroup?.id,
@@ -64,7 +64,7 @@ export default function TransferInfo() {
         )
       );
     }
-  }, [currentUGTGroup, trackingYear]);
+  }, [currentUGTGroup, portfolioID, trackingYear]);
 
   // set default year dropdown with latest month
   useEffect(() => {
@@ -78,14 +78,7 @@ export default function TransferInfo() {
   // get Info
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
-      dispatch(
-        getTransferRequesInfo(
-          currentUGTGroup?.id,
-          portfolioID,
-          trackingYear,
-          trackingMonth
-        )
-      );
+      fetchTransferRequestInfo();
     }
   }, [currentUGTGroup, trackingYear]);
 
@@ -96,20 +89,12 @@ export default function TransferInfo() {
         title: "Please Wait...",
         allowOutsideClick: false,
         showConfirmButton: false,
-        timerProgressBar: true,
         didOpen: () => {
           Swal.showLoading();
         },
       });
 
-      dispatch(
-        getTransferRequesInfo(
-          currentUGTGroup?.id,
-          portfolioID,
-          trackingYear,
-          trackingMonth
-        )
-      );
+      fetchTransferRequestInfo();
     }
   }, [currentUGTGroup, trackingMonth]);
 
@@ -123,23 +108,35 @@ export default function TransferInfo() {
             item?.status?.toLowerCase() == "draft" ? "pending" : item?.status,
         };
       });
-
+      console.log(formattedData)
       // ถ้าเป็น null ทุกการ ให้แสดง unavailable
-      let count_null_status = 0;
-      formattedData.map((item) => {
-        if (item.status == null || item.status == "") {
-          count_null_status = count_null_status + 1;
-        }
-      });
+      // let count_null_status = 0;
+      // formattedData.map((item) => {
+      //   if (item.status == null || item.status == "") {
+      //     count_null_status = count_null_status + 1;
+      //   }
+      // });
 
-      const has_status_null = count_null_status == formattedData.length;
+      // const has_status_null = count_null_status == formattedData.length;
 
       // console.log("formattedData", formattedData);
-      setTransferData(!has_status_null ? formattedData : []);
+      // setTransferData(!has_status_null ? formattedData : []);
+      setTransferData(formattedData);
     } else {
       setTransferData([]);
     }
   }, [transferDataInfo]);
+
+  const fetchTransferRequestInfo = () => {
+    dispatch(
+      getTransferRequesInfo(
+        currentUGTGroup?.id,
+        portfolioID,
+        trackingYear,
+        trackingMonth
+      )
+    );
+  };
 
   const handleChangeTrackingYear = (year) => {
     setTrackingYear(year);
@@ -171,8 +168,8 @@ export default function TransferInfo() {
                   onClick={() =>
                     navigate("/eac/transfer", {
                       state: {
-                        selectedYear: period_year,
-                        selectedMonth: period_month,
+                        selectedYear: trackingYear,
+                        selectedMonth: trackingMonth,
                       },
                     })
                   }
@@ -192,7 +189,7 @@ export default function TransferInfo() {
                 <Form layout="horizontal" size="large">
                   <div className="grid grid-cols-6 gap-4 items-center">
                     <div className="col-span-2 text-sm font-bold">
-                      
+                     
                     </div>
 
                     <Form.Item className="col-span-2 pt-4">
@@ -250,12 +247,11 @@ export default function TransferInfo() {
               <ItemTransfer
                 ugtGroupId={currentUGTGroup?.id}
                 portfolioID={portfolioID}
-                portfolioName={portfolioName}
-                period={period}
                 year={trackingYear}
                 month={trackingMonth}
                 transferData={transferData}
                 setTransferData={setTransferData}
+                fetchTransferRequestInfo={fetchTransferRequestInfo}
               />
             ) : (
               <Card shadow="md" radius="lg" padding="xl">

@@ -115,6 +115,12 @@ export const CONVERT_UNIT = [
   { unit: "GWh", convertValue: 0.000001 },
 ];
 
+export const SETTLEMENT_TYPE_COLOR = {
+  ACTUAL: {bg:"#3CA12D33",text:"#3CA12D"},
+  INVENTORY1: {bg:"#3370BF33",text:"#3370BF"},
+  INVENTORY2: {bg:"#FA6B6E33",text:"#FA6B6E"}
+}
+
 export const STATUS_COLOR = {
   DRAFT: { bg: "#FFF6E8", text: "#CE8420" },
   PENDING: { bg: "#FFF6E8", text: "#CE8420" },

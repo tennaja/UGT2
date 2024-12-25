@@ -1,47 +1,14 @@
-import { useState } from "react";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 
 import DataTable from "../../Control/Table/DataTable";
-import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
-import DataTableRedemption from "./DataTableRedemption";
+import StatusLabel from "../../../Component/Control/StatusLabel";
+import Highlighter from "react-highlight-words";
 
-export default function PortfolioTable({ portData,search }) {
+export default function PortfolioTable({ portData, search }) {
   const navigate = useNavigate();
-
-  const StatusIcon = (status) => {
-    let color;
-
-    switch (status.toLowerCase()) {
-      case "completed":
-        color = "#9240E4";
-        break;
-      case "pending":
-        color = "#F7A042";
-        break;
-      case "unavailable":
-        color = "#E6EAEE";
-        break;
-      default:
-        color = "#33BFBF";
-        break;
-    }
-
-    return (
-      <div className="text-center">
-        <span
-          className={classNames({
-            "px-3 py-1 rounded-large text-white capitalize": true,
-          })}
-          style={{ background: color }}
-        >
-          {status}
-        </span>
-      </div>
-    );
-  };
 
   const ActionCell = (data) => {
     const handleClickRedeem = () => {
@@ -53,18 +20,13 @@ export default function PortfolioTable({ portData,search }) {
         },
       });
     };
-    if (data?.status.toLowerCase() == "pending") {
+
+    if (data?.status.toLowerCase() !== "unavailable") {
+      // ใช้จริงอันนี้นะ
+      // @30Sep2024 ทุกสถานะที่ไม่ใช่ Unavailable สามารถเข้าดูรายละเอียดได้
       return (
         <div className="text-center" onClick={handleClickRedeem}>
-          <span
-            className={classNames({
-              "px-3 py-2 rounded capitalize cursor-pointer": true,
-            })}
-            style={{
-              background: "#F5F4E9",
-              color: "#4D6A00",
-            }}
-          >
+          <span className="px-3 py-2 rounded cursor-pointer text-nowrap text-sm font-semibold text-white  hover:bg-[#4D6A00] bg-[#87BE33]">
             Redeem
           </span>
         </div>
@@ -72,15 +34,7 @@ export default function PortfolioTable({ portData,search }) {
     } else {
       return (
         <div className="text-center">
-          <span
-            className={classNames({
-              "px-3 py-2 rounded capitalize": true,
-            })}
-            style={{
-              background: "#E6EAEE",
-              color: "white",
-            }}
-          >
+          <span className="px-3 py-2 rounded cursor-pointer text-nowrap text-sm font-semibold text-white  bg-[#E6EAEE]">
             Redeem
           </span>
         </div>
@@ -88,52 +42,96 @@ export default function PortfolioTable({ portData,search }) {
     }
   };
 
+  const Highlight = ({ children, highlightIndex }) => (
+    <strong className="bg-yellow-200">{children}</strong>
+  );
+
   const columns = [
     {
       id: "portfolioName",
       label: "Portfolio Name",
       align: "left",
-      render: (row) => <span>{row.portfolioName}</span>,
+      render: (row) => (
+        <Highlighter
+          highlightTag={Highlight}
+          searchWords={[search]}
+          autoEscape={true}
+          textToHighlight={row.portfolioName}
+        />
+      ),
     },
     {
       id: "numberDevices",
       label: "Number of Devices",
       align: "center",
-      render: (row) => <span>{row.numberDevices}</span>,
+      render: (row) => (
+        <Highlighter
+          highlightTag={Highlight}
+          searchWords={[search]}
+          autoEscape={true}
+          textToHighlight={(row.numberDevices ?? "").toString()}
+        />
+      ),
     },
     {
       id: "numberSubscribers",
-      label: "Number of Subscriber",
+      label: "Number of Subscribers",
       align: "center",
-      render: (row) => <span>{row.numberSubscribers}</span>,
+      render: (row) => (
+        <Highlighter
+          highlightTag={Highlight}
+          searchWords={[search]}
+          autoEscape={true}
+          textToHighlight={(row.numberSubscribers ?? "").toString()}
+        />
+      ),
     },
     {
       id: "numberBeneficiary",
       label: "Number of Beneficiary",
       align: "center",
-      render: (row) => <span>{row.numberBeneficiary}</span>,
+      render: (row) => (
+        <Highlighter
+          highlightTag={Highlight}
+          searchWords={[search]}
+          autoEscape={true}
+          textToHighlight={(row.numberBeneficiary ?? "").toString()}
+        />
+      ),
     },
     {
       id: "yearSettlement",
       label: "Settlement Year",
       align: "center",
-      render: (row) => <span>{row.yearSettlement}</span>,
+      render: (row) => (
+        <Highlighter
+          highlightTag={Highlight}
+          searchWords={[search]}
+          autoEscape={true}
+          textToHighlight={(row.yearSettlement ?? "").toString()}
+        />
+      ),
     },
     {
       id: "status",
       label: "Status",
       align: "center",
-      render: (row) => StatusIcon(row.status),
+      render: (row) => <StatusLabel status={row.status} searchQuery={search} />,
     },
     {
       id: "",
-      label: "Manage",
+      label: "",
       align: "center",
       render: (row) => ActionCell(row),
     },
   ];
 
   return (
-    <DataTableRedemption data={portData} columns={columns} searchData={search} checkbox={false}/>
+    <DataTable
+      data={portData}
+      columns={columns}
+      searchData={search}
+      checkbox={false}
+    />
   );
 }

@@ -167,7 +167,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
   };
 
   // Log capacity before formatting
-  const capacity = data?.data?.totalProductionDuringPeriod;
+  const capacity = (data?.data?.totalProductionDuringPeriod * 0.001);
   console.log("Raw capacity:", capacity); // Log raw value of capacity
 
   // Format number only if capacity is valid
@@ -377,13 +377,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                 <tr>
                   <td className="border p-2 font-bold text-left w-1/3">Date</td>
                   <td className="border p-2 text-left ">
-                    {data.isSign ? getDay(now) : ""}
+                    {data.data.isSign ? getDay(now) : ""}
                   </td>
                   <td className="border p-2 text-left ">
-                    {data.isSign ? getMonth(now) : ""}
+                    {data.data.isSign ? getMonth(now) : ""}
                   </td>
                   <td className="border p-2 text-left ">
-                    {data.isSign ? getYear(now) : ""}
+                    {data.data.isSign ? getYear(now) : ""}
                   </td>
                 </tr>
               </thead>
@@ -808,11 +808,11 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                   <td className="border p-2 font-bold w-64">
                     Organisation name
                   </td>
-                  <td className="border p-2 text-left break-all">{data.isSign?data.data.organisationName:""}</td>
+                  <td className="border p-2 text-left break-all">{/*data.data.isSign?data.data.organisationName:""*/}</td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold w-64">Signatory</td>
-                  <td className="border p-2 text-left break-all">{data.isSign?data.Sign:""}</td>
+                  <td className="border p-2 text-left break-all">{/*data.data.isSign?data.Sign:""*/}</td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold w-64">
@@ -821,7 +821,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                       ({`BLOCK CAPITALS`})
                     </em>
                   </td>
-                  <td className="border p-2 text-left break-all">{data.isSign?data.Sign:""}</td>
+                  <td className="border p-2 text-left break-all">{/*data.data.isSign?data.Sign:""*/}</td>
                 </tr>
               </tbody>
             </table>
@@ -964,7 +964,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                 <tr>
                   <td className="border p-2 font-bold w-1/4">Signature</td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                    {data?.isSign == false
+                    {data.data.isSign == false
                       ? ""
                       : data?.Sign}
                   </td>
@@ -979,7 +979,7 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     </div>
                   </td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                  {data?.isSign == false
+                  {data.data.isSign == false
                       ? ""
                       : data?.Sign}
                   </td>
@@ -987,13 +987,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                 <tr>
                   <td className="border p-2 font-bold text-left">Date</td>
                   <td className="border p-2 text-left">
-                    {data?.isSign == false ? "" : getDay(now)}{" "}
+                    {data.data.isSign == false ? "" : getDay(now)}{" "}
                   </td>
                   <td className="border p-2 text-left">
-                    {data?.isSign == false  ? "" : getMonth(now)}{" "}
+                    {data.data.isSign == false  ? "" : getMonth(now)}{" "}
                   </td>
                   <td className="border p-2 text-left">
-                    {data?.isSign == false  ? "" : getYear(now)}{" "}
+                    {data.data.isSign == false  ? "" : getYear(now)}{" "}
                   </td>
                 </tr>
               </tbody>
@@ -1093,13 +1093,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period start date
                   </td>
                   <td className="border p-2 text-left" colSpan="1">
-                    {convertToday(data?.data.periodStartDate)}{" "}
+                    {/*convertToday(data?.data.periodStartDate)*/}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {convertToMonth(data?.data.periodStartDate)}{" "}
+                    {/*convertToMonth(data?.data.periodStartDate)*/}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="4">
-                    {convertToYear(data?.data.periodStartDate)}{" "}
+                    {/*convertToYear(data?.data.periodStartDate)*/}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1107,13 +1107,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period end date
                   </td>
                   <td className="border p-2 text-left" colSpan="1">
-                    {convertToday(data?.data.periodEndDate)}{" "}
+                    {/*convertToday(data?.data.periodEndDate)*/}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {convertToMonth(data?.data.periodEndDate)}{" "}
+                    {/*convertToMonth(data?.data.periodEndDate)*/}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="4">
-                    {convertToYear(data?.data.periodEndDate)}{" "}
+                    {/*convertToYear(data?.data.periodEndDate)*/}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1250,17 +1250,17 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Facility ID/code
                   </td>
                   <td className="border p-2 text-left break-all" colSpan="9">
-                    {data?.isSign == false 
+                    {/*data.data.isSign == false 
                       ? ""
-                      : data?.data.Sign}
+                      : data?.data.Sign*/}
                   </td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold w-1/4">Facility name</td>
                   <td className="border p-2 text-left break-all" colSpan="9">
-                    {data?.isSign == false 
+                    {/*data.data.isSign == false 
                       ? ""
-                      : data?.data.Sign}
+                      : data?.data.Sign*/}
                   </td>
                 </tr>
                 <tr>
@@ -1268,13 +1268,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period start date
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {convertToday(data?.data?.periodStartDate)}{" "}
+                    {/*convertToday(data?.data?.periodStartDate)*/}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {convertToMonth(data?.data?.periodStartDate)}{" "}
+                    {/*convertToMonth(data?.data?.periodStartDate)*/}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="5">
-                    {convertToYear(data?.data?.periodStartDate)}{" "}
+                    {/*convertToYear(data?.data?.periodStartDate)*/}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1282,13 +1282,13 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Period end date
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {convertToday(data?.data?.periodEndDate)}{" "}
+                    {/*convertToday(data?.data?.periodEndDate)*/}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="2">
-                    {convertToMonth(data?.data?.periodEndDate)}{" "}
+                    {/*convertToMonth(data?.data?.periodEndDate)*/}{" "}
                   </td>
                   <td className="border p-2 text-left" colSpan="5">
-                    {convertToYear(data?.data?.periodEndDate)}{" "}
+                    {/*convertToYear(data?.data?.periodEndDate)*/}{" "}
                   </td>
                 </tr>
                 <tr>
@@ -1506,17 +1506,19 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     Organisation name
                   </td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                    {data?.isSign == false
+                    {/*data.data.isSign == false
                       ? ""
-                      : data?.data?.organisationName}
+                      : data?.data?.organisationName*/}
+                      {""}
                   </td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold w-1/4">Signature</td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                    {data?.isSign == false
+                    {/*data.data.isSign == false
                       ? ""
-                      : data?.data?.Sign}
+                      : data?.Sign*/}
+                      {""}
                   </td>
                 </tr>
                 <tr>
@@ -1529,21 +1531,22 @@ const PdfFormPreviewSF04 = (data, aftersign, Sign, Status,isSign,period) => {
                     </div>
                   </td>
                   <td className="border p-2 text-left break-all" colSpan="3">
-                    {data?.isSign == false
+                    {/*data.data.isSign == false
                       ? ""
-                      : data?.data?.Sign}
+                      : data?.Sign*/}
+                      {""}
                   </td>
                 </tr>
                 <tr>
                   <td className="border p-2 font-bold text-left">Date</td>
                   <td className="border p-2 text-left">
-                    {data?.isSign == false ? "" : getDay(now)}{" "}
+                    {/*data.data.isSign == false ? "" : getDay(now)*/}{" "}
                   </td>
                   <td className="border p-2 text-left">
-                    {data?.isSign == false ? "" : getMonth(now)}{" "}
+                    {/*data.data.isSign == false ? "" : getMonth(now)*/}{" "}
                   </td>
                   <td className="border p-2 text-left">
-                    {data?.isSign == false ? "" : getYear(now)}{" "}
+                    {/*data.data.isSign == false ? "" : getYear(now)*/}{" "}
                   </td>
                 </tr>
               </tbody>

@@ -5,7 +5,7 @@ import { Card } from "@mantine/core";
 import { Form, Select } from "antd";
 import dayjs from "dayjs";
 import numeral from "numeral";
-import { ScrollArea, Table } from "@mantine/core";
+import { ScrollArea, Table ,Divider} from "@mantine/core";
 import {
   getRedemptionCertYearList,
   getRedemptionCertPortfolioList,
@@ -15,8 +15,11 @@ import {
 import { DOWNLOAD_REDEMPTION_STATEMENT_URL } from "../../../Constants/ServiceURL";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
+import { FaChevronCircleLeft } from "react-icons/fa";
+
 export default function RedemptionCert() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { state } = useLocation();
   // redux
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
@@ -177,12 +180,92 @@ export default function RedemptionCert() {
                 </h2>
                 <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
                   {currentUGTGroup?.name} / EAC Tracking Management / Redemption
-                  Certificate
+                  Certificate / {state.portfolioName}
                 </p>
               </div>
             </div>
+            <Card shadow="md" radius="lg" className="flex" padding="xl">
+              <div className="flex  gap-3 items-center pb-4">
+                <FaChevronCircleLeft
+                  className="text-[#e2e2ac] hover:text-[#4D6A00] cursor-pointer"
+                  size="30"
+                  onClick={() =>
+                    navigate("/eac/certificate", {
+                      state: {
+                        selectedYear: trackingYear,
+                      },
+                    })
+                  }
+                />
+                  <div className="text-lg font-bold text-left">
+                    {state.portfolioName}
+                  </div>
+              </div>
+            
+              <Divider orientation="horizontal" size={"xs"} />
+            
+              <div className="flex justify-between items-center px-4">
+                <div className="text-lg font-bold text-left">
+                  {currentUGTGroup?.name} Redemption Certificate
+                </div>
 
-            <Card
+                <Form layout="horizontal" size="large">
+                  <div className="grid grid-cols-8 gap-2 items-center">
+                    <Form.Item className="col-span-2 pt-4">
+                      <Select
+                        size="large"
+                        placeholder="Year"
+                        value={trackingYear}
+                        onChange={(value) => handleChangeTrackingYear(value)}
+                        style={{ width: 140 }}
+                        showSearch
+                      >
+                        {dropdownYearList?.map((item, index) => (
+                          <Select.Option key={index} value={item}>
+                            {item}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
+                    <Form.Item className="col-span-4 pt-4">
+                      <Select
+                        size="large"
+                        placeholder="Portfolio"
+                        value={trackingPort}
+                        onChange={(value) => handleChangeTrackingPort(value)}
+                        // style={{ width: 140 }}
+                        showSearch
+                      >
+                        {dropdownPortList?.map((item, index) => (
+                          <Select.Option key={index} value={item?.portfolioId}>
+                            {item?.portfolioName}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
+                    <Form.Item className="col-span-2 pt-4">
+                      <Select
+                        size="large"
+                        placeholder="Utility"
+                        value={trackingUtility}
+                        onChange={(value) => handleChangeTrackingUtility(value)}
+                        // style={{ width: 140 }}
+                        showSearch
+                      >
+                        {dropdownUtilityList?.map((item, index) => (
+                          <Select.Option key={index} value={item?.utilityId}>
+                            {item?.utilityName}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                </Form>
+              </div>
+            </Card>
+            {/*<Card
               shadow="md"
               radius="lg"
               className="flex text-left"
@@ -248,7 +331,7 @@ export default function RedemptionCert() {
                   </div>
                 </Form>
               </div>
-            </Card>
+            </Card>*/}
 
             {redemptionCertList?.map((item, index) => (
               <Card
@@ -280,7 +363,7 @@ export default function RedemptionCert() {
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="text-sm font-normal text-[#91918A]">
-                      Total RECs
+                      Total RECs (MWh)
                     </div>
                     <div className="text-sm font-semibold">
                       {numeral(item.totalRECs).format("0,0.000000")}
@@ -314,7 +397,7 @@ export default function RedemptionCert() {
                       <Table.Tr className="text-[#848789]">
                         <Table.Th className="text-center">No.</Table.Th>
                         <Table.Th>Subscriber Name</Table.Th>
-                        <Table.Th>Redemption Statement</Table.Th>
+                        <Table.Th>Redemption Certificate</Table.Th>
                       </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>

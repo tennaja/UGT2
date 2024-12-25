@@ -47,7 +47,7 @@ const DataTable = ({
     control,
     formState: { errors },
   } = useForm();
-console.log(data)
+//console.log(data)
   const dispatch = useDispatch();
   const [orderBy, setOrderBy] = useState(null);
   const [order, setOrder] = useState("asc");

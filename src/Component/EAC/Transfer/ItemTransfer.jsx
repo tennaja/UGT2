@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Input, ScrollArea, Table, Modal } from "@mantine/core";
+import { Button, Card, Input, ScrollArea, Table, Modal ,Textarea} from "@mantine/core";
 import numeral from "numeral";
 import AlmostDone from "../../assets/done.png";
 import ModalFail from "../../../Component/Control/Modal/ModalFail";
@@ -10,6 +10,11 @@ import dayjs from "dayjs";
 import StatusLabel from "../../Control/StatusLabel";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
+import { USER_GROUP_ID } from "../../../Constants/Constants";
+import { EAC_ISSUE_SYNC_TRANSFER_ITEM } from "../../../Constants/ServiceURL";
+import axios from "axios";
+import { getHeaderConfig } from "../../../Utils/FuncUtils";
+import SettlementTypeLabel from "../../Control/SettlementTypeLabel";
 
 const ItemTransfer = (props) => {
   const dispatch = useDispatch();
@@ -19,12 +24,12 @@ const ItemTransfer = (props) => {
     setTransferData,
     ugtGroupId,
     portfolioID,
-    portfolioName,
-    period,
     year,
     month,
+    fetchTransferRequestInfo,
   } = props;
 
+  const userData = useSelector((state) => state.login.userobj);
   const [selectedItemTransfer, setSelectedItemTransfer] = useState({});
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [showModalComplete, setShowModalComplete] = useState(false);
@@ -57,7 +62,11 @@ const ItemTransfer = (props) => {
           {
             sourceAccount: `/accounts/${selectedItemTransfer.sourceAccountCode}`, //UGT TRADE Account
             destinationAccount: `/accounts/${selectedItemTransfer.destinationAccountCode}`, //UGT EGAT TRADE
-            volume: numeral(selectedItemTransfer.totalConsumption)
+            volume: numeral(
+              numeral(selectedItemTransfer.totalRecs / 1000).format(
+                "0.000000"
+              ) * 1000
+            )
               .format("0.000000")
               .toString(), // ส่งไปเป็น kWh
             notes: selectedItemTransfer.note,
@@ -68,7 +77,7 @@ const ItemTransfer = (props) => {
       transactionNotes: "",
     };
 
-    console.log("Reservation Data", reservationData);
+    // console.log("reservationData", reservationData);
     dispatch(createReservation(reservationData));
   };
 
@@ -79,16 +88,13 @@ const ItemTransfer = (props) => {
   useEffect(() => {
     if (isLoading) {
       if (createReservationResponse?.status == true) {
-        setShowModalComplete(true);
+        //setShowModalComplete(true);
+
+        // call schedule-sync-back/TransferItem
+        syncTransferItem();
 
         // กลับไปหน้า Info เพื่อ refresh ข้อมูลใหม่
-        navigate("/eac/transfer/info", {
-          state: {
-            portfolioID: portfolioID,
-            portfolioName: portfolioName,
-            period: period,
-          },
-        });
+        fetchTransferRequestInfo();
       } else if (createReservationResponse?.status == false) {
         setModalFailContent(createReservationResponse?.message ?? null);
         setShowModalFail(true);
@@ -96,9 +102,43 @@ const ItemTransfer = (props) => {
     }
   }, [createReservationResponse]);
 
+  const syncTransferItem = async () => {
+    const params = {
+      ugtGroupId: ugtGroupId,
+      portfolioId: portfolioID,
+      year: year,
+      month: month,
+    };
+
+    const res = await axios.get(`${EAC_ISSUE_SYNC_TRANSFER_ITEM}`, {
+      params: params,
+      ...getHeaderConfig(),
+      validateStatus: function (status) {
+        return status >= 200 && status < 500;
+      },
+    });
+
+    return res;
+  };
+
   return (
     <>
       {transferData?.map((item, index) => {
+        // control action status
+        let canSendTransfer = false;
+
+        if (
+          // check user group
+          userData?.userGroup?.id == USER_GROUP_ID.MEA_CONTRACTOR_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.PEA_CONTRACTOR_MNG
+        ) {
+          canSendTransfer = false;
+        } else {
+          // check status
+          canSendTransfer =
+            item.status?.toLowerCase() == "completed" ? false : true;
+        }
+
         return (
           <Card
             key={index}
@@ -117,23 +157,31 @@ const ItemTransfer = (props) => {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-sm font-normal text-[#91918A]">
+              <div className="text-sm font-normal text-[#91918A]">
+                  Assigned Utility
+                </div>
+                <div className="text-sm font-semibold">
+                  {item.assignedUtility}
+                </div>
+                
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2  gap-8 mt-3">
+              <div className="flex flex-col gap-2">
+              <div className="text-sm font-normal text-[#91918A]">
                   Destination Account
                 </div>
                 <div className="text-sm font-semibold">
                   {item.destinationAccount}
                 </div>
               </div>
-            </div>
-
-            <div className="grid grid-cols-2  gap-8 mt-3">
-              <div></div>
               <div className="flex flex-col gap-2">
                 <div className="text-sm font-normal text-[#91918A]">
-                  Assigned Utility
+                  Destination Account Code
                 </div>
                 <div className="text-sm font-semibold">
-                  {item.assignedUtility}
+                  {item.destinationAccountCode}
                 </div>
               </div>
             </div>
@@ -149,10 +197,10 @@ const ItemTransfer = (props) => {
               </div>
               <div className="flex flex-col gap-2">
                 <div className="text-sm font-normal text-[#91918A]">
-                  Total Consumption
+                  Total Load
                 </div>
                 <div className="text-sm font-semibold">
-                  {numeral(item.totalConsumption).format("0,000.00")} kWh
+                  {numeral(item.totalConsumption).format("0,000.000")} kWh ({numeral(item.totalConsumption * 0.001).format("0,000.000000")} Mwh) 
                 </div>
               </div>
             </div>
@@ -179,25 +227,31 @@ const ItemTransfer = (props) => {
             <div className="grid grid-cols-2  gap-8 mt-3">
               <div className="flex flex-col gap-2">
                 <div className="text-sm font-normal text-[#91918A]">Note</div>
-                <div className="text-sm font-semibold">
-                  <Input
-                    size="md"
-                    value={item.note}
-                    onChange={(e) => {
-                      let updatedItem = transferData.map((row) => {
-                        if (
-                          item.destinationAccountCode ===
-                          row.destinationAccountCode
-                        ) {
-                          return { ...row, note: e.target.value };
-                        } else {
-                          return row;
-                        }
-                      });
-                      setTransferData(updatedItem);
-                    }}
-                    disabled={item.status?.toLowerCase() == "completed"}
-                  />
+                <div>
+                  {canSendTransfer ? (
+                    <Textarea
+                      size="md"
+                      value={item.note}
+                      rows={4}
+                      onChange={(e) => {
+                        let updatedItem = transferData.map((row) => {
+                          if (
+                            item.destinationAccountCode ===
+                            row.destinationAccountCode
+                          ) {
+                            return { ...row, note: e.target.value };
+                          } else {
+                            return row;
+                          }
+                        });
+                        setTransferData(updatedItem);
+                      }}
+                    />
+                  ) : (
+                    <div className="text-sm font-semibold">
+                      {item.note || "-"}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -205,10 +259,11 @@ const ItemTransfer = (props) => {
             <ScrollArea w="100%" h={400} className="mt-10">
               <Table stickyHeader verticalSpacing="sm">
                 <Table.Thead>
-                  <Table.Tr className="text-[#848789]">
+                  <Table.Tr className="bg-[#F4F6F9] text-[#878787]">
                     <Table.Th>Period</Table.Th>
                     <Table.Th>Device Name</Table.Th>
-                    <Table.Th className="text-right">Volume (MWh)</Table.Th>
+                    <Table.Th className="text-center">Settlement Type</Table.Th>
+                    <Table.Th className="text-center">Volume (MWh)</Table.Th>
                     <Table.Th className="text-center">Status</Table.Th>
                     {/* <Table.Th>Remark</Table.Th> */}
                   </Table.Tr>
@@ -222,11 +277,18 @@ const ItemTransfer = (props) => {
                       <Table.Td style={{ width: "30%" }}>
                         {row.deviceName}
                       </Table.Td>
-                      <Table.Td style={{ width: "30%" }} className="text-right">
+                      <Table.Td style={{ width: "20%" }} className="text-center">
+                      <SettlementTypeLabel
+                          settlementType={/*row.status == "" ? "Pending" : row.status*/true}
+                          type="xs"
+                          inventory={1}
+                        />
+                      </Table.Td>
+                      <Table.Td style={{ width: "20%" }} className="text-right">
                         {numeral(row?.volume / 1000).format("0,000.000000")}
                       </Table.Td>
                       <Table.Td
-                        style={{ width: "20%" }}
+                        style={{ width: "25%" }}
                         className="text-center"
                       >
                         <StatusLabel
@@ -252,18 +314,14 @@ const ItemTransfer = (props) => {
                     {numeral(item.totalRecs / 1000).format("0,000.000000")}
                   </Table.Th>
                   <Table.Th style={{ width: "20%" }} className="text-center">
-                    <Button
-                      className={`text-white px-8 
-                        ${
-                          item?.status == "Completed"
-                            ? "bg-[#E0E2EB] cursor-not-allowed"
-                            : "bg-[#87BE33]"
-                        }`}
-                      onClick={() => handleClickTransfer(item)}
-                      disabled={item?.status == "Completed"}
-                    >
-                      Transfer
-                    </Button>
+                    {canSendTransfer && (
+                      <Button
+                        className={`text-white px-8 bg-[#87BE33]`}
+                        onClick={() => handleClickTransfer(item)}
+                      >
+                        Transfer
+                      </Button>
+                    )}
                   </Table.Th>
                 </Table.Tr>
               </Table.Thead>
@@ -295,7 +353,7 @@ const ItemTransfer = (props) => {
               className="text-white bg-[#87BE33] mt-12 px-10"
               onClick={() => handleConfirmTransfer()}
             >
-              Yes, Transfer RECs
+              Transfer RECs
             </Button>
           </div>
         </div>
