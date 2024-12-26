@@ -197,7 +197,7 @@ const Overview = (props) => {
   };
 
   const convertChartData = (overviewChartData, convertUnit) => {
-    //console.log(overviewChartData)
+    console.log(overviewChartData)
     const new_overviewChartData = overviewChartData.map((item) => {
       const new_item = {
         year: item.year,
@@ -512,7 +512,7 @@ const Overview = (props) => {
                         fill="#70B2FF"
                       />
                       <Bar
-                        dataKey="grid"
+                        dataKey="unmatchedEnergy"
                         stackId="a"
                         barSize={25}
                         fill="#B0BAC9"
