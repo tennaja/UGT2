@@ -24,7 +24,7 @@ export default function PortfolioTableCer({ portData,search }) {
       });
     };
 
-    if (data?.status.toLowerCase() !== "unavailable") {
+    if (data?.status.toLowerCase() !== "completed") {
       // ใช้จริงอันนี้นะ
       // @30Sep2024 ทุกสถานะที่ไม่ใช่ Unavailable สามารถเข้าดูรายละเอียดได้
       return (
