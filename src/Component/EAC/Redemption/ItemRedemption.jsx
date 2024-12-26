@@ -107,6 +107,8 @@ const ItemRedemption = (props) => {
     window.open(URL, "_blank");
   };
 
+  console.log(redemptionData)
+
   return (
     <>
       {redemptionData?.map((item, index) => {
@@ -121,8 +123,16 @@ const ItemRedemption = (props) => {
           canSendRedeem = false;
         } else {
           // check status
-          canSendRedeem =
+          if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || 
+            userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+          ){
+            canSendRedeem =
             item.status?.toLowerCase() == "completed" ? false : true;
+          }
+          else{
+            canSendRedeem = false;
+          }
+          
         }
 
         // canSendRedeem = true; // for test only

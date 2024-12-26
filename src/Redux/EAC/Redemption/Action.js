@@ -258,10 +258,12 @@ export const _getRedemptionCertList = (data) => {
 
 export const getRedemptionCertList = (ugtGroupId, year, portfolioId, utilityId) => {
   const URL = `${REDEMPTION_CERT_LIST_URL}?ugtGroupId=${ugtGroupId}&year=${year}&portfolioId=${portfolioId}&utilityId=${utilityId}`;
+  console.log(URL)
 
   return async (dispatch) => {
     await axios.get(URL, { ...getHeaderConfig() }).then(
       (response) => {
+        console.log(response.data)
         dispatch(_getRedemptionCertList(response.data));
       },
       (error) => {

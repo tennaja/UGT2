@@ -14,6 +14,7 @@ import {
 } from "../../../Redux/EAC/Redemption/Action";
 import { DOWNLOAD_REDEMPTION_STATEMENT_URL } from "../../../Constants/ServiceURL";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { USER_GROUP_ID } from "../../../Constants/Constants";
 
 import { FaChevronCircleLeft } from "react-icons/fa";
 
@@ -22,6 +23,7 @@ export default function RedemptionCert() {
   const navigate = useNavigate();
   const { state } = useLocation();
   // redux
+  const userData = useSelector((state) => state.login.userobj);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
 
   console.log(currentUGTGroup)
@@ -37,16 +39,16 @@ export default function RedemptionCert() {
     (state) => state.redeem?.redemptionCertUtilityList
   );
   const certListData = useSelector((state) => state.redeem?.redemptionCertList);
-
+  console.log(state.portfolioID)
   // state
   const [trackingYear, setTrackingYear] = useState("");
-  const [trackingPort, setTrackingPort] = useState("");
+  const [trackingPort, setTrackingPort] = useState(state.portfolioID);
   const [trackingUtility, setTrackingUtility] = useState("");
   const [dropdownYearList, setDropdownYearList] = useState([]);
   const [dropdownPortList, setDropdownPortList] = useState([]);
   const [dropdownUtilityList, setDropdownUtilityList] = useState([]);
   const [redemptionCertList, setRedemptionCertList] = useState([]);
-
+console.log(certListData)
   useEffect(() => {
     // get year list
     console.log(currentUGTGroup)
@@ -68,6 +70,7 @@ export default function RedemptionCert() {
   useEffect(() => {
     // get utility list
     if (currentUGTGroup?.id !== undefined && trackingYear && trackingPort) {
+      console.log("Get Utility",trackingPort)
       dispatch(
         getRedemptionCertUtilityList(
           currentUGTGroup?.id,
@@ -88,22 +91,23 @@ export default function RedemptionCert() {
 
   useEffect(() => {
     // get redemption certificate list
+    console.log(currentUGTGroup?.id,trackingYear,trackingUtility)
     if (
       currentUGTGroup?.id !== undefined &&
       trackingYear &&
-      trackingPort &&
       trackingUtility
     ) {
+      console.log("Change Detail Cer",currentUGTGroup?.id,trackingYear,)
       dispatch(
         getRedemptionCertList(
           currentUGTGroup?.id,
           trackingYear,
-          trackingPort,
+          state.portfolioID,
           trackingUtility
         )
       );
     }
-  }, [currentUGTGroup, trackingYear, trackingPort, trackingUtility]);
+  }, [currentUGTGroup, trackingYear, trackingUtility]);
 
   useEffect(() => {
     // set default year dropdown with latest
@@ -119,7 +123,7 @@ export default function RedemptionCert() {
 
   console.log(yearListData)
 
-  useEffect(() => {
+  /*useEffect(() => {
     // set default port dropdown with latest
     if (portListData?.length > 0) {
       const latest = portListData.slice(-1)[0];
@@ -129,13 +133,14 @@ export default function RedemptionCert() {
       setTrackingPort("");
       setDropdownPortList([]);
     }
-  }, [portListData]);
+  }, [portListData]);*/
 
   useEffect(() => {
     // set default utility dropdown with latest
     if (utilityListData?.length > 0) {
       const latest = utilityListData.slice(-1)[0];
-      setTrackingUtility(latest?.utilityId);
+      setTrackingUtility(1)
+      //setTrackingUtility(latest?.utilityId);
       setDropdownUtilityList(utilityListData);
     } else {
       setTrackingUtility("");
@@ -144,6 +149,7 @@ export default function RedemptionCert() {
   }, [utilityListData]);
 
   useEffect(() => {
+    console.log(certListData)
     if (certListData?.length > 0) {
       setRedemptionCertList(certListData);
     } else {
@@ -155,9 +161,9 @@ export default function RedemptionCert() {
     setTrackingYear(year);
   };
 
-  const handleChangeTrackingPort = (portId) => {
+  /*const handleChangeTrackingPort = (portId) => {
     setTrackingPort(portId);
-  };
+  };*/
 
   const handleChangeTrackingUtility = (utilityId) => {
     setTrackingUtility(utilityId);
@@ -167,6 +173,19 @@ export default function RedemptionCert() {
     const URL = `${DOWNLOAD_REDEMPTION_STATEMENT_URL}?transactionUid=${transactionUid}`;
     window.open(URL, "_blank");
   };
+
+  const checkRoleDownloadCer=()=>{
+    if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || 
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+    ){
+      return false
+    }
+    else{
+      return true
+    }
+  }
+
+  console.log(trackingPort)
 
   return (
     <div>
@@ -211,7 +230,7 @@ export default function RedemptionCert() {
 
                 <Form layout="horizontal" size="large">
                   <div className="grid grid-cols-8 gap-2 items-center">
-                    <Form.Item className="col-span-2 pt-4">
+                    <Form.Item className="col-span-2 pt-4 col-start-5">
                       <Select
                         size="large"
                         placeholder="Year"
@@ -228,7 +247,7 @@ export default function RedemptionCert() {
                       </Select>
                     </Form.Item>
 
-                    <Form.Item className="col-span-4 pt-4">
+                    {/*<Form.Item className="col-span-4 pt-4">
                       <Select
                         size="large"
                         placeholder="Portfolio"
@@ -243,9 +262,9 @@ export default function RedemptionCert() {
                           </Select.Option>
                         ))}
                       </Select>
-                    </Form.Item>
+                    </Form.Item>*/}
 
-                    <Form.Item className="col-span-2 pt-4">
+                    <Form.Item className="col-span-2 pt-4 col-start-7">
                       <Select
                         size="large"
                         placeholder="Utility"
@@ -413,7 +432,7 @@ export default function RedemptionCert() {
                             {row?.subscriberName}
                           </Table.Td>
                           <Table.Td>
-                            <a
+                            {checkRoleDownloadCer() && <a
                               href="javascript:void(0)"
                               className={`no-underline cursor-pointer text-PRIMARY_TEXT font-semibold`}
                               onClick={() =>
@@ -421,7 +440,7 @@ export default function RedemptionCert() {
                               }
                             >
                               {"Download"}
-                            </a>
+                            </a>}
                           </Table.Td>
                         </Table.Tr>
                       ))}

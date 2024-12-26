@@ -26,6 +26,7 @@ import {
   EAC_ISSUE_REQUEST_YEAR_MONTH_LIST_URL,
   EAC_ISSUE_SYNC_ISSUE_ITEM,
   EAC_ISSUE_SYNC_ISSUE_STATUS,
+  EAC_ISSUE_REQUEST_LAST_UPDATE_SYNC_STATUS
 } from "../../../../Constants/ServiceURL";
 import { EAC_ISSUE } from "../../../../Constants/WebURL";
 import { getHeaderConfig } from "../../../../Utils/FuncUtils";
@@ -82,6 +83,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
   const [isSyncing, syncHandlers] = useDisclosure();
   const [showModalSyncSuccess, modalSyncSuccessHandlers] = useDisclosure();
   const [showModalSyncFail, modalSyncFailHandlers] = useDisclosure();
+  const [lastedUpdate,setLastUpdate] = useState("DD/MM/YYYY 00:00")
 
   const handleChangeTrackingYear = (year) => {
     // setTrackingYear(year);
@@ -112,6 +114,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined && trackingMonth !== undefined)
       getIssueTransaction();
+      getLastedUpdateSyncStatus()
   }, [currentUGTGroup, trackingMonth, trackingYear]);
 
   useEffect(() => {
@@ -293,6 +296,23 @@ export default function IssueInfo({ portfolioData, deviceData }) {
     setTotalInventory(sum / 1000);
   }
 
+  async function getLastedUpdateSyncStatus(){
+    try{
+      const URL = `${EAC_ISSUE_REQUEST_LAST_UPDATE_SYNC_STATUS}?portfolioId=${portfolio}&deviceId=${device}&year=${trackingYear}&month=${trackingMonth}`
+      await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+        if(response.status == 200){
+        console.log(response.data)
+          setLastUpdate(response.data)
+        }
+    }, (error) => {
+        console.log(error)
+    });
+    }
+    catch(error){
+
+    }
+  }
+
 
   return (
     <div>
@@ -388,6 +408,9 @@ export default function IssueInfo({ portfolioData, deviceData }) {
               </Button>
             </div>
           </Form>
+        </div>
+        <div className="text-right w-full text-xs text-[#848789]">
+          <label className="font-normal">{"Last Uploaded in "}</label><label className="font-bold ml-1">{" "+lastedUpdate}</label>
         </div>
       </Card>
 

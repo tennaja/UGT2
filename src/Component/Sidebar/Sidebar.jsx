@@ -190,14 +190,25 @@ const Sidebar2 = ({ children }) => {
     if (menuList?.length > 0) {
       let data = menuList;
   
-      if (
+      if(userData?.userGroup?.id == USER_GROUP_ID?.UGT_REGISTANT_SIGNATORY || 
+        userData?.userGroup?.id == USER_GROUP_ID?.UGT_REGISTANT_SIGNATORY
+      ){
+        
+        data = data.filter((item) => item.menuId !== "3" && item.menuId !== "4");
+        
+      }
+      else if (
         userData?.userGroup?.id !== USER_GROUP_ID?.PORTFOLIO_MNG &&
         userData?.userGroup?.id !== USER_GROUP_ID?.ALL_MODULE_VIEWER && 
         userData?.userGroup?.id !== USER_GROUP_ID?.WHOLE_SALEER_ADMIN 
       ) {
+        
         data = data.filter((item) => item.menuId !== "4" && item.menuId !== "6");
+        
       } else if (userData?.userGroup?.id === USER_GROUP_ID?.ALL_MODULE_VIEWER) {
+        
         data = data.filter((item) => item.menuId !== "6");
+        
       }
       
       // Additional condition for EGAT_DEVICE_MNG user group
@@ -205,7 +216,9 @@ const Sidebar2 = ({ children }) => {
           userData?.userGroup?.id === USER_GROUP_ID?.MEA_DEVICE_MNG ||
           userData?.userGroup?.id === USER_GROUP_ID?.PEA_DEVICE_MNG
         ) {
+         
         data = data.filter((item) => item.menuId !== "3");
+        
       }
   
       setMainMenu(data);

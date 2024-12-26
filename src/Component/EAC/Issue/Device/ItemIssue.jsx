@@ -171,8 +171,17 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device,year,month
       canSendIssue = false;
       canUpload = false;
     } else {
-      canSendIssue = true;
-      canUpload = true;
+        if (
+          userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+          userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+        ) {
+            canSendIssue = true;
+            canUpload = true;
+          }
+         else{
+            canSendIssue = false;
+            canUpload = false;
+          }
     }
   }
 
@@ -946,7 +955,20 @@ const uploadPdf = async (pdfResult) => {
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-sm font-normal text-[#91918A]">
-            Matched Generation
+          Actual Generation Matched
+          </div>
+          <div className="text-sm font-semibold">
+            {numeral(issueTransactionData?.matchedGeneration).format("0,0.000")}{" "}
+            kWh (
+            {numeral(
+              numeral(issueTransactionData?.matchedGeneration).value() / 1000
+            ).format("0,0.000000")}{" "}
+            MWh)
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="text-sm font-normal text-[#91918A]">
+          Inventory Matched
           </div>
           <div className="text-sm font-semibold">
             {numeral(issueTransactionData?.matchedGeneration).format("0,0.000")}{" "}

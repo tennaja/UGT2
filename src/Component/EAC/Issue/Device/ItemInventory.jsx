@@ -171,8 +171,17 @@ const ItemInventory = ({
       canSendIssue = false;
       canUpload = false;
     } else {
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+      ) {
       canSendIssue = true;
       canUpload = true;
+      }
+      else{
+        canSendIssue = false;
+        canUpload = false;
+      }
     }
   }
 

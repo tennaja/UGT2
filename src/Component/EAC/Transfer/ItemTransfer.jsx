@@ -134,9 +134,18 @@ const ItemTransfer = (props) => {
         ) {
           canSendTransfer = false;
         } else {
+          if (
+            // check user group
+            userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+            userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+          ) {
           // check status
           canSendTransfer =
             item.status?.toLowerCase() == "completed" ? false : true;
+          }
+          else{
+            canSendTransfer = false;
+          }
         }
 
         return (
