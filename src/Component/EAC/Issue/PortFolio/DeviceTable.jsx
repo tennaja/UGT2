@@ -106,7 +106,7 @@ export default function DeviceTable({
           highlightTag={Highlight}
           searchWords={[searchValue]}
           autoEscape={true}
-          textToHighlight={numeral(row.totalGeneration).format("0,0.00")}
+          textToHighlight={numeral(row.totalGeneration).format("0,0.000")}
         />
 
         // <span>{numeral(row.totalGeneration).format("0,0.00")}</span>
@@ -121,7 +121,7 @@ export default function DeviceTable({
           highlightTag={Highlight}
           searchWords={[searchValue]}
           autoEscape={true}
-          textToHighlight={numeral(row.matchedGeneration).format("0,0.00")}
+          textToHighlight={numeral(row.matchedGeneration).format("0,0.000")}
         />
 
         /*   <span>

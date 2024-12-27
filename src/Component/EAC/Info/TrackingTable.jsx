@@ -57,7 +57,7 @@ export default function TrackingTable() {
   const [monthList, setMonthList] = useState([]);
   // const [trackingYear, setTrackingYear] = useState(2024);
   // const [trackingMonth, setTrackingMonth] = useState();
-
+  
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
       getPortData();
@@ -293,7 +293,7 @@ export default function TrackingTable() {
             else return data;
           }} */
           autoEscape={true}
-          textToHighlight={numeral(row.totalGeneration).format("0,0.00")}
+          textToHighlight={numeral(row.totalGeneration).format("0,0.000")}
         />
         // <span>{numeral(row.totalGeneration).format("0,0.00")}</span>
       ),
@@ -307,13 +307,13 @@ export default function TrackingTable() {
           highlightTag={Highlight}
           searchWords={[value]}
           autoEscape={true}
-          textToHighlight={numeral(row.matchedGeneration).format("0,0.00")}
+          textToHighlight={numeral(row.matchedGeneration).format("0,0.000")}
         />
       ),
     },
     {
       id: "mechanism",
-      label: "Inventory Match",
+      label: "Inventory Match  (kWh)",
       align: "center",
       render: (row) => (
         <Highlighter
@@ -384,7 +384,7 @@ export default function TrackingTable() {
   // ]);
 
   const [portfolio, setPortfolio] = useState(portData);
-
+  console.log(portfolio)
   return (
     <Card shadow="md" radius="lg" className="flex" padding="xl">
       <div className="flex justify-between">

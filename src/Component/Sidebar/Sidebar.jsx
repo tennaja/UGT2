@@ -191,11 +191,17 @@ const Sidebar2 = ({ children }) => {
       let data = menuList;
   
       if(userData?.userGroup?.id == USER_GROUP_ID?.UGT_REGISTANT_SIGNATORY || 
-        userData?.userGroup?.id == USER_GROUP_ID?.UGT_REGISTANT_SIGNATORY
+        userData?.userGroup?.id == USER_GROUP_ID?.UGT_REGISTANT_VERIFIER
       ){
         
         data = data.filter((item) => item.menuId !== "3" && item.menuId !== "4");
         
+      }
+      else if(userData?.userGroup?.id == USER_GROUP_ID?.PEA_SUBSCRIBER_MNG || 
+        userData?.userGroup?.id == USER_GROUP_ID?.MEA_SUBSCRIBER_MNG || 
+        userData?.userGroup?.id == USER_GROUP_ID?.EGAT_SUBSCRIBER_MNG
+      ){
+        data = data.filter((item) => item.menuId !== "4");
       }
       else if (
         userData?.userGroup?.id !== USER_GROUP_ID?.PORTFOLIO_MNG &&
@@ -205,11 +211,11 @@ const Sidebar2 = ({ children }) => {
         
         data = data.filter((item) => item.menuId !== "4" && item.menuId !== "6");
         
-      } else if (userData?.userGroup?.id === USER_GROUP_ID?.ALL_MODULE_VIEWER) {
+      } /*else if (userData?.userGroup?.id === USER_GROUP_ID?.ALL_MODULE_VIEWER) {
         
         data = data.filter((item) => item.menuId !== "6");
         
-      }
+      }*/
       
       // Additional condition for EGAT_DEVICE_MNG user group
       if (userData?.userGroup?.id === USER_GROUP_ID?.EGAT_DEVICE_MNG ||

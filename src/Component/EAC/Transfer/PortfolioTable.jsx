@@ -48,6 +48,8 @@ export default function PortfolioTable({ portData, search }) {
     <strong className="bg-yellow-200">{children}</strong>
   );
 
+  console.log(portData)
+
   const columns = [
     {
       id: "portfolioName",
@@ -64,7 +66,7 @@ export default function PortfolioTable({ portData, search }) {
     },
     {
       id: "numberDevices",
-      label: "Number of Devices",
+      label: "Number of Desrination Accounts",
       align: "center",
       render: (row) => (
         <Highlighter
@@ -74,7 +76,7 @@ export default function PortfolioTable({ portData, search }) {
           textToHighlight={(row.numberDevices ?? "").toString()}
         />
       ),
-    },
+    }/*,
     {
       id: "numberSubscribers",
       label: "Number of Subscribers",
@@ -87,7 +89,7 @@ export default function PortfolioTable({ portData, search }) {
           textToHighlight={(row.numberSubscribers ?? "").toString()}
         />
       ),
-    },
+    }*/,
     {
       id: "mechanism",
       label: "Mechanism",
@@ -103,7 +105,7 @@ export default function PortfolioTable({ portData, search }) {
     },
     {
       id: "currentSettlement",
-      label: "Current Settlement",
+      label: "Current Period",
       align: "center",
       render: (row) => {
         return (
