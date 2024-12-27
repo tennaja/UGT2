@@ -275,7 +275,18 @@ const Sidebar2 = ({ children }) => {
         }
       }
       if (selectedMenuID == 6) {
-        setSubmenu(currentSubMenuList);
+        if (
+          userData?.userGroup?.id == USER_GROUP_ID?.UGT_REGISTANT_VERIFIER ||
+          userData?.userGroup?.id == USER_GROUP_ID?.UGT_REGISTANT_SIGNATORY 
+        ) {
+          let data = currentSubMenuList;
+          data = data.filter((item) => item.id !== 5);
+          setSubmenu(data);
+        }
+        else{
+          setSubmenu(currentSubMenuList);
+        }
+        
       }
       if(selectedMenuID == 5){
         setSubmenu(currentSubMenuList)
