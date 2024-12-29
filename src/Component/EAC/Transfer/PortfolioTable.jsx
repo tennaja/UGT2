@@ -73,7 +73,7 @@ export default function PortfolioTable({ portData, search }) {
           highlightTag={Highlight}
           searchWords={[search]}
           autoEscape={true}
-          textToHighlight={(row.numberDevices ?? "").toString()}
+          textToHighlight={(row.numberOfDestinationAccounts ?? "").toString()}
         />
       ),
     }/*,

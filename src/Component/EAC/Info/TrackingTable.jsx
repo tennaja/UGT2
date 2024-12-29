@@ -307,7 +307,7 @@ export default function TrackingTable() {
           highlightTag={Highlight}
           searchWords={[value]}
           autoEscape={true}
-          textToHighlight={numeral(row.matchedGeneration).format("0,0.000")}
+          textToHighlight={numeral(row.actualGenerationMatched).format("0,0.000")}
         />
       ),
     },
@@ -320,7 +320,7 @@ export default function TrackingTable() {
           highlightTag={Highlight}
           searchWords={[value]}
           autoEscape={true}
-          textToHighlight={row.mechanism}
+          textToHighlight={numeral(row.inventoryMatched).format("0,0.000")}
         />
       ),
       // <span>{row.mechanism}</span>,
