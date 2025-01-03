@@ -275,7 +275,7 @@ const Sidebar2 = ({ children }) => {
         }
       }
       if (selectedMenuID == 6) {
-        if (
+        /*if (
           userData?.userGroup?.id == USER_GROUP_ID?.UGT_REGISTANT_VERIFIER ||
           userData?.userGroup?.id == USER_GROUP_ID?.UGT_REGISTANT_SIGNATORY 
         ) {
@@ -285,8 +285,8 @@ const Sidebar2 = ({ children }) => {
         }
         else{
           setSubmenu(currentSubMenuList);
-        }
-        
+        }*/
+        setSubmenu(currentSubMenuList);
       }
       if(selectedMenuID == 5){
         setSubmenu(currentSubMenuList)

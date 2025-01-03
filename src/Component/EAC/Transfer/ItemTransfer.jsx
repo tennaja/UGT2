@@ -121,6 +121,9 @@ const ItemTransfer = (props) => {
     return res;
   };
 
+
+  console.log(transferData)
+
   return (
     <>
       {transferData?.map((item, index) => {
@@ -209,7 +212,7 @@ const ItemTransfer = (props) => {
                   Total Load
                 </div>
                 <div className="text-sm font-semibold">
-                  {numeral(item.totalConsumption).format("0,000.000")} kWh ({numeral(item.totalConsumption * 0.001).format("0,000.000000")} Mwh) 
+                  {numeral(item.totalConsumption).format("0,000.000")} kWh ({numeral(item.totalConsumption * 0.001).format("0,000.000000")} MWh) 
                 </div>
               </div>
             </div>
@@ -217,7 +220,7 @@ const ItemTransfer = (props) => {
             <div className="grid grid-cols-2  gap-8 mt-3">
               <div className="flex flex-col gap-2">
                 <div className="text-sm font-normal text-[#91918A]">
-                  (% Match)
+                   Matched
                 </div>
                 <div className="text-sm font-semibold">
                   {item.matchedPercentage}
@@ -288,7 +291,7 @@ const ItemTransfer = (props) => {
                       </Table.Td>
                       <Table.Td style={{ width: "20%" }} className="text-center">
                       <SettlementTypeLabel
-                          settlementType={/*row.status == "" ? "Pending" : row.status*/true}
+                          settlementType={row.settlementType == "Actual" ? false:true}
                           type="xs"
                           inventory={1}
                         />

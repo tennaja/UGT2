@@ -831,7 +831,7 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device,year,month
         .catch(reject);
     });
   };
-  console.log(setSign)
+  console.log(issueTransactionData)
 
 
   const handleTakeActionSignAndSubmit = async () => {
@@ -958,23 +958,26 @@ const uploadPdf = async (pdfResult) => {
           Actual Generation Matched
           </div>
           <div className="text-sm font-semibold">
-            {numeral(issueTransactionData?.matchedGeneration).format("0,0.000")}{" "}
+            {numeral(issueTransactionData?.totalGeneration).format("0,0.000")}{" "}
             kWh (
             {numeral(
-              numeral(issueTransactionData?.matchedGeneration).value() / 1000
+              numeral(issueTransactionData?.totalGeneration).value() / 1000
             ).format("0,0.000000")}{" "}
             MWh)
           </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-sm font-normal text-[#91918A]">
           Inventory Matched
           </div>
           <div className="text-sm font-semibold">
-            {numeral(issueTransactionData?.matchedGeneration).format("0,0.000")}{" "}
+            {numeral(issueTransactionData?.inventoryMatched).format("0,0.000")}{" "}
             kWh (
             {numeral(
-              numeral(issueTransactionData?.matchedGeneration).value() / 1000
+              numeral(issueTransactionData?.inventoryMatched).value() / 1000
             ).format("0,0.000000")}{" "}
             MWh)
           </div>

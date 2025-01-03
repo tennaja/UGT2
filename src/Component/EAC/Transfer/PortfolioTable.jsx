@@ -66,7 +66,7 @@ export default function PortfolioTable({ portData, search }) {
     },
     {
       id: "numberDevices",
-      label: "Number of Desrination Accounts",
+      label: "Number of Destination Accounts",
       align: "center",
       render: (row) => (
         <Highlighter

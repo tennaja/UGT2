@@ -47,6 +47,7 @@ export default function PortfolioTable({ portData, searchValue }) {
       id: "portfolioName",
       label: "Portfolio Name",
       align: "left",
+      width: "300px",
       render: (row) => (
         <Highlighter
           highlightTag={Highlight}

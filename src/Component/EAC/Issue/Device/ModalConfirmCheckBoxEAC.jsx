@@ -46,14 +46,42 @@ const ModalConfirmCheckBoxEAC = (props) => {
   };
 
   const getButtonColor = () => {
-    switch (buttonTypeColor) {
-      case "primary":
-        return "bg-[#87BE33]";
-      case "danger":
-        return "bg-[#EF4835]";
+    if(showCheckBox == false){
+      switch (buttonTypeColor) {
+        case "primary":
+          return "bg-[#87BE33]";
+        case "danger":
+          return "bg-[#EF4835]";
 
-      default:
-        return "bg-[#87BE33]";
+        default:
+          return "bg-[#87BE33]";
+      }
+    }
+    else if(showCheckBox == true){
+      switch (buttonTypeColor) {
+        case "primary":
+          if(isCheckBox){
+            return "bg-[#87BE33]";
+          }
+          else{
+            return "bg-[#cbdeaf]";
+          }
+        case "danger":
+          if(isCheckBox){
+            return "bg-[#EF4835]";
+          }
+          else{
+            return "bg-[#e6a29a]";
+          }
+
+        default:
+          if(isCheckBox){
+            return "bg-[#87BE33]";
+          }
+          else{
+            return "bg-[#cbdeaf]";
+          }
+      }
     }
   };
 
@@ -68,6 +96,7 @@ const ModalConfirmCheckBoxEAC = (props) => {
         return "hover:bg-[#4D6A00]";
     }
   };
+  
   return (
     <>
       <Modal

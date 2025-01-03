@@ -313,7 +313,7 @@ export default function TrackingTable() {
     },
     {
       id: "mechanism",
-      label: "Inventory Match  (kWh)",
+      label: "Inventory Matched (kWh)",
       align: "center",
       render: (row) => (
         <Highlighter

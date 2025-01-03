@@ -46,6 +46,7 @@ export default function DeviceTable({
       id: "deviceName",
       label: "Device Name",
       align: "left",
+      width: "300px",
       render: (row) => (
         <div className="flex flex-col gap-2">
           <Highlighter
@@ -55,12 +56,14 @@ export default function DeviceTable({
             textToHighlight={row.deviceName}
           />
           {row.deviceCode && (
-            <Highlighter
-              highlightTag={Highlight}
-              searchWords={[searchValue]}
-              autoEscape={true}
-              textToHighlight={row.deviceCode}
-            />
+            <label className="text-[#2e8d8d] bg-[#f0f8ff] rounded w-max px-2 py-1 mt-1 text-xs font-normal">
+              <Highlighter
+                highlightTag={Highlight}
+                searchWords={[searchValue]}
+                autoEscape={true}
+                textToHighlight={row.deviceCode}
+              />
+            </label>
           )}
         </div>
         /*   <div className="flex flex-col gap-2">

@@ -214,7 +214,7 @@ const ItemRedemption = (props) => {
                   Total Load
                 </div>
                 <div className="text-sm font-semibold">
-                  {numeral(item.totalConsumption).format("0,000.000")} kWh ({numeral(item.totalConsumption * 0.001).format("0,000.000000")} Mwh)
+                  {numeral(item.totalConsumption).format("0,000.000")} kWh ({numeral(item.totalConsumption * 0.001).format("0,000.000000")} MWh)
                 </div>
               </div>
             </div>
@@ -250,7 +250,7 @@ const ItemRedemption = (props) => {
               </div>
               <div className="flex flex-col gap-2">
                 <div className="text-sm font-normal text-[#91918A]">
-                  (% Match)
+                  Matched
                 </div>
                 <div className="text-sm font-semibold">
                   {item.matchedPercentage}

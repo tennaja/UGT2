@@ -241,14 +241,15 @@ export default function Overview() {
       });
       if (res?.status == 200) {
         const _data = res.data.map((item) => {
-          if (item.title == "Issuance Pending") {
+          return { ...item };
+          /*if (item.title == "Issuance Pending") {
             return {
               ...item,
               unit: item.value > 1 ? "Portfolios" : "Portfolio",
             };
           } else {
             return { ...item };
-          }
+          }*/
         });
         setSummaryData(_data);
         hideLoading();

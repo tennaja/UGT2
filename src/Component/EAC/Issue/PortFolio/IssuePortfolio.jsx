@@ -424,15 +424,18 @@ export default function IssuePortfolio({ portfolioData }) {
         resultStatus?.status == 200
       ) {
         getDevice();
+        getLastedUpdateSyncStatus();
         hideLoading();
         syncHandlers.close();
         modalSyncSuccessHandlers.open();
       } else {
+        getLastedUpdateSyncStatus();
         hideLoading();
         syncHandlers.close();
         modalSyncFailHandlers.open();
       }
     } catch (error) {
+      getLastedUpdateSyncStatus();
       hideLoading();
       syncHandlers.close();
       modalSyncFailHandlers.open();

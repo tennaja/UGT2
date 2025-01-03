@@ -320,15 +320,18 @@ export default function IssueRequest() {
       if (resultItem === undefined && resultStatus === undefined) {
         getPortData();
         hideLoading();
+        getLastedUpdateSyncStatus();
         syncHandlers.close();
         modalSyncSuccessHandlers.open();
       } else {
         hideLoading();
+        getLastedUpdateSyncStatus();
         syncHandlers.close();
         modalSyncFailHandlers.open();
       }
     } catch (error) {
       hideLoading();
+      getLastedUpdateSyncStatus();
       syncHandlers.close();
       modalSyncFailHandlers.open();
     }

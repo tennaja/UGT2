@@ -246,16 +246,19 @@ export default function IssueInfo({ portfolioData, deviceData }) {
         (resultItem?.status == 200 || resultItem?.status == 404) &&
         resultStatus?.status == 200
       ) {
+        getLastedUpdateSyncStatus();
         getIssueTransaction();
         hideLoading();
         syncHandlers.close();
         modalSyncSuccessHandlers.open();
       } else {
+        getLastedUpdateSyncStatus();
         hideLoading();
         syncHandlers.close();
         modalSyncFailHandlers.open();
       }
     } catch (error) {
+      getLastedUpdateSyncStatus();
       hideLoading();
       syncHandlers.close();
       modalSyncFailHandlers.open();

@@ -79,7 +79,7 @@ const DataTable = ({ data, columns }) => {
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <StyledTableCell key={column.id} align={column.align}>
+                <StyledTableCell key={column.id} align={column.align} width={column.width}>
                   <TableSortLabel
                     active={orderBy === column.id}
                     direction={orderBy === column.id ? order : "asc"}
