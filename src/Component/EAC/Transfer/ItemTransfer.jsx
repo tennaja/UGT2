@@ -220,7 +220,7 @@ const ItemTransfer = (props) => {
             <div className="grid grid-cols-2  gap-8 mt-3">
               <div className="flex flex-col gap-2">
                 <div className="text-sm font-normal text-[#91918A]">
-                   Matched
+                   % Matched
                 </div>
                 <div className="text-sm font-semibold">
                   {item.matchedPercentage}

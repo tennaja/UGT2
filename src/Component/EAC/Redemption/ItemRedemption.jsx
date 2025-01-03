@@ -250,7 +250,7 @@ const ItemRedemption = (props) => {
               </div>
               <div className="flex flex-col gap-2">
                 <div className="text-sm font-normal text-[#91918A]">
-                  Matched
+                  % Matched
                 </div>
                 <div className="text-sm font-semibold">
                   {item.matchedPercentage}
