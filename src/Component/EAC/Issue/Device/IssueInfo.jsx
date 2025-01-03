@@ -413,7 +413,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
           </Form>
         </div>
         <div className="text-right w-full text-xs text-[#848789]">
-          <label className="font-normal">{"Last Uploaded in "}</label><label className="font-bold ml-1">{" "+lastedUpdate}</label>
+          <label className="font-normal">{"Last Updated in "}</label><label className="font-bold ml-1">{" "+lastedUpdate}</label>
         </div>
       </Card>
 

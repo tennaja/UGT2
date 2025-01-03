@@ -576,7 +576,7 @@ export default function IssuePortfolio({ portfolioData }) {
         </div>
       </div>
       <div className="text-right w-full text-xs text-[#848789]">
-          <label className="font-normal">{"Last Uploaded in "}</label><label className="font-bold ml-1">{" "+lastedUpdate}</label>
+          <label className="font-normal">{"Last Updated in "}</label><label className="font-bold ml-1">{" "+lastedUpdate}</label>
         </div>
       {device.length > 0 ? (
         <DeviceTable
