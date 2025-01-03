@@ -113,7 +113,7 @@ const RowSettlement = (props) => {
                         <TableCell style={{ width: "400px" }} /*className="w-[180px]"*/>{item.periodStart+"-"+item.periodEnd}</TableCell>
                         <TableCell style={{ width: "200px",alignItems: "center" }} align="center"/*className="w-[140px]"*/>
                         <div className="flex justify-center">
-                        <div className={getStyle(item.type,0)}>
+                        <div className={getStyle(item.type,item.prodUGTGroup)}>
                           {item.type == "Y"?"Inventory":"Actual"}
                         </div>
                         </div>

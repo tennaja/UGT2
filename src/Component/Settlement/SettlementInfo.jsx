@@ -1516,7 +1516,7 @@ const SettlementInfo = ({
         <Divider orientation="horizontal" size={"xs"} />
         <div className="pt-2">
           <div className="text-xs">{`Utility: ${_utilityContract}`}</div>
-          <div className="text-xs">{`Net Actual Consumption: ${
+          <div className="text-xs">{`Net Actual Load: ${
             _actualConsumption + " " + unit
           }`}</div>
           <div className="text-xs">{`Matched Load: ${
@@ -1525,7 +1525,7 @@ const SettlementInfo = ({
           <div className="text-xs">{`Allocated Energy: ${
             _allocatedEnergy + " " + unit
           }`}</div>
-          <div className="text-xs">{`Consumption Ratio: ${
+          <div className="text-xs">{`Load Ratio: ${
             _consumptionRatio ? _consumptionRatio : "-"
           }`}</div>
         </div>
@@ -1623,18 +1623,24 @@ const SettlementInfo = ({
         return numeral(value).format("0,0.000000");
       }
     } else {
-      return numeral(0).format("0,0.000");
+      if (decFixed == 3) {
+        return numeral(0).format("0,0.000");
+      }
+      if (decFixed == 6) {
+        return numeral(0).format("0,0.000000");
+      }
     }
   };
 
   const renderValue = (value) => {
+
     if (value) {
       return convertData(value * convertUnit);
     } else {
-      return convertData(0);
+      return convertData(0 * convertUnit);
     }
   };
-
+console.log(settlemtDetailDevice)
   //console.log(settlementDetailMonthlyDevice.settlementPeriod )
 
   return (
@@ -2357,12 +2363,12 @@ const SettlementInfo = ({
             </div>
 
             <div>
-              <div className="text-lg font-bold">Consumption</div>
+              <div className="text-lg font-bold">Load</div>
 
               <div className="grid grid-cols-2 container mx-auto gap-8 mt-3">
                 <div>
                   <div className="text-sm font-normal">
-                    Net Actual Consumption
+                    Net Actual Load
                   </div>
                   <div className="text-xl font-bold">
                     {renderValue(
@@ -2408,7 +2414,7 @@ const SettlementInfo = ({
                             Subscriber Name
                           </Select.Option>
                           <Select.Option value="consumption">
-                            Net Actual Consumption
+                            Net Actual Load
                           </Select.Option>
                           <Select.Option value="matched">
                             Matched Load
@@ -2547,7 +2553,7 @@ const SettlementInfo = ({
                             <Table.Th className="text-center">No.</Table.Th>
                             <Table.Th>Subscriber Name</Table.Th>
                             <Table.Th className="text-center">
-                              Net Actual Consumption<div>({unit})</div>
+                              Net Actual Load<div>({unit})</div>
                             </Table.Th>
                             <Table.Th className="text-center">
                               Matched Actual Load<div>({unit})</div>
@@ -2579,7 +2585,7 @@ const SettlementInfo = ({
                         <Table.Tfoot>
                           <Table.Tr style={{ backgroundColor: "#F4F6F9" }}>
                             <Table.Th colSpan={2} className="text-center">
-                              Total Consumption
+                              Total Load
                             </Table.Th>
                             <Table.Th className="text-right">
                               {settlementMonthlyConsumptionData.totalCapConsumption

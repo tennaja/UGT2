@@ -595,7 +595,7 @@ console.log(isShowModalFail)
             <Divider className="mt-3" orientation="horizontal" size={"xs"} />
 
             <div className="flex justify-between items-center my-2">
-              <div className="text-xl font-semibold text-[#4D6A00]"></div>
+              <div className="text-xl font-semibold text-[#4D6A00]">Monthly Settlement</div>
 
               <Form layout="horizontal" size="large">
                 <div className={`grid gap-4 pt-4 grid-cols-3`}>
@@ -814,7 +814,7 @@ console.log(isShowModalFail)
             onClickConfirmBtn={handleReject}
             onCloseModal={onCloseRejectPopup}
             title={"Reject this Settlement?"}
-            content={"Settlement Details requires to be edited."}
+            content={"Verified Settlement Details requires to be edited."}
             openCheckBox = {false}
             setRemark={RemarkReject}
             sizeModal={"md"}
