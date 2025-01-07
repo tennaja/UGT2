@@ -1633,7 +1633,16 @@ const SettlementInfo = ({
   };
 
   const renderValue = (value) => {
+    if (value) {
+      return convertData(value * convertUnit);
+    } else {
+      return convertData(0 * convertUnit);
+    }
+  };
 
+  const renderValues = (value) => {
+    console.log(value)
+    console.log()
     if (value) {
       return convertData(value * convertUnit);
     } else {
@@ -2634,7 +2643,7 @@ console.log(settlemtDetailDevice)
                     <label className="font-bold text-sm">Matched</label>
                   </div>
                   <div className="col-start-4 text-left">
-                    <label className="text-sm">{selectTabSettlementDetail == "device"?renderValue(settlementDetailMonthlyDevice.matched * convertUnit) +" "+ unit:renderValue(settlementDetailMonthlySubscriber.matched * convertUnit) +" "+ unit}</label>
+                    <label className="text-sm">{selectTabSettlementDetail == "device"?renderValues(settlementDetailMonthlyDevice.matched) +" "+ unit:renderValues(settlementDetailMonthlySubscriber.matched ) +" "+ unit}</label>
                   </div>
                 </div>
               </div>

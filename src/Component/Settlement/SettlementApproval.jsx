@@ -26,6 +26,7 @@ import {
   setSelectedMonth,
   clearSettlementFailRequest,
   settlementReject,
+  getFileExcelSettlement,
   //clearSettlementSuccessRequest,
   getSettlementDetail
 } from "../../Redux/Settlement/Action";
@@ -439,7 +440,9 @@ console.log(isShowModalFail)
 
   const exportTablePDf = () => {};
 
-  const exportTableExcel = () => {};
+  const exportTableExcel = () => {
+    dispatch(getFileExcelSettlement())
+  };
 
   const exportScreenPDF = () => {};
 

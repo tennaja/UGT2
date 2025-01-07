@@ -148,3 +148,4 @@ export const SETTLEMENT_GET_DASHBOARD = `${DOMAIN_URL}/ugt/v1/portfolio-view-set
 export const SETTLEMENT_REJECT_URL = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/monthly/setSettlementRejectByUtility`;
 export const GET_DATA_PDF_SETTLEMENT = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/sf04getdata`;
 export const UNMATCHED_ENERGY_DATA_URL = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/monthly/unmatchedEnergy`;
+export const GET_EXCEL_FILE_SETTLEMENT = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/ExportExcel`;

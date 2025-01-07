@@ -18,7 +18,8 @@ import {
     SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL,
     SETTLEMENT_REJECT_URL,
     GET_DATA_PDF_SETTLEMENT,
-    UNMATCHED_ENERGY_DATA_URL
+    UNMATCHED_ENERGY_DATA_URL,
+    GET_EXCEL_FILE_SETTLEMENT
 } from '../../Constants/ServiceURL'
 
 import {
@@ -43,7 +44,8 @@ import {
     SETTLEMENT_REJECT,
     SETTLEMENT_FAIL_REQUEST,
     CLEAR_MODAL_FAIL_REQUEST,
-    GET_DATA_PDFSF04_SETTLEMENT
+    GET_DATA_PDFSF04_SETTLEMENT,
+    GET_FILE_EXCEL_SETTLEMENT
 } from "../ActionType"
 
 import { getHeaderConfig } from "../../Utils/FuncUtils"
@@ -610,4 +612,21 @@ export const getUnmatchedEnergyData = (ugtGroupId, portfolioId, year, month) => 
     }
 
     // return _getInventorySupplyUsage(inventorySupplyUsageData)
+}
+
+export const getFileExcelSettlement =(deviceID,portfolioId,year,month,ugtGroup,isActual,isSign)=>{
+    const URL = `${GET_EXCEL_FILE_SETTLEMENT}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        try {
+          const response = await axios.get(URL, { ...getHeaderConfig() });
+          //dispatch(_getDataSettlement(response.data)); // เก็บข้อมูลใน Redux
+          //return response.data; // คืนค่าข้อมูล
+          console.log(response.data)
+        } catch (error) {
+          dispatch(failRequest(error.message)); // จัดการข้อผิดพลาด
+          throw error; // โยนข้อผิดพลาดให้ตัวเรียกใช้งานจัดการ
+        }
+      };
 }

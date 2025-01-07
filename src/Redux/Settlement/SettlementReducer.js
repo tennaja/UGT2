@@ -21,6 +21,7 @@ import {
     CLEAR_MODAL_FAIL_REQUEST,
     GET_DATA_PDFSF04_SETTLEMENT,
     GET_UNMATCHED_ENERGY_DATA,
+    GET_FILE_EXCEL_SETTLEMENT
 } from "../ActionType"
 
 const initialstate = {
@@ -47,6 +48,7 @@ const initialstate = {
     settlementReject: {},
     dataSF04PDF: {},
     unmatchedEnergyData: [],
+    excelFile: {},
     
 }
 
@@ -57,6 +59,10 @@ export const SettlementReducer = (state = initialstate, action) => {
         case GET_PORTFOLIO_YEAR_LIST: return {
             ...state,
             yearList: action.payload
+        }
+        case GET_FILE_EXCEL_SETTLEMENT: return{
+            ...state,
+            excelFile: action.payload
         }
         case SETTLEMENT_REJECT: return{
             ...state,
