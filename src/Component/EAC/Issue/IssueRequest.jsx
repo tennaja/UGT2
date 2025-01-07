@@ -166,19 +166,39 @@ export default function IssueRequest() {
     dispatch(setSelectedMonth(month));
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (currentUGTGroup?.id !== undefined && trackingMonth !== undefined)
       getPortData();
       getLastedUpdateSyncStatus();
-  }, [currentUGTGroup, trackingMonth, trackingYear]);
+  }, [currentUGTGroup, trackingMonth, trackingYear]);*/
 
-  useEffect(() => {
-    if (currentUGTGroup?.id !== undefined) getYearList();
-  }, [currentUGTGroup]);
+  /*useEffect(() => {
+    if (currentUGTGroup?.id !== undefined) {
+      getYearList();
+      if(trackingYear){
+        getMonthList();
+      }
+    }
+  }, [currentUGTGroup,trackingYear]);*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (trackingYear && currentUGTGroup?.id !== undefined) getMonthList();
-  }, [currentUGTGroup, trackingYear]);
+  }, [currentUGTGroup, trackingYear]);*/
+
+  useEffect(()=>{
+    if(currentUGTGroup?.id !== undefined){
+      
+      getYearList();
+
+      if(trackingYear){
+        getMonthList()
+      }
+
+      if(trackingMonth && trackingYear){
+        getPortData()
+      }
+    }
+  },[currentUGTGroup,trackingYear,trackingMonth])
 
   async function getYearList() {
     try {
@@ -191,6 +211,18 @@ export default function IssueRequest() {
       });
       if (res?.status == 200) {
         setYearList(res.data.yearList);
+        console.log(trackingYear)
+        console.log(res.data.yearList.includes(trackingYear))
+
+        if(res.data.yearList.length > 0 && 
+          !res.data.yearList.includes(trackingYear)
+          ){
+              const lastesr_year = res.data.yearList.slice(-1);
+              console.log(lastesr_year[0])
+              console.log(trackingYear)
+              //dispatch(setSelectedYear(lastesr_year[0]))
+              dispatch(setSelectedYear(lastesr_year[0]));
+            }
         // setYearMonthList(res.data);
       }
     } catch (error) {
@@ -385,6 +417,7 @@ export default function IssueRequest() {
           />
           <Form.Item className="mb-0">
             <Select
+            key={trackingYear}
               size="large"
               defaultValue={trackingYear}
               style={{ width: 140 }}
