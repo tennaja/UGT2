@@ -158,8 +158,11 @@ export default function Overview() {
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
       getYearList();
-      getSummaryData();
-      getMonthList()
+      if(trackingYear){
+        getSummaryData();
+        getMonthList()
+      }
+      
     }
   }, [currentUGTGroup, trackingYear,trackingMonth]);
 
@@ -174,6 +177,12 @@ export default function Overview() {
       });
       if (res?.status == 200) {
         setYearList(res.data.yearList);
+        if(res.data.yearList.length > 0 && 
+          !res.data.yearList.includes(trackingYear)
+        ){
+          const lastesr_year = res.data.yearList.slice(-1);
+          dispatch(setSelectedYear(lastesr_year[0]))
+        }
         // setYearMonthList(res.data);
       }
     } catch (error) {
