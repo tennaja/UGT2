@@ -609,13 +609,15 @@ const ItemInventory = ({
     }
   }
 
+  console.log(issueTransactionData)
+
   const showbase = async ()=>{
     console.log("Preview PDF")
 
     if(inventoryTransaction.fileSF04 == null){
     //setSign.current = false
     //setIsGenarate(true)
-    await fetchSettlementData(device, portfolio, year, month, UgtGroup,false);
+    await fetchSettlementData(device, portfolio, year, month, UgtGroup,false,inventoryTransaction.prodYear,inventoryTransaction.prodMonth);
     setDataSF04(dataPDF)
     const base = await handleGeneratePDF()
     //const form = await handleGeneratePDFFileForm()
@@ -841,9 +843,9 @@ const ItemInventory = ({
       
     }
 
-  const fetchSettlementData = (device, portfolio, year, month, UgtGroup,isSignSubmit) => {
+  const fetchSettlementData = (device, portfolio, year, month, UgtGroup,isSignSubmit,prodYear,prodMonth) => {
     return new Promise((resolve, reject) => {
-      dispatch(getDataSettlement(device, portfolio, year, month, UgtGroup, false,isSignSubmit))
+      dispatch(getDataSettlement(device, portfolio, year, month, UgtGroup, false,isSignSubmit,prodYear,prodMonth))
         .then(resolve)
         .catch(reject);
     });
@@ -856,7 +858,7 @@ const ItemInventory = ({
       
   
       // ดึงข้อมูลที่จำเป็น
-      await fetchSettlementData(device, portfolio, year, month, UgtGroup,true);
+      await fetchSettlementData(device, portfolio, year, month, UgtGroup,true,);
       setDataSF04(dataPDF)
       //setSign.current = true
       // สร้าง PDF ครั้งเดียว

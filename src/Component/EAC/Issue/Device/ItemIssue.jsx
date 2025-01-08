@@ -826,7 +826,7 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device,year,month
 
   const fetchSettlementData = (device, portfolio, year, month, UgtGroup,isSignSubmit) => {
     return new Promise((resolve, reject) => {
-      dispatch(getDataSettlement(device, portfolio, year, month, UgtGroup, true,isSignSubmit))
+      dispatch(getDataSettlement(device, portfolio, year, month, UgtGroup, true,isSignSubmit,0,0))
         .then(resolve)
         .catch(reject);
     });
