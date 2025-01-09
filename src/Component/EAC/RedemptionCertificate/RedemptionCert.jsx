@@ -178,7 +178,7 @@ console.log(certListData)
     if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || 
       userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
     ){
-      return false
+      return true
     }
     else{
       return true
