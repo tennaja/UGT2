@@ -302,6 +302,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
   async function getLastedUpdateSyncStatus(){
     try{
       const URL = `${EAC_ISSUE_REQUEST_LAST_UPDATE_SYNC_STATUS}?portfolioId=${portfolio}&deviceId=${device}&year=${trackingYear}&month=${trackingMonth}`
+      console.log(URL)
       await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
         if(response.status == 200){
         console.log(response.data)

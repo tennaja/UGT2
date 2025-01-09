@@ -196,6 +196,7 @@ export default function IssueRequest() {
 
       if(trackingMonth && trackingYear){
         getPortData()
+        getLastedUpdateSyncStatus()
       }
     }
   },[currentUGTGroup,trackingYear,trackingMonth])
