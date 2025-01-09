@@ -6,9 +6,13 @@ import DataTable from "../../Control/Table/DataTable";
 import { useNavigate } from "react-router-dom";
 import StatusLabel from "../../../Component/Control/StatusLabel";
 import Highlighter from "react-highlight-words";
+import { USER_GROUP_ID } from "../../../Constants/Constants";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function PortfolioTable({ portData, search }) {
   const navigate = useNavigate();
+
+  const userData = useSelector((state) => state.login.userobj);
 
   const ActionCell = (data) => {
     const handleClickRedeem = () => {
@@ -27,7 +31,8 @@ export default function PortfolioTable({ portData, search }) {
       return (
         <div className="text-center" onClick={handleClickRedeem}>
           <span className="px-3 py-2 rounded cursor-pointer text-nowrap text-sm font-semibold text-white  hover:bg-[#4D6A00] bg-[#87BE33]">
-            Redeem
+            {userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+                              userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ? "Redeem":"View"}
           </span>
         </div>
       );
@@ -35,7 +40,8 @@ export default function PortfolioTable({ portData, search }) {
       return (
         <div className="text-center">
           <span className="px-3 py-2 rounded cursor-pointer text-nowrap text-sm font-semibold text-white  bg-[#E6EAEE]">
-            Redeem
+          {userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+                              userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ? "Redeem":"View"}
           </span>
         </div>
       );
