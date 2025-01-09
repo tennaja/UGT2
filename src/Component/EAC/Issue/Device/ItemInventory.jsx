@@ -1241,7 +1241,7 @@ const uploadPdf = async (pdfResult) => {
         textCheckBox={"I confirm all the required information is completed and the necessary supporting information and files are attached."}
         sizeModal={"lg"}
         textButton={"Yes, submit request"}
-        isHaveFile={issueTransactionData?.issueRequestDetail?.fileUploaded.length !== 0?true:false}
+        isHaveFile={inventoryTransaction?.fileUploaded.length !== 0?true:false}
         />
       )}
 
