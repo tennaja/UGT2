@@ -945,10 +945,10 @@ const uploadPdf = async (pdfResult) => {
             Total Generation
           </div>
           <div className="text-sm font-semibold">
-            {numeral(issueTransactionData?.totalGeneration).format("0,0.000")}{" "}
+            {numeral(issueTransactionData?.matchedGeneration).format("0,0.000")}{" "}
             kWh (
             {numeral(
-              numeral(issueTransactionData?.totalGeneration).value() / 1000
+              numeral(issueTransactionData?.matchedGeneration).value() / 1000
             ).format("0,0.000000")}{" "}
             MWh)
           </div>
