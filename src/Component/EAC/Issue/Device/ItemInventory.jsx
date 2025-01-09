@@ -184,6 +184,7 @@ const ItemInventory = ({
       }
     }
   }
+  
 
   const props = {
     multiple: true,

@@ -18,6 +18,7 @@ import ItemInventory from "./ItemInventory";
 import axios from "axios";
 
 import AlmostDone from "../../../assets/almostdone.png";
+import { USER_GROUP_ID } from "../../../../Constants/Constants";
 
 import {
   EAC_ISSUE_TRANSACTION_BY_DEVICE_URL,
@@ -84,6 +85,19 @@ export default function IssueInfo({ portfolioData, deviceData }) {
   const [showModalSyncSuccess, modalSyncSuccessHandlers] = useDisclosure();
   const [showModalSyncFail, modalSyncFailHandlers] = useDisclosure();
   const [lastedUpdate,setLastUpdate] = useState("DD/MM/YYYY 00:00")
+
+  let canSync = false;
+  
+    // check if user is Contractor , can view only.
+    if (
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+      ) {
+          canSync = true;
+        }
+    else{
+          canSync = false;
+        }
 
   const handleChangeTrackingYear = (year) => {
     // setTrackingYear(year);
@@ -354,7 +368,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
           </div>
 
           <Form layout="horizontal" size="large">
-            <div className="grid grid-cols-4 gap-4 items-center">
+            {canSync == true?<div className="grid grid-cols-4 gap-4 items-center">
               <div className=" text-sm font-bold">Settlement Period</div>
 
               <Form.Item className=" pt-4">
@@ -403,14 +417,64 @@ export default function IssueInfo({ portfolioData, deviceData }) {
                   </Select>
                 </Form.Item>
               )}
-              <Button
+             <Button
                 loading={isSyncing}
                 className="  text-white  hover:bg-[#4D6A00] bg-[#87BE33]"
                 onClick={() => syncIssue()}
               >
                 <IoMdSync className="mr-1"/> Sync Status
               </Button>
-            </div>
+            </div>:
+            <div className="grid grid-cols-3 gap-4 items-center">
+            <div className=" text-sm font-bold">Settlement Period</div>
+
+            <Form.Item className=" pt-4">
+              <Select
+                size="large"
+                value={trackingYear}
+                defaultValue={trackingYear}
+                onChange={(value) => handleChangeTrackingYear(value)}
+                style={{ width: 140 }}
+                showSearch
+              >
+                {yearList?.map((item, index) => (
+                  <Select.Option key={index} value={item}>
+                    {item}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            {trackingMonth && (
+              <Form.Item className=" pt-4">
+                <Select
+                  size="large"
+                  value={trackingMonth}
+                  defaultValue={trackingMonth}
+                  onChange={(value) => handleChangeTrackingMonth(value)}
+                  style={{ width: 140 }}
+                  showSearch
+                  filterOption={(input, option) =>
+                    (option.children ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                >
+                  {monthArray?.map((item, index) => (
+                    <Select.Option
+                      key={index}
+                      value={item.month}
+                      disabled={
+                        !monthList.some((obj) => obj.month == item.month)
+                      }
+                    >
+                      {item.name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            )}
+          </div>}
           </Form>
         </div>
         <div className="text-right w-full text-xs text-[#848789]">

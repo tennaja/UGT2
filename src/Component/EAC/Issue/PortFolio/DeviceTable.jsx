@@ -10,6 +10,8 @@ import { EAC_ISSUE } from "../../../../Constants/WebURL";
 import DataTable from "../../../Control/Table/DataTableSimple";
 import StatusLabel from "../../../../Component/Control/StatusLabel";
 import Highlighter from "react-highlight-words";
+import { USER_GROUP_ID } from "../../../../Constants/Constants";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function DeviceTable({
   deviceData,
@@ -17,6 +19,7 @@ export default function DeviceTable({
   searchValue,
 }) {
   const navigate = useNavigate();
+  const userData = useSelector((state) => state.login.userobj);
 
   const handleNavigate = (deviceData, portfolioData) => {
     console.log("Issue clicked for row:", portfolioData);
@@ -32,7 +35,8 @@ export default function DeviceTable({
     return (
       <div className="text-center" onClick={handleClickIssueRequest}>
         <span className="px-3 py-2 rounded cursor-pointer text-nowrap text-sm font-semibold text-white  hover:bg-[#4D6A00] bg-[#87BE33]">
-          Issue Request
+          {userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+                            userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ? "Issue Request":"View"}
         </span>
       </div>
     );
