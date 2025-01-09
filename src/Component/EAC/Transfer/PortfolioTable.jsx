@@ -42,7 +42,8 @@ export default function PortfolioTable({ portData, search }) {
       return (
         <div className="text-center">
           <span className="px-3 py-2 rounded cursor-pointer text-nowrap text-sm font-semibold text-white  bg-[#E6EAEE]">
-            Transfer
+          {userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+                              userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ? "Transfer":"View"}
           </span>
         </div>
       );
