@@ -185,7 +185,7 @@ console.log(certListData)
     }
   }
 
-  console.log(trackingPort)
+  console.log(redemptionCertList)
 
   return (
     <div>

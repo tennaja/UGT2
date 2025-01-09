@@ -37,6 +37,7 @@ import numeral from "numeral";
 import { useDisclosure } from "@mantine/hooks";
 import ModalFail from "../../../Control/Modal/ModalFail";
 import { IoMdSync } from "react-icons/io";
+import { USER_GROUP_ID } from "../../../../Constants/Constants";
 
 const mockMonthYear = [
   {
@@ -113,6 +114,7 @@ const mockDeviceData = [
   },
 ];
 
+
 const yearObject = [{ name: "2024" }];
 
 const monthObject = MONTH_LIST_WITH_KEY;
@@ -124,7 +126,7 @@ export default function IssuePortfolio({ portfolioData }) {
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const trackingYear = useSelector((state) => state.menu?.selectedYear);
   const selectedMonth = useSelector((state) => state.menu?.selectedMonth);
-
+  const userData = useSelector((state) => state.login.userobj);
   // const [trackingYear, setTrackingYear] = useState();
   const [trackingMonth, setTrackingMonth] = useState();
 
@@ -142,6 +144,20 @@ export default function IssuePortfolio({ portfolioData }) {
   const [showModalSyncSuccess, modalSyncSuccessHandlers] = useDisclosure();
   const [showModalSyncFail, modalSyncFailHandlers] = useDisclosure();
   const [lastedUpdate,setLastUpdate] = useState("DD/MM/YYYY 00:00")
+
+  let canSync = false;
+  
+    // check if user is Contractor , can view only.
+    if (
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+      ) {
+          canSync = true;
+        }
+    else{
+          canSync = false;
+        }
+
 
   const handleSearchChange = (searchValue) => {
     setValue(searchValue);
@@ -563,7 +579,7 @@ export default function IssuePortfolio({ portfolioData }) {
                 </Select>
               </Form.Item>
             )}
-            {device.length > 0 && (
+            {device.length > 0 && canSync ? (
               <Button
                 loading={isSyncing}
                 className="  text-white  hover:bg-[#4D6A00] bg-[#87BE33]"
@@ -571,7 +587,7 @@ export default function IssuePortfolio({ portfolioData }) {
               >
                <IoMdSync className="mr-1"/> Sync Status
               </Button>
-            )}
+            ): undefined}
           </div>
         </div>
       </div>
