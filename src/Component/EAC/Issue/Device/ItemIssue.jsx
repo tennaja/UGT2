@@ -902,7 +902,7 @@ const uploadPdf = async (pdfResult) => {
     return { success: false, error };
   }
 };
-
+console.log(issueTransactionData)
   return (
     <>
       <div className="grid grid-cols-2  gap-8">
@@ -918,7 +918,7 @@ const uploadPdf = async (pdfResult) => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="text-sm font-normal text-[#91918A]">Fuel</div>
+          <div className="text-sm font-normal text-[#91918A]">Device Fuel</div>
           <div className="text-sm font-semibold">
             {issueTransactionData?.fuelCode} {issueTransactionData?.fuelName}
           </div>
@@ -945,10 +945,10 @@ const uploadPdf = async (pdfResult) => {
             Total Generation
           </div>
           <div className="text-sm font-semibold">
-            {numeral(issueTransactionData?.matchedGeneration).format("0,0.000")}{" "}
+            {numeral(issueTransactionData?.totalGeneration).format("0,0.000")}{" "}
             kWh (
             {numeral(
-              numeral(issueTransactionData?.matchedGeneration).value() / 1000
+              numeral(issueTransactionData?.totalGeneration).value() / 1000
             ).format("0,0.000000")}{" "}
             MWh)
           </div>
@@ -958,10 +958,10 @@ const uploadPdf = async (pdfResult) => {
           Actual Generation Matched
           </div>
           <div className="text-sm font-semibold">
-            {numeral(issueTransactionData?.totalGeneration).format("0,0.000")}{" "}
+            {numeral(issueTransactionData?.actualGenerationMatched).format("0,0.000")}{" "}
             kWh (
             {numeral(
-              numeral(issueTransactionData?.totalGeneration).value() / 1000
+              numeral(issueTransactionData?.actualGenerationMatched).value() / 1000
             ).format("0,0.000000")}{" "}
             MWh)
           </div>
