@@ -157,6 +157,7 @@ export default function Overview() {
 
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
+      
       getYearList();
       if(trackingYear){
         getSummaryData();
@@ -175,15 +176,26 @@ export default function Overview() {
         ...getHeaderConfig(),
         params: params,
       });
+      console.log(res)
       if (res?.status == 200) {
         setYearList(res.data.yearList);
         if(res.data.yearList.length > 0 && 
           !res.data.yearList.includes(trackingYear)
         ){
+          console.log("Hav Year")
           const lastesr_year = res.data.yearList.slice(-1);
           dispatch(setSelectedYear(lastesr_year[0]))
         }
+        else{
+          console.log("Ho have")
+          //dispatch(setSelectedYear(null))
+        }
         // setYearMonthList(res.data);
+      }
+      else{
+        console.log("No Year")
+        setYearList([]);
+        dispatch(setSelectedYear(null))
       }
     } catch (error) {
       // setPortData(mockPortData);
@@ -195,7 +207,7 @@ export default function Overview() {
     // setTrackingMonth(month);
     dispatch(setSelectedMonth(month));
   };
-
+console.log(trackingYear)
   async function getMonthList() {
     try {
       const params = {
@@ -319,7 +331,7 @@ export default function Overview() {
               onChange={(value) => handleChangeTrackingYear(value)}
               showSearch
             >
-              {yearList.map((item, index) => (
+              {yearList && yearList.map((item, index) => (
                 <Select.Option key={index} value={item}>
                   {item}
                 </Select.Option>

@@ -138,6 +138,7 @@ console.log(certListData)
   useEffect(() => {
     // set default utility dropdown with latest
     if (utilityListData?.length > 0) {
+      
       const latest = utilityListData.slice(-1)[0];
       setTrackingUtility(1)
       //setTrackingUtility(latest?.utilityId);
@@ -186,7 +187,7 @@ console.log(certListData)
   }
 
   console.log(redemptionCertList)
-
+  console.log(utilityListData)
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
