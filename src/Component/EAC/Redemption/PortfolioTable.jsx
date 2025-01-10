@@ -94,7 +94,7 @@ export default function PortfolioTable({ portData, search }) {
     },
     {
       id: "numberBeneficiary",
-      label: "Number of Beneficiary",
+      label: "Number of Beneficiaries",
       align: "center",
       render: (row) => (
         <Highlighter

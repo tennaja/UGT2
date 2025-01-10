@@ -286,17 +286,17 @@ const ItemTransfer = (props) => {
                       <Table.Td style={{ width: "20%" }}>
                         {dayjs(row.period).format("MMMM YYYY")}
                       </Table.Td>
-                      <Table.Td style={{ width: "30%" }}>
+                      <Table.Td style={{ width: "35%" }}>
                         {row.deviceName}
                       </Table.Td>
-                      <Table.Td style={{ width: "20%" }} className="text-center">
+                      <Table.Td style={{ width: "15%" }} className="text-center">
                       <SettlementTypeLabel
                           settlementType={row.settlementType == "Actual" ? false:true}
                           type="xs"
                           inventory={1}
                         />
                       </Table.Td>
-                      <Table.Td style={{ width: "20%" }} className="text-right">
+                      <Table.Td style={{ width: "12%" }} className="text-right">
                         {numeral(row?.volume / 1000).format("0,000.000000")}
                       </Table.Td>
                       <Table.Td
@@ -325,7 +325,7 @@ const ItemTransfer = (props) => {
                   <Table.Th style={{ width: "30%" }} className="text-right">
                     {numeral(item.totalRecs / 1000).format("0,000.000000")}
                   </Table.Th>
-                  <Table.Th style={{ width: "20%" }} className="text-center">
+                  <Table.Th style={{ width: "17.5%" }} className="text-center">
                     {canSendTransfer && (
                       <Button
                         className={`text-white px-8 bg-[#87BE33]`}

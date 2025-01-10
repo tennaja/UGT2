@@ -99,7 +99,7 @@ export default function RedemptionTableCer() {
             <Select
               size="large"
               value={trackingYear}
-              style={{ width: 140 }}
+              style={{ width: 140,textAlign: "left" }}
               onChange={(value) => handleChangeTrackingYear(value)}
               showSearch
             >
