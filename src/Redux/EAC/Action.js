@@ -1,13 +1,15 @@
 import axios from "axios"
 import {
     EAC_PORTFOLIO_YEAR_LIST_URL,
-    EAC_PORTFOLIO_MONTH_LIST_URL
+    EAC_PORTFOLIO_MONTH_LIST_URL,
+    GET_DATA_PDF_SETTLEMENT,
 } from '../../Constants/ServiceURL'
 
 import {
     FAIL_REQUEST,
     GET_EAC_PORTFOLIO_YEAR_LIST,
-    GET_EAC_PORTFOLIO_MONTH_LIST
+    GET_EAC_PORTFOLIO_MONTH_LIST,
+    GET_DATA_PDFSF04_SETTLEMENT
 } from "../ActionType"
 
 import { getHeaderConfig } from "../../Utils/FuncUtils"
@@ -61,6 +63,29 @@ export const getEACPortfolioMonthList = (ugtGroupId, year) => {
     }
 
     // return _getEACPortfolioMonthList(monthList)
+}
+
+export const _getDataSettlement =(data)=>{
+    return{
+        type: GET_DATA_PDFSF04_SETTLEMENT,
+        payload: data
+    }
+}
+
+export const getDataSettlement =(deviceID,portfolioId,year,month,ugtGroup,isActual,isSign,prodYear,prodMonth)=>{
+    const URL = `${GET_DATA_PDF_SETTLEMENT}/${deviceID}?portfolioId=${portfolioId}&year=${year}&month=${month}&UgtGroupId=${ugtGroup}&IsActual=${isActual}&IsSign=${isSign}&prodyear=${prodYear}&prodmonth=${prodMonth}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        try {
+          const response = await axios.get(URL, { ...getHeaderConfig() });
+          dispatch(_getDataSettlement(response.data)); // เก็บข้อมูลใน Redux
+          return response.data; // คืนค่าข้อมูล
+        } catch (error) {
+          dispatch(failRequest(error.message)); // จัดการข้อผิดพลาด
+          throw error; // โยนข้อผิดพลาดให้ตัวเรียกใช้งานจัดการ
+        }
+      };
 }
 
 

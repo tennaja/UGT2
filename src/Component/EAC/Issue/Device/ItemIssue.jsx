@@ -34,7 +34,7 @@ import svgIcon from "../../../assets/svg.png";
 import { RiDownloadLine } from "react-icons/ri";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import PdfFormPreviewSF04 from "../../../Settlement/TemplatePdfSF04";
-import {getDataSettlement} from "../../../../Redux/Settlement/Action";
+import {getDataSettlement} from "../../../../Redux/EAC/Action";
 
 import AlmostDone from "../../../assets/almostdone.png";
 import { useDisclosure } from "@mantine/hooks";
@@ -104,7 +104,7 @@ const ItemIssue = ({ issueTransactionData, getIssueTransaction,device,year,month
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.login.userobj);
   const issueRequest = issueTransactionData?.issueRequest;
-  const dataPDF = useSelector((state) => state.settlement?.dataSF04PDF)
+  const dataPDF = useSelector((state) => state.eac?.dataSF04PDF)
 
   console.log(issueTransactionData)
 

@@ -48,7 +48,7 @@ import { useDisclosure } from "@mantine/hooks";
 import ModalFail from "../../../Control/Modal/ModalFail";
 import ModalConfirmCheckBoxEAC from "./ModalConfirmCheckBoxEAC";
 import PdfFormPreviewSF04 from "../../../Settlement/TemplatePdfSF04";
-import {getDataSettlement} from "../../../../Redux/Settlement/Action";
+import {getDataSettlement} from "../../../../Redux/EAC/Action";
 import { IoMdSync } from "react-icons/io";
 
 dayjs.extend(customParseFormat);
@@ -66,7 +66,7 @@ export default function IssueInfo({ portfolioData, deviceData }) {
   const trackingYear = useSelector((state) => state.menu?.selectedYear);
   const selectedMonth = useSelector((state) => state.menu?.selectedMonth);
   const userData = useSelector((state) => state.login.userobj);
-  const dataPDF = useSelector((state) => state.settlement?.dataSF04PDF)
+  const dataPDF = useSelector((state) => state.eac?.dataSF04PDF)
 
   // const [trackingYear, setTrackingYear] = useState();
   const [trackingMonth, setTrackingMonth] = useState();
