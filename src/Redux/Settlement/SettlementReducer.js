@@ -1,3 +1,4 @@
+import { Satellite } from "lucide-react"
 import {
     GET_PORTFOLIO_YEAR_LIST,
     GET_PORTFOLIO_MONTH_LIST,
@@ -19,9 +20,43 @@ import {
     SETTLEMENT_REJECT,
     SETTLEMENT_FAIL_REQUEST,
     CLEAR_MODAL_FAIL_REQUEST,
-    GET_DATA_PDFSF04_SETTLEMENT,
     GET_UNMATCHED_ENERGY_DATA,
-    GET_FILE_EXCEL_SETTLEMENT
+    GET_FILE_EXCEL_SETTLEMENT,
+    GET_EXCEL_SETTLEMENT_DATA,
+    GET_HISTORY_LOG_SETTLEMENT,
+    GET_SETTLEMENT_STATUS,
+    GET_SETTLEMENT_VERIFY,
+    GET_SETTLEMENT_REQUEST_EDIT,
+    GET_SETTLEMENT_DETAIL_FINAL,
+    GET_SETTLEMENT_DEVICE_TABLE,
+    GET_SETTLEMENT_SUBSCRIBER_TABLE,
+    GET_SETTLEMENT_DEVICE_TABLE_FINAL,
+    GET_SETTLEMENT_SUBSCRIBER_TABLE_FINAL,
+    GET_SETTLEMENT_DEVICE_TAB_FINAL,
+    GET_SETTLEMENT_SUBSCRIBER_TAB_FINAL,
+    GET_GENERATE_DATA_INPUT,
+    GET_GENERATE_DATA_MONTH_LIST,
+    GET_GENERATE_DATA_YEAR_LIST,
+    GET_GENERATE_DATA_INFO_MONTH_LIST,
+    GET_GENERATE_DATA_INFO_YEAR_LIST,
+    GET_GENERATE_DATA_INPUT_DASHBOARD,
+    GET_GENERATE_DATA_INFO_LIST,
+    GET_REVISION,
+    GET_GENERATE_DATA_DETAIL_REVISION,
+    GET_GENERATE_DATA_DETAIL_REVISION_FILE,
+    GET_GENERATE_DATA_SAVE,
+    GET_SETTLEMENT_SUCCESS,
+    GET_LOAD_DATA_INPUT,
+    GET_LOAD_DATA_INPUT_MONTH,
+    GET_LOAD_DATA_INPUT_YEAR,
+    GET_LOAD_DATA_INFO_YEAR,
+    GET_LOAD_DATA_INFO_MONTH,
+    GET_LOAD_DATA_INFO_DASHBOARD,
+    GET_LOAD_DATA_INFO_LIST,
+    GET_LOAD_DATA_REVISION,
+    GET_LOAD_DATA_DETAIL_REVISION,
+    GET_LOAD_DATA_DETAIL_REVISION_FILE,
+    GET_LOAD_DATA_SAVE
 } from "../ActionType"
 
 const initialstate = {
@@ -46,10 +81,42 @@ const initialstate = {
     settlementMonthlyDetailSubscriber: [],
     settlementDetail: [],
     settlementReject: {},
-    dataSF04PDF: {},
     unmatchedEnergyData: [],
     excelFile: {},
-    
+    dataExcel:{},
+    historyLog:[],
+    settlementStatus:{},
+    settlementVerify:{},
+    settlementRequestEdit:{},
+    settlementDetailFinal:{},
+    settlementDeviceTable:[],
+    settlementSubscriberTable:[],
+    settlementDeviceTableFinal:[],
+    settlementSubscriberTableFinal:[],
+    settlementDeviceTabFinal:[],
+    settlememtSubscriberTabFinal:[],
+    generateDataInputList:[],
+    generateDataMonthList:[],
+    generateDataYearList:[],
+    generateDataInfoMonthList:[],
+    generateDataInfoYearList:[],
+    generateDataDashBoard:{},
+    generateDataInfoList:[],
+    revisionList:[],
+    generateDetaDetailRevision:{},
+    generateDataFileList:[],
+    generateDataSave:{},
+    loadDataInputList:[],
+    loadDataInputYearList:[],
+    loadDataInputMonthList:[],
+    loadDataInfoYearList:[],
+    loadDataInfoMonthList:[],
+    loadDataDashBoard:{},
+    loadDataInfoList:[],
+    loadDataRevision:[],
+    loadDataDetailRevision:[],
+    loadDataDetailRevisionFile:[],
+    loadDataSave:{},
 }
 
 export const SettlementReducer = (state = initialstate, action) => {
@@ -59,6 +126,142 @@ export const SettlementReducer = (state = initialstate, action) => {
         case GET_PORTFOLIO_YEAR_LIST: return {
             ...state,
             yearList: action.payload
+        }
+        case GET_GENERATE_DATA_DETAIL_REVISION_FILE: return {
+            ...state,
+            generateDataFileList: action.payload
+        }
+        case GET_GENERATE_DATA_SAVE: return {
+            ...state,
+            generateDataSave: action.payload
+        }
+        case GET_GENERATE_DATA_DETAIL_REVISION: return{
+            ...state,
+            generateDetaDetailRevision: action.payload
+        }
+        case GET_GENERATE_DATA_INFO_LIST: return {
+            ...state,
+            generateDataInfoList: action.payload
+        }
+        case GET_REVISION: return{
+            ...state,
+            revisionList: action.payload
+        }
+        case GET_LOAD_DATA_INPUT: return {
+            ...state,
+            loadDataInputList: action.payload
+        }
+        case GET_LOAD_DATA_INPUT_YEAR: return {
+            ...state,
+            loadDataInputYearList: action.payload
+        }
+        case GET_LOAD_DATA_INPUT_MONTH: return {
+            ...state,
+            loadDataInputMonthList: action.payload
+        }
+        case GET_LOAD_DATA_INFO_YEAR: return {
+            ...state,
+            loadDataInfoYearList: action.payload
+        }
+        case GET_LOAD_DATA_INFO_MONTH: return{
+            ...state,
+            loadDataInfoMonthList: action.payload
+        }
+        case GET_LOAD_DATA_INFO_DASHBOARD: return {
+            ...state,
+            loadDataDashBoard: action.payload
+        }
+        case GET_LOAD_DATA_INFO_LIST: return{
+            ...state,
+            loadDataInfoList: action.payload
+        }
+        case GET_LOAD_DATA_REVISION: return {
+            ...state,
+            loadDataRevision: action.payload
+        }
+        case GET_LOAD_DATA_DETAIL_REVISION_FILE: return{
+            ...state,
+            loadDataDetailRevisionFile: action.payload
+        }
+        case GET_LOAD_DATA_DETAIL_REVISION: return{
+            ...state,
+            loadDataDetailRevision: action.payload
+        }
+        case GET_LOAD_DATA_SAVE:return {
+            ...state,
+            loadDataSave: action.payload
+        }
+        case GET_SETTLEMENT_DEVICE_TAB_FINAL: return {
+            ...state,
+            settlementDeviceTabFinal: action.payload
+        }
+        case GET_GENERATE_DATA_INPUT_DASHBOARD: return {
+            ...state,
+            generateDataDashBoard: action.payload
+        }
+        case GET_GENERATE_DATA_MONTH_LIST: return {
+            ...state,
+            generateDataMonthList: action.payload
+        }
+        case GET_GENERATE_DATA_YEAR_LIST: return {
+            ...state,
+            generateDataYearList: action.payload
+        }
+        case GET_GENERATE_DATA_INFO_MONTH_LIST: return {
+            ...state,
+            generateDataInfoMonthList: action.payload
+        }
+        case GET_GENERATE_DATA_INFO_YEAR_LIST: return {
+            ...state,
+            generateDataInfoYearList: action.payload
+        }
+        case GET_GENERATE_DATA_INPUT: return {
+            ...state,
+            generateDataInputList: action.payload
+        }
+        case GET_SETTLEMENT_SUBSCRIBER_TAB_FINAL: return {
+            ...state,
+            settlememtSubscriberTabFinal: action.payload
+        }
+        case GET_SETTLEMENT_DEVICE_TABLE: return {
+            ...state,
+            settlementDeviceTable: action.payload
+        }
+        case GET_SETTLEMENT_SUBSCRIBER_TABLE: return {
+            ...state,
+            settlementSubscriberTable: action.payload
+        }
+        case GET_SETTLEMENT_DEVICE_TABLE_FINAL: return {
+            ...state,
+            settlementDeviceTableFinal: action.payload
+        }
+        case GET_SETTLEMENT_SUBSCRIBER_TABLE_FINAL: return {
+            ...state,
+            settlementSubscriberTableFinal: action.payload
+        }
+        case GET_SETTLEMENT_DETAIL_FINAL: return{
+            ...state,
+            settlementDetailFinal: action.payload
+        }
+        case GET_SETTLEMENT_STATUS: return{
+            ...state,
+            settlementStatus: action.payload
+        }
+        case GET_SETTLEMENT_VERIFY: return{
+            ...state,
+            settlementVerify: action.payload
+        }
+        case GET_SETTLEMENT_REQUEST_EDIT: return{
+            ...state,
+            settlementRequestEdit: action.payload
+        }
+        case GET_HISTORY_LOG_SETTLEMENT: return {
+            ...state,
+            historyLog: action.payload
+        }
+        case GET_EXCEL_SETTLEMENT_DATA: return {
+            ...state,
+            dataExcel: action.payload
         }
         case GET_FILE_EXCEL_SETTLEMENT: return{
             ...state,
@@ -72,18 +275,20 @@ export const SettlementReducer = (state = initialstate, action) => {
             ...state,
             isFailRequest: true
         }
+        case GET_SETTLEMENT_SUCCESS: return {
+            ...state,
+            isSuccessRequest: true
+        }
         case CLEAR_MODAL_FAIL_REQUEST: return {
             ...state,
-            isFailRequest: false
+            isFailRequest: false,
+            isSuccessRequest: false
         }
         case GET_UNMATCHED_ENERGY_DATA: return {
             ...state,
             unmatchedEnergyData: action.payload
         }
-        case GET_DATA_PDFSF04_SETTLEMENT: return {
-            ...state,
-            dataSF04PDF: action.payload
-        }
+        
         case GET_SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER: return {
             ...state,
             settlementMonthlyDetailSubscriber: action.payload

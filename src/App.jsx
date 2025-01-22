@@ -55,6 +55,12 @@ import RedemptionCert from "./Component/EAC/RedemptionCertificate/RedemptionCert
 import CertificateRedemption from "./Component/EAC/RedemptionCertificate/CertificateRedemption";
 
 import SettlementListing from "./Component/Settlement/SettlementListing";
+import GenerateDataList from "./Component/Settlement/GenerateDataList";
+import LoadDataList from "./Component/Settlement/LoadDataList";
+import GenerateDataInfo from "./Component/Settlement/GenerateDataInfo";
+import GenerateDataDetail from "./Component/Settlement/GenerateDataDetail";
+import LoadDatainfo from "./Component/Settlement/LoadDataInfo";
+import LoadDataDetail from "./Component/Settlement/LoadDataDetail";
 
 function App() {
   return (
@@ -202,6 +208,31 @@ function App() {
                   path={webURL.SETTLEMENT_INFO}
                   element={<SettlementListing></SettlementListing>}
                 />
+
+                <Route 
+                path={webURL.SETTLEMENT_GENERATE_DATA}
+                element={<GenerateDataList></GenerateDataList>}
+                />
+
+                <Route
+                path={webURL.SETTLEMENT_LOAD_DATA}
+                element={<LoadDataList></LoadDataList>}/>
+
+                <Route
+                path={webURL.SETTLEMENT_GENERATE_DATA_INFO}
+                element={<GenerateDataInfo></GenerateDataInfo>}/>
+
+                <Route
+                path={webURL.SETTLEMENT_GENERATE_DATA_DETAIL}
+                element={<GenerateDataDetail></GenerateDataDetail>}/>
+
+                <Route
+                path={webURL.SETTLEMENT_LOAD_DATA_INFO}
+                element={<LoadDatainfo></LoadDatainfo>}/>
+
+                <Route
+                path={webURL.SETTLEMENT_LOAD_DATA_DETAIL}
+                element={<LoadDataDetail></LoadDataDetail>}/>
 
                 <Route path="/map2" element={<Map />}></Route>
               </Route>

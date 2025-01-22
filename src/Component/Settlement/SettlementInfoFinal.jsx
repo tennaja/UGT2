@@ -4,14 +4,14 @@ import React, { useEffect, useState, useRef  } from "react";
 import { Button, Divider, Table, ScrollArea, Card } from "@mantine/core";
 import { Form, Select } from "antd";
 import {
-  getSettlementMonthlySummary,
+  getSettlementMonthlySummaryFinal,
   getSettlementMonthlyGeneration,
   getSettlementMonthlyConsumtion,
   getInventorySupplyUsage,
   getRemainingEnergyttribute,
-  getSettlementMonthlyDetailSubscriber,
-  getSettlementDeviceTable,
-  getSettlementSubscriberTable
+  getSettlementMonthlyDetailSubscriberFinal,
+  getSettlementDeviceTableFinal,
+  getSettlementSubscriberTableFinal
 } from "../../Redux/Settlement/Action";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import DataTableSettlement from "./DataTableSettlement";
 import Highlighter from "react-highlight-words";
 import CollapsDataTable from "./CollapsDataTable";
-import { getSettlementMonthlyDetail } from "../../Redux/Settlement/Action";
+import { getSettlementMonthlyDetailFinal } from "../../Redux/Settlement/Action";
 import DonutChart from "./DonutChart";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -60,7 +60,6 @@ import ModalInventorySupplyUsage from "./ModalInventorySupplyUsage";
 import ModalRemainingEnergyAttribute from "./ModalRemainingEnergyAttribute";
 import WaitApprove from "../assets/WaitApprove.png"
 import { AiOutlineConsoleSql } from "react-icons/ai";
-import { FaLessThanEqual } from "react-icons/fa";
 
 const COLORS = [
   "#FF8042",
@@ -72,7 +71,7 @@ const COLORS = [
   "#AD16F7",
 ];
 
-const SettlementInfo = ({
+const SettlementInfoFinal = ({
   ugtGroupId,
   portfolioId,
   portfolioName,
@@ -91,7 +90,6 @@ const SettlementInfo = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log(ugtGroupId)
   const userData = useSelector((state) => state.login.userobj);
   //console.log("Year",settlementYear)
   //console.log("Month",settlementMonth)
@@ -167,9 +165,8 @@ const SettlementInfo = ({
       isShowMainDetail = true
   }
 
-  
   const settlementMonthlySummaryData = useSelector(
-    (state) => state.settlement.settlementMonthlySummary
+    (state) => state.settlement.settlementDetailFinal
   );
   const settlementMonthlyGenerationData = useSelector(
     (state) => state.settlement.settlementMonthlyGeneration
@@ -191,13 +188,13 @@ const SettlementInfo = ({
 
   const settlementDetailMonthlySubscriber = useSelector((state)=> state.settlement.settlementMonthlyDetailSubscriber)
 
-  const settlementDeviceData = useSelector((state)=>state.settlement.settlementDeviceTable)
-  const settlementSubscriberData = useSelector((state)=>state.settlement.settlementSubscriberTable)
+   const settlementDeviceDataFinal = useSelector((state)=>state.settlement.settlementDeviceTableFinal)
+    const settlementSubscriberDataFinal = useSelector((state)=>state.settlement.settlementSubscriberTableFinal)
 
-  console.log(settlementDeviceData,settlementSubscriberData)
+    console.log(settlementDeviceDataFinal,settlementSubscriberDataFinal)
 
   const ref = useRef(null);
-console.log(userData)
+
   const chartRef = useRef(null);
   const [isModuleViewerUser, setIsModuleViewerUser] = useState(false);
   const [matchedEnergyData, setMatchedEnergyData] = useState({});
@@ -1033,7 +1030,7 @@ console.log(userData)
     if (settlementMonth && settlementYear) {
       console.log(utilityId)
       dispatch(
-        getSettlementMonthlySummary(
+        getSettlementMonthlySummaryFinal(
           ugtGroupId,
           portfolioId,
           settlementYear,
@@ -1051,22 +1048,26 @@ console.log(userData)
           generationSortDirection
         )
       );
-      dispatch(getSettlementDeviceTable(
-        ugtGroupId,
+      dispatch(
+        getSettlementDeviceTableFinal(
+          ugtGroupId,
           portfolioId,
           settlementYear,
           settlementMonth,
           generationSortBy,
           generationSortDirection
-      ))
-      dispatch(getSettlementSubscriberTable(
-        ugtGroupId,
+        )
+      );
+      dispatch(
+        getSettlementSubscriberTableFinal(
+          ugtGroupId,
           portfolioId,
           settlementYear,
           settlementMonth,
           generationSortBy,
           generationSortDirection
-      ))
+        )
+      );
       dispatch(
         getSettlementMonthlyConsumtion(
           ugtGroupId,
@@ -1094,7 +1095,7 @@ console.log(userData)
         )
       );
       dispatch(
-        getSettlementMonthlyDetail(
+        getSettlementMonthlyDetailFinal(
           ugtGroupId,
           portfolioId,
           settlementYear,
@@ -1102,7 +1103,7 @@ console.log(userData)
         )
       );
       dispatch(
-        getSettlementMonthlyDetailSubscriber(
+        getSettlementMonthlyDetailSubscriberFinal(
           ugtGroupId,
           portfolioId,
           settlementYear,
@@ -1749,6 +1750,7 @@ console.log(userData)
       return convertData(0 * convertUnit);
     }
   };
+
   const hideData = false
 console.log(settlemtDetailDevice)
   //console.log(settlementDetailMonthlyDevice.settlementPeriod )
@@ -1790,41 +1792,7 @@ console.log(settlemtDetailDevice)
           </Card>
         </div>
       )}
-      {isShowGotoConfirm && (
-        <div className="flex justify-center z-1">
-          <Card
-            radius="lg"
-            className="absolute items-center shadow-2xl"
-            style={{
-              width: "50%",
-              marginTop: "20%",
-            }}
-          >
-            <div className="grid gap-5 py-20">
-              <div className="text-xl font-semibold">Awaiting for Confirmation</div>
 
-              {isModuleViewerUser && (
-                <Button
-                  className="bg-[#87BE33] text-white px-8 h-10 hover:bg-[#4D6A00]"
-                  onClick={() =>
-                    navigate(WEB_URL.SETTLEMENT_APPROVAL, {
-                      state: {
-                        ugtGroupId: ugtGroupId,
-                        portfolioId: portfolioId,
-                        portfolioName: portfolioName,
-                        prevSelectedYear: settlementYear,
-                        prevSelectedMonth: settlementMonth,
-                      },
-                    })
-                  }
-                >
-                  <span className="pl-2 text-lg font-bold">Go to Confirm</span>
-                </Button>
-              )}
-            </div>
-          </Card>
-        </div>
-      )}
       {isShowGotiVerify && (
         <div className="flex justify-center z-1">
           <Card
@@ -1860,47 +1828,48 @@ console.log(settlemtDetailDevice)
           </Card>
         </div>
       )}
-      {isShowSettlementProgress && 
-      (
-        <div className="w-full h-[400px] items-center content-center">
-          <div className="flex justify-center items-center">
-            <img
-              src={WaitApprove}
-              alt="WaitApprove"
-              width={100}
-              height={100}
-              className="content-center"
-            />
-          </div>
-          <label className="text-[#000000CC] font-semibold">
-          Settlement in progress
-          </label>
-        </div>
-      ) }
 
-      {isShowAwaitConfirm && 
-      (
-        <div className="w-full h-[400px] items-center content-center">
-          <div className="flex justify-center items-center">
-            <img
-              src={WaitApprove}
-              alt="WaitApprove"
-              width={100}
-              height={100}
-              className="content-center"
-            />
-          </div>
-          <label className="text-[#000000CC] font-semibold">
-            Awaiting For Confirmation
-          </label>
+      {isShowGotoConfirm && (
+        <div className="flex justify-center z-1">
+          <Card
+            radius="lg"
+            className="absolute items-center shadow-2xl"
+            style={{
+              width: "50%",
+              marginTop: "20%",
+            }}
+          >
+            <div className="grid gap-5 py-20">
+              <div className="text-xl font-semibold">Awaiting for Confirmation</div>
+
+              {isModuleViewerUser && (
+                <Button
+                  className="bg-[#87BE33] text-white px-8 h-10 hover:bg-[#4D6A00]"
+                  onClick={() =>
+                    navigate(WEB_URL.SETTLEMENT_APPROVAL, {
+                      state: {
+                        ugtGroupId: ugtGroupId,
+                        portfolioId: portfolioId,
+                        portfolioName: portfolioName,
+                        prevSelectedYear: settlementYear,
+                        prevSelectedMonth: settlementMonth,
+                      },
+                    })
+                  }
+                >
+                  <span className="pl-2 text-lg font-bold">Go to Confirm</span>
+                </Button>
+              )}
+            </div>
+          </Card>
         </div>
       )}
 
-      {isShowMainDetail && (
+      {isShowMainDetail  && (
         <div
           className={`
         ${
-          isShowGotoConfirm || isShowGotiVerify
+          isShowGotiVerify || isShowGotoConfirm
             ? "opacity-10"
             : ""
         } `}
@@ -1908,7 +1877,6 @@ console.log(settlemtDetailDevice)
           {/*Card Dashboard */}
           <div>
             <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
-              
               <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
                 <div className="text-sm text-[#5B5C5C] break-words">
                   Total Contracted Load
@@ -2222,7 +2190,7 @@ console.log(settlemtDetailDevice)
               {/*Table Device */}
           <div className="w-full mt-5">
             <DataTableSettlement
-              data={settlementDeviceData}
+              data={settlementDeviceDataFinal}
               columns={columnsDevice}
               searchData={searchDevice}
               checkbox={false}
@@ -2233,460 +2201,7 @@ console.log(settlemtDetailDevice)
           {/*Table Subscriber */}
           <div className="w-full mt-4">
             <DataTableSettlement
-              data={settlementSubscriberData}
-              columns={columnsSubscriber}
-              searchData={searchSubscriber}
-              checkbox={false}
-              isTotal={"Total"}
-              isSubTotal={"Subscriber"}
-            />
-          </div>
-              <div className="w-full mt-5">
-                <div className="grid grid-cols-2">
-                  <div className="text-left font-bold text-base">
-                    Settlement Detail
-                  </div>
-                  <div className="text-=left">
-                    <div className="grid grid-cols-4">
-                      <div className="col-start-1">
-                        <label className="font-bold text-sm">
-                          Settlement Period
-                        </label>
-                      </div>
-                      <div className="col-start-2">
-                        <label className="text-sm">{selectTabSettlementDetail == "device"?settlementDetailMonthlyDevice.settlementPeriod:settlementDetailMonthlySubscriber.settlementPeriod }</label>
-                      </div>
-                      <div className="col-start-3">
-                        <label className="font-bold text-sm">Matched</label>
-                      </div>
-                      <div className="col-start-4 text-left">
-                        <label className="text-sm">{selectTabSettlementDetail == "device"?renderValues(settlementDetailMonthlyDevice.matched) +" "+ unit:renderValues(settlementDetailMonthlySubscriber.matched ) +" "+ unit}</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-2">
-                  <div className="text-sm mt-5">
-                    <div className="mt-4 pl-1 flex">
-                      <div
-                        className={
-                          selectTabSettlementDetail === "device"
-                            ? " w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center "
-                            : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px] text-center border-none"
-                        }
-                      >
-                        <button
-                          className={
-                            selectTabSettlementDetail === "device"
-                              ? "font-bold text-base"
-                              : "text-[#949292] font-thin text-base"
-                          }
-                          onClick={() => setSelectTabSettlementDetail("device")}
-                        >
-                          Devices
-                        </button>
-                      </div>
-                      <div
-                        className={
-                          selectTabSettlementDetail === "subscriber"
-                            ? "w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center ml-2 "
-                            : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px]  text-center ml-2 border-none "
-                        }
-                      >
-                        <button
-                          className={
-                            selectTabSettlementDetail === "subscriber"
-                              ? "font-bold text-base"
-                              : "text-[#949292] font-thin text-base"
-                          }
-                          onClick={() => setSelectTabSettlementDetail("subscriber")}
-                        >
-                          Subscriber
-                        </button>
-                      </div>
-                    </div>
-                    {selectTabSettlementDetail === "device" ? (
-                      <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
-                        <div className="mt-2 p-2">
-                        {settlemtDetailDevice?
-                        <CollapsDataTable
-                            data={settlemtDetailDevice}
-                            rowPerPage={25}
-                            unit={unit}
-                            convertUnit={convertUnit}
-                          />:
-                          <CollapsDataTable
-                          data={[]}
-                          rowPerPage={25}
-                        />}
-
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
-                        <div className="mt-2 p-2">
-                          {settlementDetailSubscriber?
-                          <CollapsDataTable
-                            data={settlementDetailSubscriber}
-                            rowPerPage={25}
-                            isDevice={false}
-                            unit={unit}
-                            convertUnit={convertUnit}
-                          />:
-                          <CollapsDataTable
-                          data={[]}
-                          rowPerPage={25}
-                        />}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          :undefined}
-        </div>
-      )}
-
-      {/*isShowDetailMonthly*/ hideData && (
-        <div
-          className={`
-        ${
-          !settlementMonthlySummaryData?.approveStatus && showWaitApprove
-            ? "opacity-10"
-            : ""
-        } `}
-        >
-          {/*Card Dashboard */}
-          <div>
-            <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
-              
-              <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Total Contracted Load
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.totalContractedLoad
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Total Generation
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(settlementMonthlySummaryData?.totalGeneration)}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Beginning UGT2 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.beginningUgt2Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Beginning UGT1 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.beginningUgt1Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
-              <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Total Load
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(settlementMonthlySummaryData?.totalLoad)}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-
-              <div className="col-span-3 container mx-auto px-0 gap-2 text-left">
-                <div className=" grid grid-cols-4 gap-2">
-                  <div className="col-span-2">
-                    <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="text-sm text-[#5B5C5C] break-words">
-                            Actual Generation Matched
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.actualGenerationMatched
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                            {settlementMonthlySummaryData?.actualGenerationMatchedPercentage?settlementMonthlySummaryData?.actualGenerationMatchedPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="text-sm text-[#5B5C5C] break-words">
-                            UGT2 Inventory Matched
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.ugt2InventoryMatched
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                            {settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="text-sm text-[#5B5C5C] break-words">
-                            UGT1 Inventory Matched
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.ugt1InventoryMatched
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                          {settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[#E9E9E9] mt-2 px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="grid grid-col-2">
-                            <label className="col-start-1 text-sm text-[#5B5C5C] break-words">
-                              Unmatched Energy
-                            </label>{" "}
-                            <div className="col-start-2 ml-1 inline-block content-center">
-                              <Tooltips
-                                title="Load Energy that can not be delivered bundle with REC"
-                                placement="top"
-                                arrow
-                              >
-                                <img
-                                  src={InfoWarning}
-                                  alt="Info"
-                                  width={15}
-                                  height={15}
-                                />
-                              </Tooltips>
-                            </div>
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.unmatchedEnergy
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                          {settlementMonthlySummaryData?.unmatchedEnergyPercentage?settlementMonthlySummaryData?.unmatchedEnergyPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/*Donut Chart */}
-                  <div className="col-start-3 col-span-2 px-4 py-4 rounded-[5px] border-2 border-solid border-[#CDCDCD]">
-                    <div className="grid grid-cols-[200px_50px]">
-                      <label className="col-start-1 text-lg font-bold text-[#5B5C5C] break-words">
-                        Net Green Deliverables
-                      </label>{" "}
-                      <div className="col-start-2 ml-1 inline-block content-center">
-                        <Tooltips
-                          title="Load Energy that can be delivered bundle with REC (exclude Unmatched Energy)"
-                          placement="top"
-                          arrow
-                        >
-                          <img
-                            src={InfoWarning}
-                            alt="Info"
-                            width={15}
-                            height={15}
-                          />
-                        </Tooltips>
-                      </div>
-                    </div>
-                    <div className="text-2xl font-bold break-words">
-                      {renderValue(
-                        settlementMonthlySummaryData?.netGreenDeliverables
-                      )}
-                    </div>
-                    <div className="text-base text-[#5B5C5C] break-words">
-                      {unit}
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "275px",
-                          margin: "auto",
-                        }}
-                      >
-                        <DonutChart
-                          data={data}
-                          totalPercent={totalLoadPercentage}
-                          unit={unit}
-                          convertUnit={convertUnit}
-                          additional={additionalData}
-                          //options={options}
-                          //plugins={[centerTextPlugin]}
-                          //ref={(chartInstance) => (chartRef.current = chartInstance?.chartInstance)} // เชื่อมต่อ ref
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 container mx-auto px-0 gap-2 mt-3 text-left">
-              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Remaining Actual Generation
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.remainingActualGeneration
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-
-              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Ending UGT2 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.endingUgt2Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-
-              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Ending UGT1 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.endingUgt1Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-            </div>
-
-            {tmpMatchedEnergyData ? (
-              <div className="col-span-2">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart width={850} height={900}>
-                    <Pie
-                      activeIndex={activeIndex}
-                      activeShape={renderActiveShape}
-                      data={tmpMatchedEnergyData.data}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={95}
-                      outerRadius={120}
-                      dataKey="matchedSupply"
-                      onMouseEnter={onPieEnter}
-                    >
-                      {tmpMatchedEnergyData.data?.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-
-                      <Label
-                        content={
-                          <TotalPieLabel
-                            value={tmpMatchedEnergyData.netDeliverables}
-                          />
-                        }
-                      />
-                    </Pie>
-                    <Tooltip content={<TotalCustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            ) : (
-              <div className="col-span-2 flex justify-center items-center">
-                <div className="text-[#848789]">No Data</div>
-              </div>
-            )}
-          </div>
-          
-          {/*Settlement */}
-          {isShowDetail && isGenPDF == false ?
-            <div>
-              {/*Table Device */}
-          <div className="w-full mt-5">
-            <DataTableSettlement
-              data={settlementDeviceData}
-              columns={columnsDevice}
-              searchData={searchDevice}
-              checkbox={false}
-              isTotal={"Total"}
-              isSubTotal={"Device"}
-            />
-          </div>
-          {/*Table Subscriber */}
-          <div className="w-full mt-4">
-            <DataTableSettlement
-              data={settlementSubscriberData}
+              data={settlementSubscriberDataFinal}
               columns={columnsSubscriber}
               searchData={searchSubscriber}
               checkbox={false}
@@ -3253,14 +2768,12 @@ console.log(settlemtDetailDevice)
                     {selectTabSettlementDetail === "device" ? (
                       <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
                         <div className="mt-2 p-2">
-                        {settlemtDetailDevice?
-                        <CollapsDataTable
+                        {settlemtDetailDevice?<CollapsDataTable
                             data={settlemtDetailDevice}
                             rowPerPage={25}
                             unit={unit}
                             convertUnit={convertUnit}
-                          />:
-                          <CollapsDataTable
+                          />:<CollapsDataTable
                           data={[]}
                           rowPerPage={25}
                         />}
@@ -3270,15 +2783,987 @@ console.log(settlemtDetailDevice)
                     ) : (
                       <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
                         <div className="mt-2 p-2">
-                          {settlementDetailSubscriber?
-                          <CollapsDataTable
+                          {settlementDetailSubscriber?<CollapsDataTable
                             data={settlementDetailSubscriber}
                             rowPerPage={25}
                             isDevice={false}
                             unit={unit}
                             convertUnit={convertUnit}
-                          />:
-                          <CollapsDataTable
+                          />:<CollapsDataTable
+                          data={[]}
+                          rowPerPage={25}
+                        />}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          :undefined}
+        </div>
+      )}
+
+      {isShowAwaitConfirm && 
+      (
+        <div className="w-full h-[400px] items-center content-center">
+          <div className="flex justify-center items-center">
+            <img
+              src={WaitApprove}
+              alt="WaitApprove"
+              width={100}
+              height={100}
+              className="content-center"
+            />
+          </div>
+          <label className="text-[#000000CC] font-semibold">
+            Awaiting For Confirmation
+          </label>
+        </div>
+      )}
+
+      {isShowSettlementProgress && 
+      (
+        <div className="w-full h-[400px] items-center content-center">
+          <div className="flex justify-center items-center">
+            <img
+              src={WaitApprove}
+              alt="WaitApprove"
+              width={100}
+              height={100}
+              className="content-center"
+            />
+          </div>
+          <label className="text-[#000000CC] font-semibold">
+          Settlement in progress
+          </label>
+        </div>
+      )}
+      {/*isShowDetailMonthly*/ hideData && (
+        <div
+          className={`
+        ${
+          !settlementMonthlySummaryData?.approveStatus && showWaitApprove
+            ? "opacity-10"
+            : ""
+        } `}
+        >
+          {/*Card Dashboard */}
+          <div>
+            <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
+              <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
+                <div className="text-sm text-[#5B5C5C] break-words">
+                  Total Contracted Load
+                </div>
+                <div className="text-lg font-bold break-words">
+                  {renderValue(
+                    settlementMonthlySummaryData?.totalContractedLoad
+                  )}
+                </div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+              </div>
+              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
+                <div className="text-sm text-[#5B5C5C] break-words">
+                  Total Generation
+                </div>
+                <div className="text-lg font-bold break-words">
+                  {renderValue(settlementMonthlySummaryData?.totalGeneration)}
+                </div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+              </div>
+              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
+                <div className="text-sm text-[#5B5C5C] break-words">
+                  Beginning UGT2 Inventory
+                </div>
+                <div className="text-lg font-bold break-words">
+                  {renderValue(
+                    settlementMonthlySummaryData?.beginningUgt2Inventory
+                  )}
+                </div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+              </div>
+              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
+                <div className="text-sm text-[#5B5C5C] break-words">
+                  Beginning UGT1 Inventory
+                </div>
+                <div className="text-lg font-bold break-words">
+                  {renderValue(
+                    settlementMonthlySummaryData?.beginningUgt1Inventory
+                  )}
+                </div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
+              <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
+                <div className="text-sm text-[#5B5C5C] break-words">
+                  Total Load
+                </div>
+                <div className="text-lg font-bold break-words">
+                  {renderValue(settlementMonthlySummaryData?.totalLoad)}
+                </div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+              </div>
+
+              <div className="col-span-3 container mx-auto px-0 gap-2 text-left">
+                <div className=" grid grid-cols-4 gap-2">
+                  <div className="col-span-2">
+                    <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px] w-full">
+                      <div className="flex justify-between break-all">
+                        <div>
+                          <div className="text-sm text-[#5B5C5C] break-words">
+                            Actual Generation Matched
+                          </div>
+                          <div className="text-lg font-bold break-words">
+                            {renderValue(
+                              settlementMonthlySummaryData?.actualGenerationMatched
+                            )}
+                          </div>
+                          <div className="text-xs text-[#5B5C5C] break-words">
+                            {unit}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold break-words mt-3">
+                            {settlementMonthlySummaryData?.actualGenerationMatchedPercentage?settlementMonthlySummaryData?.actualGenerationMatchedPercentage+"%":0+"%"}
+                          </div>
+                          <div className="text-xs text-[#5B5C5C] break-words">
+                            of Total Load
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
+                      <div className="flex justify-between break-all">
+                        <div>
+                          <div className="text-sm text-[#5B5C5C] break-words">
+                            UGT2 Inventory Matched
+                          </div>
+                          <div className="text-lg font-bold break-words">
+                            {renderValue(
+                              settlementMonthlySummaryData?.ugt2InventoryMatched
+                            )}
+                          </div>
+                          <div className="text-xs text-[#5B5C5C] break-words">
+                            {unit}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold break-words mt-3">
+                            {settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage+"%":0+"%"}
+                          </div>
+                          <div className="text-xs text-[#5B5C5C] break-words">
+                            of Total Load
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
+                      <div className="flex justify-between break-all">
+                        <div>
+                          <div className="text-sm text-[#5B5C5C] break-words">
+                            UGT1 Inventory Matched
+                          </div>
+                          <div className="text-lg font-bold break-words">
+                            {renderValue(
+                              settlementMonthlySummaryData?.ugt1InventoryMatched
+                            )}
+                          </div>
+                          <div className="text-xs text-[#5B5C5C] break-words">
+                            {unit}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold break-words mt-3">
+                          {settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage+"%":0+"%"}
+                          </div>
+                          <div className="text-xs text-[#5B5C5C] break-words">
+                            of Total Load
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-[#E9E9E9] mt-2 px-4 py-3 rounded-[5px] w-full">
+                      <div className="flex justify-between break-all">
+                        <div>
+                          <div className="grid grid-col-2">
+                            <label className="col-start-1 text-sm text-[#5B5C5C] break-words">
+                              Unmatched Energy
+                            </label>{" "}
+                            <div className="col-start-2 ml-1 inline-block content-center">
+                              <Tooltips
+                                title="Load Energy that can not be delivered bundle with REC"
+                                placement="top"
+                                arrow
+                              >
+                                <img
+                                  src={InfoWarning}
+                                  alt="Info"
+                                  width={15}
+                                  height={15}
+                                />
+                              </Tooltips>
+                            </div>
+                          </div>
+                          <div className="text-lg font-bold break-words">
+                            {renderValue(
+                              settlementMonthlySummaryData?.unmatchedEnergy
+                            )}
+                          </div>
+                          <div className="text-xs text-[#5B5C5C] break-words">
+                            {unit}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold break-words mt-3">
+                          {settlementMonthlySummaryData?.unmatchedEnergyPercentage?settlementMonthlySummaryData?.unmatchedEnergyPercentage+"%":0+"%"}
+                          </div>
+                          <div className="text-xs text-[#5B5C5C] break-words">
+                            of Total Load
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/*Donut Chart */}
+                  <div className="col-start-3 col-span-2 px-4 py-4 rounded-[5px] border-2 border-solid border-[#CDCDCD]">
+                    <div className="grid grid-cols-[200px_50px]">
+                      <label className="col-start-1 text-lg font-bold text-[#5B5C5C] break-words">
+                        Net Green Deliverables
+                      </label>{" "}
+                      <div className="col-start-2 ml-1 inline-block content-center">
+                        <Tooltips
+                          title="Load Energy that can be delivered bundle with REC (exclude Unmatched Energy)"
+                          placement="top"
+                          arrow
+                        >
+                          <img
+                            src={InfoWarning}
+                            alt="Info"
+                            width={15}
+                            height={15}
+                          />
+                        </Tooltips>
+                      </div>
+                    </div>
+                    <div className="text-2xl font-bold break-words">
+                      {renderValue(
+                        settlementMonthlySummaryData?.netGreenDeliverables
+                      )}
+                    </div>
+                    <div className="text-base text-[#5B5C5C] break-words">
+                      {unit}
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "275px",
+                          margin: "auto",
+                        }}
+                      >
+                        <DonutChart
+                          data={data}
+                          totalPercent={totalLoadPercentage}
+                          unit={unit}
+                          convertUnit={convertUnit}
+                          additional={additionalData}
+                          //options={options}
+                          //plugins={[centerTextPlugin]}
+                          //ref={(chartInstance) => (chartRef.current = chartInstance?.chartInstance)} // เชื่อมต่อ ref
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 container mx-auto px-0 gap-2 mt-3 text-left">
+              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
+                <div className="text-sm text-[#5B5C5C] break-words">
+                  Remaining Actual Generation
+                </div>
+                <div className="text-lg font-bold break-words">
+                  {renderValue(
+                    settlementMonthlySummaryData?.remainingActualGeneration
+                  )}
+                </div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+              </div>
+
+              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
+                <div className="text-sm text-[#5B5C5C] break-words">
+                  Ending UGT2 Inventory
+                </div>
+                <div className="text-lg font-bold break-words">
+                  {renderValue(
+                    settlementMonthlySummaryData?.endingUgt2Inventory
+                  )}
+                </div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+              </div>
+
+              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
+                <div className="text-sm text-[#5B5C5C] break-words">
+                  Ending UGT1 Inventory
+                </div>
+                <div className="text-lg font-bold break-words">
+                  {renderValue(
+                    settlementMonthlySummaryData?.endingUgt1Inventory
+                  )}
+                </div>
+                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+              </div>
+            </div>
+
+            {tmpMatchedEnergyData ? (
+              <div className="col-span-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart width={850} height={900}>
+                    <Pie
+                      activeIndex={activeIndex}
+                      activeShape={renderActiveShape}
+                      data={tmpMatchedEnergyData.data}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={95}
+                      outerRadius={120}
+                      dataKey="matchedSupply"
+                      onMouseEnter={onPieEnter}
+                    >
+                      {tmpMatchedEnergyData.data?.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+
+                      <Label
+                        content={
+                          <TotalPieLabel
+                            value={tmpMatchedEnergyData.netDeliverables}
+                          />
+                        }
+                      />
+                    </Pie>
+                    <Tooltip content={<TotalCustomTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="col-span-2 flex justify-center items-center">
+                <div className="text-[#848789]">No Data</div>
+              </div>
+            )}
+          </div>
+          
+          {/*Settlement */}
+          {isShowDetail && isGenPDF == false ?
+            <div>
+              {/*Table Device */}
+          <div className="w-full mt-5">
+            <DataTableSettlement
+              data={settlementDeviceDataFinal}
+              columns={columnsDevice}
+              searchData={searchDevice}
+              checkbox={false}
+              isTotal={"Total"}
+              isSubTotal={"Device"}
+            />
+          </div>
+          {/*Table Subscriber */}
+          <div className="w-full mt-4">
+            <DataTableSettlement
+              data={settlementSubscriberDataFinal}
+              columns={columnsSubscriber}
+              searchData={searchSubscriber}
+              checkbox={false}
+              isTotal={"Total"}
+              isSubTotal={"Subscriber"}
+            />
+          </div>
+              {/*<div className="grid grid-cols-2 container mx-auto px-0 gap-8 mt-10 text-left">
+                <div className="border-r-2">
+                  <div className="text-lg font-bold">Generation</div>
+
+                  <div className="grid grid-cols-2 mx-auto gap-8 mt-3">
+                    <div>
+                      <div className="text-sm font-normal">Actual Generation</div>
+                      <div className="text-xl font-bold">
+                        {renderValue(
+                          settlementMonthlyGenerationData.actualGeneration
+                        )}
+                      </div>
+
+                      <div className="text-sm font-normal text-[#848789]">
+                        {unit}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-normal">
+                        Actual Supply Weighted Average
+                      </div>
+                      <div className="text-xl font-bold">
+                        {settlementMonthlyGenerationData.supplyWeightedAverage} %
+                      </div>
+                    </div>
+                  </div>
+
+                  {tmpMonthlyGenData.length > 0 && (
+                    <div className="pr-10">
+                      <div className="flex justify-between items-center py-5">
+                        <div className="flex items-center">
+                          <div className="text-xs font-semibold pr-3">Sort By</div>
+
+                          <Select
+                            size="small"
+                            defaultValue="Device Name"
+                            onChange={(value) =>
+                              handleChangeGenerationSort(
+                                value,
+                                generationSortDirection
+                              )
+                            }
+                            style={{ width: 200 }}
+                            showSearch
+                          >
+                            <Select.Option value="deviceName">
+                              Device Name
+                            </Select.Option>
+                            <Select.Option value="generation">
+                              Actual Generation
+                            </Select.Option>
+                            <Select.Option value="matched">
+                              Matched Actual Generation
+                            </Select.Option>
+                          </Select>
+
+                          <Button.Group className="ml-2">
+                            <Button
+                              style={{
+                                backgroundColor:
+                                  generationSortDirection == "asc" ? "#87BE33" : "",
+                              }}
+                              variant={
+                                generationSortDirection == "asc"
+                                  ? "filled"
+                                  : "default"
+                              }
+                              size="compact-sm"
+                              onClick={() =>
+                                handleChangeGenerationSort(generationSortBy, "asc")
+                              }
+                            >
+                              <BiSortUp size={14} />
+                            </Button>
+
+                            <Button
+                              variant={
+                                generationSortDirection == "desc"
+                                  ? "filled"
+                                  : "default"
+                              }
+                              style={{
+                                backgroundColor:
+                                  generationSortDirection == "desc"
+                                    ? "#87BE33"
+                                    : "",
+                              }}
+                              size="compact-sm"
+                              onClick={() =>
+                                handleChangeGenerationSort(generationSortBy, "desc")
+                              }
+                            >
+                              <BiSortDown size={14} />
+                            </Button>
+                          </Button.Group>
+                        </div>
+
+                        <Button.Group>
+                          <Button
+                            variant={
+                              generationViewMode == "chart" ? "filled" : "default"
+                            }
+                            style={{
+                              backgroundColor:
+                                generationViewMode == "chart" ? "#87BE33" : "",
+                            }}
+                            size="compact-sm"
+                            onClick={() => setGenerationViewMode("chart")}
+                          >
+                            <MdBarChart size={14} />
+                          </Button>
+                          <Button
+                            variant={
+                              generationViewMode == "table" ? "filled" : "default"
+                            }
+                            style={{
+                              backgroundColor:
+                                generationViewMode == "table" ? "#87BE33" : "",
+                            }}
+                            size="compact-sm"
+                            onClick={() => setGenerationViewMode("table")}
+                          >
+                            <LuTable size={14} />
+                          </Button>
+                        </Button.Group>
+                      </div>
+
+                      {generationViewMode == "chart" ? (
+                        <ResponsiveContainer width="100%" height={300}>
+                          <ComposedChart
+                            key={unit}
+                            data={tmpMonthlyGenData}
+                            margin={{
+                              top: 30,
+                              right: 0,
+                              left: 0,
+                              bottom: 5,
+                            }}
+                          >
+                            <CartesianGrid stroke="#f5f5f5" />
+                            <XAxis
+                              type="category"
+                              tick={{ fontSize: 10 }}
+                              tickFormatter={(tick) => {
+                                return numeral(tick + 1).format("0,0.[00]");
+                              }}
+                            />
+                            <YAxis
+                              width={80}
+                              tick={{ fontSize: 10 }}
+                              tickFormatter={(tick) => {
+                                return numeral(tick).format("0,0.[00]");
+                              }}
+                              label={{
+                                fontSize: 10,
+                                value: unit,
+                                angle: -90,
+                                position: "insideLeft",
+                              }}
+                            />
+                            <ChartTooltips content={<GenerationCustomTooltip />} />
+                            <Bar
+                              dataKey="actualGeneration"
+                              barSize={15}
+                              fill="#4D6A00"
+                              radius={[5, 5, 0, 0]}
+                              layout="vertical"
+                            >
+                              <LabelList
+                                dataKey="deviceName"
+                                position="top"
+                                style={{ fontSize: "10px", width: "50px" }}
+                              />
+                            </Bar>
+                          </ComposedChart>
+                        </ResponsiveContainer>
+                      ) : (
+                        <ScrollArea w="100%" h={300}>
+                          <Table stickyHeader>
+                            <Table.Thead>
+                              <Table.Tr>
+                                <Table.Th className="text-center">No.</Table.Th>
+                                <Table.Th>Device Name</Table.Th>
+                                <Table.Th className="text-center">
+                                  Actual Generation
+                                  <div>({unit})</div>
+                                </Table.Th>
+                                <Table.Th className="text-center">
+                                  Matched Actual Generation
+                                  <div>({unit})</div>
+                                </Table.Th>
+                                <Table.Th className="text-right">%</Table.Th>
+                              </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                              {tmpMonthlyGenData?.map((row, index) => (
+                                <Table.Tr key={index}>
+                                  <Table.Td className="text-center">
+                                    {index + 1}
+                                  </Table.Td>
+                                  <Table.Td width="50%">{row.deviceName}</Table.Td>
+                                  <Table.Td className="text-right">
+                                    {convertDecimalPlace(row.actualGeneration)}
+                                  </Table.Td>
+                                  <Table.Td className="text-right">
+                                    {convertDecimalPlace(row.matched)}
+                                  </Table.Td>
+                                  <Table.Td className="text-right">
+                                    {row.generationRatio}
+                                  </Table.Td>
+                                </Table.Tr>
+                              ))}
+                            </Table.Tbody>
+                            <Table.Tfoot>
+                              <Table.Tr style={{ backgroundColor: "#F4F6F9" }}>
+                                <Table.Th colSpan={2} className="text-center">
+                                  Total Capacity
+                                </Table.Th>
+                                <Table.Th className="text-right">
+                                  {convertDecimalPlace(
+                                    settlementMonthlyGenerationData.totalCapGeneration *
+                                      convertUnit
+                                  )}
+                                </Table.Th>
+                                <Table.Th className="text-right">
+                                  {convertDecimalPlace(
+                                    settlementMonthlyGenerationData.totalCapMatched *
+                                      convertUnit
+                                  )}
+                                </Table.Th>
+                                <Table.Th />
+                              </Table.Tr>
+                            </Table.Tfoot>
+                          </Table>
+                        </ScrollArea>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <div className="text-lg font-bold">Load</div>
+
+                  <div className="grid grid-cols-2 container mx-auto gap-8 mt-3">
+                    <div>
+                      <div className="text-sm font-normal">
+                        Net Actual Load
+                      </div>
+                      <div className="text-xl font-bold">
+                        {renderValue(
+                          settlementMonthlyConsumptionData.actualConsumption
+                        )}
+                      </div>
+
+                      <div className="text-sm font-normal text-[#848789]">
+                        {unit}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-normal">
+                        Actual Load Weighted Average
+                      </div>
+                      <div className="text-xl font-bold">
+                        {settlementMonthlyConsumptionData.loadWeightedAverage} %
+                      </div>
+                    </div>
+                  </div>
+
+                  {settlementMonthlyConsumptionData?.actualConsumptionItems && (
+                    <div className="pr-10">
+                      <div className="flex justify-between items-center py-5">
+                        <Form>
+                          <div className="flex items-center">
+                            <div className="text-xs font-semibold pr-3">
+                              Sort By
+                            </div>
+                            <Select
+                              size="small"
+                              defaultValue="Subscriber Name"
+                              onChange={(value) =>
+                                handleChangeConsumptionSort(
+                                  value,
+                                  consumptionSortDirection
+                                )
+                              }
+                              style={{ width: 200 }}
+                              showSearch
+                            >
+                              <Select.Option value="subscriberName">
+                                Subscriber Name
+                              </Select.Option>
+                              <Select.Option value="consumption">
+                                Net Actual Load
+                              </Select.Option>
+                              <Select.Option value="matched">
+                                Matched Load
+                              </Select.Option>
+                            </Select>
+                            <Button.Group className="ml-2">
+                              <Button
+                                variant={
+                                  consumptionSortDirection == "asc"
+                                    ? "filled"
+                                    : "default"
+                                }
+                                style={{
+                                  backgroundColor:
+                                    consumptionSortDirection == "asc"
+                                      ? "#87BE33"
+                                      : "",
+                                }}
+                                size="compact-sm"
+                                onClick={() =>
+                                  handleChangeConsumptionSort(
+                                    consumptionSortBy,
+                                    "asc"
+                                  )
+                                }
+                              >
+                                <BiSortUp size={14} />
+                              </Button>
+                              <Button
+                                variant={
+                                  consumptionSortDirection == "desc"
+                                    ? "filled"
+                                    : "default"
+                                }
+                                style={{
+                                  backgroundColor:
+                                    consumptionSortDirection == "desc"
+                                      ? "#87BE33"
+                                      : "",
+                                }}
+                                size="compact-sm"
+                                onClick={() =>
+                                  handleChangeConsumptionSort(
+                                    consumptionSortBy,
+                                    "desc"
+                                  )
+                                }
+                              >
+                                <BiSortDown size={14} />
+                              </Button>
+                            </Button.Group>
+                          </div>
+                        </Form>
+
+                        <Button.Group>
+                          <Button
+                            variant={
+                              consumptionViewMode == "chart" ? "filled" : "default"
+                            }
+                            style={{
+                              backgroundColor:
+                                consumptionViewMode == "chart" ? "#87BE33" : "",
+                            }}
+                            size="compact-sm"
+                            onClick={() => setConsumptionViewMode("chart")}
+                          >
+                            <MdBarChart size={14} />
+                          </Button>
+                          <Button
+                            variant={
+                              consumptionViewMode == "table" ? "filled" : "default"
+                            }
+                            style={{
+                              backgroundColor:
+                                consumptionViewMode == "table" ? "#87BE33" : "",
+                            }}
+                            size="compact-sm"
+                            onClick={() => setConsumptionViewMode("table")}
+                          >
+                            <LuTable size={14} />
+                          </Button>
+                        </Button.Group>
+                      </div>
+
+                      {consumptionViewMode == "chart" ? (
+                        <ResponsiveContainer width="100%" height={300}>
+                          <ComposedChart
+                            data={tmpMonthlyConsumpData}
+                            margin={{
+                              top: 30,
+                              right: 0,
+                              left: 0,
+                              bottom: 5,
+                            }}
+                          >
+                            <CartesianGrid stroke="#f5f5f5" />
+                            <XAxis
+                              tick={{ fontSize: 12 }}
+                              tickFormatter={(tick) => {
+                                return numeral(tick + 1).format("0,0.[00]");
+                              }}
+                            />
+                            <YAxis
+                              width={80}
+                              label={{
+                                fontSize: 10,
+                                value: unit,
+                                angle: -90,
+                                position: "insideLeft",
+                              }}
+                              tick={{ fontSize: 10 }}
+                              tickFormatter={(tick) => {
+                                return numeral(tick).format("0,0.[00]");
+                              }}
+                            />
+                            <ChartTooltips content={<ConsumptionCustomTooltip />} />
+                            <Bar
+                              dataKey="actualConsumption"
+                              barSize={15}
+                              fill="#87BE33"
+                              radius={[5, 5, 0, 0]}
+                            >
+                              <LabelList
+                                dataKey="subscriberName"
+                                position="top"
+                                style={{ fontSize: "10px" }}
+                              />
+                            </Bar>
+                          </ComposedChart>
+                        </ResponsiveContainer>
+                      ) : (
+                        <ScrollArea w="100%" h={300}>
+                          <Table stickyHeader>
+                            <Table.Thead>
+                              <Table.Tr>
+                                <Table.Th className="text-center">No.</Table.Th>
+                                <Table.Th>Subscriber Name</Table.Th>
+                                <Table.Th className="text-center">
+                                  Net Actual Load<div>({unit})</div>
+                                </Table.Th>
+                                <Table.Th className="text-center">
+                                  Matched Actual Load<div>({unit})</div>
+                                </Table.Th>
+                                <Table.Th className="text-right">%</Table.Th>
+                              </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                              {tmpMonthlyConsumpData.map((row, index) => (
+                                <Table.Tr key={index}>
+                                  <Table.Td className="text-center">
+                                    {index + 1}
+                                  </Table.Td>
+                                  <Table.Td width="50%">
+                                    {row.subscriberName}
+                                  </Table.Td>
+                                  <Table.Td className="text-right">
+                                    {convertDecimalPlace(row.actualConsumption)}
+                                  </Table.Td>
+                                  <Table.Td className="text-right">
+                                    {convertDecimalPlace(row.matched)}
+                                  </Table.Td>
+                                  <Table.Td className="text-right">
+                                    {row.consumptionRatio}
+                                  </Table.Td>
+                                </Table.Tr>
+                              ))}
+                            </Table.Tbody>
+                            <Table.Tfoot>
+                              <Table.Tr style={{ backgroundColor: "#F4F6F9" }}>
+                                <Table.Th colSpan={2} className="text-center">
+                                  Total Load
+                                </Table.Th>
+                                <Table.Th className="text-right">
+                                  {settlementMonthlyConsumptionData.totalCapConsumption
+                                    ? convertDecimalPlace(
+                                        settlementMonthlyConsumptionData.totalCapConsumption *
+                                          convertUnit
+                                      )
+                                    : "-"}
+                                </Table.Th>
+                                <Table.Th className="text-right">
+                                  {settlementMonthlyConsumptionData.totalCapMatched
+                                    ? convertDecimalPlace(
+                                        settlementMonthlyConsumptionData.totalCapMatched *
+                                          convertUnit
+                                      )
+                                    : "-"}
+                                </Table.Th>
+                                <Table.Th></Table.Th>
+                              </Table.Tr>
+                            </Table.Tfoot>
+                          </Table>
+                        </ScrollArea>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>*/}
+              <div className="w-full mt-5">
+                <div className="grid grid-cols-2">
+                  <div className="text-left font-bold text-base">
+                    Settlement Detail
+                  </div>
+                  <div className="text-=left">
+                    <div className="grid grid-cols-4">
+                      <div className="col-start-1">
+                        <label className="font-bold text-sm">
+                          Settlement Period
+                        </label>
+                      </div>
+                      <div className="col-start-2">
+                        <label className="text-sm">{selectTabSettlementDetail == "device"?settlementDetailMonthlyDevice.settlementPeriod:settlementDetailMonthlySubscriber.settlementPeriod }</label>
+                      </div>
+                      <div className="col-start-3">
+                        <label className="font-bold text-sm">Matched</label>
+                      </div>
+                      <div className="col-start-4 text-left">
+                        <label className="text-sm">{selectTabSettlementDetail == "device"?renderValues(settlementDetailMonthlyDevice.matched) +" "+ unit:renderValues(settlementDetailMonthlySubscriber.matched ) +" "+ unit}</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-2">
+                  <div className="text-sm mt-5">
+                    <div className="mt-4 pl-1 flex">
+                      <div
+                        className={
+                          selectTabSettlementDetail === "device"
+                            ? " w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center "
+                            : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px] text-center border-none"
+                        }
+                      >
+                        <button
+                          className={
+                            selectTabSettlementDetail === "device"
+                              ? "font-bold text-base"
+                              : "text-[#949292] font-thin text-base"
+                          }
+                          onClick={() => setSelectTabSettlementDetail("device")}
+                        >
+                          Devices
+                        </button>
+                      </div>
+                      <div
+                        className={
+                          selectTabSettlementDetail === "subscriber"
+                            ? "w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center ml-2 "
+                            : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px]  text-center ml-2 border-none "
+                        }
+                      >
+                        <button
+                          className={
+                            selectTabSettlementDetail === "subscriber"
+                              ? "font-bold text-base"
+                              : "text-[#949292] font-thin text-base"
+                          }
+                          onClick={() => setSelectTabSettlementDetail("subscriber")}
+                        >
+                          Subscriber
+                        </button>
+                      </div>
+                    </div>
+                    {selectTabSettlementDetail === "device" ? (
+                      <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
+                        <div className="mt-2 p-2">
+                        {settlemtDetailDevice?<CollapsDataTable
+                            data={settlemtDetailDevice}
+                            rowPerPage={25}
+                            unit={unit}
+                            convertUnit={convertUnit}
+                          />:<CollapsDataTable
+                          data={[]}
+                          rowPerPage={25}
+                        />}
+
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
+                        <div className="mt-2 p-2">
+                          {settlementDetailSubscriber?<CollapsDataTable
+                            data={settlementDetailSubscriber}
+                            rowPerPage={25}
+                            isDevice={false}
+                            unit={unit}
+                            convertUnit={convertUnit}
+                          />:<CollapsDataTable
                           data={[]}
                           rowPerPage={25}
                         />}
@@ -3317,4 +3802,4 @@ console.log(settlemtDetailDevice)
   );
 };
 
-export default SettlementInfo;
+export default SettlementInfoFinal;

@@ -19,6 +19,7 @@ import {
   GET_SUB_MENU_SUBSCRIBER_LIST_URL,
   GET_SUB_MENU_PORTFOLIO_LIST_URL,
   GET_SUB_MENU_EAC_TRACKING_LIST_URL,
+  GET_SUB_MENU_SETTLEMENT_URL
 } from "../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../Utils/FuncUtils";
 
@@ -116,6 +117,7 @@ export const FetchSubMenuList = (menuId) => {
   const subMenuListSubscriberURL = GET_SUB_MENU_SUBSCRIBER_LIST_URL;
   const subMenuListPorfolioURL = GET_SUB_MENU_PORTFOLIO_LIST_URL;
   const subMenuListEacTrackingURL = GET_SUB_MENU_EAC_TRACKING_LIST_URL;
+  const subMenuListSettlement = GET_SUB_MENU_SETTLEMENT_URL
 
   if (menuId == 1) {
     return async (dispatch) => {};
@@ -171,7 +173,16 @@ export const FetchSubMenuList = (menuId) => {
     };
   } else if (menuId == 5) {
     return async (dispatch) => {
-      dispatch(setSubMenuList([{id:1,name:"Settlement Info"}]))
+      await axios
+        .get(subMenuListSettlement, getHeaderConfig())
+        .then((res) => {
+          console.log(res?.data?.submenuList)
+          dispatch(setSubMenuList(res?.data?.submenuList));
+        })
+        .catch((err) => {
+          dispatch(failRequest(err.message));
+        });
+      //dispatch(setSubMenuList([{id:1,name:"Settlement Info"},{id:2,name:"Generation Data Input"},{id:3,name:"Load Data Input"}]))
     };
   }
 };

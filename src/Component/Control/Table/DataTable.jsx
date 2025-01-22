@@ -243,7 +243,7 @@ const DataTable = ({
             return true;
           }
         }
-      } else {
+      }else {
         /*  else if (key == "currentSettlement") {
         if (
           dayjs(obj[key], "YYYY-M")
@@ -254,6 +254,7 @@ const DataTable = ({
           return true;
         }
       }  */
+     console.log(String(obj[key]).toLowerCase())
         if (
           String(obj[key]).toLowerCase().includes(searchTerm?.toLowerCase())
         ) {

@@ -1,0 +1,35 @@
+.custom-dragger {
+    transition: all 0.3s;      /* เพิ่มการเปลี่ยนแปลง */
+  }
+
+  .custom-dragger .ant-upload-drag-container{
+    transition: all 0.3s;      /* เพิ่มการเปลี่ยนแปลง */
+    background-color: #fff !important;
+    border-radius: 10px;
+    
+  }
+
+  .custom-dragger .ant-upload .ant-upload-btn{
+    /*transition: all 0.3s;*/      /* เพิ่มการเปลี่ยนแปลง */
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    border-radius: 8px;
+  }
+
+  
+  .custom-dragger .ant-upload-drag-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0px !important;
+    margin-top: 10px;
+  }
+  
+  .custom-dragger .ant-upload-text {
+    font-size: 16px !important;           /* ขนาดตัวอักษร */
+    color: #d1d5db !important;               /* สีตัวอักษร */
+  }
+  
+  .custom-dragger .ant-upload-hint {
+    font-size: 14px !important;           /* ขนาดตัวอักษร */
+    color: #d1d5db !important;               /* สีตัวอักษรสำหรับคำแนะนำ */
+  }

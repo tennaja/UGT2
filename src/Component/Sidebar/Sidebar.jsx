@@ -65,9 +65,16 @@ import submenuPortfolioLogoAddSelected from "../assets/pieplus_selected.svg";
 
 import Settlement from "../assets/Settlement.svg"
 import Settlement_Selected from "../assets/Settlement_Selected.svg"
+import SettlementSelect from "../assets/SettlementSelect.svg"
+import SettlementSelected from "../assets/SettlementSelected.svg"
+import GenerateData from "../assets/GenerateData.svg"
+import GenerateDataSelect from "../assets/GenerateDataSelect.svg"
+import LoadData from "../assets/LoadData.svg"
+import LoadDataSelect from "../assets/LoadDataSelect.svg"
 
 import submenuPortfolioLogoInfo from "../assets/graphInfo.svg";
 import submenuPortfolioLogoInfoSelected from "../assets/graphInfo_selected.svg";
+
 import dayjs from "dayjs";
 import { useMediaQuery } from "@mantine/hooks";
 import { set } from "lodash";
@@ -349,6 +356,12 @@ const Sidebar2 = ({ children }) => {
         case 1:
           path = WEB_URL.SETTLEMENT_INFO;
           break;
+        case 2:
+          path = WEB_URL.SETTLEMENT_GENERATE_DATA
+          break;
+        case 3:
+          path = WEB_URL.SETTLEMENT_LOAD_DATA
+          break;
       }
     } else if (selectedMenuID == MENU_ID.EAC_TRACKING) {
       //console.log("Navigate Settlement",submenuID)
@@ -563,18 +576,25 @@ const Sidebar2 = ({ children }) => {
       switch(submenuId){
         case 1:
           if (selectedSubMenu == submenuId) {
-            logo = Settlement_Selected;
+            logo = SettlementSelected;
           } else {
-            logo = Settlement;
+            logo = SettlementSelect;
           }
           break;
-        /*case 2:
+        case 2:
           if (selectedSubMenu == submenuId) {
-            logo = submenuPortfolioLogoAddSelected;
+            logo = GenerateDataSelect;
           } else {
-            logo = submenuPortfolioLogoAdd;
+            logo = GenerateData;
           }
-          break;*/
+          break;
+        case 3:
+          if (selectedSubMenu == submenuId) {
+            logo = LoadDataSelect;
+          } else {
+            logo = LoadData;
+          }
+          break;
       }
     }
     return logo;

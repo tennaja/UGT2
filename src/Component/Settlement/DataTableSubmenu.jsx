@@ -23,7 +23,22 @@ import {
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
 import WarningIcon from '@mui/icons-material/Warning';
-const DataTableSettlement = ({
+
+// สไตล์สำหรับหัวตาราง
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  fontWeight: "bold",
+  backgroundColor: "#f5f5f5",
+  textAlign: "center",
+  borderBottom: "2px solid #ddd",
+}));
+
+const SubHeaderCell = styled(TableCell)(({ theme }) => ({
+  textAlign: "center",
+  borderBottom: "1px solid #ddd",
+  backgroundColor: "#f5f5f5",
+}));
+
+const DataTableSubmenu = ({
   data,
   columns,
   searchData,
@@ -39,7 +54,7 @@ const DataTableSettlement = ({
   openpopupDeviceError,
   openpopupSubError,
   error,
-  isSubTotal
+  isGenerate = true,
 }) => {
   const {
     handleSubmit,
@@ -66,19 +81,11 @@ const DataTableSettlement = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [totalValue, setTotalValue] = useState([]);
-  const [totalLoadDevice,setTotalLoadDevice] = useState([])
-  const [actualGenerationDevice,setActualGenerationDevice] = useState([])
-  const [inventoryMatchDevice,setInventoryMatchDevice] = useState([])
-  const [perActualMatchDevice,setPerActualMatchDevice] = useState([])
-  const [totalLoadSubscriber,setTotalLoadSubscriber] = useState([])
-  const [actualGenerationSubscriber,setActualGenerationSubscriber] = useState([])
-  const [inventoryMatchSubscriber,setInventoryMatchSubscriber] = useState([])
-  const [perActualMatchSubscriber,setPerActualMatchSubscriber] = useState([])
 
   // useEffect(() => {
   //   return () => dispatch({ type: "RESET_STATE" });
   // }, []);
-//console.log(data)
+
   useEffect(() => {
     if (editDatetime) {
       console.log("data === ", data);
@@ -133,53 +140,6 @@ const DataTableSettlement = ({
         0
       );
       setTotalValue(numeral(total).format("0,0.00"));
-    } else if (isTotal === "Total") {
-      if(isSubTotal == "Device"){
-        //console.log(paginatedData)
-        const totalloadDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.totalGeneration || 0),
-          0
-        );
-        setTotalLoadDevice(numeral(totalloadDevice).format("0,0.00"));
-        const actualGenerateDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.actualGenerationMatch || 0),
-          0
-        );
-        setActualGenerationDevice(numeral(actualGenerateDevice).format("0,0.00"));
-        const inventorymatchDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.inventoryMatch || 0),
-          0
-        );
-        setInventoryMatchDevice(numeral(inventorymatchDevice).format("0,0.00"));
-        const perActualMatch = paginatedData.reduce(
-          (acc, row) => acc + (row.perActualGenerationMatch || 0),
-          0
-        );
-        setPerActualMatchDevice(numeral(perActualMatch).format("0,0.00"));
-      }
-      else if(isSubTotal == "Subscriber"){
-        const totalloadDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.totalLoad || 0),
-          0
-        );
-        setTotalLoadSubscriber(numeral(totalloadDevice).format("0,0.00"));
-        const actualGenerateDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.actualLoadMatch || 0),
-          0
-        );
-        setActualGenerationSubscriber(numeral(actualGenerateDevice).format("0,0.00"));
-        const inventorymatchDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.inventorymatch || 0),
-          0
-        );
-        setInventoryMatchSubscriber(numeral(inventorymatchDevice).format("0,0.00"));
-        const perActualMatch = paginatedData.reduce(
-          (acc, row) => acc + (row.perNetGreenDeliverables || 0),
-          0
-        );
-        setPerActualMatchSubscriber(numeral(perActualMatch).format("0,0.00"));
-      }
-      
     }
   }, [data]);
 
@@ -251,12 +211,12 @@ const DataTableSettlement = ({
     // Handle numeric sorting
     return order === "asc" ? aValue - bValue : bValue - aValue;
   });
-//console.log(sortedData)
-  const filteredData = sortedData?.filter((obj) => {
+
+  const filteredData = data?.filter((obj) => {
     for (let key in obj) {
+      console.log(key)
       if (key === "id") continue;
       if (key == "subscriberTypeId") {
-       // console.log("subType")
         if (String(obj[key]) == 1) {
           return "Subscriber".toLowerCase().includes(searchTerm?.toLowerCase());
         } else if (String(obj[key]) == 2) {
@@ -265,7 +225,6 @@ const DataTableSettlement = ({
             .includes(searchTerm?.toLowerCase());
         }
       } else if (key == "contractedEnergy") {
-       // console.log("ContractEnergy")
         let contractedEnergy = obj[key];
         if (contractedEnergy != null) {
           if (
@@ -278,7 +237,6 @@ const DataTableSettlement = ({
           }
         }
       } else if (key == "capacity") {
-        //console.log("capacity")
         let capacity = obj[key];
         if (capacity != null) {
           if (
@@ -291,7 +249,6 @@ const DataTableSettlement = ({
           }
         }
       } else if (key == "allocateEnergyAmount") {
-        //console.log("allow")
         let allocateEnergyAmount = obj[key];
         if (allocateEnergyAmount != null) {
           if (
@@ -303,47 +260,9 @@ const DataTableSettlement = ({
             return true;
           }
         }
-      } else if (key == "totalGeneration"){
-        let allocateEnergyAmount = obj[key];
-        if (allocateEnergyAmount != null) {
-          if (
-            numeral(String(obj[key]).toLowerCase())
-              .value()
-              .toString()
-              .includes(numeral(searchTerm).value())
-          ) {
-            return true;
-          }
-        }
-      } else if (key == "totalLoad"){
-        let allocateEnergyAmount = obj[key];
-        if (allocateEnergyAmount != null) {
-          if (
-            numeral(String(obj[key]).toLowerCase())
-              .value()
-              .toString()
-              .includes(numeral(searchTerm).value())
-          ) {
-            return true;
-          }
-        }
-      }
-       else {
-        //console.log("another")
-        //console.log(key)
-        //console.log(obj)
-        //console.log(obj[key])
-        /*  else if (key == "currentSettlement") {
-        if (
-          dayjs(obj[key], "YYYY-M")
-            .format("MMMM YYYY")
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
-        ) {
-          return true;
-        }
-      }  */
-     //console.log(String(obj[key]).toLowerCase().includes(searchTerm?.toLowerCase()))
+      }else {
+        console.log(searchTerm)
+        console.log(String(obj[key]).toLowerCase().includes(searchTerm?.toLowerCase()))
         if (
           String(obj[key]).toLowerCase().includes(searchTerm?.toLowerCase())
         ) {
@@ -355,12 +274,13 @@ const DataTableSettlement = ({
       }
     }
   });
+
 console.log(filteredData)
+
   const paginatedData = filteredData?.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
-  console.log(paginatedData)
   function convertToDate(dateStr) {
     const parts = dateStr.split("/");
     const day = parseInt(parts[0], 10);
@@ -673,56 +593,24 @@ if (checkStartDate) {
         style={{ border: "none", boxShadow: "none" }}
       >
         <Table>
-          
           <TableHead>
-            <TableRow style={{ textAlign: "center" }}>
-              {checkbox && (
-                <TableCell
-                  align="center" // Ensure this is set to center for checkbox column
-                  padding="checkbox"
-                  style={{
-                    backgroundColor: "#F3F6F9",
-                  }}
-                >
-                  <Checkbox
-                    indeterminate={
-                      selectedRows?.length > 0 &&
-                      selectedRows?.length < data?.length
-                    }
-                    checked={selectedRows?.length === data?.length}
-                    disabled={selectedData?.length > 0 ? true : false}
-                    onChange={() => {
-                      if (selectedRows?.length === data?.length) {
-                        setSelectedRows([]);
-                        onSelectedRowsChange([]);
-                      } else {
-                        setSelectedRows(data?.map((row) => row.id));
-                        onSelectedRowsChange(data?.map((row) => row.id));
-                      }
-                    }}
-                  />
-                </TableCell>
-              )}
-              {columns?.map((column, index) => (
-                <TableCell
-                  key={column.id}
-                  style={{
-                    // textAlign: index === 0 ? "left" : "center",
-                    backgroundColor: "#F3F6F9",
-                  }}
-                  align={column.align ? column.align : "center"}
-                >
-                  <TableSortLabel
-                    active={orderBy === column.id}
-                    direction={orderBy === column.id ? order : "asc"}
-                    onClick={() => handleSort(column.id)}
-                    style={{ maxWidth: column.maxWidth }}
-                  >
-                    {column.label}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
-            </TableRow>
+          {/* แถวหัวข้อหลัก */}
+          <TableRow>
+            <StyledTableCell rowSpan={2}>Portfolio Name</StyledTableCell>
+            <StyledTableCell rowSpan={2} className="text-center">Start Date</StyledTableCell>
+            <StyledTableCell rowSpan={2} className="text-center">End Date</StyledTableCell>
+            <StyledTableCell colSpan={3} className="text-center">
+              {isGenerate?"Generation Data Input Progress":"Load Data Input Progress"}
+            </StyledTableCell>
+            <StyledTableCell rowSpan={2} className="w-[150px]"></StyledTableCell>
+          </TableRow>
+          {/* แถวหัวข้อย่อย */}
+          <TableRow>
+          <SubHeaderCell>Revision1</SubHeaderCell>
+          <SubHeaderCell>Revision2</SubHeaderCell>
+          <SubHeaderCell>Evidence</SubHeaderCell>
+            
+          </TableRow>
           </TableHead>
           <TableBody>
             {paginatedData.length > 0 ? (
@@ -758,112 +646,9 @@ if (checkStartDate) {
                         key={column.id}
                         align={column.align ? column.align : "center"}
                         style={{ maxWidth: column.maxWidth }}
-                        // style={{
-                        //   minWidth: index === 0 ? "200px" : "100px",
-                        //   maxWidth: index === 0 ? "300px" : "100px",
-                        //   whiteSpace: "hidden", // Prevents text from wrapping
-                        //   padding: "15px 5px 15px 10px",
-                        // }}
                       >
                         {renderCell(row, column)}
 
-                        {/* {column.render ? (
-                          column.render(row)
-                        ) : (
-                          <>
-                            {!isStartPort &&
-                            editDatetime &&
-                            (column.id === "startDate" ||
-                              column.id === "retailESAContractStartDate") ? (
-                              <></>
-                            ) : editDatetime &&
-                              (column.id === "endDate" ||
-                                column.id === "retailESAContractEndDate") ? (
-                              <></>
-                            ) : column.id === "capacity" ? (
-                              <span>{row[column.id].toFixed(2)}</span>
-                            ) : column.id === "allocateEnergyAmount" ? (
-                              <span>{row[column.id].toFixed(2)}</span>
-                            ) : (
-                              <span>{row[column.id]}</span>
-                            )}
-                          </>
-                        )}
-
-                        {!isStartPort &&
-                          editDatetime &&
-                          (column.id === "startDate" ||
-                            column.id === "retailESAContractStartDate") && (
-                            <Controller
-                              name={"startDate" + "_" + row.id}
-                              control={control}
-                              rules={
-                                {
-                                  // required: "This field is required",
-                                }
-                              }
-                              render={({ field }) => (
-                                <DatePicker
-                                  {...field}
-                                  id={"startDate" + "_" + row.id}
-                                  formatDate={"d/M/yyyy"}
-                                  error={errors["startDate" + "_" + row.id]}
-                                  onCalDisableDate={(newValue) => {
-                                    return requestedEffectiveDateDisableDateCal(
-                                      newValue,
-                                      row.id
-                                    );
-                                  }}
-                                  onChangeInput={(newValue) => {
-                                    const newDate = format(
-                                      newValue,
-                                      "dd/MM/yyyy"
-                                    );
-                                    dateChange(newDate, row.id, "startDate");
-                                  }}
-                                  validate={" *"}
-                                  // ... other props
-                                />
-                              )}
-                            />
-                          )}
-
-                        {editDatetime &&
-                          (column.id === "endDate" ||
-                            column.id === "retailESAContractEndDate") && (
-                            <Controller
-                              name={"endDate" + "_" + row.id}
-                              control={control}
-                              rules={
-                                {
-                                  // required: "This field is required",
-                                }
-                              }
-                              render={({ field }) => (
-                                <DatePicker
-                                  {...field}
-                                  id={"endDate" + "_" + row.id}
-                                  formatDate={"d/M/yyyy"}
-                                  error={errors["endDate" + "_" + row.id]}
-                                  onCalDisableDate={(newValue) => {
-                                    return requestedEffectiveDateDisableDateCal(
-                                      newValue,
-                                      row.id
-                                    );
-                                  }}
-                                  onChangeInput={(newValue) => {
-                                    const newDate = format(
-                                      newValue,
-                                      "dd/MM/yyyy"
-                                    );
-                                    dateChange(newDate, row.id, "endDate");
-                                  }}
-                                  validate={" *"}
-                                  // ... other props
-                                />
-                              )}
-                            />
-                          )} */}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -872,7 +657,7 @@ if (checkStartDate) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length + (checkbox ? 1 : 0)}
+                  colSpan={"7"}
                   style={{ textAlign: "center" }}
                 >
                   No data found
@@ -899,7 +684,8 @@ if (checkStartDate) {
                         style={{
                           textAlign: "left",
                           backgroundColor: "#F3F6F9",
-                          padding: "10px",
+                          padding: "1rem",
+                          fontSize : "99%"
                         }}
                       >
                         <strong> {isTotal} </strong>
@@ -913,6 +699,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
+                    fontSize : "99%"
                         }}
                       >
                         <strong>
@@ -933,6 +720,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
+                    fontSize : "99%"
                         }}
                       >
                         <strong>
@@ -951,6 +739,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
+                    
                         }}
                       >
                         <strong>
@@ -969,6 +758,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
+                    
                         }}
                       >
                         <strong>
@@ -979,173 +769,15 @@ if (checkStartDate) {
                         </strong>
                       </TableCell>
                     );
-                  } else if(isTotal === "Total" && isSubTotal == "Device" && (index == 1 || index == 2 || index == 3 || index == 5)){
-                    
-                      if(index == 1){
-                        return (
-                          <TableCell
-                            key={`footer-total-capacity`}
-                            style={{
-                              textAlign: "right",
-                              backgroundColor: "#F3F6F9",
-                              padding: "1rem",
-                            }}
-                          >
-                            <strong>
-                              {" "}
-                              {totalLoadDevice
-                                ? numeral(totalLoadDevice).format("0,0.00")
-                                : ""}
-                            </strong>
-                          </TableCell>
-                        );
-                      }
-                      else if(index == 2){
-                        return (
-                          <TableCell
-                            key={`footer-total-capacity`}
-                            style={{
-                              textAlign: "right",
-                              backgroundColor: "#F3F6F9",
-                              padding: "1rem",
-                            }}
-                          >
-                            <strong>
-                              {" "}
-                              {actualGenerationDevice
-                                ? numeral(actualGenerationDevice).format("0,0.00")
-                                : ""}
-                            </strong>
-                          </TableCell>
-                        );
-                      }
-                      else if(index == 3 ){
-                        return (
-                          <TableCell
-                            key={`footer-total-capacity`}
-                            style={{
-                              textAlign: "right",
-                              backgroundColor: "#F3F6F9",
-                              padding: "1rem",
-                            }}
-                          >
-                            <strong>
-                              {" "}
-                              {inventoryMatchDevice
-                                ? numeral(inventoryMatchDevice).format("0,0.00")
-                                : ""}
-                            </strong>
-                          </TableCell>
-                        );
-                      }
-                      else if(index == 5){
-                        return (
-                          <TableCell
-                            key={`footer-total-capacity`}
-                            style={{
-                              textAlign: "right",
-                              backgroundColor: "#F3F6F9",
-                              padding: "1rem",
-                            }}
-                          >
-                            <strong>
-                              {" "}
-                              {perActualMatchDevice
-                                ? numeral(perActualMatchDevice).format("0,0.00")
-                                : ""}
-                            </strong>
-                          </TableCell>
-                        );
-                      }
-
-                    
-                  } else if(isTotal === "Total" && isSubTotal == "Subscriber" && (index == 1 || index == 2 || index == 3 || index == 6)){
-
-                    if(index == 1){
-                      return (
-                        <TableCell
-                          key={`footer-total-capacity`}
-                          style={{
-                            textAlign: "right",
-                            backgroundColor: "#F3F6F9",
-                            padding: "1rem",
-                          }}
-                        >
-                          <strong>
-                            {" "}
-                            {totalLoadSubscriber
-                              ? numeral(totalLoadSubscriber).format("0,0.00")
-                              : ""}
-                          </strong>
-                        </TableCell>
-                      );
-                    }
-                    else if(index == 2){
-                      return (
-                        <TableCell
-                          key={`footer-total-capacity`}
-                          style={{
-                            textAlign: "right",
-                            backgroundColor: "#F3F6F9",
-                            padding: "1rem",
-                          }}
-                        >
-                          <strong>
-                            {" "}
-                            {actualGenerationSubscriber
-                              ? numeral(actualGenerationSubscriber).format("0,0.00")
-                              : ""}
-                          </strong>
-                        </TableCell>
-                      );
-                    }
-                    else if(index == 3 ){
-                      return (
-                        <TableCell
-                          key={`footer-total-capacity`}
-                          style={{
-                            textAlign: "right",
-                            backgroundColor: "#F3F6F9",
-                            padding: "1rem",
-                          }}
-                        >
-                          <strong>
-                            {" "}
-                            {inventoryMatchSubscriber
-                              ? numeral(inventoryMatchSubscriber).format("0,0.00")
-                              : ""}
-                          </strong>
-                        </TableCell>
-                      );
-                    }
-                    else if(index == 6){
-                      return (
-                        <TableCell
-                          key={`footer-total-capacity`}
-                          style={{
-                            textAlign: "right",
-                            backgroundColor: "#F3F6F9",
-                            padding: "1rem",
-                          }}
-                        >
-                          <strong>
-                            {" "}
-                            {perActualMatchSubscriber
-                              ? numeral(perActualMatchSubscriber).format("0,0.00")
-                              : ""}
-                          </strong>
-                        </TableCell>
-                      );
-                    }
-
-                  }else {
+                  } else {
                     return (
                       <TableCell
                         key={`footer-empty-${index}`}
                         style={{
                           textAlign: "center",
                           backgroundColor: "#F3F6F9",
-                          padding: "10px",
+                          padding: "1rem",
+                    
                         }}
                       />
                     );
@@ -1173,4 +805,4 @@ if (checkStartDate) {
   );
 };
 
-export default DataTableSettlement;
+export default DataTableSubmenu;

@@ -9,10 +9,12 @@ import {
   getPortfolioMonthList,
   setSelectedMonth,
   getSettlementDetail,
+  getSettlementStatus
 } from "../../Redux/Settlement/Action";
 import { useNavigate } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import { USER_GROUP_ID } from "../../Constants/Constants";
+import SettlementInfoFinal from "./SettlementInfoFinal";
 
 // Icon import
 import { AiOutlineExport } from "react-icons/ai";
@@ -29,6 +31,8 @@ const MonthlySettlement = (props) => {
   } = props;
   const [unit, setUnit] = useState("MWh");
 
+  console.log(portfolioId)
+
   const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[0].convertValue);
   const monthListData = useSelector((state) => state.settlement.monthList);
   const settlementYear = useSelector((state) => state.settlement.selectedYear);
@@ -39,10 +43,11 @@ const MonthlySettlement = (props) => {
   const settlementMonthlySummaryData = useSelector(
     (state) => state.settlement.settlementDetail
   );
+  const settlementStatus = useSelector((state)=>state.settlement.settlementStatus)
   const [latestMonthHasData, setLatestMonthHasData] = useState(
     monthListData.defaultMonth
   );
-
+console.log(settlementStatus,monthListData)
   const [isShowView, setIsShowView] = useState(false);
   console.log(settlementYear, settlementMonth);
   useEffect(() => {
@@ -55,12 +60,41 @@ const MonthlySettlement = (props) => {
           settlementMonth
         )
       );
+      dispatch(getSettlementStatus(portfolioId,settlementYear,settlementMonth,ugtGroupId))
     }
   }, [settlementMonth, settlementYear]);
 
   useEffect(() => {
     if (settlementMonthlySummaryData && userData) {
-      if (
+      if(settlementStatus.status == "N" || settlementStatus.status == "E" || settlementStatus.status == "R"){
+        if(userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+          userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER){
+            setIsShowView(true);
+          }
+          else{
+            setIsShowView(false);
+          }
+      }
+      else if(settlementStatus.status == "V"){
+        if(userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+          userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+          userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
+          userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG){
+            setIsShowView(true);
+          }
+          else{
+            setIsShowView(false);
+          }
+      }
+      else if(settlementStatus.status == "Y"){
+        setIsShowView(true);
+      }
+
+
+      /*if (
         userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
@@ -81,7 +115,7 @@ const MonthlySettlement = (props) => {
         } else {
           setIsShowView(false);
         }
-      }
+      }*/
     }
   }, [userData, settlementMonthlySummaryData]);
 
@@ -248,7 +282,7 @@ const MonthlySettlement = (props) => {
           </Form>
         </div>
 
-        <SettlementInfo
+        <SettlementInfoFinal
           ugtGroupId={ugtGroupId}
           portfolioId={portfolioId}
           portfolioName={portfolioName}
@@ -259,6 +293,7 @@ const MonthlySettlement = (props) => {
           settlementYear={settlementYear}
           settlementMonth={settlementMonth}
           isShowDetail={isShowDetail}
+          status={settlementStatus.status}
         />
       </Card>
     )

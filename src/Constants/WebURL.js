@@ -28,6 +28,12 @@ export const DASHBOARD = "/dashbord";
 
 export const SETTLEMENT = "/settlement";
 export const SETTLEMENT_APPROVAL = "/settlement/approval";
+export const SETTLEMENT_GENERATE_DATA = "/settlement/generatedata"
+export const SETTLEMENT_LOAD_DATA = "/settlement/loaddata"
+export const SETTLEMENT_GENERATE_DATA_INFO = "/settlement/generatedata/info"
+export const SETTLEMENT_GENERATE_DATA_DETAIL = "/settlement/generatedata/detail"
+export const SETTLEMENT_LOAD_DATA_INFO = "/settlement/loaddata/info"
+export const SETTLEMENT_LOAD_DATA_DETAIL = "/settlement/loaddata/detail"
 
 export const EAC_INFO = "/eac/info";
 export const EAC_ISSUE = "/eac/issue";
