@@ -968,6 +968,7 @@ const LoadDataRevision = ({
 
   const saveLoadData = () => {
     console.log("Save");
+    ClosePopupupConfirm()
     if (fileMetering.length !== 0 && fileContractInvoice.length !== 0) {
       showLoading();
       let tempMeteringFile = [];
