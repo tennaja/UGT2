@@ -7,7 +7,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import SearchBox from "../Control/SearchBox";
 import { Form, Select } from "antd";
-import { MONTH_LIST } from "../../Constants/Constants";
+import { MONTH_LIST, USER_GROUP_ID } from "../../Constants/Constants";
 import DataTableSubmenu from "./DataTableSubmenu";
 import Highlighter from "react-highlight-words";
 import {
@@ -28,6 +28,7 @@ const LoadDataList = () => {
   const mockYear = [{ year: 2024 }, { year: 2025 }];
 
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
+  const userData = useSelector((state) => state.login.userobj);
   const loadDataList = useSelector(
     (state) => state.settlement.loadDataInputList
   );
@@ -38,6 +39,7 @@ const LoadDataList = () => {
     (state) => state.settlement.loadDataInputYearList
   );
   console.log(currentUGTGroup?.id);
+  console.log(userData);
   //console.log(generateDataList);
   const [selectYear, setSelectyear] = useState("");
 
@@ -51,13 +53,38 @@ const LoadDataList = () => {
 
   useEffect(() => {
     if (currentUGTGroup?.id && selectYear && selectMonth) {
-      dispatch(
-        getLoadDataInputList(currentUGTGroup?.id, selectYear, selectMonth)
-      );
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+      ) {
+        dispatch(
+          getLoadDataInputList(currentUGTGroup?.id, selectYear, selectMonth, 1)
+        );
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        dispatch(
+          getLoadDataInputList(currentUGTGroup?.id, selectYear, selectMonth, 2)
+        );
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        dispatch(
+          getLoadDataInputList(currentUGTGroup?.id, selectYear, selectMonth, 3)
+        );
+      } else {
+        dispatch(
+          getLoadDataInputList(currentUGTGroup?.id, selectYear, selectMonth, 0)
+        );
+      }
     }
 
     if (currentUGTGroup?.id) {
-      console.log("Call Year")
+      console.log("Call Year");
       dispatch(getLoadDataYearList(currentUGTGroup?.id));
     }
 
@@ -209,7 +236,7 @@ const LoadDataList = () => {
     // Add more columns as needed
   ];
 
-  console.log(selectMonth, selectYear, loadDataMonthList,loadDataYearList);
+  console.log(selectMonth, selectYear, loadDataMonthList, loadDataYearList);
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
@@ -282,7 +309,8 @@ const LoadDataList = () => {
                       <label
                         className={`font-sm font-normal text-sm text-BREAD_CRUMB`}
                       >
-                        {loadDataList.length} {loadDataList.length > 1 ? "Portfolios" : "Portfolio"}
+                        {loadDataList.length}{" "}
+                        {loadDataList.length > 1 ? "Portfolios" : "Portfolio"}
                       </label>
                     </span>
                   </div>

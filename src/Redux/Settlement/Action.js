@@ -1139,9 +1139,9 @@ export const _getGenerateDataInputList = (data) => {
     }
 }
 
-export const getGenerateDataInputList = (ugtGroupId, year, month) => {
+export const getGenerateDataInputList = (ugtGroupId, year, month,utilityId) => {
 
-    const URL = `${GENERATE_DATA_INPUT}/${ugtGroupId}?year=${year}&month=${month}`
+    const URL = `${GENERATE_DATA_INPUT}/${ugtGroupId}?year=${year}&month=${month}&utilityId=${utilityId}`
     console.log('URL', URL)
 
     return async (dispatch) => {
@@ -1440,9 +1440,9 @@ export const _getLoadDataInputList = (data) => {
     }
 }
 
-export const getLoadDataInputList = (ugtGroupId, year, month) => {
+export const getLoadDataInputList = (ugtGroupId, year, month,utilityId) => {
 
-    const URL = `${LOAD_DATA_INPUT}/${ugtGroupId}?year=${year}&month=${month}`
+    const URL = `${LOAD_DATA_INPUT}/${ugtGroupId}?year=${year}&month=${month}&utilityId=${utilityId}`
     console.log('URL', URL)
 
     return async (dispatch) => {
