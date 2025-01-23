@@ -277,7 +277,7 @@ useEffect(()=>{
           highlightTag={Highlight}
           searchWords={[searchQueryActive]}
           autoEscape={true}
-          textToHighlight={numeral(row.totalGenerationrevision1).format("0,0.000")}
+          textToHighlight={numeral(row.totalGenerationrevision1).format("0,0.00")}
         />
       ),
     },
@@ -314,7 +314,7 @@ useEffect(()=>{
             highlightTag={Highlight}
             searchWords={[searchQueryActive]}
             autoEscape={true}
-            textToHighlight={numeral(row.totalGenerationrevision2).format("0,0.000")}
+            textToHighlight={numeral(row.totalGenerationrevision2).format("0,0.00")}
           />
         ),
       },

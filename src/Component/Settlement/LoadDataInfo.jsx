@@ -192,7 +192,7 @@ const LoadDatainfo = (props) => {
           searchWords={[searchQueryActive]}
           autoEscape={true}
           textToHighlight={numeral(row.totalLoad1).format(
-            "0,0.000"
+            "0,0.00"
           )}
         />
       ),
@@ -233,7 +233,7 @@ const LoadDatainfo = (props) => {
           searchWords={[searchQueryActive]}
           autoEscape={true}
           textToHighlight={numeral(row.totalLoad2).format(
-            "0,0.000"
+            "0,0.00"
           )}
         />
       ),
