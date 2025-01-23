@@ -8,7 +8,7 @@ import {
   getLoadDataDetailRevision,
   getLoadDataDetailRevisionFile,
   LoadDataSave,
-  clearSettlementFailRequest
+  clearSettlementFailRequest,
 } from "../../Redux/Settlement/Action";
 import numeral from "numeral";
 import ModalFail from "../Control/Modal/ModalFail";
@@ -31,17 +31,15 @@ import { LiaDownloadSolid } from "react-icons/lia";
 import JSZip from "jszip";
 import { BiErrorCircle } from "react-icons/bi";
 import "../Control/Css/customDragger.css";
-import { AiOutlineCloudUpload } from "react-icons/ai"
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import ModalConfirmNew from "../Control/Modal/ModalConfirmNew";
 
 const { Dragger } = Upload;
 
 const beforeUpload = (file) => {
-  const isValidFile =
-    file.type === "application/pdf";
+  const isValidFile = file.type === "application/pdf";
   if (!isValidFile) {
-    message.error(
-      "You can only upload pdf file!"
-    );
+    message.error("You can only upload pdf file!");
   }
   const isLt2M = file.size / 1024 / 1024 < 20;
   if (!isLt2M) {
@@ -50,23 +48,21 @@ const beforeUpload = (file) => {
   return isValidFile && isLt2M;
 };
 
-const beforUploadFileExcel = (file)=>{
+const beforUploadFileExcel = (file) => {
   const isValidFile =
     file.type === "application/vnd.ms-excel" ||
     file.type ===
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    console.log(isValidFile)
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  console.log(isValidFile);
   if (!isValidFile) {
-    message.error(
-      "You can only upload xls, xlsx file!"
-    );
+    message.error("You can only upload xls, xlsx file!");
   }
   const isLt2M = file.size / 1024 / 1024 < 20;
   if (!isLt2M) {
     message.error("File must smaller than 20MB!");
   }
   return isValidFile && isLt2M;
-}
+};
 
 const getIcon = (type) => {
   //console.log(type)
@@ -129,14 +125,15 @@ const LoadDataRevision = ({
   const loadFileList = useSelector(
     (state) => state.settlement.loadDataDetailRevisionFile
   );
-  const isError = useSelector((state)=> state.settlement.isFailRequest)
+  const isError = useSelector((state) => state.settlement.isFailRequest);
 
   const [fileMetering, setFileMetering] = useState([]);
   const [fileContractInvoice, setFileContractInvoice] = useState([]);
   const [fileOther, setFileOther] = useState([]);
 
   const [isMandatoryError, setIsMandatoryError] = useState(false);
-  const [isSuccess,setIsSuccess] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [popupConfirm, setPopupConfirm] = useState(false);
 
   console.log(fileMetering);
 
@@ -254,7 +251,7 @@ const LoadDataRevision = ({
   //Metering File
   const props = {
     multiple: true,
-    accept: ".pdf", 
+    accept: ".pdf",
     // listType: "picture",
     beforeUpload: beforeUpload,
     customRequest: uploadToEvident,
@@ -317,7 +314,8 @@ const LoadDataRevision = ({
               }}
               onClick={() => actions.download(file)}
             >
-              <RiDownloadLine className="w-[20px] h-[20px]"/> {/* ไอคอนดาวน์โหลด */}
+              <RiDownloadLine className="w-[20px] h-[20px]" />{" "}
+              {/* ไอคอนดาวน์โหลด */}
             </button>
             {checkShowPreview(file.type) ? (
               <button
@@ -330,7 +328,7 @@ const LoadDataRevision = ({
                 }}
                 onClick={() => props.onPreview(file)}
               >
-                <RiEyeLine className="w-[20px] h-[20px]"/>
+                <RiEyeLine className="w-[20px] h-[20px]" />
               </button>
             ) : undefined}
             {/* ปุ่ม Remove */}
@@ -344,7 +342,7 @@ const LoadDataRevision = ({
               }}
               onClick={() => actions.remove(file)}
             >
-              <FaRegTrashAlt className="w-[20px] h-[20px]"/> {/* ไอคอนลบ */}
+              <FaRegTrashAlt className="w-[20px] h-[20px]" /> {/* ไอคอนลบ */}
             </button>
           </div>
         </div>
@@ -430,7 +428,7 @@ const LoadDataRevision = ({
   //Contract Sales Invoice File
   const propsContractInvoice = {
     multiple: true,
-    accept: ".xlsx,.xls", 
+    accept: ".xlsx,.xls",
     // listType: "picture",
     beforeUpload: beforUploadFileExcel,
     customRequest: uploadContractInvoice,
@@ -493,7 +491,8 @@ const LoadDataRevision = ({
               }}
               onClick={() => actions.download(file)}
             >
-              <RiDownloadLine className="w-[20px] h-[20px]"/> {/* ไอคอนดาวน์โหลด */}
+              <RiDownloadLine className="w-[20px] h-[20px]" />{" "}
+              {/* ไอคอนดาวน์โหลด */}
             </button>
             {checkShowPreview(file.type) ? (
               <button
@@ -506,7 +505,7 @@ const LoadDataRevision = ({
                 }}
                 onClick={() => props.onPreview(file)}
               >
-                <RiEyeLine className="w-[20px] h-[20px]"/>
+                <RiEyeLine className="w-[20px] h-[20px]" />
               </button>
             ) : undefined}
             {/* ปุ่ม Remove */}
@@ -520,7 +519,7 @@ const LoadDataRevision = ({
               }}
               onClick={() => actions.remove(file)}
             >
-              <FaRegTrashAlt className="w-[20px] h-[20px]"/> {/* ไอคอนลบ */}
+              <FaRegTrashAlt className="w-[20px] h-[20px]" /> {/* ไอคอนลบ */}
             </button>
           </div>
         </div>
@@ -834,8 +833,14 @@ const LoadDataRevision = ({
   }
 
   useEffect(() => {
-    if (ugtGroupId && portfolioId && year && month && subscriberId && revision) {
-        
+    if (
+      ugtGroupId &&
+      portfolioId &&
+      year &&
+      month &&
+      subscriberId &&
+      revision
+    ) {
       console.log("Get Data");
       dispatch(
         getLoadDataDetailRevision(
@@ -860,9 +865,15 @@ const LoadDataRevision = ({
   }, []);
 
   useEffect(() => {
-    
-    if (ugtGroupId && portfolioId && year && month && subscriberId && revision) {
-        showLoading()
+    if (
+      ugtGroupId &&
+      portfolioId &&
+      year &&
+      month &&
+      subscriberId &&
+      revision
+    ) {
+      showLoading();
       console.log("Get Data 2");
       dispatch(
         getLoadDataDetailRevision(
@@ -955,10 +966,10 @@ const LoadDataRevision = ({
     }
   };
 
-  const saveGenerateData = () => {
+  const saveLoadData = () => {
     console.log("Save");
     if (fileMetering.length !== 0 && fileContractInvoice.length !== 0) {
-      showLoading()
+      showLoading();
       let tempMeteringFile = [];
       let tempContractFile = [];
       fileMetering.map((item) => {
@@ -989,13 +1000,19 @@ const LoadDataRevision = ({
         filePdf: tempMeteringFile,
         fileXls: tempContractFile,
       };
-      dispatch(
-        LoadDataSave(param, () => {})
-      );
+      dispatch(LoadDataSave(param, () => {}));
       console.log(param);
     } else {
       setIsMandatoryError(true);
     }
+  };
+
+  const OpenPopupConfirm = () => {
+    setPopupConfirm(true);
+  };
+
+  const ClosePopupupConfirm = () => {
+    setPopupConfirm(false);
   };
 
   return (
@@ -1019,7 +1036,7 @@ const LoadDataRevision = ({
                     {/*Subscriber Name */}
                     <div>
                       <label className="text-[#6B7280] text-xs">
-                        Device Name
+                        Subscriber Name
                       </label>
                       <div className="break-words	font-bold">
                         {renderData(loadDataRevision?.subscriberName)}
@@ -1028,7 +1045,7 @@ const LoadDataRevision = ({
                     {/*Status */}
                     <div>
                       <label className="text-[#6B7280] text-xs ">
-                        Device Code
+                        Subscriber Code
                       </label>
                       <div className="break-words	font-bold">
                         {renderData(loadDataRevision?.subscriberCode)}
@@ -1054,6 +1071,23 @@ const LoadDataRevision = ({
                   </div>
                   {/*Row 3 */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                    {/*Assign Utility */}
+                    <div>
+                      <label className="text-[#6B7280] text-xs ">Portfolio Code</label>
+                      <div className="break-words	font-bold">
+                        {renderData(loadDataRevision?.portfolioCode)}
+                      </div>
+                    </div>
+                    {/*Subscriber Code */}
+                    <div>
+                      <label className="text-[#6B7280] text-xs">Approve Date</label>
+                      <div className="break-words	font-bold">
+                        {getFullDate(loadDataRevision?.approvedDate)}
+                      </div>
+                    </div>
+                  </div>
+                  {/*Row 4 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
                     {/*Trade Accout Name */}
                     <div>
                       <label className="text-[#6B7280] text-xs">
@@ -1073,7 +1107,7 @@ const LoadDataRevision = ({
                       </div>
                     </div>
                   </div>
-                  {/*Row 4 */}
+                  {/*Row 5 */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
                     {/*Assign Utility */}
                     <div>
@@ -1094,7 +1128,7 @@ const LoadDataRevision = ({
                       </div>
                     </div>
                   </div>
-                  {/*Row 5 */}
+                  {/*Row 6 */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
                     {/*Assign Utility */}
                     <div>
@@ -1117,7 +1151,7 @@ const LoadDataRevision = ({
                       </div>
                     </div>
                   </div>
-                  {/*Row 6 */}
+                  {/*Row 7 */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
                     {/*Assign Utility */}
                     <div>
@@ -1169,20 +1203,20 @@ const LoadDataRevision = ({
                   className="custom-dragger"
                   //disabled={!canUpload}
                 >
-                  <p className="ant-upload-drag-icon"><AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload></p>
+                  <p className="ant-upload-drag-icon">
+                    <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
+                  </p>
                   <p className="ant-upload-text">
                     Drop files here or click to upload.
                   </p>
                   <p className="ant-upload-hint">
-                    Acceptable formats : pdf Each file can be a maximum
-                    of 20MB.
+                    Acceptable formats : pdf Each file can be a maximum of 20MB.
                   </p>
                 </Dragger>
               </div>
               <div className="flex flex-col w-1/2 mt-2 ">
                 <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
-                  (.xls){" "}
-                  <label className="text-red-600">*</label>
+                  (.xls) <label className="text-red-600">*</label>
                 </div>
                 <Dragger
                   {...propsContractInvoice}
@@ -1190,7 +1224,9 @@ const LoadDataRevision = ({
                   className="custom-dragger"
                   //disabled={!canUpload}
                 >
-                  <p className="ant-upload-drag-icon"><AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload></p>
+                  <p className="ant-upload-drag-icon">
+                    <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
+                  </p>
                   <p className="ant-upload-text">
                     Drop files here or click to upload.
                   </p>
@@ -1219,7 +1255,7 @@ const LoadDataRevision = ({
               <Button
                 className="bg-lime-500 w-[150px] hover:bg-[#4D6A00] text-[#fff]"
                 size="lg"
-                onClick={saveGenerateData}
+                onClick={OpenPopupConfirm}
               >
                 Save
               </Button>
@@ -1237,16 +1273,25 @@ const LoadDataRevision = ({
           </div>
         </div>
       </div>
-      
-        {isError && (
-          <ModalFail
-            onClickOk={() => {
-              dispatch(clearSettlementFailRequest());
-            }}
-            content={"Something went wrong. Please go back and try again."}
-          />
-        )}
-        
+
+      {isError && (
+        <ModalFail
+          onClickOk={() => {
+            dispatch(clearSettlementFailRequest());
+          }}
+          content={"Something went wrong. Please go back and try again."}
+        />
+      )}
+
+      {popupConfirm && (
+        <ModalConfirmNew
+          onClickConfirmBtn={saveLoadData}
+          onCloseModal={ClosePopupupConfirm}
+          title={"Save this Subscriber?"}
+          content={"Would you like to save this subscriber?"}
+          textBtn={"Confirm"}
+        />
+      )}
     </div>
   );
 

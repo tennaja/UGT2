@@ -8,7 +8,7 @@ import {
   getGenerateDataDetailRevision,
   getGenerateDataDetailRevisionFile,
   GenerateDataSave,
-  clearSettlementFailRequest
+  clearSettlementFailRequest,
 } from "../../Redux/Settlement/Action";
 import numeral from "numeral";
 import ModalFail from "../Control/Modal/ModalFail";
@@ -31,7 +31,8 @@ import { LiaDownloadSolid } from "react-icons/lia";
 import JSZip from "jszip";
 import { BiErrorCircle } from "react-icons/bi";
 import "../Control/Css/customDragger.css";
-import { AiOutlineCloudUpload } from "react-icons/ai"
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import ModalConfirmNew from "../Control/Modal/ModalConfirmNew";
 
 const { Dragger } = Upload;
 
@@ -124,14 +125,15 @@ const GenerateDataRevision = ({
   const generateFileList = useSelector(
     (state) => state.settlement.generateDataFileList
   );
-  const isError = useSelector((state)=> state.settlement.isFailRequest)
+  const isError = useSelector((state) => state.settlement.isFailRequest);
 
   const [fileMetering, setFileMetering] = useState([]);
   const [fileContractInvoice, setFileContractInvoice] = useState([]);
   const [fileOther, setFileOther] = useState([]);
 
   const [isMandatoryError, setIsMandatoryError] = useState(false);
-  const [isSuccess,setIsSuccess] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [popupConfirm,setPopupConfirm] = useState(false)
 
   console.log(fileMetering);
 
@@ -311,7 +313,8 @@ const GenerateDataRevision = ({
               }}
               onClick={() => actions.download(file)}
             >
-              <RiDownloadLine className="w-[20px] h-[20px]"/> {/* ไอคอนดาวน์โหลด */}
+              <RiDownloadLine className="w-[20px] h-[20px]" />{" "}
+              {/* ไอคอนดาวน์โหลด */}
             </button>
             {checkShowPreview(file.type) ? (
               <button
@@ -324,7 +327,7 @@ const GenerateDataRevision = ({
                 }}
                 onClick={() => props.onPreview(file)}
               >
-                <RiEyeLine className="w-[20px] h-[20px]"/>
+                <RiEyeLine className="w-[20px] h-[20px]" />
               </button>
             ) : undefined}
             {/* ปุ่ม Remove */}
@@ -338,7 +341,7 @@ const GenerateDataRevision = ({
               }}
               onClick={() => actions.remove(file)}
             >
-              <FaRegTrashAlt className="w-[20px] h-[20px]"/> {/* ไอคอนลบ */}
+              <FaRegTrashAlt className="w-[20px] h-[20px]" /> {/* ไอคอนลบ */}
             </button>
           </div>
         </div>
@@ -486,7 +489,8 @@ const GenerateDataRevision = ({
               }}
               onClick={() => actions.download(file)}
             >
-              <RiDownloadLine className="w-[20px] h-[20px]"/> {/* ไอคอนดาวน์โหลด */}
+              <RiDownloadLine className="w-[20px] h-[20px]" />{" "}
+              {/* ไอคอนดาวน์โหลด */}
             </button>
             {checkShowPreview(file.type) ? (
               <button
@@ -499,7 +503,7 @@ const GenerateDataRevision = ({
                 }}
                 onClick={() => props.onPreview(file)}
               >
-                <RiEyeLine className="w-[20px] h-[20px]"/>
+                <RiEyeLine className="w-[20px] h-[20px]" />
               </button>
             ) : undefined}
             {/* ปุ่ม Remove */}
@@ -661,7 +665,8 @@ const GenerateDataRevision = ({
               }}
               onClick={() => actions.download(file)}
             >
-              <RiDownloadLine className="w-[20px] h-[20px]"/> {/* ไอคอนดาวน์โหลด */}
+              <RiDownloadLine className="w-[20px] h-[20px]" />{" "}
+              {/* ไอคอนดาวน์โหลด */}
             </button>
             {checkShowPreview(file.type) ? (
               <button
@@ -674,7 +679,7 @@ const GenerateDataRevision = ({
                 }}
                 onClick={() => props.onPreview(file)}
               >
-                <RiEyeLine className="w-[20px] h-[20px]"/>
+                <RiEyeLine className="w-[20px] h-[20px]" />
               </button>
             ) : undefined}
             {/* ปุ่ม Remove */}
@@ -688,7 +693,7 @@ const GenerateDataRevision = ({
               }}
               onClick={() => actions.remove(file)}
             >
-              <FaRegTrashAlt className="w-[20px] h-[20px]"/> {/* ไอคอนลบ */}
+              <FaRegTrashAlt className="w-[20px] h-[20px]" /> {/* ไอคอนลบ */}
             </button>
           </div>
         </div>
@@ -828,7 +833,6 @@ const GenerateDataRevision = ({
 
   useEffect(() => {
     if (ugtGroupId && portfolioId && year && month && deviceId && revision) {
-        
       console.log("Get Data");
       dispatch(
         getGenerateDataDetailRevision(
@@ -853,9 +857,8 @@ const GenerateDataRevision = ({
   }, []);
 
   useEffect(() => {
-    
     if (ugtGroupId && portfolioId && year && month && deviceId && revision) {
-        showLoading()
+      showLoading();
       console.log("Get Data 2");
       dispatch(
         getGenerateDataDetailRevision(
@@ -951,8 +954,9 @@ const GenerateDataRevision = ({
 
   const saveGenerateData = () => {
     console.log("Save");
+    ClosePopupupConfirm()
     if (fileMetering.length !== 0 && fileContractInvoice.length !== 0) {
-      showLoading()
+      showLoading();
       let tempMeteringFile = [];
       let tempContractFile = [];
       let tempOther = [];
@@ -994,16 +998,20 @@ const GenerateDataRevision = ({
         fileContractSalesInvoice: tempContractFile,
         fileOthers: tempOther,
       };
-      dispatch(
-        GenerateDataSave(param, () => {
-            
-        })
-      );
+      dispatch(GenerateDataSave(param, () => {}));
       console.log(param);
     } else {
       setIsMandatoryError(true);
     }
   };
+
+  const OpenPopupConfirm=()=>{
+    setPopupConfirm(true)
+  }
+
+  const ClosePopupupConfirm=()=>{
+    setPopupConfirm(false)
+  }
 
   return (
     <div>
@@ -1176,7 +1184,9 @@ const GenerateDataRevision = ({
                   className="custom-dragger"
                   //disabled={!canUpload}
                 >
-                  <p className="ant-upload-drag-icon"><AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload></p>
+                  <p className="ant-upload-drag-icon">
+                    <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
+                  </p>
                   <p className="ant-upload-text text-[#fff]]">
                     Drop files here or click to upload.
                   </p>
@@ -1198,7 +1208,9 @@ const GenerateDataRevision = ({
                   className="custom-dragger"
                   //disabled={!canUpload}
                 >
-                  <p className="ant-upload-drag-icon"><AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload></p>
+                  <p className="ant-upload-drag-icon">
+                    <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
+                  </p>
                   <p className="ant-upload-text">
                     Drop files here or click to upload.
                   </p>
@@ -1219,7 +1231,9 @@ const GenerateDataRevision = ({
                   className="custom-dragger"
                   //disabled={!canUpload}
                 >
-                  <p className="ant-upload-drag-icon"><AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload></p>
+                  <p className="ant-upload-drag-icon">
+                    <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
+                  </p>
                   <p className="ant-upload-text">
                     Drop files here or click to upload.
                   </p>
@@ -1249,7 +1263,7 @@ const GenerateDataRevision = ({
               <Button
                 className="bg-lime-500 w-[150px] hover:bg-[#4D6A00] text-[#fff]"
                 size="lg"
-                onClick={saveGenerateData}
+                onClick={OpenPopupConfirm}
               >
                 Save
               </Button>
@@ -1267,16 +1281,23 @@ const GenerateDataRevision = ({
           </div>
         </div>
       </div>
-      
-        {isError && (
-          <ModalFail
-            onClickOk={() => {
-              dispatch(clearSettlementFailRequest());
-            }}
-            content={"Something went wrong. Please go back and try again."}
-          />
-        )}
-        
+
+      {isError && (
+        <ModalFail
+          onClickOk={() => {
+            dispatch(clearSettlementFailRequest());
+          }}
+          content={"Something went wrong. Please go back and try again."}
+        />
+      )}
+
+      {popupConfirm && <ModalConfirmNew
+        onClickConfirmBtn={saveGenerateData}
+        onCloseModal={ClosePopupupConfirm}
+        title={"Save this Device?"}
+        content={"Would you like to save this device?"}
+        textBtn={"Confirm"}
+      />}
     </div>
   );
 
