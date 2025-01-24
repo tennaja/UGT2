@@ -1,34 +1,11 @@
 import React, { useRef, useEffect, useState, useImperativeHandle } from "react";
-//import { useDispatch, useSelector } from "react-redux";
-import { setSF02, setCount } from "../../Redux/Device/Action";
 import html2pdf from "html2pdf.js";
-import pdfIcon from "../assets/EV.png";
 import "../Control/Css/pageExcel.css";
 import { hideLoading, showLoading } from "../../Utils/Utils";
-import { IoMdCheckmark } from "react-icons/io";
 import numeral from "numeral";
-
-const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
-  //console.log(data);
-  //console.log(data.period);
-  //console.log(data.data);
-  //console.log(data.Sign);
-  //console.log(data.aftersign);
-  //const dispatch = useDispatch();
-  //const filesf02 = useSelector((state) => state.device.filesf02);
-  //const count = useSelector((state) => state.device.count);
-  //console.log(count);
-  const [load, setload] = useState(false);
-  const [list, setList] = useState();
-  //const [version, setVersion] = useState(count ?? 0);
-  //console.log(data)
-
-  const now = new Date();
-
-  // const day = String(now.getDate()).padStart(2, '0'); // Day of the month with leading zero
-  // const month = String(now.getMonth() + 1).padStart(2, '0'); // Month with leading zero
-  // const year = now.getFullYear();
-
+const TemplatePDFExcel = ({ data }) => {
+  const [load, setLoad] = useState(false);
+  
   function parseDateStringCommission(dateString) {
     const date = new Date(dateString);
 
@@ -170,93 +147,43 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
 
   // Split the formatted number into individual characters for display
   const numberSlots = formattedNumber.split("");
-
-  //console.log("Formatted number:", formattedNumber); // Log formatted output
+  // Function to split content into separate pages dynamically
 
   const pdfContentRef = useRef("");
-
-  /*useEffect(() => {
-    generatePdf();
-  }, []);*/
-
-
-
   const adjustPageContent = () => {
     const pages = Array.from(document.querySelectorAll(".pageExcel"));
-    const pageHeight = 793; // ความสูง A4 landscape ใน px (96 DPI)
-  
+    const pageHeight = 1122; // Approx height for A4 size in px at 96 DPI
+
     pages.forEach((page) => {
-      if (page.id === "page-3") {
-        // บังคับแยกหน้า 3 ออกจากการจัดการ
-        page.style.pageBreakBefore = "always";
-        return;
-      }
-  
       let contentHeight = 0;
       const children = Array.from(page.children);
       let newPage = null;
-  
+
       children.forEach((child) => {
         const childHeight = getElementHeight(child);
-  
-        // ถ้าเนื้อหาเกินหน้าให้เริ่มหน้าใหม่
         if (contentHeight + childHeight > pageHeight) {
-          if (!newPage) {
-            newPage = document.createElement("div");
-            newPage.className = "pageExcel";
-            page.parentNode.insertBefore(newPage, page.nextSibling);
-          }
-          newPage.appendChild(child); // ย้าย child ไปหน้าใหม่
+         
+           // Move overflowing child to new page
           contentHeight = childHeight;
         } else {
-          contentHeight += childHeight;
+          contentHeight = childHeight;
         }
       });
     });
   };
-  
-  // ฟังก์ชันวัดความสูงของ element รวม margin
+
   const getElementHeight = (element) => {
     const style = window.getComputedStyle(element);
-    const margin = parseFloat(style.marginTop) + parseFloat(style.marginBottom);
-    return element.offsetHeight + margin;
+    const margin =
+      parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+    return element.offsetHeight ;
   };
+
   
-  // ฟังก์ชันแยก element ที่เกินขนาดหน้า
-  const splitLargeElementRecursive = (element, maxHeight) => {
-    const clone = element.cloneNode(true);
-    const remainingPart = document.createElement("div");
-    remainingPart.className = "splitContainer";
-  
-    let currentHeight = 0;
-  
-    Array.from(clone.children).forEach((child) => {
-      const childHeight = getElementHeight(child);
-  
-      if (currentHeight + childHeight > maxHeight) {
-        remainingPart.appendChild(child); // ย้าย child ที่เกินขอบเขต
-      } else {
-        currentHeight += childHeight;
-      }
-    });
-  
-    if (getElementHeight(remainingPart) > maxHeight) {
-      const furtherSplit = splitLargeElementRecursive(remainingPart, maxHeight);
-      return {
-        firstPart: clone,
-        remainingPart: furtherSplit.remainingPart,
-      };
-    }
-  
-    return {
-      firstPart: clone,
-      remainingPart: remainingPart,
-    };
-  };
 
   const generatePdf = async () => {
     showLoading();
-    setload(true);
+    setLoad(true);
     setTimeout(() => {
       adjustPageContent();
     }, 0);
@@ -268,10 +195,10 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
         .from(element)
         .set({
           html2canvas: {
-            scale: 4, // Increase the scale for better image resolution
+            scale: 2, // Increase the scale for better image resolution
             letterRendering: true, // Improve font rendering
             useCORS: true, // Enable CORS to handle images from other origins
-            allowTaint: false,
+            
           },
           jsPDF: {
             unit: "mm",
@@ -281,6 +208,7 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
           },
           pagebreak: {
             mode: ["css", "legacy"], // สนับสนุน CSS page-break
+            before: ".page-break",
           },
         })
         .toPdf()
@@ -295,7 +223,7 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
       // Create a File object from the Blob with a filename
       const pdfFile = new File(
         [pdfBlob],
-        `SF-04_${convertToDateTime()}(${data?.data.dataType}).pdf`,
+        `SF-04_${convertToDateTime()}(${data?.dataType}).pdf`,
         { type: "application/pdf" }
       );
       console.log(pdfFile, data);
@@ -310,7 +238,7 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
       // Hide the content again
       element.style.display = "none";
       hideLoading();
-      setload(false);
+      setLoad(false);
       return filesForm;
     } catch (error) {
       console.log(error);
@@ -323,15 +251,17 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
   if (load) {
     return "";
   }
+  
   return (
     <div>
-      {/*<div>
-        <button onClick={generatePdf}>Preview</button>
-      </div>*/}
-      <div id="pdf-content" ref={pdfContentRef} className="hidden">
-        {/* page 1 */}
-        <div className="pageExcel" id="page-1">
-          {/* page 1 */}
+      
+      <div
+        id="pdfContent"
+        className="hidden"
+        ref={pdfContentRef}
+        style={{ pageBreakInside: "avoid" }}
+      >
+        <div className="pageExcel" style={{ minHeight: "210mm" }}>
           <div className="contentExcel">
             <div className="mb-4">
               <label className="font-bold text-base">ตารางที่ 1 :</label>
@@ -340,7 +270,7 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
               </label>
             </div>
             {/*1.1 */}
-            <table className="w-full border-collapse mb-4">
+            <table className="w-full border-collapse mb-4 table-auto">
               <thead>
                 <tr>
                   <th className="w-[350px] border-t-2 border-b-2 border-l-2 border-r-0 border-black p-2 text-base text-left ">
@@ -366,30 +296,30 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
                     Total Contract
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.totalContractPEA
+                    {data?.dataDetailSheet1?.totalContractPEA
                       ? numeral(
-                          data.data.dataDetailSheet1.totalContractPEA
+                          data?.dataDetailSheet1.totalContractPEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.totalContractEGAT
+                    {data?.dataDetailSheet1?.totalContractEGAT
                       ? numeral(
-                          data.data.dataDetailSheet1?.totalContractEGAT
+                          data?.dataDetailSheet1?.totalContractEGAT
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.totalContractMEA
+                    {data?.dataDetailSheet1?.totalContractMEA
                       ? numeral(
-                          data.data.dataDetailSheet1?.totalContractMEA
+                          data?.dataDetailSheet1?.totalContractMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.totalContract
+                    {data?.dataDetailSheet1?.totalContract
                       ? numeral(
-                          data.data.dataDetailSheet1?.totalContract
+                          data?.dataDetailSheet1?.totalContract
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
@@ -399,29 +329,29 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
                     Total Load
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.totalLoadPEA
-                      ? numeral(data.data.dataDetailSheet1?.totalLoadPEA).format(
+                    {data?.dataDetailSheet1?.totalLoadPEA
+                      ? numeral(data?.dataDetailSheet1?.totalLoadPEA).format(
                           "0,0.000"
                         )
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.totalLoadEGAT
+                    {data?.dataDetailSheet1?.totalLoadEGAT
                       ? numeral(
-                          data.data.dataDetailSheet1?.totalLoadEGAT
+                          data?.dataDetailSheet1?.totalLoadEGAT
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.totalLoadMEA
-                      ? numeral(data.data.dataDetailSheet1?.totalLoadMEA).format(
+                    {data?.dataDetailSheet1?.totalLoadMEA
+                      ? numeral(data?.dataDetailSheet1?.totalLoadMEA).format(
                           "0,0.000"
                         )
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.totalLoad
-                      ? numeral(data.data.dataDetailSheet1?.totalLoad).format(
+                    {data?.dataDetailSheet1?.totalLoad
+                      ? numeral(data?.dataDetailSheet1?.totalLoad).format(
                           "0,0.000"
                         )
                       : numeral(0).format("0,0.000")}
@@ -432,30 +362,30 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
                     พลังงานไฟฟ้าที่พร้อม REC ผลิตในเดือน
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.actualGenMatchPEA
+                    {data?.dataDetailSheet1?.actualGenMatchPEA
                       ? numeral(
-                          data.data.dataDetailSheet1?.actualGenMatchPEA
+                          data?.dataDetailSheet1?.actualGenMatchPEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.actualGenMatchEGAT
+                    {data?.dataDetailSheet1?.actualGenMatchEGAT
                       ? numeral(
-                          data.data.dataDetailSheet1?.actualGenMatchEGAT
+                          data?.dataDetailSheet1?.actualGenMatchEGAT
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.actualGenMatchMEA
+                    {data?.dataDetailSheet1?.actualGenMatchMEA
                       ? numeral(
-                          data.data.dataDetailSheet1?.actualGenMatchMEA
+                          data?.dataDetailSheet1?.actualGenMatchMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.actualGenMatch
+                    {data?.dataDetailSheet1?.actualGenMatch
                       ? numeral(
-                          data.data.dataDetailSheet1?.actualGenMatch
+                          data?.dataDetailSheet1?.actualGenMatch
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
@@ -465,30 +395,30 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
                     {"พลังงานไฟฟ้าพร้อม REC จาก UGT " + "1" + " Inventory"}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.ugT1InventoryMatchPEA
+                    {data?.dataDetailSheet1?.ugT1InventoryMatchPEA
                       ? numeral(
-                          data.data.dataDetailSheet1?.ugT1InventoryMatchPEA
+                          data?.dataDetailSheet1?.ugT1InventoryMatchPEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                    {data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
                       ? numeral(
-                          data.data.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                          data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.ugT1InventoryMatchMEA
+                    {data?.dataDetailSheet1?.ugT1InventoryMatchMEA
                       ? numeral(
-                          data.data.dataDetailSheet1?.ugT1InventoryMatchMEA
+                          data?.dataDetailSheet1?.ugT1InventoryMatchMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.ugT1InventoryMatch
+                    {data?.dataDetailSheet1?.ugT1InventoryMatch
                       ? numeral(
-                          data.data.dataDetailSheet1?.ugT1InventoryMatch
+                          data?.dataDetailSheet1?.ugT1InventoryMatch
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
@@ -498,41 +428,42 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
                     พลังงานไฟฟ้าระบบหลัก
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.unmatchedEnergyPEA
+                    {data?.dataDetailSheet1?.unmatchedEnergyPEA
                       ? numeral(
-                          data.data.dataDetailSheet1?.unmatchedEnergyPEA
+                          data?.dataDetailSheet1?.unmatchedEnergyPEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.unmatchedEnergyEGAT
+                    {data?.dataDetailSheet1?.unmatchedEnergyEGAT
                       ? numeral(
-                          data.data.dataDetailSheet1?.unmatchedEnergyEGAT
+                          data?.dataDetailSheet1?.unmatchedEnergyEGAT
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.unmatchedEnergyMEA
+                    {data?.dataDetailSheet1?.unmatchedEnergyMEA
                       ? numeral(
-                          data.data.dataDetailSheet1?.unmatchedEnergyMEA
+                          data?.dataDetailSheet1?.unmatchedEnergyMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
-                    {data.data.dataDetailSheet1?.unmatchedEnergy
+                    {data?.dataDetailSheet1?.unmatchedEnergy
                       ? numeral(
-                          data.data.dataDetailSheet1?.unmatchedEnergy
+                          data?.dataDetailSheet1?.unmatchedEnergy
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                 </tr>
               </tbody>
             </table>
+            <div className="page-break"></div>
           </div>
+          {/* Add more content here */}
         </div>
-
-        {/* page 2 */}
-        <div className="pageExcel" id="page-2">
+        
+        <div className="pageExcel" style={{ minHeight: "210mm" }}>
           <div className="contentExcel">
             <div className="mb-4">
               <label className="font-bold text-base">ตารางที่ 2 :</label>
@@ -586,8 +517,8 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
                 </tr>
               </thead>
               <tbody>
-                {data.data.dataListDetailSheet2 && 
-                (data.data.dataListDetailSheet2.map((item, index) => (
+                {data?.dataListDetailSheet2 && 
+                (data?.dataListDetailSheet2.map((item, index) => (
                   <tr key={index}>
                     <td className="border p-2 text-left break-all">
                       {item?.deviceName}
@@ -1303,12 +1234,13 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
                   </tr>
               </tbody>
             </table>
+            <div className="page-break"></div>
           </div>
+          
         </div>
-
-        {/* page 3 */}
-        <div className="pageExcel" id="page-3">
-          <div className="contentExcel">
+        
+        <div className="pageExcel" style={{ minHeight: "210mm" }}>
+        <div className="contentExcel">
             <div className="mb-4">
               <label className="font-bold text-base">ตารางที่ 3 :</label>
               <label className="ml-1 text-base">ปริมาณ UGT1 Inventory</label>
@@ -1546,10 +1478,14 @@ const TemplatePDFExcel = (data, aftersign, Sign, Status, isSign, period) => {
                 </tr>
               </tbody>
             </table>
+            
           </div>
         </div>
+
+        
+        
       </div>
-      {/* <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={generatePdf}>Generate PDF</button> */}
+      
     </div>
   );
 };

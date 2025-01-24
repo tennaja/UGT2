@@ -1,112 +1,21 @@
+.pdf-container {
+  display: flex;
+  flex-direction: column;
+}
 
-
-
-
-/* Ensure each page is A4 size */
 .pageExcel {
-  width: 29.7cm;
-  min-height: 21cm;
-  /*margin: 0 auto;
-  padding: 10mm;*/
-  box-sizing: border-box;
-  page-break-after: always; /* ให้แต่ละหน้าแยกจากกัน */
-  break-after: page; /* สำหรับเบราว์เซอร์ที่รองรับ */
-  /*page-break-inside: avoid;*/
-  position: relative;
-  /* border-color: black;
-  border: solid; */
-  page-break-inside: avoid;
-  overflow: hidden;
-  margin: 0 auto;
+  min-height: 210mm;
+  margin-bottom: 18px;
   padding: 20px;
+  box-sizing: border-box;
 }
 
-.break-before-page {
-  page-break-before: always;
+.section {
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
-.splitContainer {
+.contentExcel {
   page-break-inside: avoid;
 }
-
-@media print {
-  .pageExcel {
-    page-break-after: always;
-  }
-}
-
-.textoutsideExcel {
-  position: absolute; /* Position relative to its container */
-  top: 70%; /* Adjust to position vertically */
-  left: 40px; /* Adjust to position horizontally */
-  transform: rotate(-90deg); /* Rotate the text 90 degrees counterclockwise */
-  transform-origin: left center; /* Ensure rotation happens around the correct point */
-  font-size: 14px; /* Adjust font size as needed */
-  color: rgba(0, 0, 0, 0.5); /* Adjust color as needed */
-  font-weight: bold;
-}
-
-.contentExcel{
-  width: 280mm;
-  /*height: 200mm;*/
-  height: auto; /* ปรับความสูงอัตโนมัติเพื่อลดปัญหาเนื้อหาล้น */
-  overflow: visible; /* แสดงเนื้อหาทั้งหมด */
-  padding-bottom: 10mm;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-right: 0px;
-  margin-left: 0px;
-  box-sizing: border-box;
-  /*page-break-before: always;*/
-  page-break-after: always;
-  position: relative;
-  /* border-color: black;
-  border: solid; */
-}
-/* Hide content for PDF generation */
-.hiddenExcel {
-  display: none;
-}
-
-/* Header and Footer Styles */
-.headersExcel, .footerExcel {
-  position: absolute;
-  width: 100%;
-  left: 0;
-}
-
-.headersExcel {
-  height: 200px;
-  background-color: white;
-  padding: 20mm;
-  top: 0;
-}
-
-.footerExcel {
-  height: 60px;
-  /*border: solid;
-  border-top-right-radius: 25px;
-  border-bottom-color: white;
-  border-top-color: #FFE86A;
-  border-left-color: white;
-  border-right-color: #FFE86A;
-  padding-top: 10px;
-  padding-left: 20mm;
-  padding-bottom: 5px;
-  padding-right: 20mm;
-  bottom: 0;*/
-}
-
-.logoExcel {
-  width: 80px;
-  height: auto;
-}
-
-.titleExcel {
-  text-align: center;
-}
-
-.footerExcel p {
-  font-size: 10px;
-}
-
