@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useImperativeHandle } from "react";
 import html2pdf from "html2pdf.js";
-import "../Control/Css/pageExcel.css";
+import "./../Control/Css/pageExcel.css"
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import numeral from "numeral";
 const TemplatePDFExcel = ({ data }) => {
