@@ -176,7 +176,7 @@ const TemplatePDFExcel = ({ data }) => {
     const style = window.getComputedStyle(element);
     const margin =
       parseFloat(style.marginTop) + parseFloat(style.marginBottom);
-    return element.offsetHeight ;
+    return element.offsetHeight + margin;
   };
 
   
