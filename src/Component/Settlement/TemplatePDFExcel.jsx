@@ -152,7 +152,7 @@ const TemplatePDFExcel = ({ data }) => {
   const pdfContentRef = useRef("");
   const adjustPageContent = () => {
     const pages = Array.from(document.querySelectorAll(".pageExcel"));
-    const pageHeight = 1122; // Approx height for A4 size in px at 96 DPI
+    const pageHeight = 794; // Approx height for A4 size in px at 96 DPI
 
     pages.forEach((page) => {
       let contentHeight = 0;
@@ -176,7 +176,7 @@ const TemplatePDFExcel = ({ data }) => {
     const style = window.getComputedStyle(element);
     const margin =
       parseFloat(style.marginTop) + parseFloat(style.marginBottom);
-    return element.offsetHeight ;
+    return element.offsetHeight + margin;
   };
 
   
