@@ -142,17 +142,17 @@ const DataTableSettlement = ({
         );
         setTotalLoadDevice(numeral(totalloadDevice).format("0,0.00"));
         const actualGenerateDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.actualGenerationMatch || 0),
+          (acc, row) => acc + (row.actualGeneration || 0),
           0
         );
         setActualGenerationDevice(numeral(actualGenerateDevice).format("0,0.00"));
         const inventorymatchDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.inventoryMatch || 0),
+          (acc, row) => acc + (row.inventoryMatched || 0),
           0
         );
         setInventoryMatchDevice(numeral(inventorymatchDevice).format("0,0.00"));
         const perActualMatch = paginatedData.reduce(
-          (acc, row) => acc + (row.perActualGenerationMatch || 0),
+          (acc, row) => acc + (row.percentageActualGeneration || 0),
           0
         );
         setPerActualMatchDevice(numeral(perActualMatch).format("0,0.00"));
@@ -164,17 +164,17 @@ const DataTableSettlement = ({
         );
         setTotalLoadSubscriber(numeral(totalloadDevice).format("0,0.00"));
         const actualGenerateDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.actualLoadMatch || 0),
+          (acc, row) => acc + (row.actualLoadMatched || 0),
           0
         );
         setActualGenerationSubscriber(numeral(actualGenerateDevice).format("0,0.00"));
         const inventorymatchDevice = paginatedData.reduce(
-          (acc, row) => acc + (row.inventorymatch || 0),
+          (acc, row) => acc + (row.inventoryMatched || 0),
           0
         );
         setInventoryMatchSubscriber(numeral(inventorymatchDevice).format("0,0.00"));
         const perActualMatch = paginatedData.reduce(
-          (acc, row) => acc + (row.perNetGreenDeliverables || 0),
+          (acc, row) => acc + (row.percentageNetGreenDeliverables || 0),
           0
         );
         setPerActualMatchSubscriber(numeral(perActualMatch).format("0,0.00"));
@@ -241,7 +241,7 @@ const DataTableSettlement = ({
 
     const aValue = a[orderBy];
     const bValue = b[orderBy];
-
+    console.log(a,b,orderBy)
     if (typeof aValue === "string" && typeof bValue === "string") {
       return order === "asc"
         ? aValue.localeCompare(bValue)
