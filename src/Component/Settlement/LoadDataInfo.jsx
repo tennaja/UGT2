@@ -183,7 +183,7 @@ const LoadDatainfo = (props) => {
     },
     {
       id: "totalLoad1",
-      label: "Total Generation (kWh)",
+      label: "Total Load (kWh)",
       align: "center",
       maxWidth: "100px",
       render: (row) => (
@@ -224,7 +224,7 @@ const LoadDatainfo = (props) => {
     },
     {
       id: "totalLoad2",
-      label: "Total Generation (kWh)",
+      label: "Total Load (kWh)",
       align: "center",
       maxWidth: "100px",
       render: (row) => (
@@ -390,7 +390,7 @@ const LoadDatainfo = (props) => {
                       </div>
                     </div>
                     <div className="font-bold mt-1">
-                      Generation Data Input (Revision 1)
+                      Load Data Input (Revision 1)
                     </div>
                     <div className="text-gray-500 text-xs">
                       A number of Generation Data Inputs submitted via API
@@ -430,7 +430,7 @@ const LoadDatainfo = (props) => {
                       </div>
                     </div>
                     <div className="font-bold mt-1">
-                      Generation Data Input (Revision 2)
+                    Load Data Input (Revision 2)
                     </div>
                     <div className="text-gray-500 text-xs">
                       A number of Generation Data Inputs submitted via API
@@ -462,7 +462,7 @@ const LoadDatainfo = (props) => {
                     <div className="text-end">
                       <label className="text-4xl font-semibold flex justify-end">
                         {numeral(loadDateDashBoard?.totalLoad).format(
-                          "0,0.000"
+                          "0,0.00"
                         )}
                       </label>
                       <span> </span>
@@ -471,7 +471,7 @@ const LoadDatainfo = (props) => {
                       </label>
                     </div>
                   </div>
-                  <div className="font-bold mt-10">Total Generation</div>
+                  <div className="font-bold mt-10">Total Load</div>
                   <div className="text-gray-500 text-xs">
                     The summation of latest generation volume of each device
                     submitted via API successfully

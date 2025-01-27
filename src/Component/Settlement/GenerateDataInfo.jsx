@@ -532,7 +532,7 @@ useEffect(()=>{
                     </div>
                     <div className="text-end">
                       <label className="text-4xl font-semibold flex justify-end">
-                        {numeral(generateDateDashBoard?.totalGeneration).format("0,0.000")}
+                        {numeral(generateDateDashBoard?.totalGeneration).format("0,0.00")}
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
