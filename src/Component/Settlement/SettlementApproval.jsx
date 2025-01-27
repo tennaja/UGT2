@@ -58,6 +58,7 @@ import SettlementInfoFinal from "./SettlementInfoFinal";
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import html2pdf from 'html2pdf.js';
+import TemplatePDFExcelUGT2 from "./TemplatePDFExcelUGT2";
 
 export default function SettlementApproval() {
   const dispatch = useDispatch();
@@ -648,6 +649,21 @@ console.log(ugtGroupId)
     }
   };
 
+  const handleGeneratePDFUGT2 = async () => {
+    try {
+      const base64String = await TemplatePDFExcelUGT2.generatePdf();
+
+      //const fileForm = await PdfFormPreviewSF04.generatePdfFileForm()
+      //console.log(fileForm)
+
+      //setPdfBase64(base64String);
+      //console.log("Generated Base64 PDF:", base64String);
+      return base64String;
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
+    }
+  };
+
   const openPDFInNewTab = (base64String, type, name) => {
     const extension = name.split(".").pop();
     const pdfWindow = window.open("");
@@ -834,14 +850,7 @@ console.log(ugtGroupId)
       ,()=>{
         hideLoading()
       }))
-      dispatch(
-        getSettlementStatus(
-          portfolioId,
-          settlementYear,
-          settlementMonth,
-          ugtGroupId
-        )
-      );
+      
   };
 
   //Verify Action
@@ -866,14 +875,7 @@ console.log(ugtGroupId)
           hideLoading()
         })
     );
-    dispatch(
-      getSettlementStatus(
-        portfolioId,
-        settlementYear,
-        settlementMonth,
-        ugtGroupId
-      )
-    );
+    
     setPopupConfirmVerify(false);
   };
 
@@ -1660,6 +1662,7 @@ console.log(ugtGroupId)
           </div>
         </Modal>*/}
         <TemplatePDFExcel data={excelData} />
+        <TemplatePDFExcelUGT2 data={excelData} />
       </div>
     </div>
   );
