@@ -1049,6 +1049,14 @@ export const settlementVerify = (ugtGroupId, portfolioId, year, month,createBy,c
         await axios.post(URL, param).then((response) => {
             if (response?.status == 200 || response?.status == 201) {
                 dispatch(_settlementApproval(response.data));
+                dispatch(
+                    getSettlementStatus(
+                        portfolioId,
+                        year,
+                        month,
+                        ugtGroupId
+                    )
+                  );
                 //dispatch(settlementSuccessRequest())
                 toast.success("Verify Complete!", {
                     position: "top-right",
@@ -1102,6 +1110,14 @@ export const settlementRequestEdit = (ugtGroupId, portfolioId, year, month, rema
         await axios.post(URL, param2).then((response) => {
             if (response?.status == 200 || response?.status == 201) {
                 dispatch(_settlementRequestEdit(response.data));
+                dispatch(
+                    getSettlementStatus(
+                        portfolioId,
+                        year,
+                        month,
+                        ugtGroupId
+                    )
+                  );
                 //dispatch(settlementSuccessRequest())
                 toast.success("Request Edit Complete!", {
                     position: "top-right",

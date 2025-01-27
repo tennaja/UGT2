@@ -451,7 +451,7 @@ console.log(userData)
       ),
     },
     {
-      id: "actualGenerationMatch",
+      id: "actualGeneration",
       label: "Actual Generation Matched (kWh)",
       align: "right",
       render: (row) => (
@@ -492,7 +492,7 @@ console.log(userData)
       ),
     },
     {
-      id: "perActualGenerationMatch",
+      id: "percentageActualGeneration",
       label: "% Actual Generation Matched",
       align: "right",
       render: (row) => (
@@ -509,7 +509,7 @@ console.log(userData)
   ];
   const columnsSubscriber = [
     {
-      id: "subcriberName",
+      id: "subscriberName",
       label: "Subscriber Name",
       align: "left",
       render: (row) => (
@@ -535,7 +535,7 @@ console.log(userData)
       ),
     },
     {
-      id: "actualLoadMatch",
+      id: "actualLoadMatched",
       label: "Actual Load Matched (kWh)",
       align: "right",
       render: (row) => (
@@ -548,7 +548,7 @@ console.log(userData)
       ),
     },
     {
-      id: "inventorymatch",
+      id: "inventoryMatched",
       label: "Inventory Matched (kWh)",
       align: "right",
       render: (row) => (
@@ -574,7 +574,7 @@ console.log(userData)
       ),
     },
     {
-      id: "perActualLoadMatch",
+      id: "percentageActualLoadMatched",
       label: "% Actual Load Matched",
       align: "right",
       render: (row) => (
@@ -589,7 +589,7 @@ console.log(userData)
       ),
     },
     {
-      id: "perNetGreenDeliverables",
+      id: "percentageNetGreenDeliverables",
       label: "% Net Green Deliverables",
       align: "right",
       render: (row) => (
