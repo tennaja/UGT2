@@ -129,20 +129,42 @@ const LoadDatainfo = (props) => {
             />
           </div>
           <label
-            className={`${"bg-[#f9e09b] text-[#FD812E]"} rounded w-max px-3 py-1 mt-1 text-xs font-normal`}
+            className={`${
+              row?.subscriberType == 1
+                ? "bg-[#E8E2F6] text-[#4c3486]"
+                : "bg-[#D6EEF1] text-[#32686f]"
+            } rounded w-max px-3 py-1 mt-1 text-xs font-normal`}
           >
             <Highlighter
               highlightClassName="highlight"
               highlightTag={Highlight}
               searchWords={[searchQueryActive]}
               autoEscape={true}
-              textToHighlight={row.subscriberCode}
+              textToHighlight={row.subscriberType == 1? "Subscriber": "Aggregate Subscriber"}
             />
           </label>
         </div>
       ),
     },
-
+    {
+        id: "subscriberCode",
+        label: "Subscriber Code",
+        align: "left",
+        maxWidth: "300px",
+        render: (row) => (
+          <div className="flex flex-col justify-center">
+            <div className="break-words">
+              <Highlighter
+                highlightClassName="highlight"
+                highlightTag={Highlight}
+                searchWords={[searchQueryActive]}
+                autoEscape={true}
+                textToHighlight={row.subscriberCode}
+              />
+            </div>
+          </div>
+        ),
+      },
     {
       id: "utility",
       label: "Utility",
