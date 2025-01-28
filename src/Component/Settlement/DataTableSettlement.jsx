@@ -994,7 +994,7 @@ if (checkStartDate) {
                             <strong>
                               {" "}
                               {totalLoadDevice
-                                ? numeral(totalLoadDevice).format("0,0.00")
+                                ? numeral(totalLoadDevice).format("0,0.000")
                                 : ""}
                             </strong>
                           </TableCell>
@@ -1013,7 +1013,7 @@ if (checkStartDate) {
                             <strong>
                               {" "}
                               {actualGenerationDevice
-                                ? numeral(actualGenerationDevice).format("0,0.00")
+                                ? numeral(actualGenerationDevice).format("0,0.000")
                                 : ""}
                             </strong>
                           </TableCell>
@@ -1032,7 +1032,7 @@ if (checkStartDate) {
                             <strong>
                               {" "}
                               {inventoryMatchDevice
-                                ? numeral(inventoryMatchDevice).format("0,0.00")
+                                ? numeral(inventoryMatchDevice).format("0,0.000")
                                 : ""}
                             </strong>
                           </TableCell>
@@ -1074,7 +1074,7 @@ if (checkStartDate) {
                           <strong>
                             {" "}
                             {totalLoadSubscriber
-                              ? numeral(totalLoadSubscriber).format("0,0.00")
+                              ? numeral(totalLoadSubscriber).format("0,0.000")
                               : ""}
                           </strong>
                         </TableCell>
@@ -1093,7 +1093,7 @@ if (checkStartDate) {
                           <strong>
                             {" "}
                             {actualGenerationSubscriber
-                              ? numeral(actualGenerationSubscriber).format("0,0.00")
+                              ? numeral(actualGenerationSubscriber).format("0,0.000")
                               : ""}
                           </strong>
                         </TableCell>
@@ -1112,7 +1112,7 @@ if (checkStartDate) {
                           <strong>
                             {" "}
                             {inventoryMatchSubscriber
-                              ? numeral(inventoryMatchSubscriber).format("0,0.00")
+                              ? numeral(inventoryMatchSubscriber).format("0,0.000")
                               : ""}
                           </strong>
                         </TableCell>
