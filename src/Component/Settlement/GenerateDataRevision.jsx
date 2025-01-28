@@ -908,7 +908,14 @@ const GenerateDataRevision = ({
       if (isGetDate) {
         return `${day}-${month}-${year}`;
       } else {
-        return time;
+        if (time.includes(".")) {
+          const timeFull = time.split(".")
+          console.log("Have .")
+          return timeFull[0]
+        } else {
+          console.log("dont have .")
+          return time;
+        }
       }
     }
   };

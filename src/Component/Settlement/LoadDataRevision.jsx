@@ -919,10 +919,24 @@ const LoadDataRevision = ({
     if (datetime) {
       const [date, time] = datetime.split("T");
       const [year, month, day] = date.split("-");
+      if (time.includes(".")) {
+        
+      } else {
+        console.log("ตัวแปรไม่มี . อยู่ในนั้น");
+      }
+
       if (isGetDate) {
         return `${day}-${month}-${year}`;
       } else {
-        return time;
+        if (time.includes(".")) {
+          const timeFull = time.split(".")
+          console.log("Have .")
+          return timeFull[0]
+        } else {
+          console.log("dont have .")
+          return time;
+        }
+        
       }
     }
   };
