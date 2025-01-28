@@ -140,17 +140,17 @@ const DataTableSettlement = ({
           (acc, row) => acc + (row.totalGeneration || 0),
           0
         );
-        setTotalLoadDevice(numeral(totalloadDevice).format("0,0.00"));
+        setTotalLoadDevice(numeral(totalloadDevice).format("0,0.000"));
         const actualGenerateDevice = paginatedData.reduce(
           (acc, row) => acc + (row.actualGeneration || 0),
           0
         );
-        setActualGenerationDevice(numeral(actualGenerateDevice).format("0,0.00"));
+        setActualGenerationDevice(numeral(actualGenerateDevice).format("0,0.000"));
         const inventorymatchDevice = paginatedData.reduce(
           (acc, row) => acc + (row.inventoryMatched || 0),
           0
         );
-        setInventoryMatchDevice(numeral(inventorymatchDevice).format("0,0.00"));
+        setInventoryMatchDevice(numeral(inventorymatchDevice).format("0,0.000"));
         const perActualMatch = paginatedData.reduce(
           (acc, row) => acc + (row.percentageActualGeneration || 0),
           0
@@ -162,17 +162,17 @@ const DataTableSettlement = ({
           (acc, row) => acc + (row.totalLoad || 0),
           0
         );
-        setTotalLoadSubscriber(numeral(totalloadDevice).format("0,0.00"));
+        setTotalLoadSubscriber(numeral(totalloadDevice).format("0,0.000"));
         const actualGenerateDevice = paginatedData.reduce(
           (acc, row) => acc + (row.actualLoadMatched || 0),
           0
         );
-        setActualGenerationSubscriber(numeral(actualGenerateDevice).format("0,0.00"));
+        setActualGenerationSubscriber(numeral(actualGenerateDevice).format("0,0.000"));
         const inventorymatchDevice = paginatedData.reduce(
           (acc, row) => acc + (row.inventoryMatched || 0),
           0
         );
-        setInventoryMatchSubscriber(numeral(inventorymatchDevice).format("0,0.00"));
+        setInventoryMatchSubscriber(numeral(inventorymatchDevice).format("0,0.000"));
         const perActualMatch = paginatedData.reduce(
           (acc, row) => acc + (row.percentageNetGreenDeliverables || 0),
           0
