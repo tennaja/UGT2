@@ -415,7 +415,7 @@ const LoadDatainfo = (props) => {
                       Load Data Input (Revision 1)
                     </div>
                     <div className="text-gray-500 text-xs">
-                      A number of Generation Data Inputs submitted via API
+                      A number of Load Data Inputs submitted via API
                       successfully
                     </div>
                   </div>
@@ -455,7 +455,7 @@ const LoadDatainfo = (props) => {
                     Load Data Input (Revision 2)
                     </div>
                     <div className="text-gray-500 text-xs">
-                      A number of Generation Data Inputs submitted via API
+                      A number of Load Data Inputs submitted via API
                       successfully
                     </div>
                   </div>
@@ -495,7 +495,7 @@ const LoadDatainfo = (props) => {
                   </div>
                   <div className="font-bold mt-10">Total Load</div>
                   <div className="text-gray-500 text-xs">
-                    The summation of latest generation volume of each device
+                    The summation of latest load volume of each subscriber
                     submitted via API successfully
                   </div>
                   <div className="text-gray-500 text-xs text-right mt-2">
