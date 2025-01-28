@@ -1,0 +1,21 @@
+.pdf-containerA3 {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .pageExcelA3 {
+    min-height: 297mm;
+    margin-bottom: 20px;
+    padding: 21px;
+    box-sizing: border-box;
+  }
+  
+  .section {
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .contentExcelA3 {
+    page-break-inside: avoid;
+  }

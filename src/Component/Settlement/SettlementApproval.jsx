@@ -550,11 +550,17 @@ console.log(ugtGroupId)
       portfolioId,
       settlementYear,
       settlementMonth,
-      ugtGroupId,
+      settlementDetailStatus.portfolioUgtId,
       true
     );
+    let base = "";
     //setDataPDF(excelData)
-    const base = await handleGeneratePDF();
+    if(settlementDetailStatus.portfolioUgtId == 1){
+      base = await handleGeneratePDF();
+    }
+    else if(settlementDetailStatus.portfolioUgtId == 2){
+      base = await handleGeneratePDFUGT2();
+    }
     //const form = await handleGeneratePDFFileForm()
     console.log(base);
     //setIsGenarate(false)
@@ -599,11 +605,18 @@ console.log(ugtGroupId)
       portfolioId,
       settlementYear,
       settlementMonth,
-      ugtGroupId,
+      settlementDetailStatus.portfolioUgtId,
       false
     );
+    let base = "";
     //setDataPDF(excelData)
-    const base = await handleGeneratePDF();
+    if(settlementDetailStatus.portfolioUgtId == 1){
+      base = await handleGeneratePDF();
+    }
+    else if(settlementDetailStatus.portfolioUgtId == 2){
+      base = await handleGeneratePDFUGT2();
+    }
+    
     //const form = await handleGeneratePDFFileForm()
     console.log(base);
     //setIsGenarate(false)
@@ -756,7 +769,7 @@ console.log(ugtGroupId)
         portfolioId,
         settlementYear,
         settlementMonth,
-        ugtGroupId,
+        settlementDetailStatus.portfolioUgtId,
         true
       )
     );
@@ -768,7 +781,7 @@ console.log(ugtGroupId)
         portfolioId,
         settlementYear,
         settlementMonth,
-        ugtGroupId,
+        settlementDetailStatus.portfolioUgtId,
         false
       )
     );

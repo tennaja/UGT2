@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState, useImperativeHandle } from "react";
 import html2pdf from "html2pdf.js";
-import "../Control/Css/pageNewExcel.css"
+import "../Control/Css/pageNewExcel.css";
+import "../Control/Css/pageExcelA3.css";
 import { hideLoading, showLoading } from "../../Utils/Utils";
 import numeral from "numeral";
-const TemplatePDFExcel = ({ data }) => {
+const TemplatePDFExcelUGT2 = ({ data }) => {
   const [load, setLoad] = useState(false);
-  console.log(data)
-  
+
   function parseDateStringCommission(dateString) {
     const date = new Date(dateString);
 
@@ -163,8 +163,7 @@ const TemplatePDFExcel = ({ data }) => {
       children.forEach((child) => {
         const childHeight = getElementHeight(child);
         if (contentHeight + childHeight > pageHeight) {
-         
-           // Move overflowing child to new page
+          // Move overflowing child to new page
           contentHeight = childHeight;
         } else {
           contentHeight = childHeight;
@@ -175,12 +174,9 @@ const TemplatePDFExcel = ({ data }) => {
 
   const getElementHeight = (element) => {
     const style = window.getComputedStyle(element);
-    const margin =
-      parseFloat(style.marginTop) + parseFloat(style.marginBottom);
+    const margin = parseFloat(style.marginTop) + parseFloat(style.marginBottom);
     return element.offsetHeight + margin;
   };
-
-  
 
   const generatePdf = async () => {
     showLoading();
@@ -199,7 +195,6 @@ const TemplatePDFExcel = ({ data }) => {
             scale: 2, // Increase the scale for better image resolution
             letterRendering: true, // Improve font rendering
             useCORS: true, // Enable CORS to handle images from other origins
-            
           },
           jsPDF: {
             unit: "mm",
@@ -247,15 +242,14 @@ const TemplatePDFExcel = ({ data }) => {
   };
 
   // Expose the function to be called externally
-  TemplatePDFExcel.generatePdf = generatePdf;
+  TemplatePDFExcelUGT2.generatePdf = generatePdf;
 
   if (load) {
     return "";
   }
-  
+
   return (
     <div>
-      
       <div
         id="pdfContent"
         className="hidden"
@@ -298,9 +292,9 @@ const TemplatePDFExcel = ({ data }) => {
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.totalContractPEA
-                      ? numeral(
-                          data?.dataDetailSheet1.totalContractPEA
-                        ).format("0,0.000")
+                      ? numeral(data?.dataDetailSheet1.totalContractPEA).format(
+                          "0,0.000"
+                        )
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
@@ -319,9 +313,9 @@ const TemplatePDFExcel = ({ data }) => {
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.totalContract
-                      ? numeral(
-                          data?.dataDetailSheet1?.totalContract
-                        ).format("0,0.000")
+                      ? numeral(data?.dataDetailSheet1?.totalContract).format(
+                          "0,0.000"
+                        )
                       : numeral(0).format("0,0.000")}
                   </td>
                 </tr>
@@ -338,9 +332,9 @@ const TemplatePDFExcel = ({ data }) => {
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.totalLoadEGAT
-                      ? numeral(
-                          data?.dataDetailSheet1?.totalLoadEGAT
-                        ).format("0,0.000")
+                      ? numeral(data?.dataDetailSheet1?.totalLoadEGAT).format(
+                          "0,0.000"
+                        )
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
@@ -385,15 +379,48 @@ const TemplatePDFExcel = ({ data }) => {
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.actualGenMatch
-                      ? numeral(
-                          data?.dataDetailSheet1?.actualGenMatch
-                        ).format("0,0.000")
+                      ? numeral(data?.dataDetailSheet1?.actualGenMatch).format(
+                          "0,0.000"
+                        )
                       : numeral(0).format("0,0.000")}
                   </td>
                 </tr>
                 <tr>
                   <td className="w-[350px] border-t-0 border-b-2 border-l-2 border-r-0 border-black p-2 text-sm ">
                     {"พลังงานไฟฟ้าพร้อม REC จาก UGT " + "1" + " Inventory"}
+                  </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.ugT1InventoryMatchPEA
+                      ? numeral(
+                          data?.dataDetailSheet1?.ugT1InventoryMatchPEA
+                        ).format("0,0.000")
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                      ? numeral(
+                          data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                        ).format("0,0.000")
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.ugT1InventoryMatchMEA
+                      ? numeral(
+                          data?.dataDetailSheet1?.ugT1InventoryMatchMEA
+                        ).format("0,0.000")
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.ugT1InventoryMatch
+                      ? numeral(
+                          data?.dataDetailSheet1?.ugT1InventoryMatch
+                        ).format("0,0.000")
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="w-[350px] border-t-0 border-b-2 border-l-2 border-r-0 border-black p-2 text-sm ">
+                    {"พลังงานไฟฟ้าพร้อม REC จาก UGT " + "2" + " Inventory"}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.ugT1InventoryMatchPEA
@@ -451,9 +478,9 @@ const TemplatePDFExcel = ({ data }) => {
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.unmatchedEnergy
-                      ? numeral(
-                          data?.dataDetailSheet1?.unmatchedEnergy
-                        ).format("0,0.000")
+                      ? numeral(data?.dataDetailSheet1?.unmatchedEnergy).format(
+                          "0,0.000"
+                        )
                       : numeral(0).format("0,0.000")}
                   </td>
                 </tr>
@@ -463,7 +490,7 @@ const TemplatePDFExcel = ({ data }) => {
           </div>
           {/* Add more content here */}
         </div>
-        
+
         <div className="pageExcel" style={{ minHeight: "210mm" }}>
           <div className="contentExcel">
             <div className="mb-4">
@@ -476,115 +503,165 @@ const TemplatePDFExcel = ({ data }) => {
             <table className="border-collapse border border-black w-full text-center">
               <thead>
                 <tr>
-                  <th className="border p-2" rowSpan="3">
+                  <th className="border p-2 w-[300px]" rowSpan="3" colSpan="10">
                     โรงไฟฟ้า
                   </th>
-                  <th className="border p-2" colSpan="2">
+                  <th className="border p-2 text-sm" colSpan="3">
                     กฟภ.
                   </th>
-                  <th className="border p-2" colSpan="2">
+                  <th className="border p-2 text-sm" colSpan="3">
                     กฟน.
                   </th>
-                  <th className="border p-2" colSpan="2">
+                  <th className="border p-2 text-sm" colSpan="3">
                     กฟผ.
                   </th>
-                  <th className="border p-2" colSpan="2">
+                  <th className="border p-2 text-sm" colSpan="3">
                     รวม (kWh)
                   </th>
                 </tr>
                 <tr>
-                  <th className="border p-2" colSpan="2">
+                  <th className="border p-2 text-sm" colSpan="3">
                     พลังงานไฟฟ้าพร้อม REC (kWh)
                   </th>
-                  <th className="border p-2" colSpan="2">
+                  <th className="border p-2 text-sm" colSpan="3">
                     พลังงานไฟฟ้าพร้อม REC (kWh)
                   </th>
-                  <th className="border p-2" colSpan="2">
+                  <th className="border p-2 text-sm" colSpan="3">
                     พลังงานไฟฟ้าพร้อม REC (kWh)
                   </th>
-                  <th className="border p-2" colSpan="2">
+                  <th className="border p-2 text-sm" colSpan="3">
                     พลังงานไฟฟ้าพร้อม REC (kWh)
                   </th>
                 </tr>
                 <tr>
-                  <th className="w-[100px] border p-2">จากโรงไฟฟ้า</th>
-                  <th className="w-[100px] border p-2">จาก UGT1 Inventory</th>
-                  <th className="w-[100px] border p-2">จากโรงไฟฟ้า</th>
-                  <th className="w-[100px] border p-2">จาก UGT1 Inventory</th>
-                  <th className="w-[100px] border p-2">จากโรงไฟฟ้า</th>
-                  <th className="w-[100px] border p-2">จาก UGT1 Inventory</th>
-                  <th className="w-[100px] border p-2">จากโรงไฟฟ้า</th>
-                  <th className="w-[100px] border p-2">จาก UGT1 Inventory</th>
+                  <th className="w-[120px] border p-2 text-sm">จากโรงไฟฟ้า</th>
+                  <th className="w-[100px] border p-2 text-sm">
+                    จาก UGT1 Inventory
+                  </th>
+                  <th className="w-[100px] border p-2 text-sm">
+                    จาก UGT2 Inventory
+                  </th>
+                  <th className="w-[120px] border p-2 text-sm">จากโรงไฟฟ้า</th>
+                  <th className="w-[100px] border p-2 text-sm">
+                    จาก UGT1 Inventory
+                  </th>
+                  <th className="w-[100px] border p-2 text-sm">
+                    จาก UGT2 Inventory
+                  </th>
+                  <th className="w-[120px] border p-2 text-sm">จากโรงไฟฟ้า</th>
+                  <th className="w-[100px] border p-2 text-sm">
+                    จาก UGT1 Inventory
+                  </th>
+                  <th className="w-[100px] border p-2 text-sm">
+                    จาก UGT2 Inventory
+                  </th>
+                  <th className="w-[120px] border p-2 text-sm">จากโรงไฟฟ้า</th>
+                  <th className="w-[100px] border p-2 text-sm">
+                    จาก UGT1 Inventory
+                  </th>
+                  <th className="w-[100px] border p-2 text-sm">
+                    จาก UGT2 Inventory
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {data?.dataListDetailSheet2 && 
-                (data?.dataListDetailSheet2.map((item, index) => (
-                  <tr key={index}>
-                    <td className="border p-2 text-left break-all">
-                      {item?.deviceName}
-                    </td>
-                    <td className="border p-2 break-all">
-                      {item?.matchSupplyPEA
-                        ? numeral(item?.matchSupplyPEA).format("0,0.000")
-                        : numeral(0).format("0,0.000")}
-                    </td>
-                    <td className="border p-2 break-all">
-                      {item?.ugt1InventoryMatchedPEA
-                        ? numeral(item?.ugt1InventoryMatchedPEA).format(
-                            "0,0.000"
-                          )
-                        : numeral(0).format("0,0.000")}
-                    </td>
-                    <td className="border p-2 break-all">
-                      {item?.matchSupplyEGAT
-                        ? numeral(item?.matchSupplyEGAT).format("0,0.000")
-                        : numeral(0).format("0,0.000")}
-                    </td>
-                    <td className="border p-2 break-all">
-                      {item?.ugt1InventoryMatchedEGAT
-                        ? numeral(item?.ugt1InventoryMatchedEGAT).format(
-                            "0,0.000"
-                          )
-                        : numeral(0).format("0,0.000")}
-                    </td>
-                    <td className="border p-2 break-all">
-                      {item?.matchSupplyMEA
-                        ? numeral(item?.matchSupplyMEA).format("0,0.000")
-                        : numeral(0).format("0,0.000")}
-                    </td>
-                    <td className="border p-2 break-all">
-                      {item?.ugt1InventoryMatchedMEA
-                        ? numeral(item?.ugt1InventoryMatchedMEA).format(
-                            "0,0.000"
-                          )
-                        : numeral(0).format("0,0.000")}
-                    </td>
-                    <td className="border p-2 break-all">
-                      {item?.matchSupply
-                        ? numeral(item?.matchSupply).format("0,0.000")
-                        : numeral(0).format("0,0.000")}
-                    </td>
-                    <td className="border p-2 break-all">
-                      {item?.ugt1InventoryMatched
-                        ? numeral(item?.ugt1InventoryMatched).format("0,0.000")
-                        : numeral(0).format("0,0.000")}
-                    </td>
-                    {/* Add more columns as needed */}
-                  </tr>
-                )))}
-                
+                {data?.dataListDetailSheet2 &&
+                  data?.dataListDetailSheet2.map((item, index) => (
+                    <tr key={index}>
+                      <td className="border p-2 text-left" colSpan="10">
+                        <div className="break-all w-[150px] text-[10px]">
+                          {item?.deviceName}
+                        </div>
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.matchSupplyPEA
+                          ? numeral(item?.matchSupplyPEA).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatchedPEA
+                          ? numeral(item?.ugt1InventoryMatchedPEA).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatchedPEA
+                          ? numeral(item?.ugt1InventoryMatchedPEA).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.matchSupplyEGAT
+                          ? numeral(item?.matchSupplyEGAT).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatchedEGAT
+                          ? numeral(item?.ugt1InventoryMatchedEGAT).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatchedEGAT
+                          ? numeral(item?.ugt1InventoryMatchedEGAT).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.matchSupplyMEA
+                          ? numeral(item?.matchSupplyMEA).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatchedMEA
+                          ? numeral(item?.ugt1InventoryMatchedMEA).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatchedMEA
+                          ? numeral(item?.ugt1InventoryMatchedMEA).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.matchSupply
+                          ? numeral(item?.matchSupply).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatched
+                          ? numeral(item?.ugt1InventoryMatched).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatched
+                          ? numeral(item?.ugt1InventoryMatched).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      {/* Add more columns as needed */}
+                    </tr>
+                  ))}
               </tbody>
             </table>
             <div className="page-break"></div>
           </div>
-          
         </div>
-        
+
         <div className="pageExcel" style={{ minHeight: "210mm" }}>
-        <div className="contentExcel">
+          <div className="contentExcel">
             <div className="mb-4">
-              <label className="font-bold text-base">ตารางที่ 3 :</label>
+              <label className="font-bold text-base">ตารางที่ 3.1 :</label>
               <label className="ml-1 text-base">ปริมาณ UGT1 Inventory</label>
             </div>
             {/*1.4*/}
@@ -606,7 +683,12 @@ const TemplatePDFExcel = ({ data }) => {
                     (หัก) UGT1 Inventory ที่หมดอายุ
                   </th>
                   <th className="w-[100px] border p-2">
-                    (หัก) UGT1Inventory ที่ใช้สำหรับ UGT2 เดือนปัจจุบัน
+                    (หัก) UGT1Inventory ที่ใช้สำหรับ UGT2 เดือนปัจจุบัน ของ{" "}
+                    {data?.dataDetailSheet3?.portfolioName}
+                  </th>
+                  <th className="w-[100px] border p-2">
+                    (หัก) UGT1Inventory ที่ใช้สำหรับ UGT2 เดือนปัจจุบันของ
+                    Portfolio อื่นๆ
                   </th>
                   <th className="w-[100px] border p-2">
                     (หัก) UGT1Inventory ที่ใช้สำหรับ UGT1 settlement
@@ -617,48 +699,167 @@ const TemplatePDFExcel = ({ data }) => {
                     เดือนปัจจุบัน
                   </th>
                   <th className="w-[100px] border p-2">
-                    UGT1Inventory สะสม คงเหลือ
+                    UGT1Inventory สะสมคงเหลือ
                   </th>
                 </tr>
               </thead>
               <tbody>
-              {data?.dataDetailSheet3?.dataDetailSheet3 && 
-                (
-                  data?.dataDetailSheet3?.dataDetailSheet3.map((item,index)=>(
+                {data?.dataDetailSheet3?.dataDetailSheet3_1 &&
+                  data?.dataDetailSheet3?.dataDetailSheet3_1.map((item, index) => (
                     <tr key={index}>
-                  <td className="border p-2 text-left break-all">
-                    {item.deviceName}
-                  </td>
-                  <td className="border p-2 break-all">{item?.columnB
-                        ? numeral(item?.columnB).format("0,0.000")
-                        : numeral(0).format("0,0.000")}</td>
-                  <td className="border p-2 break-all">{item?.columnC
-                        ? numeral(item?.columnC).format("0,0.000")
-                        : numeral(0).format("0,0.000")}</td>
-                  <td className="border p-2 break-all">{item?.columnD
-                        ? numeral(item?.columnD).format("0,0.000")
-                        : numeral(0).format("0,0.000")}</td>
-                  <td className="border p-2 break-all">{item?.columnE
-                        ? numeral(item?.columnE).format("0,0.000")
-                        : numeral(0).format("0,0.000")}</td>
-                  <td className="border p-2 break-all">{item?.columnF
-                        ? numeral(item?.columnF).format("0,0.000")
-                        : numeral(0).format("0,0.000")}</td>
-                  <td className="border p-2 break-all">{item?.columnG
-                        ? numeral(item?.columnG).format("0,0.000")
-                        : numeral(0).format("0,0.000")}</td>
+                      <td className="border p-2 text-left break-all">
+                        {item?.deviceName}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnB
+                          ? numeral(item?.columnB).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnC
+                          ? numeral(item?.columnC).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnD
+                          ? numeral(item?.columnD).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnE
+                          ? numeral(item?.columnE).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnF
+                          ? numeral(item?.columnF).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnG
+                          ? numeral(item?.columnG).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnH
+                          ? numeral(item?.columnH).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      
+                      {/* Add more columns as needed */}
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+            <div className="page-break"></div>
+          </div>
+        </div>
+
+        <div className="pageExcel" style={{ minHeight: "210mm" }}>
+          <div className="contentExcel">
+            <div className="mb-4">
+              <label className="font-bold text-base">ตารางที่ 3.2 :</label>
+              <label className="ml-1 text-base">ปริมาณ UGT2 Inventory</label>
+            </div>
+            {/*1.4*/}
+            <table className="border-collapse border border-black w-full text-center">
+              <thead>
+                <tr>
+                  <th className="border p-2" rowSpan="2">
+                    โรงไฟฟ้า
+                  </th>
+                  <th className="border p-2" colSpan="10">
+                    ปริมาณ UGT2 Inventory (kWh)
+                  </th>
                 </tr>
-                  ))
-                )
-              }
+                <tr>
+                  <th className="w-[100px] border p-2 break-all">
+                    UGT2 Inventory สะสมของเดือนก่อนหน้า
+                  </th>
+                  <th className="w-[100px] border p-2">
+                    (หัก) UGT2 Inventory ที่หมดอายุ
+                  </th>
+                  <th className="w-[100px] border p-2">
+                    (หัก) UGT2Inventory ที่ใช้สำหรับ UGT2 settlement เดือนปัจจุบัน
+                  </th>
+                  <th className="w-[100px] border p-2">
+                    (เพิ่ม) UGT2Inventory ที่เหลือจาก UGT2 settlement เดือนปัจจุบัน
+                    เดือนปัจจุบัน
+                  </th>
+                  <th className="w-[100px] border p-2">
+                    UGT2Inventory สะสมคงเหลือ
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+              {data?.dataDetailSheet3?.dataDetailSheet3_2 &&
+                  data?.dataDetailSheet3?.dataDetailSheet3_2.map((item, index) => (
+                    <tr key={index}>
+                      <td className="border p-2 text-left break-all">
+                        {item?.deviceName}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnB
+                          ? numeral(item?.columnB).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnC
+                          ? numeral(item?.columnC).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnD
+                          ? numeral(item?.columnD).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnE
+                          ? numeral(item?.columnE).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnF
+                          ? numeral(item?.columnF).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnG
+                          ? numeral(item?.columnG).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all">
+                        {item?.columnH
+                          ? numeral(item?.columnH).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      
+                      {/* Add more columns as needed */}
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
-        </div>        
+        </div>
       </div>
-      
     </div>
   );
 };
 
-export default TemplatePDFExcel;
+export default TemplatePDFExcelUGT2;
