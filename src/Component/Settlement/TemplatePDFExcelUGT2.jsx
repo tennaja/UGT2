@@ -516,7 +516,7 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                     กฟผ.
                   </th>
                   <th className="border p-2 text-sm" colSpan="3">
-                    รวม (kWh)
+                    รวม
                   </th>
                 </tr>
                 <tr>

@@ -489,7 +489,7 @@ const TemplatePDFExcel = ({ data }) => {
                     กฟผ.
                   </th>
                   <th className="border p-2" colSpan="2">
-                    รวม (kWh)
+                    รวม
                   </th>
                 </tr>
                 <tr>
