@@ -33,6 +33,7 @@ import { BiErrorCircle } from "react-icons/bi";
 import "../Control/Css/customDragger.css";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import ModalConfirmNew from "../Control/Modal/ModalConfirmNew";
+import { USER_GROUP_ID } from "../../Constants/Constants";
 
 const { Dragger } = Upload;
 
@@ -119,6 +120,7 @@ const GenerateDataRevision = ({
   } = useForm();
   console.log(revision, portfolioId, year, month, deviceId, ugtGroupId);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
+  const userData = useSelector((state) => state.login.userobj);
   const generateDataRevision = useSelector(
     (state) => state.settlement.generateDetaDetailRevision
   );
@@ -136,6 +138,21 @@ const GenerateDataRevision = ({
   const [popupConfirm,setPopupConfirm] = useState(false)
 
   console.log(fileMetering);
+
+  let canUpload = false
+  
+    if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || 
+      userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG || 
+      userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG || 
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG || 
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG
+    ){
+      canUpload = true
+    }
+    else{
+      canUpload = false
+    }
 
   function generateGUID() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -1210,7 +1227,7 @@ const GenerateDataRevision = ({
                   {...props}
                   fileList={fileMetering}
                   className="custom-dragger"
-                  //disabled={!canUpload}
+                  disabled={!canUpload}
                 >
                   <p className="ant-upload-drag-icon">
                     <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
@@ -1234,7 +1251,7 @@ const GenerateDataRevision = ({
                   {...propsContractInvoice}
                   fileList={fileContractInvoice}
                   className="custom-dragger"
-                  //disabled={!canUpload}
+                  disabled={!canUpload}
                 >
                   <p className="ant-upload-drag-icon">
                     <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
@@ -1257,7 +1274,7 @@ const GenerateDataRevision = ({
                   {...propsOther}
                   fileList={fileOther}
                   className="custom-dragger"
-                  //disabled={!canUpload}
+                  disabled={!canUpload}
                 >
                   <p className="ant-upload-drag-icon">
                     <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
