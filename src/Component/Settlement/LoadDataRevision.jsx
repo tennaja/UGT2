@@ -145,7 +145,6 @@ const LoadDataRevision = ({
     userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG || 
     userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG || 
     userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG || 
-    userData?.userGroup?.id == USER_GROUP_ID.ALL_MODULE_VIEWER ||
     userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG
   ){
     canUpload = true
@@ -350,7 +349,7 @@ const LoadDataRevision = ({
             ) : undefined}
             {/* ปุ่ม Remove */}
 
-            <button
+            {canUpload && <button
               style={{
                 background: "transparent",
                 border: "none",
@@ -360,7 +359,7 @@ const LoadDataRevision = ({
               onClick={() => actions.remove(file)}
             >
               <FaRegTrashAlt className="w-[20px] h-[20px]" /> {/* ไอคอนลบ */}
-            </button>
+            </button>}
           </div>
         </div>
       );
@@ -527,7 +526,7 @@ const LoadDataRevision = ({
             ) : undefined}
             {/* ปุ่ม Remove */}
 
-            <button
+            {canUpload && <button
               style={{
                 background: "transparent",
                 border: "none",
@@ -537,7 +536,7 @@ const LoadDataRevision = ({
               onClick={() => actions.remove(file)}
             >
               <FaRegTrashAlt className="w-[20px] h-[20px]" /> {/* ไอคอนลบ */}
-            </button>
+            </button>}
           </div>
         </div>
       );

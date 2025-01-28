@@ -349,7 +349,7 @@ const GenerateDataRevision = ({
             ) : undefined}
             {/* ปุ่ม Remove */}
 
-            <button
+            {canUpload && <button
               style={{
                 background: "transparent",
                 border: "none",
@@ -359,7 +359,7 @@ const GenerateDataRevision = ({
               onClick={() => actions.remove(file)}
             >
               <FaRegTrashAlt className="w-[20px] h-[20px]" /> {/* ไอคอนลบ */}
-            </button>
+            </button>}
           </div>
         </div>
       );
@@ -525,7 +525,7 @@ const GenerateDataRevision = ({
             ) : undefined}
             {/* ปุ่ม Remove */}
 
-            <button
+            {canUpload && <button
               style={{
                 background: "transparent",
                 border: "none",
@@ -535,7 +535,7 @@ const GenerateDataRevision = ({
               onClick={() => actions.remove(file)}
             >
               <FaRegTrashAlt className="w-[20px] h-[20px]" /> {/* ไอคอนลบ */}
-            </button>
+            </button>}
           </div>
         </div>
       );
@@ -701,7 +701,7 @@ const GenerateDataRevision = ({
             ) : undefined}
             {/* ปุ่ม Remove */}
 
-            <button
+            {canUpload && <button
               style={{
                 background: "transparent",
                 border: "none",
@@ -711,7 +711,7 @@ const GenerateDataRevision = ({
               onClick={() => actions.remove(file)}
             >
               <FaRegTrashAlt className="w-[20px] h-[20px]" /> {/* ไอคอนลบ */}
-            </button>
+            </button>}
           </div>
         </div>
       );
