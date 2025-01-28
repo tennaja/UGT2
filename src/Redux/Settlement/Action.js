@@ -114,6 +114,7 @@ import { getHeaderConfig } from "../../Utils/FuncUtils"
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { hideLoading } from "../../Utils/Utils";
+import numeral from "numeral";
 
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
@@ -1314,7 +1315,23 @@ export const getGenerateDataInfoList = (ugtGroupId,portfolioId,year,month) => {
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
-            dispatch(_getGenerateDataInfoList(response.data));
+            let dataResponse = []
+            for(let i = 0;i < response.data.length;i++){
+                let tempData = {
+                    deviceCode : response.data[i].deviceCode,
+                    deviceName : response.data[i].deviceName,
+                    deviceid: response.data[i].deviceid,
+                    evidence: response.data[i].evidence,
+                    revision1: response.data[i].revision1,
+                    revision2: response.data[i].revision2,
+                    totalGenerationrevision1: numeral(response.data[i].totalGenerationrevision1).format("0,0.00"),
+                    totalGenerationrevision2: numeral(response.data[i].totalGenerationrevision2).format("0,0.00"),
+                    utility: response.data[i].utility,
+                }
+                
+                dataResponse.push(tempData)
+            }
+            dispatch(_getGenerateDataInfoList(dataResponse));
         }, (error) => {
             dispatch(failRequest(error.message))
         });
@@ -1615,7 +1632,24 @@ export const getLoadDataInfoList = (ugtGroupId,portfolioId,year,month) => {
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
-            dispatch(_getLoadDataInfoList(response.data));
+            let dataResponse = []
+            for(let i = 0;i < response.data.length;i++){
+                let tempData = {
+                    subscriberCode : response.data[i].subscriberCode,
+                    subscriberName : response.data[i].subscriberName,
+                    subscriberid: response.data[i].subscriberid,
+                    evidence: response.data[i].evidence,
+                    revision1: response.data[i].revision1,
+                    revision2: response.data[i].revision2,
+                    totalLoad1: numeral(response.data[i].totalLoad1).format("0,0.00"),
+                    totalLoad2: numeral(response.data[i].totalLoad2).format("0,0.00"),
+                    utility: response.data[i].utility,
+                    subscriberType: response.data[i].subscriberType,
+                }
+                
+                dataResponse.push(tempData)
+            }
+            dispatch(_getLoadDataInfoList(dataResponse));
         }, (error) => {
             dispatch(failRequest(error.message))
         });
