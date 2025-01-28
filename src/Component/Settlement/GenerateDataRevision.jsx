@@ -1090,6 +1090,27 @@ const GenerateDataRevision = ({
                   </div>
                   {/*Row 4 */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                    {/*Trade Accout Name */}
+                    <div>
+                      <label className="text-[#6B7280] text-xs">
+                        Portfolio Code
+                      </label>
+                      <div className="break-words	font-bold">
+                        {getNameMonth(generateDataRevision?.portfolioCode)}
+                      </div>
+                    </div>
+                    {/*Trade Account Code */}
+                    <div>
+                      <label className="text-[#6B7280] text-xs ">
+                        Approved Date
+                      </label>
+                      <div className="break-words	font-bold">
+                        {getFullDate(generateDataRevision?.approvedDate)}
+                      </div>
+                    </div>
+                  </div>
+                  {/*Row 5 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
                     {/*Assign Utility */}
                     <div>
                       <label className="text-[#6B7280] text-xs ">
@@ -1109,7 +1130,7 @@ const GenerateDataRevision = ({
                       </div>
                     </div>
                   </div>
-                  {/*Row 5 */}
+                  {/*Row 6 */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
                     {/*Assign Utility */}
                     <div>
@@ -1132,7 +1153,7 @@ const GenerateDataRevision = ({
                       </div>
                     </div>
                   </div>
-                  {/*Row 6 */}
+                  {/*Row 7 */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
                     {/*Assign Utility */}
                     <div>

@@ -1134,7 +1134,7 @@ const LoadDataRevision = ({
                     {/*Assign Utility */}
                     <div>
                       <label className="text-[#6B7280] text-xs ">
-                        Total Gen
+                        Total Load
                       </label>
                       <div className="break-words	font-bold">
                         {renderNumeric(loadDataRevision?.totalLoad)}
@@ -1156,14 +1156,14 @@ const LoadDataRevision = ({
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
                     {/*Assign Utility */}
                     <div>
-                      <label className="text-[#6B7280] text-xs ">Peak</label>
+                      <label className="text-[#6B7280] text-xs ">Peak Load</label>
                       <div className="break-words	font-bold">
                         {renderData(loadDataRevision?.peakLoad)}
                       </div>
                     </div>
                     {/*Subscriber Code */}
                     <div>
-                      <label className="text-[#6B7280] text-xs">Off-Peak</label>
+                      <label className="text-[#6B7280] text-xs">Off-Peak Load</label>
                       <div className="break-words	font-bold">
                         {renderData(loadDataRevision?.offPeakLoad)}
                       </div>
