@@ -52,9 +52,9 @@ const LoadDatainfo = (props) => {
 
   console.log(loadDataInfoList)
 
-  const [selectYear, setSelectyear] = useState("");
+  const [selectYear, setSelectyear] = useState(state.year);
 
-  const [selectMonth, setSelectMonth] = useState("");
+  const [selectMonth, setSelectMonth] = useState(state.month);
 
   useEffect(() => {
     if (currentUGTGroup?.id) {

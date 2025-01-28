@@ -62,9 +62,9 @@ const GenerateDataDetail = (props) => {
 
   console.log(generateRevision);
 
-  const [selectYear, setSelectyear] = useState("");
+  const [selectYear, setSelectyear] = useState(state.year);
 
-  const [selectMonth, setSelectMonth] = useState("");
+  const [selectMonth, setSelectMonth] = useState(state.month);
 
   const [selectTab, setSelectTab] = useState(1);
 
