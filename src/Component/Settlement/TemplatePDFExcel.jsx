@@ -224,7 +224,7 @@ const TemplatePDFExcel = ({ data }) => {
       // Create a File object from the Blob with a filename
       const pdfFile = new File(
         [pdfBlob],
-        `SF-04_${convertToDateTime()}(${data?.dataType}).pdf`,
+        `Report_Settlement.pdf`,
         { type: "application/pdf" }
       );
       console.log(pdfFile, data);

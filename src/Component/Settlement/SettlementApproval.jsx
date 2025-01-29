@@ -564,7 +564,7 @@ console.log(ugtGroupId)
     //const form = await handleGeneratePDFFileForm()
     console.log(base);
     //setIsGenarate(false)
-    openPDFInNewTab(base.binaryBase, "application/pdf", "test.pdf");
+    openPDFInNewTab(base.binaryBase, "application/pdf", base.file.name);
 
     console.log(base);
     setIsGen(false);
@@ -620,7 +620,7 @@ console.log(ugtGroupId)
     //const form = await handleGeneratePDFFileForm()
     console.log(base);
     //setIsGenarate(false)
-    openPDFInNewTab(base.binaryBase, "application/pdf", "test.pdf");
+    openPDFInNewTab(base.binaryBase, "application/pdf", base.file.name);
 
     console.log(base);
     setIsGen(false);
@@ -685,7 +685,10 @@ console.log(ugtGroupId)
     if (extension === "pdf") {
       if (pdfWindow) {
         // Set the title of the new tab to the filename
-        pdfWindow.document.title = name;
+        //pdfWindow.document.title = name;
+        setTimeout(() => {
+          pdfWindow.document.title = name;
+        }, 100);
 
         // Convert Base64 to raw binary data held in a string
         const byteCharacters = atob(base64String);
@@ -920,7 +923,8 @@ console.log(ugtGroupId)
           const base64Content = pdfBase64.split(",")[1];
           const now = new Date();
           const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
-          openPDFInNewTab(base64Content,"application/pdf",formattedDateTime+".pdf")
+          const fileName = formattedDateTime+".pdf"
+          openPDFInNewTab(base64Content,"application/pdf","ReportScreen_Settlement.pdf")
           setIsGenPDF(false)
       })
     },1200)
