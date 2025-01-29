@@ -1120,7 +1120,7 @@ const GenerateDataRevision = ({
                         Portfolio Code
                       </label>
                       <div className="break-words	font-bold">
-                        {getNameMonth(generateDataRevision?.portfolioCode)}
+                        {renderData(generateDataRevision?.portfolioCode)}
                       </div>
                     </div>
                     {/*Trade Account Code */}
