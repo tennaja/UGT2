@@ -251,9 +251,10 @@ const DataTableSettlement = ({
     // Handle numeric sorting
     return order === "asc" ? aValue - bValue : bValue - aValue;
   });
-//console.log(sortedData)
+console.log(sortedData)
   const filteredData = sortedData?.filter((obj) => {
     for (let key in obj) {
+      console.log(key,searchTerm)
       if (key === "id") continue;
       if (key == "subscriberTypeId") {
        // console.log("subType")
@@ -356,7 +357,7 @@ const DataTableSettlement = ({
     }
   });
 console.log(filteredData)
-  const paginatedData = filteredData?.slice(
+  const paginatedData = sortedData?.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -1159,7 +1160,7 @@ if (checkStartDate) {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25, 100]}
         component="div"
-        count={filteredData?.length}
+        count={sortedData?.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

@@ -35,6 +35,7 @@ import {
   formatToFullMonthYear,
   formatToNumberWithDecimalPlaces,
 } from "../../../Utils/Utils";
+import StatusLabelLink from "./StatusLabelLink";
 
 dayjs.extend(customParseFormat);
 
@@ -155,7 +156,7 @@ export default function TrackingTable() {
             item.currentSettlement
           );
         }
-
+        console.log(res.data)
         setPortData(res.data);
         setPortfolio(res.data);
       }
@@ -331,7 +332,7 @@ export default function TrackingTable() {
       label: "Issuance Status",
       align: "center",
       render: (row) => (
-        <StatusLabel status={row.issuanceStatus} searchQuery={value} />
+        <StatusLabelLink status={row.issuanceStatus} searchQuery={value} yearSettlement={Number(dayjs(row.currentSettlement).format("YYYY"))} id={row.id} portName={row.portfolioName} count={row.issuanceCount} destination={"issue"}/>
       ),
     },
     {
@@ -339,9 +340,10 @@ export default function TrackingTable() {
       label: "Transfer Status",
       align: "center",
       render: (row) => (
-        <StatusLabel
+        <StatusLabelLink
           status={row.transferStatus == "" ? "Unavailable" : row.transferStatus}
           searchQuery={value}
+          id={row.id} portName={row.portfolioName} count={row.transferCount} yearSettlement={Number(dayjs(row.currentSettlement).format("YYYY"))} destination={"tranfer"} currentPeriod={row.currentSettlement}
         />
       ),
     },
@@ -350,11 +352,11 @@ export default function TrackingTable() {
       label: "Redemption Status",
       align: "center",
       render: (row) => (
-        <StatusLabel
+        <StatusLabelLink
           status={
             row.redemptionStatus == "" ? "Unavailable" : row.redemptionStatus
           }
-          searchQuery={value}
+          searchQuery={value} yearSettlement={Number(dayjs(row.currentSettlement).format("YYYY"))} id={row.id} portName={row.portfolioName} count={row.redemptionCount} destination={"redemption"} currentPeriod={row.currentSettlement}
         />
       ),
     },

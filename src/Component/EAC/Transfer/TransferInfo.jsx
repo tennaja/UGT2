@@ -32,7 +32,7 @@ export default function TransferInfo() {
   );
 
   const { portfolioID, portfolioName, period } = location.state;
-  // console.log(portfolioID, portfolioName, period);
+   console.log(portfolioID, portfolioName, period);
 
   // const period_arr = period.split("-");
   // const period_year = Number(period_arr[0]);

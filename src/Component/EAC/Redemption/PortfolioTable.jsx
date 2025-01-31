@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function PortfolioTable({ portData, search }) {
   const navigate = useNavigate();
-
+console.log(portData)
   const userData = useSelector((state) => state.login.userobj);
 
   const ActionCell = (data) => {

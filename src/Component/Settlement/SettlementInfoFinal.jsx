@@ -3163,25 +3163,25 @@ console.log(settlemtDetailDevice)
             <div>
               {/*Table Device */}
           <div className="w-full mt-5">
-            <DataTableSettlement
+           {/* <DataTableSettlement
               data={settlementDeviceDataFinal}
               columns={columnsDevice}
               searchData={searchDevice}
               checkbox={false}
               isTotal={"Total"}
               isSubTotal={"Device"}
-            />
+            />*/}
           </div>
           {/*Table Subscriber */}
           <div className="w-full mt-4">
-            <DataTableSettlement
+            {/*<DataTableSettlement
               data={settlementSubscriberDataFinal}
               columns={columnsSubscriber}
               searchData={searchSubscriber}
               checkbox={false}
               isTotal={"Total"}
               isSubTotal={"Subscriber"}
-            />
+            />*/}
           </div>
               {/*<div className="grid grid-cols-2 container mx-auto px-0 gap-8 mt-10 text-left">
                 <div className="border-r-2">

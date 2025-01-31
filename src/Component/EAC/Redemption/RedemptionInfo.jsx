@@ -33,6 +33,7 @@ export default function RedemptionInfo() {
   );
 
   const { portfolioID, portfolioName, period } = location.state;
+  console.log(portfolioID, portfolioName, period)
   const period_year = Number(dayjs(period).format("YYYY"));
   const [trackingYear, setTrackingYear] = useState(period_year);
   const [redemptionData, setRedemptionData] = useState([]);
