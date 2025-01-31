@@ -1283,13 +1283,13 @@ const LoadDataRevision = ({
             </div>
 
             <div className="mt-5 text-right">
-              <Button
+              {canUpload == true && <Button
                 className="bg-lime-500 w-[150px] hover:bg-[#4D6A00] text-[#fff]"
                 size="lg"
                 onClick={OpenPopupConfirm}
               >
                 Save
-              </Button>
+              </Button>}
               {isMandatoryError && (
                 <div className="justify-items-end">
                   <div className="font-medium text-base flex items-center w-auto justify-center border-solid bg-[#fdeeee] border-red-300 border-3 rounded-[5px]  my-2 px-4 py-2 text-red-400 ">

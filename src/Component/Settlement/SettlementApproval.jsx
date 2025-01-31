@@ -55,11 +55,12 @@ import { LuSearch } from "react-icons/lu";
 import TemplatePDFExcel from "./TemplatePDFExcel";
 import HistoryLogSettlement from "./HistoryLogSettlement";
 import SettlementInfoFinal from "./SettlementInfoFinal";
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
-import html2pdf from 'html2pdf.js';
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
+import html2pdf from "html2pdf.js";
 import TemplatePDFExcelUGT2 from "./TemplatePDFExcelUGT2";
-
+import { MdOutlineFileDownload } from "react-icons/md";
+import DownloadIcon from "../assets/DownloadIcon.svg";
 export default function SettlementApproval() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ export default function SettlementApproval() {
   } = location.state;
   console.log(location.state);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
-console.log(ugtGroupId)
+  console.log(ugtGroupId);
   const settlementApprovalResponse = useSelector(
     (state) => state.settlement.settlementApproval
   );
@@ -109,7 +110,7 @@ console.log(ugtGroupId)
     (state) => state.settlement.settlementStatus
   );
 
-  console.log(settlementDetailStatus)
+  console.log(settlementDetailStatus);
 
   const excelData = useSelector((state) => state.settlement.dataExcel);
   const [settlementYear, setSettlementYear] = useState(prevSelectedYear);
@@ -153,13 +154,13 @@ console.log(ugtGroupId)
   const [popupConfirmVerify, setPopupConfirmVerify] = useState(false);
   const [popupConfirmRequestEdit, setPopupConfirmRequestEdit] = useState(false);
   const [isGen, setIsGen] = useState(false);
-  const [isGenPDF,setIsGenPDF] = useState(false)
+  const [isGenPDF, setIsGenPDF] = useState(false);
   const [dataPDF, setDataPDF] = useState({
     dataDetailSheet1: {},
     dataListDetailSheet2: [],
   });
 
-  const [isCanVerify,setIsCanVerify] = useState(false)
+  const [isCanVerify, setIsCanVerify] = useState(false);
 
   const RemarkReject = useRef("");
   const RemarkRequestEdit = useRef("");
@@ -205,7 +206,7 @@ console.log(ugtGroupId)
 
   useEffect(() => {
     if (settlementYear != null && settlementMonth != null) {
-      console.log(selectOptionUtilityID)
+      console.log(selectOptionUtilityID);
       dispatch(
         getSettlementDetail(
           ugtGroupId,
@@ -250,7 +251,6 @@ console.log(ugtGroupId)
       setSettlementYear(tmpSelectedYear);
     }
   }, [tmpSelectedYear]);
-  
 
   useEffect(() => {
     // Re-Load ใหม่ กรณีที่ refresh
@@ -344,21 +344,19 @@ console.log(ugtGroupId)
     setLatestMonthHasData(monthListData.defaultMonth);
   }, [monthListData]);
 
-  useEffect(()=>{
-    if(settlementDetailStatus){
-      if(settlementDetailStatus.status == "N"){
-        if(userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG){
-          setIsCanVerify(true)
+  useEffect(() => {
+    if (settlementDetailStatus) {
+      if (settlementDetailStatus.status == "N") {
+        if (userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG) {
+          setIsCanVerify(true);
+        } else {
+          setIsCanVerify(false);
         }
-        else{
-          setIsCanVerify(false)
-        }
-      }
-      else{
-        setIsCanVerify(false)
+      } else {
+        setIsCanVerify(false);
       }
     }
-  },[settlementDetailStatus])
+  }, [settlementDetailStatus]);
 
   const handleChangeSettlementYear = (year) => {
     Swal.fire({
@@ -534,9 +532,18 @@ console.log(ugtGroupId)
     showLoading();
     showbase();
   };
-  const fetchExcelData = (portfolio, year, month, UgtGroup,IsInitial) => {
+  const fetchExcelData = (portfolio, year, month, UgtGroup, IsInitial) => {
     return new Promise((resolve, reject) => {
-      dispatch(getExcelData(portfolio, year, month, UgtGroup,selectOptionUtilityID,IsInitial))
+      dispatch(
+        getExcelData(
+          portfolio,
+          year,
+          month,
+          UgtGroup,
+          selectOptionUtilityID,
+          IsInitial
+        )
+      )
         .then(resolve)
         .catch(reject);
     });
@@ -555,10 +562,9 @@ console.log(ugtGroupId)
     );
     let base = "";
     //setDataPDF(excelData)
-    if(settlementDetailStatus.portfolioUgtId == 1){
+    if (settlementDetailStatus.portfolioUgtId == 1) {
       base = await handleGeneratePDF();
-    }
-    else if(settlementDetailStatus.portfolioUgtId == 2){
+    } else if (settlementDetailStatus.portfolioUgtId == 2) {
       base = await handleGeneratePDFUGT2();
     }
     //const form = await handleGeneratePDFFileForm()
@@ -610,13 +616,12 @@ console.log(ugtGroupId)
     );
     let base = "";
     //setDataPDF(excelData)
-    if(settlementDetailStatus.portfolioUgtId == 1){
+    if (settlementDetailStatus.portfolioUgtId == 1) {
       base = await handleGeneratePDF();
-    }
-    else if(settlementDetailStatus.portfolioUgtId == 2){
+    } else if (settlementDetailStatus.portfolioUgtId == 2) {
       base = await handleGeneratePDFUGT2();
     }
-    
+
     //const form = await handleGeneratePDFFileForm()
     console.log(base);
     //setIsGenarate(false)
@@ -727,7 +732,7 @@ console.log(ugtGroupId)
 
         // Append the iframe to the new window's body
         pdfWindow.document.body.appendChild(iframe);
-
+        
         // Optionally, automatically trigger file download with correct name
       } else {
         alert("Unable to open new tab. Please allow popups for this website.");
@@ -791,7 +796,7 @@ console.log(ugtGroupId)
   };
 
   const exportScreenPDF = () => {
-    generatePDFScreen()
+    generatePDFScreen();
   };
 
   const exportScreenExcelInitial = () => {
@@ -855,18 +860,21 @@ console.log(ugtGroupId)
   };
 
   const handleConfirmPopupRequestEdit = () => {
-    showLoading()
+    showLoading();
     setPopupConfirmRequestEdit(false);
-    dispatch(settlementRequestEdit(ugtGroupId,
-      portfolioId,
-      settlementYear,
-      settlementMonth,
-      RemarkRequestEdit.current,
-      userData.firstName + " " + userData.lastName
-      ,()=>{
-        hideLoading()
-      }))
-      
+    dispatch(
+      settlementRequestEdit(
+        ugtGroupId,
+        portfolioId,
+        settlementYear,
+        settlementMonth,
+        RemarkRequestEdit.current,
+        userData.firstName + " " + userData.lastName,
+        () => {
+          hideLoading();
+        }
+      )
+    );
   };
 
   //Verify Action
@@ -879,62 +887,80 @@ console.log(ugtGroupId)
   };
 
   const handleConfirmPopupVerify = () => {
-    showLoading()
+    showLoading();
     dispatch(
       settlementVerify(
         ugtGroupId,
         portfolioId,
         settlementYear,
         settlementMonth,
-        userData.firstName + " " + userData.lastName
-        ,()=>{
-          hideLoading()
-        })
+        userData.firstName + " " + userData.lastName,
+        () => {
+          hideLoading();
+        }
+      )
     );
-    
+
     setPopupConfirmVerify(false);
   };
 
-  const generatePDFScreen=()=>{
+  const generatePDFScreen = () => {
     //let oldSelect = selectTab
     //setSelectTab("final")
-    setIsGenPDF(true)
-    setTimeout(()=>{
+    setIsGenPDF(true);
+    setTimeout(() => {
       // เลือก DOM element ที่ต้องการแปลงเป็น PDF
-      const element = contentRef.current//document.getElementById('pdf-content');
-          
+      const element = contentRef.current; //document.getElementById('pdf-content');
+
       // กำหนดตัวเลือกสำหรับ html2pdf
       const options = {
         margin: 0,
-        filename: 'webscreen.pdf',
-        image: { type: 'jpeg', quality: 50 },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
-        html2canvas: { scale: 2}, // เพิ่ม scale เพื่อเพิ่มความละเอียด
-        jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait'},
+        filename: "webscreen.pdf",
+        image: { type: "jpeg", quality: 50 },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+        html2canvas: { scale: 2 }, // เพิ่ม scale เพื่อเพิ่มความละเอียด
+        jsPDF: { unit: "cm", format: "a3", orientation: "portrait" },
       };
 
       // สร้าง PDF ด้วย html2pdf และดึง base64 string
       html2pdf()
         .from(element)
         .set(options)
-        .outputPdf('datauristring') // ดึงข้อมูลออกมาเป็น Base64 string
+        .outputPdf("datauristring") // ดึงข้อมูลออกมาเป็น Base64 string
         .then((pdfBase64) => {
           console.log(pdfBase64); // แสดง base64 string ใน console
           const base64Content = pdfBase64.split(",")[1];
           const now = new Date();
-          const formattedDateTime = `${now.getDate().toString().padStart(2, '0')}_${(now.getMonth() + 1).toString().padStart(2, '0')}_${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}_${now.getMinutes().toString().padStart(2, '0')}_${now.getSeconds().toString().padStart(2, '0')}`;
-          const fileName = formattedDateTime+".pdf"
-          openPDFInNewTab(base64Content,"application/pdf","ReportScreen_Settlement.pdf")
-          setIsGenPDF(false)
-      })
-    },1200)
-    
-}
+          const formattedDateTime = `${now
+            .getDate()
+            .toString()
+            .padStart(2, "0")}_${(now.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}_${now.getFullYear()}_${now
+            .getHours()
+            .toString()
+            .padStart(2, "0")}_${now
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}_${now.getSeconds().toString().padStart(2, "0")}`;
+          const fileName = formattedDateTime + ".pdf";
+          openPDFInNewTab(
+            base64Content,
+            "application/pdf",
+            "ReportScreen_Settlement.pdf"
+          );
+          setIsGenPDF(false);
+        });
+    }, 1200);
+  };
 
   console.log(settlementDetailStatus);
 
   return (
-    <div ref={contentRef} style={{ width: '100%', padding: '20px', background: '#f5f5f5' }}>
+    <div
+      ref={contentRef}
+      style={{ width: "100%", padding: "20px", background: "#f5f5f5" }}
+    >
       <div className="min-h-screen p-6 items-center justify-center">
         <div className="container max-w-screen-lg mx-auto">
           <div className="text-left flex flex-col">
@@ -1213,7 +1239,13 @@ console.log(ugtGroupId)
                     Monthly Settlement
                   </div>
                   <Form layout="horizontal" size="large">
-                    <div className={isCanVerify?`grid gap-4 pt-4 grid-cols-4`:`grid gap-4 pt-4 grid-cols-3`}>
+                    <div
+                      className={
+                        isCanVerify
+                          ? `grid gap-4 pt-4 grid-cols-4`
+                          : `grid gap-4 pt-4 grid-cols-3`
+                      }
+                    >
                       {/*<Form.Item className="col-span-1"></Form.Item>*/}
                       {/*Select Year filter */}
                       <Form.Item className="col-span-1 col-start-1">
@@ -1291,23 +1323,25 @@ console.log(ugtGroupId)
                         ]}
                       />
 
-                      {isCanVerify && <SettlementMenu
-                        labelBtn={"Manage"}
-                        actionList={[
-                          {
-                            icon: (
-                              <RiPencilFill className="w-[20px] h-[20px]" />
-                            ),
-                            label: "Request Edit",
-                            onClick: requestEditAction,
-                          },
-                          {
-                            icon: <LuSearch className="w-[20px] h-[20px]" />,
-                            label: "Verify",
-                            onClick: verifyAction,
-                          },
-                        ]}
-                      />}
+                      {isCanVerify && (
+                        <SettlementMenu
+                          labelBtn={"Manage"}
+                          actionList={[
+                            {
+                              icon: (
+                                <RiPencilFill className="w-[20px] h-[20px]" />
+                              ),
+                              label: "Request Edit",
+                              onClick: requestEditAction,
+                            },
+                            {
+                              icon: <LuSearch className="w-[20px] h-[20px]" />,
+                              label: "Verify",
+                              onClick: verifyAction,
+                            },
+                          ]}
+                        />
+                      )}
                     </div>
                   </Form>
                 </>
@@ -1351,8 +1385,8 @@ console.log(ugtGroupId)
                 isGenPDF={isGenPDF}
                 status={settlementDetailStatus.status}
               />
-            ) :selectTab == "final"? 
-            <SettlementInfoFinal
+            ) : selectTab == "final" ? (
+              <SettlementInfoFinal
                 ugtGroupId={ugtGroupId}
                 portfolioId={portfolioId}
                 portfolioName={portfolioName}
@@ -1366,8 +1400,8 @@ console.log(ugtGroupId)
                 selectTab={selectTab}
                 isGenPDF={isGenPDF}
                 status={settlementDetailStatus.status}
-              />:
-              (
+              />
+            ) : (
               <HistoryLogSettlement
                 portfolioId={portfolioId}
                 settlementYear={settlementYear}
@@ -1404,7 +1438,7 @@ console.log(ugtGroupId)
             )}
           </div>*/}
 
-          {selectTab == "final" && isGenPDF == false  ? (
+          {selectTab == "final" && isGenPDF == false ? (
             settlementDetailStatus.status == "N" && isCanVerify == true ? (
               <div className="flex justify-between px-4 mt-4">
                 <div>
@@ -1426,7 +1460,7 @@ console.log(ugtGroupId)
                   </Button>
                 </div>
               </div>
-            ) : settlementDetailStatus.status == "E" ?undefined: (
+            ) : settlementDetailStatus.status == "E" ? undefined : (
               <Card
                 id="approveInformation"
                 shadow="md"
