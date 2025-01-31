@@ -60,7 +60,6 @@ import { jsPDF } from "jspdf";
 import html2pdf from "html2pdf.js";
 import TemplatePDFExcelUGT2 from "./TemplatePDFExcelUGT2";
 import { MdOutlineFileDownload } from "react-icons/md";
-import DownloadIcon from "../assets/DownloadIcon.svg";
 export default function SettlementApproval() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
