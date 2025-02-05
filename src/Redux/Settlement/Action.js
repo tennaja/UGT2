@@ -555,7 +555,7 @@ export const _getSettlementMonthlyDetail = (data) => {
 
 export const getSettlementMonthlyDetail = (ugtGroupId, portfolioId, year, month) => {
 
-    const URL = `${SETTLEMENT_MONTHLY_DETAIL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=false`
+    const URL = `${SETTLEMENT_MONTHLY_DETAIL_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=true`
     //console.log('URL', URL)
 
     return async (dispatch) => {
@@ -578,7 +578,7 @@ export const _getSettlementMonthlyDetailSubscriber = (data) => {
 
 export const getSettlementMonthlyDetailSubscriber = (ugtGroupId, portfolioId, year, month) => {
 
-    const URL = `${SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=false`
+    const URL = `${SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=true`
     //console.log('URL', URL)
 
     return async (dispatch) => {
@@ -624,7 +624,7 @@ export const _getSettlementMonthlyDetailSubscriberFinal = (data) => {
 
 export const getSettlementMonthlyDetailSubscriberFinal = (ugtGroupId, portfolioId, year, month) => {
 
-    const URL = `${SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=true`
+    const URL = `${SETTLEMENT_MONTHLY_DETAIL_SUBSCRIBER_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=false`
     //console.log('URL', URL)
 
     return async (dispatch) => {
