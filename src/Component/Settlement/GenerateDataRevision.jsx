@@ -148,7 +148,22 @@ const GenerateDataRevision = ({
       userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
       userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG
     ){
-      canUpload = true
+      if(generateDataRevision){
+        if(generateDataRevision?.issueRequestDetailStatus == "" || 
+          generateDataRevision?.issueRequestDetailStatus == null || 
+          generateDataRevision?.issueRequestDetailStatus.toLowerCase().replace(" ", "") == "pending" || 
+          generateDataRevision?.issueRequestDetailStatus.toLowerCase().replace(" ", "") == "rejected" || 
+          generateDataRevision?.issueRequestDetailStatus.toLowerCase().replace(" ", "") == "return"){
+            canUpload = true
+          }
+          else{
+            canUpload = false
+          }
+      }
+      else{
+        canUpload = false
+      }
+      //canUpload = true
     }
     else{
       canUpload = false
