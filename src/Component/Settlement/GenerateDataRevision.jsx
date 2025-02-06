@@ -1066,14 +1066,14 @@ const GenerateDataRevision = ({
   };
 
   console.log(generateDataRevision);
-  console.log(generateDataRevision == null);
+  console.log(Object.keys(generateDataRevision).length);
 
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
         <div className="container max-w-screen-lg mx-auto">
           <div className="text-left flex flex-col gap-3">
-            {generateDataRevision ? (
+            {generateDataRevision && Object.keys(generateDataRevision).length !== 0 ? (
               <div>
                 <div className="md:col-span-6">
                   <div className="grid grid-cols-12 gap-1">

@@ -1379,6 +1379,7 @@ export const getGenerateDataDetailRevision = (ugtGroupId,portfolioId,year,month,
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
             dispatch(_getGenerateDataDetailRevision(response.data));
         }, (error) => {
+            dispatch(_getGenerateDataDetailRevision({}));
             dispatch(failRequest(error.message))
         });
     }
@@ -1697,6 +1698,7 @@ export const getLoadDataDetailRevision = (ugtGroupId,portfolioId,year,month,subs
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
             dispatch(_getLoadDataDetailRevision(response.data));
         }, (error) => {
+            dispatch(_getLoadDataDetailRevision({}));
             dispatch(failRequest(error.message))
         });
     }

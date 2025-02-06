@@ -1056,7 +1056,7 @@ const LoadDataRevision = ({
       <div className="min-h-screen p-6 items-center justify-center">
         <div className="container max-w-screen-lg mx-auto">
           <div className="text-left flex flex-col gap-3">
-            {loadDataRevision ?(<div>
+            { loadDataRevision && Object.keys(loadDataRevision).length !== 0 ?(<div>
               <div className="md:col-span-6">
                 <div className="grid grid-cols-12 gap-1">
                   <div className="row-span-3 col-span-12 lg:col-span-3">
