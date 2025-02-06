@@ -383,7 +383,7 @@ const Sidebar2 = ({ children }) => {
           break;
       }
     }
-    console.log(path)
+    //console.log(path)
     return path;
   };
 
