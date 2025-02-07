@@ -120,7 +120,13 @@ const LoadDataDetail = (props) => {
     }
   }, [loadInfoMontList]);
 
-  console.log(state);
+  useEffect(()=>{
+    if(loadRevision){
+      setSelectTab(loadRevision?.revisionList?.[0])
+    }
+  },[loadRevision])
+
+  console.log(loadRevision?.revisionList?.[0]);
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">

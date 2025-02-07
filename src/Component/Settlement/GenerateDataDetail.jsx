@@ -120,6 +120,10 @@ const GenerateDataDetail = (props) => {
     }
   }, [generateInfoMontList]);
 
+  useEffect(()=>{
+    setSelectTab(generateRevision?.revisionList?.[0])
+  },[generateRevision])
+
   console.log(state);
   return (
     <div>
