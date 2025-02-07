@@ -782,6 +782,8 @@ const CollapsDataTable = ({
     }
   };
 
+  //console.log(data)
+
   return (
     <div>
       <TableContainer

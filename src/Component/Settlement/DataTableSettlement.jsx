@@ -152,7 +152,7 @@ const DataTableSettlement = ({
         );
         setInventoryMatchDevice(numeral(inventorymatchDevice).format("0,0.000"));
         const perActualMatch = paginatedData.reduce(
-          (acc, row) => acc + (row.percentageActualGeneration || 0),
+          (acc, row) => acc + (row.netGreenDeliverables || 0),
           0
         );
         setPerActualMatchDevice(numeral(perActualMatch).format("0,0.00"));
@@ -174,7 +174,7 @@ const DataTableSettlement = ({
         );
         setInventoryMatchSubscriber(numeral(inventorymatchDevice).format("0,0.000"));
         const perActualMatch = paginatedData.reduce(
-          (acc, row) => acc + (row.percentageNetGreenDeliverables || 0),
+          (acc, row) => acc + (row.netGreenDeliverables || 0),
           0
         );
         setPerActualMatchSubscriber(numeral(perActualMatch).format("0,0.00"));
@@ -980,7 +980,7 @@ if (checkStartDate) {
                         </strong>
                       </TableCell>
                     );
-                  } else if(isTotal === "Total" && isSubTotal == "Device" && (index == 1 || index == 2 || index == 3 || index == 5)){
+                  } else if(isTotal === "Total" && isSubTotal == "Device" && (index == 1 || index == 2 || index == 3 || index == 4)){
                     
                       if(index == 1){
                         return (
@@ -1039,7 +1039,7 @@ if (checkStartDate) {
                           </TableCell>
                         );
                       }
-                      else if(index == 5){
+                      else if(index == 4){
                         return (
                           <TableCell
                             key={`footer-total-capacity`}
@@ -1060,7 +1060,7 @@ if (checkStartDate) {
                       }
 
                     
-                  } else if(isTotal === "Total" && isSubTotal == "Subscriber" && (index == 1 || index == 2 || index == 3 || index == 6)){
+                  } else if(isTotal === "Total" && isSubTotal == "Subscriber" && (index == 1 || index == 2 || index == 3 || index == 4)){
 
                     if(index == 1){
                       return (
@@ -1119,7 +1119,7 @@ if (checkStartDate) {
                         </TableCell>
                       );
                     }
-                    else if(index == 6){
+                    else if(index == 4){
                       return (
                         <TableCell
                           key={`footer-total-capacity`}
