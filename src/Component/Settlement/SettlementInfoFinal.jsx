@@ -183,10 +183,10 @@ const SettlementInfoFinal = ({
   );
 
   const settlementDetailMonthlyDevice = useSelector(
-    (state) => state.settlement.settlementMonthlyDetail
+    (state) => state.settlement.settlementDeviceTabFinal
   );
 
-  const settlementDetailMonthlySubscriber = useSelector((state)=> state.settlement.settlementMonthlyDetailSubscriber)
+  const settlementDetailMonthlySubscriber = useSelector((state)=> state.settlement.settlememtSubscriberTabFinal)
 
    const settlementDeviceDataFinal = useSelector((state)=>state.settlement.settlementDeviceTableFinal)
     const settlementSubscriberDataFinal = useSelector((state)=>state.settlement.settlementSubscriberTableFinal)
@@ -231,6 +231,8 @@ const SettlementInfoFinal = ({
   const [settlementDetailSubscriber,setSettlementDetailSubscriber] = useState([])
   const [isApprove,setIsApprove] = useState(false)
   const [isShowDetailMonthly,setIsShowDetailMonthly] = useState(true)
+
+  console.log(settlemtDetailDevice,settlementDetailSubscriber)
   
 
     //console.log(settlemtDetailDevice)
@@ -1125,7 +1127,7 @@ const SettlementInfoFinal = ({
       setSettlementDetailSubscriber(settlementDetailMonthlySubscriber?.subscriberList)
     }
   },[settlementDetailMonthlySubscriber])
-  //console.log(settlementDetailMonthlySubscriber)
+  console.log(settlementDetailMonthlySubscriber)
 
   // match summary
   useEffect(() => {
