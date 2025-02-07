@@ -462,7 +462,7 @@ useEffect(()=>{
                             </label>
                             <span> </span>
                             <label className="text-base font-medium text-slate-500">
-                                {"out of "+generateDateDashBoard?.totalGenerationDataRevision}
+                                {"out of "+generateDateDashBoard?.outOf}
                             </label>
                             </div>
                         </div>
@@ -498,7 +498,7 @@ useEffect(()=>{
                             </label>
                             <span> </span>
                             <label className="text-base font-medium text-slate-500">
-                                {"out of "+generateDateDashBoard?.totalGenerationDataRevision}
+                                {"out of "+generateDateDashBoard?.outOf}
                             </label>
                             </div>
                         </div>
@@ -575,7 +575,7 @@ useEffect(()=>{
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
-                        {"out of "+generateDateDashBoard?.totalVolumeEvidence}
+                        {"out of "+generateDateDashBoard?.outOf}
                       </label>
                     </div>
                   </div>

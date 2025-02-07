@@ -407,7 +407,7 @@ const LoadDatainfo = (props) => {
                         <span> </span>
                         <label className="text-base font-medium text-slate-500">
                           {"out of " +
-                            loadDateDashBoard?.totalloadDataInputRevision}
+                            loadDateDashBoard?.outOf}
                         </label>
                       </div>
                     </div>
@@ -447,7 +447,7 @@ const LoadDatainfo = (props) => {
                         <span> </span>
                         <label className="text-base font-medium text-slate-500">
                           {"out of " +
-                            loadDateDashBoard?.totalloadDataInputRevision}
+                            loadDateDashBoard?.outOf}
                         </label>
                       </div>
                     </div>
@@ -529,7 +529,7 @@ const LoadDatainfo = (props) => {
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
-                        {"out of " + loadDateDashBoard?.totalVolumeEvidence}
+                        {"out of " + loadDateDashBoard?.outOf}
                       </label>
                     </div>
                   </div>
