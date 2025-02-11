@@ -149,6 +149,9 @@ console.log(settlementStatus,monthListData)
       } else {
         if (monthListData?.defaultMonth == 12) {
           dispatch(setSelectedMonth(monthListData?.defaultMonth));
+        }
+        else if(monthListData?.defaultMonth == 1){
+          dispatch(setSelectedMonth(monthListData?.defaultMonth));
         } else {
           let defualtMonth = monthListData?.defaultMonth - 1;
           dispatch(setSelectedMonth(defualtMonth));
@@ -197,6 +200,8 @@ console.log(settlementStatus,monthListData)
     } else {
       if (latestMonthHasData == 12) {
         return false;
+      }else if(latestMonthHasData == 1){
+        return month = latestMonthHasData
       } else {
         return month >= latestMonthHasData;
       }
