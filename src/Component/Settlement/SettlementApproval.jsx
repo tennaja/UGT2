@@ -1573,7 +1573,7 @@ export default function SettlementApproval() {
                       "Verified Settlement Details requires to be edited."
                     }
                     openCheckBox={false}
-                    setRemark={RemarkRequestEdit}
+                    setRemark={RemarkReject}
                     sizeModal={"md"}
                     textButton="Confirm"
                   />
