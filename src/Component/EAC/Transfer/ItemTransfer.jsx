@@ -140,7 +140,7 @@ const ItemTransfer = (props) => {
           if (
             // check user group
             userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
-            userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY
+            userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
           ) {
           // check status
           canSendTransfer =
