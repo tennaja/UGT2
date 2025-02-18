@@ -42,8 +42,8 @@ export const _getRedemptionRequestList = (data) => {
   };
 };
 
-export const getRedemptionRequestList = (ugtGroupId, year) => {
-  const URL = `${REDEMPTION_REQUEST_LIST_URL}?ugtGroupId=${ugtGroupId}&year=${year}`;
+export const getRedemptionRequestList = (ugtGroupId, year,utilityId) => {
+  const URL = `${REDEMPTION_REQUEST_LIST_URL}?ugtGroupId=${ugtGroupId}&year=${year}&utilityId=${utilityId}`;
 
   return async (dispatch) => {
     await axios.get(URL, { ...getHeaderConfig() }).then(

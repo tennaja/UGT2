@@ -128,7 +128,9 @@ export default function IssueInfo({ portfolioData, deviceData }) {
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined && trackingMonth !== undefined)
       getIssueTransaction();
+    if(trackingMonth){
       getLastedUpdateSyncStatus()
+    }
   }, [currentUGTGroup, trackingMonth, trackingYear]);
 
   useEffect(() => {
@@ -330,7 +332,6 @@ export default function IssueInfo({ portfolioData, deviceData }) {
 
     }
   }
-
 
   return (
     <div>

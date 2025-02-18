@@ -1,5 +1,13 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { Button, Card, Input, ScrollArea, Table, Modal,Textarea } from "@mantine/core";
+import {
+  Button,
+  Card,
+  Input,
+  ScrollArea,
+  Table,
+  Modal,
+  Textarea,
+} from "@mantine/core";
 import numeral from "numeral";
 //import AlmostDone from "../../../assets/done.png";
 import Warning from "../../../assets/warning.png";
@@ -13,14 +21,17 @@ import {
   EAC_ISSUE_REQUEST_CREATE_ISSUE_DETAIL_FILE,
   EAC_ISSUE_REQUEST_DELETE_FILE,
   EAC_ISSUE_REQUEST_DOWNLOAD_FILE,
-  EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE
+  EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE,
+  EAC_ISSUE_REQUEST_VERIFY,
+  EAC_ISSUE_REQUEST_RETURN,
+  EAC_ISSUE_REQUEST_UPLOAD_GEN_EVIDENT,
 } from "../../../../Constants/ServiceURL";
 import { USER_GROUP_ID } from "../../../../Constants/Constants";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import { showLoading, hideLoading } from "../../../../Utils/Utils";
 import StatusLabel from "../../../Control/StatusLabel";
-import { useSelector ,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { FaRegTrashAlt } from "react-icons/fa";
 import jpgIcon from "../../../assets/jpg.png";
 import pngIcon from "../../../assets/png.png";
@@ -34,12 +45,15 @@ import svgIcon from "../../../assets/svg.png";
 import { RiDownloadLine } from "react-icons/ri";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import PdfFormPreviewSF04 from "../../../Settlement/TemplatePdfSF04";
-import {getDataSettlement} from "../../../../Redux/EAC/Action";
+import { getDataSettlement } from "../../../../Redux/EAC/Action";
 
 import AlmostDone from "../../../assets/almostdone.png";
 import { useDisclosure } from "@mantine/hooks";
 import ModalConfirmCheckBoxEAC from "./ModalConfirmCheckBoxEAC";
 import { RiEyeLine } from "react-icons/ri";
+import ModalConfirmRemarkEAC from "../../ModalConfirmRemarkEAC";
+import { FaFileExcel } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 const { Dragger } = Upload;
 
@@ -72,9 +86,9 @@ const beforeUpload = (file) => {
 };
 
 const getIcon = (type) => {
-  console.log(type)
+  console.log(type);
   const extension = name?.split(".").pop();
-  console.log(extension)
+  console.log(extension);
   if (type == "image/jpeg") {
     return jpgIcon;
   } else if (type === "image/png") {
@@ -83,13 +97,23 @@ const getIcon = (type) => {
     return svgIcon;
   } else if (type === "application/pdf") {
     return pdfIcon;
-  } else if (type === "application/msword" || type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ) {
+  } else if (
+    type === "application/msword" ||
+    type ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  ) {
     return docxIcon;
-  } else if (type === "application/vnd.ms-excel" || type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+  } else if (
+    type === "application/vnd.ms-excel" ||
+    type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  ) {
     return xlsIcon;
   } else if (type === "text/csv") {
     return csvIcon;
-  } else if (type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
+  } else if (
+    type ===
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  ) {
     return pptxIcon;
   } else if (type === "text/plain") {
     return txtIcon;
@@ -102,7 +126,11 @@ const ItemInventory = ({
   issueTransactionData,
   inventoryTransaction,
   getIssueTransaction,
-  device,year,month,UgtGroup,portfolio
+  device,
+  year,
+  month,
+  UgtGroup,
+  portfolio,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -110,8 +138,8 @@ const ItemInventory = ({
 
   const issueRequestId = inventoryTransaction?.issueRequestId;
   const issueRequestDetailId = inventoryTransaction?.issueRequestDetailId;
-  const dataPDF = useSelector((state) => state.eac?.dataSF04PDF)
-
+  const dataPDF = useSelector((state) => state.eac?.dataSF04PDF);
+console.log(inventoryTransaction)
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [openModalUpload, setOpenModalUpload] = useState(false);
   const [showModalComplete, setShowModalComplete] = useState(false);
@@ -121,15 +149,22 @@ const ItemInventory = ({
   const [totalProduction, setTotalProduction] = useState(0);
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
 
-  const [showModalConfirm,setShowModalConfirm] = useState(false)
-  const [showModalSignAndSubmit,setShowModalSignAndSubmit] = useState(false)
-  const [showSignAndSubmitSuccess,modalSignAndSubmitSuccess] = useDisclosure()
-  const [isSign,setIsSign] = useState(false)
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [showModalSignAndSubmit, setShowModalSignAndSubmit] = useState(false);
+  const [showSignAndSubmitSuccess, modalSignAndSubmitSuccess] = useDisclosure();
+  const [isSign, setIsSign] = useState(false);
 
-    const [fileSF04Preview,setFileSF04Preview] = useState({})
-    const setSign = useRef(true)
-    const pdfRef = useRef()
-    const [dataSF04,setDataSF04] = useState([])
+  const [showModalConfirmReturn, setShowModalConfirmReturn] = useState(false);
+  const remarkReturn = useRef("");
+
+  const [fileSF04Preview, setFileSF04Preview] = useState({});
+  const setSign = useRef(true);
+  const pdfRef = useRef();
+  const [dataSF04, setDataSF04] = useState([]);
+
+  const [showModalConfirmVerify, setShowModalConfirmVerify] = useState(false);
+  const [showVerifySuccess, modalVerifySuccess] = useDisclosure();
+  const [fileGeneration, setFileGeneration] = useState([]);
 
   // status
   let issueRequestStatus = inventoryTransaction?.status ?? "";
@@ -147,12 +182,16 @@ const ItemInventory = ({
     issueRequestStatus = "Issued";
   } else if (issueRequestStatus.toLowerCase() === "rejected") {
     issueRequestStatus = "Rejected";
+  } else if (issueRequestStatus.toLowerCase() === "verified") {
+    issueRequestStatus = "Verified";
   }
 
   // control action status
   let canSendIssue = false;
   let canUpload = false;
+  let canVerify = false;
 
+  // check if user is Contractor , can view only.
   // check if user is Contractor , can view only.
   if (
     userData?.userGroup?.id == USER_GROUP_ID.MEA_CONTRACTOR_MNG ||
@@ -160,6 +199,7 @@ const ItemInventory = ({
   ) {
     canSendIssue = false;
     canUpload = false;
+    canVerify = false;
   } else {
     if (
       issueRequestStatus?.toLowerCase() === "in progress" ||
@@ -170,21 +210,24 @@ const ItemInventory = ({
     ) {
       canSendIssue = false;
       canUpload = false;
+      canVerify = false;
     } else {
-      if (
-        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+      if (userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY) {
+        canSendIssue = true;
+        canUpload = true;
+        canVerify = false;
+      } else if (
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
       ) {
-      canSendIssue = true;
-      canUpload = true;
-      }
-      else{
+        canSendIssue = false;
+        canUpload = true;
+        canVerify = true;
+      } else {
         canSendIssue = false;
         canUpload = false;
       }
     }
   }
-  
 
   const props = {
     multiple: true,
@@ -194,7 +237,7 @@ const ItemInventory = ({
     onDownload: onPreviewFile,
     onPreview: previewFile,
     onRemove: removeFile,
-
+    showUploadList: false, // ❌ ซ่อนรายการไฟล์ที่ Dragger แสดง
     /* iconRender(file, listType) {
       console.log("listType", listType);
       return (
@@ -232,70 +275,11 @@ const ItemInventory = ({
     onDrop(e) {
       // console.log("Dropped files", e.dataTransfer.files);
     },
-    itemRender: (originNode, file, fileList, actions) => {
-      console.log(file)
-      return (
-        <div
-          className="flex justify-between items-center p-2 border border-gray-300 rounded mb-2 mt-2"
-          style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-        >
-          <div className="flex items-center">
-            {/* Icon ของไฟล์ (สามารถเปลี่ยนเป็น URL ไอคอนได้) */}
-            <img
-              src={getIcon(file.type)} // เปลี่ยนเป็นไอคอนไฟล์ PDF หรือประเภทอื่น ๆ
-              alt="File Icon"
-              style={{  marginRight: "10px" }}
-              width={35}
-              height={35}
-            />
-            <span>{file.name}</span>
-          </div>
-          <div>
-            {/* ปุ่ม Download */}
-                        <button
-                          style={{
-                            marginRight: "10px",
-                            background: "transparent",
-                            border: "none",
-                            color: "#BFD39F",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => actions.download(file)}
-                        >
-                          <RiDownloadLine /> {/* ไอคอนดาวน์โหลด */}
-                        </button>
-                        {checkShowPreview(file.type) && file.status == "done" ? <button
-                          style={{
-                            marginRight: "10px",
-                            background: "transparent",
-                            border: "none",
-                            color: "#BFD39F",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => props.onPreview(file)}
-                        >
-                          <RiEyeLine />
-                        </button>: undefined}
-                        {/* ปุ่ม Remove */}
-                        {canUpload &&<button
-                          style={{
-                            background: "transparent",
-                            border: "none",
-                            color: "#BFD39F",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => actions.remove(file)}
-                        >
-                          <FaRegTrashAlt /> {/* ไอคอนลบ */}
-                        </button>}
-          </div>
-        </div>
-      );
-    },
   };
 
   async function uploadToEvident(options) {
     const { file, onSuccess, onError } = options;
+    showLoading();
     const params = new FormData();
     const config = {
       headers: {
@@ -313,11 +297,13 @@ const ItemInventory = ({
         params,
         config
       );
+      hideLoading();
       onSuccess("Ok");
       // เรียกข้อมูล issue ใหม่ เพื่อให้มี File List
       getIssueTransaction();
     } catch (err) {
       console.log("Error: ", err);
+      hideLoading();
       const error = new Error("Some error");
       onError({ err });
     }
@@ -364,15 +350,14 @@ const ItemInventory = ({
         {},
         { responseType: "blob" } // Important: indicate that the response type is a Blob
       );
-      const name = getTypeFilename(file.type,file.name)
+      const name = getTypeFilename(file.type, file.name);
 
       const blob = new Blob([res.data], { type: res.headers["content-type"] });
-      blobToBase64(blob)
-      .then(base64String => {
+      blobToBase64(blob).then((base64String) => {
         console.log(base64String); // เป็นสตริง Base64
-        previewFileUpload(base64String,file.type,name)
-        hideLoading()
-      })
+        previewFileUpload(base64String, file.type, name);
+        hideLoading();
+      });
     } catch (err) {
       console.log("Error: ", err);
     } finally {
@@ -380,8 +365,8 @@ const ItemInventory = ({
     }
   }
 
-  async function  onPreviewFile (file){
-    console.log(file)
+  async function onPreviewFile(file) {
+    console.log(file);
     try {
       showLoading();
       const res = await axios.post(
@@ -397,102 +382,105 @@ const ItemInventory = ({
     } finally {
       hideLoading();
     }
+  }
+
+  const checkShowPreview = (type) => {
+    if (type == "image/jpeg") {
+      return true;
+    } else if (type === "image/png") {
+      return true;
+    } else if (type === "image/svg+xml") {
+      return true;
+    } else if (type === "application/pdf") {
+      return true;
+    } else if (type == "image/jpg") {
+      return true;
+    } else {
+      return false;
+    }
   };
 
-  const checkShowPreview =(type)=>{
+  const getTypeFilename = (type, name) => {
     if (type == "image/jpeg") {
-      return true;
+      return name + ".jpeg";
     } else if (type === "image/png") {
-      return true;
+      return name + ".png";
     } else if (type === "image/svg+xml") {
-      return true;
+      return name + ".svg";
     } else if (type === "application/pdf") {
-      return true;
-    }else if(type == "image/jpg"){
-      return true;
-    }else{
-      return false
+      return name + ".pdf";
+    } else {
+      return name + ".jpg";
     }
-  }
+  };
 
-
-  const getTypeFilename =(type,name)=>{
-    if (type == "image/jpeg") {
-      return name+".jpeg";
-    } else if (type === "image/png") {
-      return name+".png";
-    } else if (type === "image/svg+xml") {
-      return name+".svg";
-    } else if (type === "application/pdf") {
-      return name+".pdf";
-    }else {
-      return name+".jpg";
-    }
-  }
-
-  const previewFileUpload = (base64String,type,name) => {
+  const previewFileUpload = (base64String, type, name) => {
     const extension = name.split(".").pop();
-      const pdfWindow = window.open("");
-      console.log("PDF",pdfWindow)
-      console.log(type)
-      if(type === "application/pdf"){
-        if (pdfWindow) {
-          // Set the title of the new tab to the filename
-          pdfWindow.document.title = name;
-      
-          // Convert Base64 to raw binary data held in a string
-          const byteCharacters = atob(base64String);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-      
-          // Create a Blob from the byte array and set the MIME type
-          const blob = new Blob([byteArray], { type: type});
-          console.log("Blob",blob)
-      
-          // Create a URL for the Blob and set it as the iframe source
-          const blobURL = URL.createObjectURL(blob);
-          console.log("Blob url :" ,blobURL)
-          let names = name
-      
-          const iframe = pdfWindow.document.createElement("iframe");
-          
-          iframe.style.border = "none";
-          iframe.style.position = "fixed";
-          iframe.style.top = "0";
-          iframe.style.left = "0";
-          iframe.style.bottom = "0";
-          iframe.style.right = "0";
-          iframe.style.width = "100vw";
-          iframe.style.height = "100vh";
-          
-          // Use Blob URL as the iframe source
-          iframe.src = blobURL;
-      
-          // Remove any margin and scrollbars
-          pdfWindow.document.body.style.margin = "0";
-          pdfWindow.document.body.style.overflow = "hidden";
-      
-          // Append the iframe to the new window's body
-          pdfWindow.document.body.appendChild(iframe);
-  
-          // Optionally, automatically trigger file download with correct name
-        
-        } else {
-            alert('Unable to open new tab. Please allow popups for this website.');
+    const pdfWindow = window.open("");
+    console.log("PDF", pdfWindow);
+    console.log(type);
+    if (type === "application/pdf") {
+      if (pdfWindow) {
+        // Set the title of the new tab to the filename
+        pdfWindow.document.title = name;
+
+        // Convert Base64 to raw binary data held in a string
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
         }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        // Create a Blob from the byte array and set the MIME type
+        const blob = new Blob([byteArray], { type: type });
+        console.log("Blob", blob);
+
+        // Create a URL for the Blob and set it as the iframe source
+        const blobURL = URL.createObjectURL(blob);
+        console.log("Blob url :", blobURL);
+        let names = name;
+
+        const iframe = pdfWindow.document.createElement("iframe");
+
+        iframe.style.border = "none";
+        iframe.style.position = "fixed";
+        iframe.style.top = "0";
+        iframe.style.left = "0";
+        iframe.style.bottom = "0";
+        iframe.style.right = "0";
+        iframe.style.width = "100vw";
+        iframe.style.height = "100vh";
+
+        // Use Blob URL as the iframe source
+        iframe.src = blobURL;
+
+        // Remove any margin and scrollbars
+        pdfWindow.document.body.style.margin = "0";
+        pdfWindow.document.body.style.overflow = "hidden";
+
+        // Append the iframe to the new window's body
+        pdfWindow.document.body.appendChild(iframe);
+
+        // Optionally, automatically trigger file download with correct name
+      } else {
+        alert("Unable to open new tab. Please allow popups for this website.");
       }
-      else if(type == "image/jpeg" || type == "image/jpg" || type == "image/png" || type === "image/svg+xml"){
-        if (pdfWindow) {
-          pdfWindow.document.write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
+    } else if (
+      type == "image/jpeg" ||
+      type == "image/jpg" ||
+      type == "image/png" ||
+      type === "image/svg+xml"
+    ) {
+      if (pdfWindow) {
+        pdfWindow.document
+          .write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
               <img src="data:image/jpeg;base64,${base64String}" style="max-width:100%; height:auto;"/>
           </body></html>`);
-          pdfWindow.document.title = "Image Preview";
-          pdfWindow.document.close();
+        pdfWindow.document.title = "Image Preview";
+        pdfWindow.document.close();
       }
-      }
+    }
   };
 
   const handleConfirmSubmitRequest = async () => {
@@ -569,8 +557,14 @@ const ItemInventory = ({
   }, [inventoryTransaction]);
 
   useLayoutEffect(() => {
-    if (inventoryTransaction?.inventorySettlementDetail)
+    if (inventoryTransaction?.inventorySettlementDetail) {
       prepareFileUploadData();
+      if (inventoryTransaction?.generationFileList) {
+        setFileGeneration(inventoryTransaction?.generationFileList);
+      } else {
+        setFileGeneration([]);
+      }
+    }
   }, [inventoryTransaction]);
 
   async function sumTotalProduction() {
@@ -610,24 +604,33 @@ const ItemInventory = ({
     }
   }
 
-  console.log(issueTransactionData)
+  //console.log(issueTransactionData)
 
-  const showbase = async ()=>{
-    console.log("Preview PDF")
+  const showbase = async () => {
+    console.log("Preview PDF");
 
-    if(inventoryTransaction.fileSF04 == null){
-    //setSign.current = false
-    //setIsGenarate(true)
-    await fetchSettlementData(device, portfolio, year, month, UgtGroup,false,inventoryTransaction.prodYear,inventoryTransaction.prodMonth);
-    setDataSF04(dataPDF)
-    const base = await handleGeneratePDF()
-    //const form = await handleGeneratePDFFileForm()
-    console.log(base)
-    //setIsGenarate(false)
-    openPDFInNewTab(base.binaryBase,"application/pdf","test.pdf")
-    
-    console.log(base)}
-    else if(inventoryTransaction.fileSF04){
+    if (inventoryTransaction.fileSF04 == null) {
+      //setSign.current = false
+      //setIsGenarate(true)
+      await fetchSettlementData(
+        device,
+        portfolio,
+        year,
+        month,
+        UgtGroup,
+        false,
+        inventoryTransaction.prodYear,
+        inventoryTransaction.prodMonth
+      );
+      setDataSF04(dataPDF);
+      const base = await handleGeneratePDF();
+      //const form = await handleGeneratePDFFileForm()
+      console.log(base);
+      //setIsGenarate(false)
+      openPDFInNewTab(base.binaryBase, "application/pdf", "test.pdf");
+
+      console.log(base);
+    } else if (inventoryTransaction.fileSF04) {
       showLoading();
       const res = await axios.post(
         `${EAC_ISSUE_REQUEST_DOWNLOAD_FILE}?fileUid=${inventoryTransaction.fileSF04.uid}`,
@@ -637,230 +640,263 @@ const ItemInventory = ({
 
       const blob = new Blob([res.data], { type: res.headers["content-type"] });
       blobToBase64(blob)
-      .then(base64String => {
-        console.log(base64String); // เป็นสตริง Base64
-        openPDFInNewTab(base64String,"application/pdf",inventoryTransaction.fileSF04.fileName+".pdf")
-        hideLoading()
-      })
-      .catch(error => {
-        console.error('Error converting blob to base64:', error);
-        hideLoading()
-      });
+        .then((base64String) => {
+          console.log(base64String); // เป็นสตริง Base64
+          openPDFInNewTab(
+            base64String,
+            "application/pdf",
+            inventoryTransaction.fileSF04.fileName + ".pdf"
+          );
+          hideLoading();
+        })
+        .catch((error) => {
+          console.error("Error converting blob to base64:", error);
+          hideLoading();
+        });
       //
     }
-  }
+  };
 
   function blobToBase64(blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-  
+
       reader.onloadend = () => {
         // แปลงข้อมูลที่ได้จาก reader.result เป็น base64
-        resolve(reader.result.split(',')[1]); // เอาส่วนที่เป็น base64 ออก
+        resolve(reader.result.split(",")[1]); // เอาส่วนที่เป็น base64 ออก
       };
-  
+
       reader.onerror = (error) => {
         reject(error);
       };
-  
+
       reader.readAsDataURL(blob); // เริ่มการอ่าน Blob เป็น data URL
     });
   }
 
-  const openPDFInNewTab = (base64String,type,name) => {
+  const openPDFInNewTab = (base64String, type, name) => {
     const extension = name.split(".").pop();
-      const pdfWindow = window.open("");
-      console.log("PDF",pdfWindow)
-      console.log(type)
-      if(extension === "pdf"){
-        if (pdfWindow) {
-          // Set the title of the new tab to the filename
-          pdfWindow.document.title = name;
-      
-          // Convert Base64 to raw binary data held in a string
-          const byteCharacters = atob(base64String);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-      
-          // Create a Blob from the byte array and set the MIME type
-          const blob = new Blob([byteArray], { type: type});
-          console.log("Blob",blob)
-      
-          // Create a URL for the Blob and set it as the iframe source
-          const blobURL = URL.createObjectURL(blob);
-          console.log("Blob url :" ,blobURL)
-          let names = name
-      
-          const iframe = pdfWindow.document.createElement("iframe");
-          
-          iframe.style.border = "none";
-          iframe.style.position = "fixed";
-          iframe.style.top = "0";
-          iframe.style.left = "0";
-          iframe.style.bottom = "0";
-          iframe.style.right = "0";
-          iframe.style.width = "100vw";
-          iframe.style.height = "100vh";
-          
-          // Use Blob URL as the iframe source
-          iframe.src = blobURL;
-      
-          // Remove any margin and scrollbars
-          pdfWindow.document.body.style.margin = "0";
-          pdfWindow.document.body.style.overflow = "hidden";
-      
-          // Append the iframe to the new window's body
-          pdfWindow.document.body.appendChild(iframe);
-  
-          // Optionally, automatically trigger file download with correct name
-        
-        } else {
-            alert('Unable to open new tab. Please allow popups for this website.');
+    const pdfWindow = window.open("");
+    console.log("PDF", pdfWindow);
+    console.log(type);
+    if (extension === "pdf") {
+      if (pdfWindow) {
+        // Set the title of the new tab to the filename
+        pdfWindow.document.title = name;
+
+        // Convert Base64 to raw binary data held in a string
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
         }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        // Create a Blob from the byte array and set the MIME type
+        const blob = new Blob([byteArray], { type: type });
+        console.log("Blob", blob);
+
+        // Create a URL for the Blob and set it as the iframe source
+        const blobURL = URL.createObjectURL(blob);
+        console.log("Blob url :", blobURL);
+        let names = name;
+
+        const iframe = pdfWindow.document.createElement("iframe");
+
+        iframe.style.border = "none";
+        iframe.style.position = "fixed";
+        iframe.style.top = "0";
+        iframe.style.left = "0";
+        iframe.style.bottom = "0";
+        iframe.style.right = "0";
+        iframe.style.width = "100vw";
+        iframe.style.height = "100vh";
+
+        // Use Blob URL as the iframe source
+        iframe.src = blobURL;
+
+        // Remove any margin and scrollbars
+        pdfWindow.document.body.style.margin = "0";
+        pdfWindow.document.body.style.overflow = "hidden";
+
+        // Append the iframe to the new window's body
+        pdfWindow.document.body.appendChild(iframe);
+
+        // Optionally, automatically trigger file download with correct name
+      } else {
+        alert("Unable to open new tab. Please allow popups for this website.");
       }
-      else if(extension === "jpeg" || extension === "jpg" || extension === "png" || extension === "svg"){
-        if (pdfWindow) {
-          pdfWindow.document.write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
+    } else if (
+      extension === "jpeg" ||
+      extension === "jpg" ||
+      extension === "png" ||
+      extension === "svg"
+    ) {
+      if (pdfWindow) {
+        pdfWindow.document
+          .write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
               <img src="data:image/jpeg;base64,${base64String}" style="max-width:100%; height:auto;"/>
           </body></html>`);
-          pdfWindow.document.title = "Image Preview";
-          pdfWindow.document.close();
+        pdfWindow.document.title = "Image Preview";
+        pdfWindow.document.close();
       }
-      }
+    }
   };
 
   const handleGeneratePDF = async () => {
     try {
-      
       const base64String = await PdfFormPreviewSF04.generatePdf();
-      
+
       //setPdfBase64(base64String);
       //console.log("Generated Base64 PDF:", base64String);
-      return base64String
+      return base64String;
     } catch (error) {
       console.error("Failed to generate PDF:", error);
     }
   };
 
-  const handleModalSignAndSubmit =()=>{
-    setShowModalSignAndSubmit(true)
-  }
+  const handleModalSignAndSubmit = () => {
+    setShowModalSignAndSubmit(true);
+  };
 
-  const handleCloseModalSignAndSubmit=()=>{
-    setShowModalSignAndSubmit(false)
-  }
+  const handleCloseModalSignAndSubmit = () => {
+    setShowModalSignAndSubmit(false);
+  };
 
-  const handleModalConfirm=()=>{
-    setShowModalConfirm(true)
-    console.log(issueTransactionData)
-    console.log(inventoryTransaction)
-  }
-  const handleCLodeModalConfirm=()=>{
-    setShowModalConfirm(false)
-  }
+  const handleModalConfirm = () => {
+    setShowModalConfirm(true);
+    console.log(issueTransactionData);
+    console.log(inventoryTransaction);
+  };
+  const handleCLodeModalConfirm = () => {
+    setShowModalConfirm(false);
+  };
 
-  const actionSignAndSubmit=()=>{
-    console.log("Action Sign And Submit",inventoryTransaction)
-    setShowModalConfirm(false)
-    setShowModalSignAndSubmit(false)
-    handleTakeActionSignAndSubmit()
+  const actionSignAndSubmit = () => {
+    console.log("Action Sign And Submit", inventoryTransaction);
+    setShowModalConfirm(false);
+    setShowModalSignAndSubmit(false);
+    handleTakeActionSignAndSubmit();
+  };
 
+  const issueRequestDetailCreate = async (data,dataGen) => {
+    console.log(data);
 
-  }
+    console.log(issueTransactionData);
 
-   const issueRequestDetailCreate= async (data)=>{
-      console.log(data)
-      
-      console.log(issueTransactionData)
+    let fileUidArray = [];
+    console.log(inventoryTransaction);
+    inventoryTransaction.fileUploaded.map((item) =>
+      fileUidArray.push(`/files/${item.uid}`)
+    );
+    if (data.uid != "") {
+      fileUidArray.push(`/files/${data.uid}`);
+    }
 
-      let fileUidArray = []
-      console.log(inventoryTransaction)
-      inventoryTransaction.fileUploaded.map(
-        (item) => fileUidArray.push(`/files/${item.uid}`)
-      );
-      if(data.uid != ""){
-        fileUidArray.push(`/files/${data.uid}`)
+    dataGen.map((item)=>{
+      if(item.uid !== ""){
+        fileUidArray.push(`/files/${item.uid}`)
       }
-      console.log(fileUidArray)
-      const paramsDraft = {
-        issueRequestId: issueRequestId,
-        deviceCode: issueTransactionData.deviceCode,
-        issueRequestDetailId: issueRequestDetailId,
-        issueUid: `/issues/${inventoryTransaction?.issueRequestUid}`,
-        startDate: dayjs(inventoryTransaction.startDate).format(
-          "YYYY-MM-DDTHH:mm:ss[+00:00]"
-        ),
-        endDate: dayjs(inventoryTransaction.endDate).format(
-          "YYYY-MM-DDTHH:mm:ss[+00:00]"
-        ),
-        productionVolume: numeral(totalProduction).format("0.000000"),
-        fuel: `/fuels/${issueTransactionData.fuelCode}`,
-        recipientAccount: `/accounts/${inventoryTransaction.tradeAccountCode}`,
-        status:
-          issueRequestStatus?.toLowerCase() == "rejected" ? `Submitted` : `Draft`,
-        notes: note,
-        issuerNotes: note,
-        files: fileUidArray,
-      };
+    }
+    )
+    console.log(fileUidArray);
+    const paramsDraft = {
+      issueRequestId: issueRequestId,
+      deviceCode: issueTransactionData.deviceCode,
+      issueRequestDetailId: issueRequestDetailId,
+      issueUid: `/issues/${inventoryTransaction?.issueRequestUid}`,
+      startDate: dayjs(inventoryTransaction.startDate).format(
+        "YYYY-MM-DDTHH:mm:ss[+00:00]"
+      ),
+      endDate: dayjs(inventoryTransaction.endDate).format(
+        "YYYY-MM-DDTHH:mm:ss[+00:00]"
+      ),
+      productionVolume: numeral(totalProduction).format("0.000000"),
+      fuel: `/fuels/${issueTransactionData.fuelCode}`,
+      recipientAccount: `/accounts/${inventoryTransaction.tradeAccountCode}`,
+      status:
+        issueRequestStatus?.toLowerCase() == "rejected" ? `Submitted` : `Draft`,
+      notes: note,
+      issuerNotes: note,
+      files: fileUidArray,
+      createBy: userData.firstName + " " + userData.lastName,
+    };
+    getIssueTransaction();
+    console.log("paramsDraft", paramsDraft);
+    // showSwal();
+    //showLoading();
+    const responseDraft = await createIssueDetail(paramsDraft);
+
+    if (responseDraft?.status === 200) {
+      // เรียก createIssueDetail อีกครั้งแต่ส่ง status: `Submitted`
+
+      //setShowModalComplete(true);
+      modalSignAndSubmitSuccess.open();
+      // To do.
+      // 1.call api fetch data again which status will be changed to Completed
       getIssueTransaction();
-      console.log("paramsDraft", paramsDraft);
-      // showSwal();
-      //showLoading();
-      const responseDraft = await createIssueDetail(paramsDraft);
-  
-      if (responseDraft?.status === 200) {
-        // เรียก createIssueDetail อีกครั้งแต่ส่ง status: `Submitted`
-  
-        
-        //setShowModalComplete(true);
-        modalSignAndSubmitSuccess.open();
-          // To do.
-          // 1.call api fetch data again which status will be changed to Completed
-          getIssueTransaction();
-          hideLoading();
-  
-        
-      } else {
-        try {
-          const res = await axios.delete(
-            `${EAC_ISSUE_REQUEST_DELETE_FILE}?fileUid=${file.uid}`
-          );
-          console.log("res", res);
-          getIssueTransaction();
-          console.log("responseDraft", responseDraft);
-          setShowModalFail(true);
-          hideLoading();
-        } catch (err) {
-          console.log("Error: ", err);
-        } 
+      hideLoading();
+    } else {
+      try {
+        const res = await axios.delete(
+          `${EAC_ISSUE_REQUEST_DELETE_FILE}?fileUid=${data.uid}`
+        );
+        console.log("res", res);
+        getIssueTransaction();
+        console.log("responseDraft", responseDraft);
+        setShowModalFail(true);
+        hideLoading();
+      } catch (err) {
+        setShowModalFail(true);
+        hideLoading();
+        console.log("Error: ", err);
       }
     }
+  };
 
-    const previewSF04AfterSign=()=>{
-      openPDFInNewTab(fileSF04Preview.binaryBase,fileSF04Preview.file.type,fileSF04Preview.file.name)
-      
-    }
+  const previewSF04AfterSign = () => {
+    openPDFInNewTab(
+      fileSF04Preview.binaryBase,
+      fileSF04Preview.file.type,
+      fileSF04Preview.file.name
+    );
+  };
 
-  const fetchSettlementData = (device, portfolio, year, month, UgtGroup,isSignSubmit,prodYear,prodMonth) => {
+  const fetchSettlementData = (
+    device,
+    portfolio,
+    year,
+    month,
+    UgtGroup,
+    isSignSubmit,
+    prodYear,
+    prodMonth
+  ) => {
     return new Promise((resolve, reject) => {
-      dispatch(getDataSettlement(device, portfolio, year, month, UgtGroup, false,isSignSubmit,prodYear,prodMonth))
+      dispatch(
+        getDataSettlement(
+          device,
+          portfolio,
+          year,
+          month,
+          UgtGroup,
+          false,
+          isSignSubmit,
+          prodYear,
+          prodMonth
+        )
+      )
         .then(resolve)
         .catch(reject);
     });
   };
   //console.log(setSign)
 
-
   const handleTakeActionSignAndSubmit = async () => {
     try {
-      
-  
       // ดึงข้อมูลที่จำเป็น
-      await fetchSettlementData(device, portfolio, year, month, UgtGroup,true,);
-      setDataSF04(dataPDF)
+      await fetchSettlementData(device, portfolio, year, month, UgtGroup, true,inventoryTransaction.prodYear,inventoryTransaction.prodMonth);
+      setDataSF04(dataPDF);
       //setSign.current = true
       // สร้าง PDF ครั้งเดียว
       const pdfResult = await handleGeneratePDFSign();
@@ -869,14 +905,20 @@ const ItemInventory = ({
         return;
       }
 
-      setFileSF04Preview(pdfResult)
+      setFileSF04Preview(pdfResult);
       showLoading();
-      console.log(pdfResult)
+      console.log(pdfResult);
       // อัปโหลด PDF
       const uploadResult = await uploadPdf(pdfResult);
       if (uploadResult.success) {
-        
-        issueRequestDetailCreate(uploadResult.data);
+        const uploadGenResult = await uploadFileGenToEvident(fileGeneration)
+        if(uploadGenResult.success){
+          issueRequestDetailCreate(uploadResult.data,uploadGenResult.data);
+        }
+        else{
+          console.error("Upload failed", uploadGenResult.error);
+          setShowModalFail(true);
+        }
       } else {
         console.error("Upload failed", uploadResult.error);
         setShowModalFail(true);
@@ -889,51 +931,239 @@ const ItemInventory = ({
     }
   };
 
-  // ฟังก์ชันสร้าง PDF
-const handleGeneratePDFSign = async () => {
-  try {
-    // เรียกใช้ฟังก์ชัน generatePdf ของ TemplatePdfSF04
-    return await PdfFormPreviewSF04.generatePdf();
-  } catch (error) {
-    console.error("Error generating PDF:", error);
-    return null;
+  const uploadFileGenToEvident = async (fileUpload)=>{
+
+    const param = {
+      issueRequestDetailId: issueRequestDetailId,
+      generationFileList: fileUpload
+    }
+
+    try {
+      const response = await axios.post(
+        `${EAC_ISSUE_REQUEST_UPLOAD_GEN_EVIDENT}`,
+        param
+      );
+      if (response.status === 200 || response.status === 201) {
+        console.log(response.data)
+        return { success: true, data: response.data };
+      }
+      return { success: false, error: response };
+    } catch (error) {
+      console.error("Error uploading PDF:", error);
+      return { success: false, error };
+    }
   }
-};
+
+  // ฟังก์ชันสร้าง PDF
+  const handleGeneratePDFSign = async () => {
+    try {
+      // เรียกใช้ฟังก์ชัน generatePdf ของ TemplatePdfSF04
+      return await PdfFormPreviewSF04.generatePdf();
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      return null;
+    }
+  };
 
   // ฟังก์ชันอัปโหลด PDF
-const uploadPdf = async (pdfResult) => {
-  const params = new FormData();
-  params.append("issueRequestDetailId", issueRequestDetailId);
-  params.append("file", pdfResult.file);
-  params.append("name", pdfResult.file.name.replace(/\.[^/.]+$/, ""));
-  params.append("notes", "SF04");
+  const uploadPdf = async (pdfResult) => {
+    const params = new FormData();
+    params.append("issueRequestDetailId", issueRequestDetailId);
+    params.append("file", pdfResult.file);
+    params.append("name", pdfResult.file.name.replace(/\.[^/.]+$/, ""));
+    params.append("notes", "SF04");
 
-  try {
-    const response = await axios.post(
-      `${EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE}`,
-      params,
-      { headers: { "content-type": "multipart/form-data" } }
-    );
-    if (response.status === 200 || response.status === 201) {
-      return { success: true, data: response.data };
+    try {
+      const response = await axios.post(
+        `${EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE}`,
+        params,
+        { headers: { "content-type": "multipart/form-data" } }
+      );
+      if (response.status === 200 || response.status === 201) {
+        return { success: true, data: response.data };
+      }
+      return { success: false, error: response };
+    } catch (error) {
+      console.error("Error uploading PDF:", error);
+      return { success: false, error };
     }
-    return { success: false, error: response };
-  } catch (error) {
-    console.error("Error uploading PDF:", error);
-    return { success: false, error };
-  }
-};
+  };
 
+  const handleOpenModalVerify = () => {
+    setShowModalConfirmVerify(true);
+  };
+
+  const handleCloseModalVerify = () => {
+    setShowModalConfirmVerify(false);
+  };
+
+  const handleActionVerify = () => {
+    console.log("Verify");
+
+    issueRequestDetailVerify();
+  };
+
+  const issueRequestDetailVerify = async () => {
+    handleCloseModalVerify();
+    showLoading();
+    const param = {
+      issueRequestId: issueRequestId,
+      issueRequestDetailId: issueRequestDetailId,
+      createBy: userData.firstName + " " + userData.lastName,
+    };
+
+    const responseDraft = await verifyIssueDetail(param);
+
+    if (responseDraft?.status === 200) {
+      // เรียก createIssueDetail อีกครั้งแต่ส่ง status: `Submitted`
+      getIssueTransaction();
+      modalVerifySuccess.open();
+      
+      hideLoading();
+    } else {
+      getIssueTransaction();
+      console.log("responseDraft", responseDraft);
+      setShowModalFail(true);
+      hideLoading();
+    }
+  };
+
+  async function verifyIssueDetail(params) {
+    try {
+      const res = await axios.post(`${EAC_ISSUE_REQUEST_VERIFY}`, params);
+      return res;
+    } catch (error) {
+      return error;
+    }
+  }
+
+  const downloadfileGen = (file) => {
+    const base64Content = file.binary; //.split(",")[1];
+    const binaryString = atob(base64Content);
+    const binaryLength = binaryString.length;
+    const bytes = new Uint8Array(binaryLength);
+
+    for (let i = 0; i < binaryLength; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const blob = new Blob([bytes], { type: file.type });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = file.name;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  };
+
+  const previewfileGen = (file) => {
+    try {
+      showLoading();
+
+      const name = getTypeFilename(file.type, file.name);
+
+      previewFileUpload(file.binary, file.type, file.name);
+      hideLoading();
+    } catch (err) {
+      console.log("Error: ", err);
+    } finally {
+      hideLoading();
+    }
+  };
+
+  const handleOpenModalReturn = () => {
+    setShowModalConfirmReturn(true);
+  };
+
+  const handleCloseModalReturn = () => {
+    setShowModalConfirmReturn(false);
+  };
+
+  const ActionRequestReturn = () => {
+    issueRequestDetailReturn();
+  };
+
+  const issueRequestDetailReturn = async () => {
+    handleCloseModalReturn();
+    showLoading();
+    const param = {
+      issueRequestId: issueRequestId,
+      issueRequestDetailId: issueRequestDetailId,
+      createBy: userData.firstName + " " + userData.lastName,
+      remark: remarkReturn.current,
+    };
+
+    const responseReturn = await returnIssueDetail(param);
+
+    if (responseReturn?.status === 200) {
+      // เรียก createIssueDetail อีกครั้งแต่ส่ง status: `Submitted`
+
+      toast.success("Return Device Complete!", {
+        position: "top-right",
+        autoClose: 5000,
+        style: {
+          border: "1px solid #a3d744", // Green border similar to the one in your image
+          color: "#6aa84f", // Green text color
+          fontSize: "16px", // Adjust font size as needed
+          backgroundColor: "##FFFFFF", // Light green background
+        }, // 3 seconds
+      });
+      getIssueTransaction();
+      hideLoading();
+    } else {
+      getIssueTransaction();
+      console.log("responseReturn", responseReturn);
+      setShowModalFail(true);
+      hideLoading();
+    }
+  };
+
+  async function returnIssueDetail(params) {
+    try {
+      const res = await axios.post(`${EAC_ISSUE_REQUEST_RETURN}`, params);
+      return res;
+    } catch (error) {
+      return error;
+    }
+  }
+  const ExportExcel = () => {};
+
+  const splitDateTimeLog = (DateTime) => {
+    const [date, time] = DateTime.split("T");
+    const [year, month, day] = date.split("-");
+    const [fulltime, ms] = time.split(".");
+
+    return day + "/" + month + "/" + year + " " + fulltime;
+  };
+
+  const getLogType=(action)=>{
+    console.log(action)
+    if(action == "Verified"){
+      return "Verified By "
+    }
+    else if(action == "Submitted"){
+      return "Submitted By "
+    }
+    else if(action == "Returned"){
+      return "Returned By "
+    }
+    else if(action == "Rejected"){
+      return "Rejected By "
+    }
+  }
+console.log(issueRequestStatus)
   return (
     <div className="mb-4">
-       <div className="text-right mt-4 mb-3">
-            <Button
-              className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
-              onClick={showbase}
-            >
-              <IoDocumentTextOutline className="mr-1"/> Preview SF-04
-            </Button>
-            
+      <div className="text-right mt-4 mb-3">
+        {/*<Button className={"border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00] mr-2"}
+                  onClick={ExportExcel}>
+                <FaFileExcel className="mr-1"/> Export Excel
+                </Button>*/}
+        <Button
+          className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
+          onClick={showbase}
+        >
+          <IoDocumentTextOutline className="mr-1" /> Preview SF-04
+        </Button>
       </div>
       <Table stickyHeader verticalSpacing="sm">
         <Table.Thead className="bg-[#F4F6F9]">
@@ -1023,21 +1253,23 @@ const uploadPdf = async (pdfResult) => {
               Upload Files
             </Button>
           )}
-          {fileUploaded.length > 0 && (
+          {fileUploaded.length > 0 || fileGeneration.length > 0 ? (
             <Button
               className="text-[#4D6A00] underline px-8"
               onClick={() => setOpenModalUpload(!openModalUpload)}
             >
-              {fileUploaded.length == 1
-                ? `${fileUploaded.length} File Uploaded`
-                : `${fileUploaded.length} Files Uploaded`}
+              {fileUploaded.length + fileGeneration.length == 1
+                ? `${fileUploaded.length + fileGeneration.length} File Uploaded`
+                : `${
+                    fileUploaded.length + fileGeneration.length
+                  } Files Uploaded`}
             </Button>
-          )}
+          ) : undefined}
         </div>
         <div className="gap-2 col-start-3 h-auto">
           <div>
             <div className="text-sm font-normal mb-2 text-[#91918A]">Note</div>
-            {canSendIssue ? (
+            {canSendIssue || canVerify ? (
               <div className="text-sm">
                 <Textarea
                   size="md"
@@ -1065,14 +1297,56 @@ const uploadPdf = async (pdfResult) => {
         </div>
       </div>
 
-          <div className="text-right mt-5">
-          {canSendIssue && (<Button
-                className="bg-[#87BE33] text-white px-8"
-                onClick={() => handleModalConfirm()}
-              >
-                Sign & Submit
-              </Button>)}
+      {canSendIssue &&
+      issueRequestStatus.toLowerCase().replace(" ", "") == "verified" ? (
+        <div className="flex justify-between mt-4">
+          <div>
+            <Button
+              className="bg-[#EF4835] text-white px-8 w-[150px]"
+              onClick={() => handleOpenModalReturn()}
+            >
+              Return
+            </Button>
           </div>
+          <div>
+            <Button
+              className="bg-[#87BE33] text-white px-8"
+              onClick={() => handleModalConfirm()}
+            >
+              Sign & Submit
+            </Button>
+          </div>
+        </div>
+      ) : undefined}
+      {/*Verify Button */}
+      {(issueRequestStatus.toLowerCase().replace(" ", "") == "pending" ||
+        issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
+        issueRequestStatus.toLowerCase().replace(" ", "") == "returned") &&
+      canVerify ? (
+        <div className="mt-4 text-right">
+          <Button
+            className="bg-[#87BE33] text-white px-8"
+            onClick={() => handleOpenModalVerify()}
+          >
+            Verify
+          </Button>
+        </div>
+      ) : undefined}
+
+      {inventoryTransaction.issueRequestHistory.length !== 0 && (
+        <div className="border-3 border-dotted px-[20px] py-[10px] mt-4">
+          {inventoryTransaction.issueRequestHistory.map((item, index) => {
+            return (
+              <div className="text-right w-full text-sm" key={index}>
+                <label>{getLogType(item.action)} </label>
+                <label className="font-bold ml-1">
+                  {item.createBy + " " + splitDateTimeLog(item.createDateTime)}
+                </label>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <Modal
         opened={openModalConfirm}
@@ -1161,6 +1435,7 @@ const uploadPdf = async (pdfResult) => {
         </div>
       </Modal>
 
+      {/*Modal Upload File */}
       <Modal
         opened={openModalUpload}
         onClose={() => setOpenModalUpload(!openModalUpload)}
@@ -1185,6 +1460,152 @@ const uploadPdf = async (pdfResult) => {
             </p>
           </Dragger>
 
+          {/* Section สำหรับไฟล์ที่อัปโหลดแล้ว */}
+          <div className="mt-4">
+            <p className="mt-2 text-[#224422] text-sm">
+              Add new upload (if any) :
+            </p>
+
+            {/* รายการไฟล์ที่อัปโหลดแล้ว */}
+            <div>
+              {fileUploaded.map((file) => (
+                <div
+                  key={file.uid}
+                  className="flex justify-between items-center p-2 border border-gray-300 rounded mb-2"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className="flex items-center">
+                    {/* Icon ของไฟล์ (สามารถเปลี่ยนเป็น URL ไอคอนได้) */}
+                    <img
+                      src={getIcon(file.type)} // เปลี่ยนเป็นไอคอนไฟล์ PDF หรือประเภทอื่น ๆ
+                      alt="File Icon"
+                      style={{ marginRight: "10px" }}
+                      width={35}
+                      height={35}
+                    />
+                    <span className="text-sm font-normal">{file.name}</span>
+                  </div>
+                  <div>
+                    {/* ปุ่ม Download */}
+                    <button
+                      style={{
+                        marginRight: "10px",
+                        background: "transparent",
+                        border: "none",
+                        color: "#BFD39F",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => props.onDownload(file)}
+                    >
+                      <RiDownloadLine /> {/* ไอคอนดาวน์โหลด */}
+                    </button>
+                    {checkShowPreview(file.type) && file.status == "done" ? (
+                      <button
+                        style={{
+                          marginRight: "10px",
+                          background: "transparent",
+                          border: "none",
+                          color: "#BFD39F",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => props.onPreview(file)}
+                      >
+                        <RiEyeLine />
+                      </button>
+                    ) : undefined}
+                    {/* ปุ่ม Remove */}
+                    {canUpload && (
+                      <button
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          color: "#BFD39F",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => props.onRemove(file)}
+                      >
+                        <FaRegTrashAlt /> {/* ไอคอนลบ */}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <p
+              style={{ marginBottom: "6px", color: "#224422" }}
+              className="text-sm underline decoration-[2px]"
+            >
+              Generation Data Input
+            </p>
+            <p
+              style={{ marginBottom: "10px", color: "#444" }}
+              className="text-sm"
+            >
+              Previously uploaded files:
+            </p>
+            <div>
+              {fileGeneration.map((file) => (
+                <div
+                  key={file.uid}
+                  className="flex justify-between items-center p-2 border border-gray-300 rounded mb-2"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div className="flex items-center">
+                    {/* Icon ของไฟล์ (สามารถเปลี่ยนเป็น URL ไอคอนได้) */}
+                    <img
+                      src={getIcon(file.type)} // เปลี่ยนเป็นไอคอนไฟล์ PDF หรือประเภทอื่น ๆ
+                      alt="File Icon"
+                      style={{ marginRight: "10px" }}
+                      width={35}
+                      height={35}
+                    />
+                    <span className="text-sm font-normal">{file.name}</span>
+                  </div>
+                  <div>
+                    {/* ปุ่ม Download */}
+                    <button
+                      style={{
+                        marginRight: "10px",
+                        background: "transparent",
+                        border: "none",
+                        color: "#BFD39F",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => downloadfileGen(file)}
+                    >
+                      <RiDownloadLine /> {/* ไอคอนดาวน์โหลด */}
+                    </button>
+                    {checkShowPreview(file.type) ? (
+                      <button
+                        style={{
+                          marginRight: "10px",
+                          background: "transparent",
+                          border: "none",
+                          color: "#BFD39F",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => previewfileGen(file)}
+                      >
+                        <RiEyeLine />
+                      </button>
+                    ) : undefined}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="flex justify-center">
             <Button
               className="text-white w-64 text-center bg-PRIMARY_BUTTON mt-12 px-10"
@@ -1196,8 +1617,13 @@ const uploadPdf = async (pdfResult) => {
         </div>
       </Modal>
 
-      <PdfFormPreviewSF04 data={dataPDF} isSign={isSign} Sign={userData.firstName+" "+userData.lastName}/>
+      <PdfFormPreviewSF04
+        data={dataPDF}
+        isSign={isSign}
+        Sign={userData.firstName + " " + userData.lastName}
+      />
 
+      {/*Modal Success Sign and Submit */}
       <Modal
         opened={showSignAndSubmitSuccess}
         onClose={modalSignAndSubmitSuccess.close}
@@ -1213,7 +1639,7 @@ const uploadPdf = async (pdfResult) => {
           />
 
           <div className="text-2xl font-bold text-center pt-2">
-          Successfully
+            Successfully
           </div>
           <div className="flex gap-4">
             <Button
@@ -1231,36 +1657,127 @@ const uploadPdf = async (pdfResult) => {
           </div>
         </div>
       </Modal>
-      
+
+      {/*Confirm Sign and Submit 1 */}
       {showModalConfirm && (
         <ModalConfirmCheckBoxEAC
-        onCloseModal={handleCLodeModalConfirm}
-        onClickConfirmBtn={handleModalSignAndSubmit}
-        title={"Submit Issue Request"}
-        content={"Are you sure you wish to submit this issue request?"}
-        textCheckBox={"I confirm all the required information is completed and the necessary supporting information and files are attached."}
-        sizeModal={"lg"}
-        textButton={"Yes, submit request"}
-        isHaveFile={inventoryTransaction?.fileUploaded.length !== 0?true:false}
+          onCloseModal={handleCLodeModalConfirm}
+          onClickConfirmBtn={handleModalSignAndSubmit}
+          title={"Submit Issue Request"}
+          content={"Are you sure you wish to submit this issue request?"}
+          textCheckBox={
+            "I confirm all the required information is completed and the necessary supporting information and files are attached."
+          }
+          sizeModal={"lg"}
+          textButton={"Yes, submit request"}
+          isHaveFile={
+            inventoryTransaction?.fileUploaded.length !== 0 &&
+            fileGeneration.length !== 0
+              ? true
+              : false
+          }
         />
       )}
 
+      {/*Confirm Sign and Submit 2 */}
       {showModalSignAndSubmit && (
         <ModalConfirmCheckBoxEAC
-        onCloseModal={handleCloseModalSignAndSubmit}
-        onClickConfirmBtn={actionSignAndSubmit}
-        title={"Sign & Submit?"}
-        content={"In signing, the Registrant warrants that the energy for which I-REC certificates are being applied has not and will not be submitted for any other energy attribute tracking methodology."}
-        content2={"The Registrant also warrants that, to the best of their knowledge, the consumption attributes contained within any I-REC certificate Issued in association with this request (including all rights to the specific electricity and/or emissions for the reporting of any indirect carbon account purposes) are not delivered to any other body either directly or in-directly without the component I-REC certificate."}
-        content3={"This includes but is not limited to electricity supply companies or the national governments."}
-        textCheckBox={"I have read and agree to the terms as described above."}
-        sizeModal={"lg"}
-        textButton={"Yes, submit request"}
-        isShowInfo={true}
-        textAlign={"left"}
-        isHaveFile={true}
+          onCloseModal={handleCloseModalSignAndSubmit}
+          onClickConfirmBtn={actionSignAndSubmit}
+          title={"Sign & Submit?"}
+          content={
+            "In signing, the Registrant warrants that the energy for which I-REC certificates are being applied has not and will not be submitted for any other energy attribute tracking methodology."
+          }
+          content2={
+            "The Registrant also warrants that, to the best of their knowledge, the consumption attributes contained within any I-REC certificate Issued in association with this request (including all rights to the specific electricity and/or emissions for the reporting of any indirect carbon account purposes) are not delivered to any other body either directly or in-directly without the component I-REC certificate."
+          }
+          content3={
+            "This includes but is not limited to electricity supply companies or the national governments."
+          }
+          textCheckBox={
+            "I have read and agree to the terms as described above."
+          }
+          sizeModal={"lg"}
+          textButton={"Yes, submit request"}
+          isShowInfo={true}
+          textAlign={"left"}
+          isHaveFile={true}
         />
       )}
+
+      {/*Confirm Verify */}
+      {showModalConfirmVerify && (
+        <ModalConfirmCheckBoxEAC
+          onCloseModal={handleCloseModalVerify}
+          onClickConfirmBtn={handleActionVerify}
+          title={"Verify this Issue Request?"}
+          content={"Would you like to verify this Issue Request?"}
+          content2={
+            "Verified Issue Request will be sent to sign and unable to recall."
+          }
+          showCheckBox={false}
+          sizeModal={"lg"}
+          textButton={"Verify & Send to Sign"}
+          isHaveFile={
+            inventoryTransaction?.fileUploaded.length == 0 &&
+            fileGeneration.length == 0
+              ? false
+              : true
+          }
+        />
+      )}
+
+      {/*Confirm Return */}
+      {showModalConfirmReturn && (
+        <ModalConfirmRemarkEAC
+          onClickConfirmBtn={ActionRequestReturn}
+          onCloseModal={handleCloseModalReturn}
+          title={"Return this Issue Request?"}
+          content={
+            "Issue Request requires to be edited. Would you like to return to Device Owner?"
+          }
+          openCheckBox={false}
+          setRemark={remarkReturn}
+          sizeModal={"md"}
+          buttonTypeColor="danger"
+          textButton="Return"
+        />
+      )}
+
+      {/*Modal Success Verify */}
+      <Modal
+        opened={showVerifySuccess}
+        onClose={modalVerifySuccess.close}
+        withCloseButton={false}
+        centered
+        closeOnClickOutside={false}
+      >
+        <div className="flex flex-col items-center justify-center px-10 pt-4 pb-3">
+          <img
+            className="w-32 object-cover rounded-full flex items-center justify-center"
+            src={AlmostDone}
+            alt="Current profile photo"
+          />
+
+          <div className="text-2xl font-bold text-center pt-2">
+            Verification Complete!
+          </div>
+          <div className="flex gap-4">
+            <Button
+              className="text-white bg-[#4197FD] mt-12 px-10 mr-2"
+              onClick={() => showbase()}
+            >
+              Preview SF-04
+            </Button>
+            <Button
+              className="text-white bg-PRIMARY_BUTTON mt-12 px-10"
+              onClick={() => modalVerifySuccess.close()}
+            >
+              Confirm
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       {showModalFail && <ModalFail onClickOk={handleCloseFailModal} />}
     </div>

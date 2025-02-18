@@ -36,8 +36,8 @@ export const _getTransferRequestList = (data) => {
   };
 };
 
-export const getTransferRequestList = (ugtGroupId, year, month) => {
-  const URL = `${TRANSFER_REQ_LIST_URL}?ugtGroupId=${ugtGroupId}&year=${year}&month=${month}`;
+export const getTransferRequestList = (ugtGroupId, year, month,utilityId) => {
+  const URL = `${TRANSFER_REQ_LIST_URL}?ugtGroupId=${ugtGroupId}&year=${year}&month=${month}&utilityId=${utilityId}`;
   console.log("URL", URL);
 
   return async (dispatch) => {

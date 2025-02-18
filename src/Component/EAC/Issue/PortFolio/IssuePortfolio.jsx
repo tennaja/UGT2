@@ -131,7 +131,7 @@ export default function IssuePortfolio({ portfolioData }) {
   const [trackingMonth, setTrackingMonth] = useState();
 
   const [yearMonthList, setYearMonthList] = useState([]);
-
+//console.log(trackingMonth)
   const dispatch = useDispatch();
 
   const [device, setDevice] = useState([]);
@@ -253,7 +253,10 @@ export default function IssuePortfolio({ portfolioData }) {
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined && trackingMonth !== undefined)
       getDevice();
+    if(trackingMonth){
       getLastedUpdateSyncStatus()
+    }
+      
   }, [currentUGTGroup, trackingMonth, trackingYear]);
 
   useEffect(() => {
@@ -479,6 +482,7 @@ export default function IssuePortfolio({ portfolioData }) {
 
   async function getLastedUpdateSyncStatus(){
     console.log("Get Last update")
+    console.log(trackingMonth)
     try{
       const URL = `${EAC_ISSUE_REQUEST_LAST_UPDATE_SYNC_STATUS}?portfolioId=${portfolioData?.id}&year=${trackingYear}&month=${trackingMonth}`
       console.log(URL)

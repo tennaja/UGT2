@@ -123,7 +123,9 @@ const StatusLabelLink = ({ status, type = 'sm', searchQuery,id,portName,count,de
   }
 
   return (
-    <span
+    <>
+    {status?.toLowerCase() == "pending" ? (
+      <span
       className={`px-3 ${
         type == 'sm' ? "py-2" : "py-0.5"
       } ${status?.toLowerCase() == "pending"?"underline hover:cursor-pointer":""} rounded-large capitalize text-nowrap font-semibold text-xs`}
@@ -137,6 +139,24 @@ const StatusLabelLink = ({ status, type = 'sm', searchQuery,id,portName,count,de
         textToHighlight={status ? status?.toLowerCase() == "pending"? "("+count+") "+status : status : ""}
       />
     </span>
+    ):
+    (
+      <span
+      className={`px-3 ${
+        type == 'sm' ? "py-2" : "py-0.5"
+      } ${status?.toLowerCase() == "pending"?"underline hover:cursor-pointer":""} rounded-large capitalize text-nowrap font-semibold text-xs`}
+      style={{ background: bg_color, color: text_color, textTransform: "none" }}
+    >
+      <Highlighter
+        highlightTag={Highlight}
+        searchWords={[searchQuery]}
+        autoEscape={true}
+        textToHighlight={status ? status?.toLowerCase() == "pending"? "("+count+") "+status : status : ""}
+      />
+    </span>
+    )}
+    </>
+    
   );
 };
 

@@ -13,7 +13,7 @@ import { CloseButton, Input, Card } from "@mantine/core";
 import { Form, Select } from "antd";
 import dayjs from "dayjs";
 import * as WEB_URL from "../../../Constants/WebURL";
-import { MONTH_LIST } from "../../../Constants/Constants";
+import { MONTH_LIST,USER_GROUP_ID, } from "../../../Constants/Constants";
 const monthArray = MONTH_LIST;
 
 export default function TransferTable() {
@@ -28,6 +28,7 @@ export default function TransferTable() {
   const portData = useSelector((state) => state.transfer?.transferRequestList);
   const yearListData = useSelector((state) => state.eac?.yearList);
   const monthListData = useSelector((state) => state.eac?.monthList);
+  const userData = useSelector((state) => state.login.userobj);
 
   const [search, setSearch] = useState("");
   const [trackingYear, setTrackingYear] = useState(selectedYear);
@@ -88,8 +89,16 @@ export default function TransferTable() {
   useEffect(() => {
     // get transfer data list
     if (currentUGTGroup?.id !== undefined && trackingYear && trackingMonth) {
+      let utilityGroupId = 0;
+                  if (userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG) {
+                    utilityGroupId = 1;
+                  } else if (userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG) {
+                    utilityGroupId = 2;
+                  } else if (userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG) {
+                    utilityGroupId = 3;
+                  }
       dispatch(
-        getTransferRequestList(currentUGTGroup?.id, trackingYear, trackingMonth)
+        getTransferRequestList(currentUGTGroup?.id, trackingYear, trackingMonth,utilityGroupId)
       );
     }
   }, [currentUGTGroup, trackingYear, trackingMonth]);

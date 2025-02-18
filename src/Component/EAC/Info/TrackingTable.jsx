@@ -17,6 +17,7 @@ import {
   MONTH_LIST,
   MONTH_LIST_WITH_KEY,
   STATUS_COLOR,
+  USER_GROUP_ID,
 } from "../../../Constants/Constants";
 import DataTable from "../../Control/Table/DataTableSimple";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,6 +49,7 @@ export default function TrackingTable() {
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const trackingYear = useSelector((state) => state.menu?.selectedYear);
   const trackingMonth = useSelector((state) => state.menu?.selectedMonth);
+  const userData = useSelector((state) => state.login.userobj);
 
   const dispatch = useDispatch();
 
@@ -58,7 +60,7 @@ export default function TrackingTable() {
   const [monthList, setMonthList] = useState([]);
   // const [trackingYear, setTrackingYear] = useState(2024);
   // const [trackingMonth, setTrackingMonth] = useState();
-  
+
   useEffect(() => {
     if (currentUGTGroup?.id !== undefined) {
       getPortData();
@@ -134,10 +136,19 @@ export default function TrackingTable() {
 
   async function getPortData() {
     try {
+      let utilityGroupId = 0;
+      if (userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG) {
+        utilityGroupId = 1;
+      } else if (userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG) {
+        utilityGroupId = 2;
+      } else if (userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG) {
+        utilityGroupId = 3;
+      }
       const params = {
         ugtGroupId: currentUGTGroup?.id,
         year: trackingYear,
         month: trackingMonth,
+        utilityId: utilityGroupId
       };
 
       const res = await axios.get(EAC_DASHBOARD_LIST_URL, {
@@ -156,7 +167,7 @@ export default function TrackingTable() {
             item.currentSettlement
           );
         }
-        console.log(res.data)
+        console.log(res.data);
         setPortData(res.data);
         setPortfolio(res.data);
       }
@@ -308,7 +319,9 @@ export default function TrackingTable() {
           highlightTag={Highlight}
           searchWords={[value]}
           autoEscape={true}
-          textToHighlight={numeral(row.actualGenerationMatched).format("0,0.000")}
+          textToHighlight={numeral(row.actualGenerationMatched).format(
+            "0,0.000"
+          )}
         />
       ),
     },
@@ -332,7 +345,15 @@ export default function TrackingTable() {
       label: "Issuance Status",
       align: "center",
       render: (row) => (
-        <StatusLabelLink status={row.issuanceStatus} searchQuery={value} yearSettlement={Number(dayjs(row.currentSettlement).format("YYYY"))} id={row.id} portName={row.portfolioName} count={row.issuanceCount} destination={"issue"}/>
+        <StatusLabelLink
+          status={row.issuanceStatus}
+          searchQuery={value}
+          yearSettlement={Number(dayjs(row.currentSettlement).format("YYYY"))}
+          id={row.id}
+          portName={row.portfolioName}
+          count={row.issuanceCount}
+          destination={"issue"}
+        />
       ),
     },
     {
@@ -343,7 +364,12 @@ export default function TrackingTable() {
         <StatusLabelLink
           status={row.transferStatus == "" ? "Unavailable" : row.transferStatus}
           searchQuery={value}
-          id={row.id} portName={row.portfolioName} count={row.transferCount} yearSettlement={Number(dayjs(row.currentSettlement).format("YYYY"))} destination={"tranfer"} currentPeriod={row.currentSettlement}
+          id={row.id}
+          portName={row.portfolioName}
+          count={row.transferCount}
+          yearSettlement={Number(dayjs(row.currentSettlement).format("YYYY"))}
+          destination={"tranfer"}
+          currentPeriod={row.currentSettlement}
         />
       ),
     },
@@ -356,7 +382,13 @@ export default function TrackingTable() {
           status={
             row.redemptionStatus == "" ? "Unavailable" : row.redemptionStatus
           }
-          searchQuery={value} yearSettlement={Number(dayjs(row.currentSettlement).format("YYYY"))} id={row.id} portName={row.portfolioName} count={row.redemptionCount} destination={"redemption"} currentPeriod={row.currentSettlement}
+          searchQuery={value}
+          yearSettlement={Number(dayjs(row.currentSettlement).format("YYYY"))}
+          id={row.id}
+          portName={row.portfolioName}
+          count={row.redemptionCount}
+          destination={"redemption"}
+          currentPeriod={row.currentSettlement}
         />
       ),
     },
@@ -386,7 +418,7 @@ export default function TrackingTable() {
   // ]);
 
   const [portfolio, setPortfolio] = useState(portData);
-  console.log(portfolio)
+  console.log(portfolio);
   return (
     <Card shadow="md" radius="lg" className="flex" padding="xl">
       <div className="flex justify-between">

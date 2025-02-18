@@ -17,6 +17,8 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { USER_GROUP_ID } from "../../../Constants/Constants";
 
 import { FaChevronCircleLeft } from "react-icons/fa";
+import CollapseEAC from "./CollapseEAC";
+//import { Collapse, Table, TableBody, TableCell, TableRow } from "@mui/material";
 
 export default function RedemptionCert() {
   const dispatch = useDispatch();
@@ -48,6 +50,7 @@ export default function RedemptionCert() {
   const [dropdownPortList, setDropdownPortList] = useState([]);
   const [dropdownUtilityList, setDropdownUtilityList] = useState([]);
   const [redemptionCertList, setRedemptionCertList] = useState([]);
+  const [dropdownSubscriber,setDropdownSubscriber] = useState([])
 console.log(certListData)
   useEffect(() => {
     // get year list
@@ -121,6 +124,13 @@ console.log(certListData)
     }
   }, [yearListData]);
 
+  useEffect(()=>{
+    if(redemptionCertList){
+      setDropdownSubscriber(redemptionCertList?.redemptionStatements)
+    }
+    
+  },[redemptionCertList])
+
   console.log(yearListData)
 
   /*useEffect(() => {
@@ -162,9 +172,9 @@ console.log(certListData)
     setTrackingYear(year);
   };
 
-  /*const handleChangeTrackingPort = (portId) => {
+  const handleChangeTrackingPort = (portId) => {
     setTrackingPort(portId);
-  };*/
+  };
 
   const handleChangeTrackingUtility = (utilityId) => {
     setTrackingUtility(utilityId);
@@ -186,6 +196,7 @@ console.log(certListData)
     }
   }
 
+  const mockBene = [{name:"Bene1"},{name:"Bene2"},{name:"Bene3"}]
   console.log(redemptionCertList)
   console.log(utilityListData)
   return (
@@ -257,9 +268,9 @@ console.log(certListData)
                         // style={{ width: 140 }}
                         showSearch
                       >
-                        {dropdownPortList?.map((item, index) => (
-                          <Select.Option key={index} value={item?.portfolioId}>
-                            {item?.portfolioName}
+                        {dropdownSubscriber?.map((item, index) => (
+                          <Select.Option key={index} value={item?.subscriberName}>
+                            {item?.subscriberName}
                           </Select.Option>
                         ))}
                       </Select>
@@ -413,37 +424,25 @@ console.log(certListData)
 
                 <ScrollArea w="100%" h="100%" className="mt-10">
                   <Table stickyHeader verticalSpacing="sm">
-                    <Table.Thead>
+                    <Table.Thead className="bg-[#EDEDED]">
                       <Table.Tr className="text-[#848789]">
-                        <Table.Th className="text-center">No.</Table.Th>
-                        <Table.Th>Subscriber Name</Table.Th>
-                        <Table.Th>Redemption Certificate</Table.Th>
+                        <Table.Th className="text-center" style={{ width: "10%" }}>No.</Table.Th>
+                        <Table.Th style={{ width: "50%" }}>Subscriber Name</Table.Th>
+                        <Table.Th style={{ width: "10%" }}></Table.Th>
                       </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                       {item?.redemptionStatements?.map((row, index) => (
-                        <Table.Tr key={index} className="font-semibold">
-                          <Table.Td
-                            className="text-center"
-                            style={{ width: "10%" }}
-                          >
-                            {index + 1}
-                          </Table.Td>
-                          <Table.Td style={{ width: "30%" }}>
-                            {row?.subscriberName}
-                          </Table.Td>
-                          <Table.Td>
-                            {checkRoleDownloadCer() && <a
-                              href="javascript:void(0)"
-                              className={`no-underline cursor-pointer text-PRIMARY_TEXT font-semibold`}
-                              onClick={() =>
-                                downloadStatement(row?.transactionUid)
-                              }
-                            >
-                              {"Download"}
-                            </a>}
-                          </Table.Td>
-                        </Table.Tr>
+                        
+                          <CollapseEAC
+                          data={row}
+                          no={index+1}
+                          row={row.redemptionStatementsBeneficiary}
+                          key={index}
+                          checkRole={checkRoleDownloadCer}
+                          download={downloadStatement}
+                          />
+                        
                       ))}
                     </Table.Tbody>
                   </Table>

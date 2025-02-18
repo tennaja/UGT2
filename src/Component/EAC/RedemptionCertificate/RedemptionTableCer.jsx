@@ -8,6 +8,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { CloseButton, Input, Card } from "@mantine/core";
 import { Form, Select } from "antd";
 import * as WEB_URL from "../../../Constants/WebURL";
+import { MONTH_LIST,USER_GROUP_ID, } from "../../../Constants/Constants";
 
 const yearObject = [{ name: "2024" }];
 
@@ -21,6 +22,7 @@ export default function RedemptionTableCer() {
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const portData = useSelector((state) => state.redeem?.redemptionRequestList);
   const yearListData = useSelector((state) => state.eac?.yearList);
+  const userData = useSelector((state) => state.login.userobj);
 
   const [search, setSearch] = useState("");
   const [trackingYear, setTrackingYear] = useState(selectedYear);
@@ -60,7 +62,15 @@ export default function RedemptionTableCer() {
   useEffect(() => {
     // get redeem data list
     if (currentUGTGroup?.id !== undefined && trackingYear) {
-      dispatch(getRedemptionRequestList(currentUGTGroup?.id, trackingYear));
+      let utilityGroupId = 0;
+                  if (userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG) {
+                    utilityGroupId = 1;
+                  } else if (userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG) {
+                    utilityGroupId = 2;
+                  } else if (userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG) {
+                    utilityGroupId = 3;
+                  }
+      dispatch(getRedemptionRequestList(currentUGTGroup?.id, trackingYear,utilityGroupId));
     }
   }, [currentUGTGroup, trackingYear]);
 

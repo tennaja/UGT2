@@ -16,7 +16,7 @@ import {
 } from "../../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../../Utils/FuncUtils";
 import { useDispatch, useSelector } from "react-redux";
-import { MONTH_LIST, MONTH_LIST_WITH_KEY } from "../../../Constants/Constants";
+import { MONTH_LIST, MONTH_LIST_WITH_KEY,USER_GROUP_ID, } from "../../../Constants/Constants";
 import { setSelectedMonth, setSelectedYear } from "../../../Redux/Menu/Action";
 import {
   convertStatus,
@@ -107,6 +107,7 @@ export default function IssueRequest() {
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
   const trackingYear = useSelector((state) => state.menu?.selectedYear);
   const trackingMonth = useSelector((state) => state.menu?.selectedMonth);
+  const userData = useSelector((state) => state.login.userobj);
    
 
   const dispatch = useDispatch();
@@ -293,10 +294,19 @@ export default function IssueRequest() {
   async function getPortData() {
     try {
       showLoading();
+      let utilityGroupId = 0;
+            if (userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG) {
+              utilityGroupId = 1;
+            } else if (userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG) {
+              utilityGroupId = 2;
+            } else if (userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG) {
+              utilityGroupId = 3;
+            }
       const params = {
         ugtGroupId: currentUGTGroup?.id,
         year: trackingYear,
         month: trackingMonth,
+        utilityId: utilityGroupId
       };
       const res = await axios.get(`${EAC_ISSUE_REQUEST_LIST_URL}`, {
         ...getHeaderConfig(),
