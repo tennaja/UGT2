@@ -843,8 +843,8 @@ export const getUnmatchedEnergyData = (ugtGroupId, portfolioId, year, month) => 
     // return _getInventorySupplyUsage(inventorySupplyUsageData)
 }
 
-export const getFileExcelSettlement =(portfolioId,year,month,ugtGroup,isInitial)=>{
-    const URLAPI = `${GET_EXCEL_FILE_SETTLEMENT}?portfolioId=${portfolioId}&year=${year}&month=${month}&UgtGroupId=${ugtGroup}&IsInitial=${isInitial}`
+export const getFileExcelSettlement =(portfolioId,year,month,ugtGroup,isInitial,utility)=>{
+    const URLAPI = `${GET_EXCEL_FILE_SETTLEMENT}?portfolioId=${portfolioId}&year=${year}&month=${month}&UgtGroupId=${ugtGroup}&Utility=${utility}&IsInitial=${isInitial}`
     console.log('URL', URL)
 
     return async (dispatch) => {
