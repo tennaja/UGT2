@@ -234,8 +234,6 @@ export default function SettlementApproval() {
     if (utilityContractListData.length > 0) {
       console.log("Come to Set");
       let tmpUtility = [];
-      if(userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
-                          userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG)
       tmpUtility.push({ id: 0, abbr: "All", name: "All" });
       utilityContractListData?.map((items) => tmpUtility.push(items));
       setListOptionUtility(tmpUtility);
