@@ -165,6 +165,14 @@ export default function SettlementApproval() {
   const RemarkRequestEdit = useRef("");
   const contentRef = useRef();
 
+  let isDeviceOwner = false;
+  if(userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG || userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG || userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ){
+    isDeviceOwner = true
+  }
+  else{
+    isDeviceOwner = false;
+  }
+
   const mockExcel = {
     totalContract: 100,
     totalLoad: 100,
@@ -1203,6 +1211,7 @@ export default function SettlementApproval() {
                             label: "Table",
                             onClick: exportTablePDf,
                             rightTxt: "(.pdf)",
+                            hide: isDeviceOwner
                           },
                           {
                             icon: (
@@ -1211,6 +1220,7 @@ export default function SettlementApproval() {
                             label: "Screen",
                             onClick: exportScreenPDF,
                             rightTxt: "(.pdf)",
+                            hide: false
                           },
                           {
                             icon: (
@@ -1219,6 +1229,7 @@ export default function SettlementApproval() {
                             label: "Table",
                             onClick: exportTableExcelInitial,
                             rightTxt: "(.xls)",
+                            hide: isDeviceOwner
                           },
                           {
                             icon: (
@@ -1227,6 +1238,7 @@ export default function SettlementApproval() {
                             label: "Screen",
                             onClick: exportScreenExcelInitial,
                             rightTxt: "(.xls)",
+                            hide: false
                           },
                         ]}
                       />
@@ -1296,6 +1308,7 @@ export default function SettlementApproval() {
                             label: "Table",
                             onClick: exportTablePDfFinal,
                             rightTxt: "(.pdf)",
+                            hide: isDeviceOwner
                           },
                           {
                             icon: (
@@ -1304,6 +1317,7 @@ export default function SettlementApproval() {
                             label: "Screen",
                             onClick: exportScreenPDF,
                             rightTxt: "(.pdf)",
+                            hide: false
                           },
                           {
                             icon: (
@@ -1312,6 +1326,7 @@ export default function SettlementApproval() {
                             label: "Table",
                             onClick: exportTableExcelFinal,
                             rightTxt: "(.xls)",
+                            hide: isDeviceOwner
                           },
                           {
                             icon: (
@@ -1320,6 +1335,7 @@ export default function SettlementApproval() {
                             label: "Screen",
                             onClick: exportScreenExcelFinal,
                             rightTxt: "(.xls)",
+                            hide: false
                           },
                         ]}
                       />

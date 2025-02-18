@@ -21,7 +21,7 @@ const SettlementMenu = ({ actionList,labelBtn }) => {
       </Menu.Target>
       <Menu.Dropdown>
         {actionList.map((action, index) => (
-          <>
+          action.hide == false?<>
             <Menu.Item
               key={index}
               leftSection={action.icon}
@@ -34,7 +34,7 @@ const SettlementMenu = ({ actionList,labelBtn }) => {
               {action.label}
             </Menu.Item>
             {action.endSection && <Menu.Divider />}
-          </>
+          </>:undefined
         ))}
       </Menu.Dropdown>
     </Menu>
