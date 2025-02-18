@@ -100,7 +100,9 @@ const SettlementInfoFinal = ({
   let isShowMainDetail = false
 
   if(status == "N" || status == "R" || status == "E"){
-    if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER || userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG){
+    if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || 
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER || 
+      userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG){
         if(isShowDetail){
           isShowGotiVerify = false
           isShowSettlementProgress = false
@@ -125,14 +127,18 @@ const SettlementInfoFinal = ({
     }
   }
   else if(status == "V"){
-    if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER || userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG){
+    if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || 
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER || 
+      userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG){
       isShowGotiVerify = false
       isShowSettlementProgress = false
       isShowAwaitConfirm = false
       isShowGotoConfirm = false
       isShowMainDetail = true
     }
-    else if(userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN || userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG || userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG){
+    else if(userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN || 
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG || 
+      userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG){
       if(isShowDetail){
         isShowGotiVerify = false
         isShowSettlementProgress = false

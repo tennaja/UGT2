@@ -298,19 +298,20 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.totalContractEGAT
-                      ? numeral(
-                          data?.dataDetailSheet1?.totalContractEGAT
-                        ).format("0,0.000")
-                      : numeral(0).format("0,0.000")}
-                  </td>
-                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.totalContractMEA
                       ? numeral(
                           data?.dataDetailSheet1?.totalContractMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.totalContractEGAT
+                      ? numeral(
+                          data?.dataDetailSheet1?.totalContractEGAT
+                        ).format("0,0.000")
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                  
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.totalContract
                       ? numeral(data?.dataDetailSheet1?.totalContract).format(
@@ -331,19 +332,20 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.totalLoadEGAT
-                      ? numeral(data?.dataDetailSheet1?.totalLoadEGAT).format(
-                          "0,0.000"
-                        )
-                      : numeral(0).format("0,0.000")}
-                  </td>
-                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.totalLoadMEA
                       ? numeral(data?.dataDetailSheet1?.totalLoadMEA).format(
                           "0,0.000"
                         )
                       : numeral(0).format("0,0.000")}
                   </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.totalLoadEGAT
+                      ? numeral(data?.dataDetailSheet1?.totalLoadEGAT).format(
+                          "0,0.000"
+                        )
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                  
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.totalLoad
                       ? numeral(data?.dataDetailSheet1?.totalLoad).format(
@@ -364,19 +366,20 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.actualGenMatchEGAT
-                      ? numeral(
-                          data?.dataDetailSheet1?.actualGenMatchEGAT
-                        ).format("0,0.000")
-                      : numeral(0).format("0,0.000")}
-                  </td>
-                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.actualGenMatchMEA
                       ? numeral(
                           data?.dataDetailSheet1?.actualGenMatchMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.actualGenMatchEGAT
+                      ? numeral(
+                          data?.dataDetailSheet1?.actualGenMatchEGAT
+                        ).format("0,0.000")
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                  
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.actualGenMatch
                       ? numeral(data?.dataDetailSheet1?.actualGenMatch).format(
@@ -397,19 +400,20 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
-                      ? numeral(
-                          data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
-                        ).format("0,0.000")
-                      : numeral(0).format("0,0.000")}
-                  </td>
-                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.ugT1InventoryMatchMEA
                       ? numeral(
                           data?.dataDetailSheet1?.ugT1InventoryMatchMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                      ? numeral(
+                          data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                        ).format("0,0.000")
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                  
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.ugT1InventoryMatch
                       ? numeral(
@@ -430,19 +434,20 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
-                      ? numeral(
-                          data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
-                        ).format("0,0.000")
-                      : numeral(0).format("0,0.000")}
-                  </td>
-                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.ugT1InventoryMatchMEA
                       ? numeral(
                           data?.dataDetailSheet1?.ugT1InventoryMatchMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                      ? numeral(
+                          data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                        ).format("0,0.000")
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                  
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.ugT1InventoryMatch
                       ? numeral(
@@ -463,19 +468,20 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.unmatchedEnergyEGAT
-                      ? numeral(
-                          data?.dataDetailSheet1?.unmatchedEnergyEGAT
-                        ).format("0,0.000")
-                      : numeral(0).format("0,0.000")}
-                  </td>
-                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.unmatchedEnergyMEA
                       ? numeral(
                           data?.dataDetailSheet1?.unmatchedEnergyMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
+                  <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
+                    {data?.dataDetailSheet1?.unmatchedEnergyEGAT
+                      ? numeral(
+                          data?.dataDetailSheet1?.unmatchedEnergyEGAT
+                        ).format("0,0.000")
+                      : numeral(0).format("0,0.000")}
+                  </td>
+                  
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
                     {data?.dataDetailSheet1?.unmatchedEnergy
                       ? numeral(data?.dataDetailSheet1?.unmatchedEnergy).format(
@@ -593,25 +599,6 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                           : numeral(0).format("0,0.000")}
                       </td>
                       <td className="border p-2 break-all text-[10px]">
-                        {item?.matchSupplyEGAT
-                          ? numeral(item?.matchSupplyEGAT).format("0,0.000")
-                          : numeral(0).format("0,0.000")}
-                      </td>
-                      <td className="border p-2 break-all text-[10px]">
-                        {item?.ugt1InventoryMatchedEGAT
-                          ? numeral(item?.ugt1InventoryMatchedEGAT).format(
-                              "0,0.000"
-                            )
-                          : numeral(0).format("0,0.000")}
-                      </td>
-                      <td className="border p-2 break-all text-[10px]">
-                        {item?.ugt1InventoryMatchedEGAT
-                          ? numeral(item?.ugt1InventoryMatchedEGAT).format(
-                              "0,0.000"
-                            )
-                          : numeral(0).format("0,0.000")}
-                      </td>
-                      <td className="border p-2 break-all text-[10px]">
                         {item?.matchSupplyMEA
                           ? numeral(item?.matchSupplyMEA).format("0,0.000")
                           : numeral(0).format("0,0.000")}
@@ -630,6 +617,27 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                             )
                           : numeral(0).format("0,0.000")}
                       </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.matchSupplyEGAT
+                          ? numeral(item?.matchSupplyEGAT).format("0,0.000")
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatchedEGAT
+                          ? numeral(item?.ugt1InventoryMatchedEGAT).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+                      <td className="border p-2 break-all text-[10px]">
+                        {item?.ugt1InventoryMatchedEGAT
+                          ? numeral(item?.ugt1InventoryMatchedEGAT).format(
+                              "0,0.000"
+                            )
+                          : numeral(0).format("0,0.000")}
+                      </td>
+
+                      
                       <td className="border p-2 break-all text-[10px]">
                         {item?.matchSupply
                           ? numeral(item?.matchSupply).format("0,0.000")
@@ -837,18 +845,7 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                             )
                           : numeral(0).format("0,0.000")}
                       </td>
-                      <td className="border p-2 break-all">
-                        {item?.columnG
-                          ? numeral(item?.columnG).format(
-                              "0,0.000"
-                            )
-                          : numeral(0).format("0,0.000")}
-                      </td>
-                      <td className="border p-2 break-all">
-                        {item?.columnH
-                          ? numeral(item?.columnH).format("0,0.000")
-                          : numeral(0).format("0,0.000")}
-                      </td>
+                      
                       
                       {/* Add more columns as needed */}
                     </tr>
