@@ -101,7 +101,25 @@ const GenerateDataList = () => {
     }
 
     if (currentUGTGroup?.id) {
-      dispatch(getGenerateDataYearList(currentUGTGroup?.id));
+      dispatch(getGenerateDataYearList(currentUGTGroup?.id, 0));
+      /*if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        dispatch(getGenerateDataYearList(currentUGTGroup?.id, 1));
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        dispatch(getGenerateDataYearList(currentUGTGroup?.id, 2));
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        dispatch(getGenerateDataYearList(currentUGTGroup?.id, 3));
+      } else {
+        dispatch(getGenerateDataYearList(currentUGTGroup?.id, 0));
+      }*/
     }
 
     if (currentUGTGroup?.id && selectYear) {

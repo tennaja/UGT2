@@ -123,6 +123,9 @@ export const EAC_ISSUE_REQUEST_DOWNLOAD_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tr
 export const EAC_ISSUE_REQUEST_DELETE_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/deleteIssueFile`;
 export const EAC_ISSUE_REQUEST_CREATE_ISSUE_SF04_DETAIL_FILE = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/createIssueDetailSF04File`;
 export const EAC_ISSUE_REQUEST_LAST_UPDATE_SYNC_STATUS = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/issueRequestSyncDatetime`
+export const EAC_ISSUE_REQUEST_VERIFY = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/verifyIssue_IssueDetail`
+export const EAC_ISSUE_REQUEST_RETURN = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/returnIssue_IssueDetail`
+export const EAC_ISSUE_REQUEST_UPLOAD_GEN_EVIDENT = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/createIssueDetailGenerationFile`
 // ScheduleSyncBack
 export const EAC_ISSUE_SYNC_ISSUE_ITEM = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/IssueItem`;
 export const EAC_ISSUE_SYNC_ISSUE_STATUS = `${DOMAIN_URL_EGAT}/ugt/v1/schedule-sync-back/IssueStatus`;

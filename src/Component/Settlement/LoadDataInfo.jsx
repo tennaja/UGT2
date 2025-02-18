@@ -18,7 +18,7 @@ import { message } from "antd";
 import DataDashBoard from "../assets/DataDashBoardIcon.svg";
 import GraphDashboard from "../assets/GraphDashboardIcon.svg";
 import ChartDashboard from "../assets/ChartDashBoardIcon.svg";
-import { MONTH_LIST } from "../../Constants/Constants";
+import { MONTH_LIST,USER_GROUP_ID } from "../../Constants/Constants";
 import { Form, Select } from "antd";
 import CircleCheck from "../assets/CircleCheck.svg";
 import CircleTime from "../assets/CircleTime.svg";
@@ -64,22 +64,85 @@ const LoadDatainfo = (props) => {
 
   useEffect(() => {
     if (currentUGTGroup?.id && selectMonth && selectYear) {
-      dispatch(
-        getLoadDataDashBoard(
-          currentUGTGroup?.id,
-          state.id,
-          selectYear,
-          selectMonth
-        )
-      );
-      dispatch(
-        getLoadDataInfoList(
-          currentUGTGroup?.id,
-          state.id,
-          selectYear,
-          selectMonth
-        )
-      );
+      if (
+                    userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+                    userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+                  ) {
+                    dispatch(
+                      getLoadDataDashBoard(
+                        currentUGTGroup?.id,
+                        state.id,
+                        selectYear,
+                        selectMonth,1
+                      )
+                    );
+                    dispatch(
+                      getLoadDataInfoList(
+                        currentUGTGroup?.id,
+                        state.id,
+                        selectYear,
+                        selectMonth,1
+                      )
+                    );
+                  } else if (
+                    userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+                    userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+                  ) {
+                    dispatch(
+                      getLoadDataDashBoard(
+                        currentUGTGroup?.id,
+                        state.id,
+                        selectYear,
+                        selectMonth,2
+                      )
+                    );
+                    dispatch(
+                      getLoadDataInfoList(
+                        currentUGTGroup?.id,
+                        state.id,
+                        selectYear,
+                        selectMonth,2
+                      )
+                    );
+                  } else if (
+                    userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+                    userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+                  ) {
+                    dispatch(
+                      getLoadDataDashBoard(
+                        currentUGTGroup?.id,
+                        state.id,
+                        selectYear,
+                        selectMonth,3
+                      )
+                    );
+                    dispatch(
+                      getLoadDataInfoList(
+                        currentUGTGroup?.id,
+                        state.id,
+                        selectYear,
+                        selectMonth,3
+                      )
+                    );
+                  } else {
+                    dispatch(
+                      getLoadDataDashBoard(
+                        currentUGTGroup?.id,
+                        state.id,
+                        selectYear,
+                        selectMonth,0
+                      )
+                    );
+                    dispatch(
+                      getLoadDataInfoList(
+                        currentUGTGroup?.id,
+                        state.id,
+                        selectYear,
+                        selectMonth,0
+                      )
+                    );
+                  }
+      
     }
   }, [currentUGTGroup?.id, selectMonth, selectYear]);
 

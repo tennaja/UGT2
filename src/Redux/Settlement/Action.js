@@ -758,6 +758,7 @@ export const _settlementReject = (data) =>{
 }
 
 export const settlementReject = (ugtGroupId, portfolioId, year, month, utilityId, remark,createBy,callback) =>{
+    console.log(ugtGroupId,portfolioId,year,month,utilityId,remark,createBy)
     const URL = `${SETTLEMENT_REJECT_URL}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&utilityId=${utilityId}&Remark=${remark}`
     console.log(URL)
 
@@ -1216,9 +1217,9 @@ export const _getGenerateDataYearList = (data) => {
     }
 }
 
-export const getGenerateDataYearList = (ugtGroupId) => {
+export const getGenerateDataYearList = (ugtGroupId,utilityId) => {
 
-    const URL = `${GENERATE_DATA_INPUT_YEAR}?ugtGroupId=${ugtGroupId}`
+    const URL = `${GENERATE_DATA_INPUT_YEAR}?ugtGroupId=${ugtGroupId}&utilityId=${utilityId}`
     console.log('URL', URL)
 
     return async (dispatch) => {
@@ -1285,9 +1286,9 @@ export const _getGenerateDataDashBoard = (data) => {
     }
 }
 
-export const getGenerateDataDashBoard = (ugtGroupId,portfolioId,year,month) => {
+export const getGenerateDataDashBoard = (ugtGroupId,portfolioId,year,month,utilityId) => {
 
-    const URL = `${GENERATE_DATA_INPUT_DASHBOARD}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+    const URL = `${GENERATE_DATA_INPUT_DASHBOARD}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&utilityId=${utilityId}`
     console.log('URL', URL)
 
     return async (dispatch) => {
@@ -1308,9 +1309,9 @@ export const _getGenerateDataInfoList = (data) => {
     }
 }
 
-export const getGenerateDataInfoList = (ugtGroupId,portfolioId,year,month) => {
+export const getGenerateDataInfoList = (ugtGroupId,portfolioId,year,month,utilityId) => {
 
-    const URL = `${GENERATE_DATA_INPUT_INFO_LIST}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+    const URL = `${GENERATE_DATA_INPUT_INFO_LIST}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&utilityId=${utilityId}`
     console.log('URL', URL)
 
     return async (dispatch) => {
@@ -1603,9 +1604,9 @@ export const _getLoadDataDashBoard = (data) => {
     }
 }
 
-export const getLoadDataDashBoard = (ugtGroupId,portfolioId,year,month) => {
+export const getLoadDataDashBoard = (ugtGroupId,portfolioId,year,month,utilityId) => {
 
-    const URL = `${LOAD_DATA_INFO_DASHBOARD}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+    const URL = `${LOAD_DATA_INFO_DASHBOARD}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&utilityId=${utilityId}`
     console.log('URL', URL)
 
     return async (dispatch) => {
@@ -1626,9 +1627,9 @@ export const _getLoadDataInfoList = (data) => {
     }
 }
 
-export const getLoadDataInfoList = (ugtGroupId,portfolioId,year,month) => {
+export const getLoadDataInfoList = (ugtGroupId,portfolioId,year,month,utilityId) => {
 
-    const URL = `${LOAD_DATA_INFO_LIST}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}`
+    const URL = `${LOAD_DATA_INFO_LIST}/${ugtGroupId}?portfolioId=${portfolioId}&year=${year}&month=${month}&utilityId=${utilityId}`
     console.log('URL', URL)
 
     return async (dispatch) => {
