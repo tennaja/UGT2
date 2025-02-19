@@ -1355,11 +1355,13 @@ export default function SettlementApproval() {
                               ),
                               label: "Request Edit",
                               onClick: requestEditAction,
+                              hide: false
                             },
                             {
                               icon: <LuSearch className="w-[20px] h-[20px]" />,
                               label: "Verify",
                               onClick: verifyAction,
+                              hide: false
                             },
                           ]}
                         />
