@@ -36,6 +36,11 @@ import ModalConfirmNew from "../Control/Modal/ModalConfirmNew";
 import { USER_GROUP_ID } from "../../Constants/Constants";
 import noContent from "../assets/no-content.png";
 
+import {
+  setSettlementSelectedYear,
+  setSettlementSelectedMonth,
+} from "../../Redux/Menu/Action";
+
 const { Dragger } = Upload;
 
 const beforeUpload = (file) => {

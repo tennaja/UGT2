@@ -10,6 +10,8 @@ import {
   SET_EAC_SELECTED_YEAR,
   SET_EAC_SELECTED_MONTH,
   SET_OPEN_MENU,
+  SET_SETTLEMENT_SELECT_MONTH,
+  SET_SETTLEMENT_SELECT_YEAR
 } from "../../Redux/ActionType";
 
 const initialstate = {
@@ -25,6 +27,8 @@ const initialstate = {
   selectedYear: new Date().getFullYear(),
   selectedMonth: new Date().getMonth() + 1,
   openMenu: false,
+  settlementSelectYear: new Date().getFullYear(),
+  settlementSelectMonth: 1,
 };
 
 export const MenuReducer = (state = initialstate, action) => {
@@ -86,6 +90,16 @@ export const MenuReducer = (state = initialstate, action) => {
       return {
         ...state,
         selectedMonth: action.payload,
+      };
+      case SET_SETTLEMENT_SELECT_YEAR:
+      return {
+        ...state,
+        settlementSelectYear: action.payload,
+      };
+    case SET_SETTLEMENT_SELECT_MONTH:
+      return {
+        ...state,
+        settlementSelectMonth: action.payload,
       };
     case SET_OPEN_MENU:
       return {

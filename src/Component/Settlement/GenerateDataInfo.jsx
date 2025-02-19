@@ -31,6 +31,10 @@ import { Form, Select } from "antd";
 import CircleCheck from "../assets/CircleCheck.svg"
 import CircleTime from "../assets/CircleTime.svg"
 import DataTableSettlement from "./DataTableSettlement";
+import {
+  setSettlementSelectedYear,
+  setSettlementSelectedMonth,
+} from "../../Redux/Menu/Action";
 
 const itemsPerPage = 5;
 const GenerateDatainfo = (props) => {
@@ -54,6 +58,10 @@ const GenerateDatainfo = (props) => {
   const dashboardDataList = useSelector(
     (state) => state.portfolio.portfolioDashboardList
   );
+   const trackingYear = useSelector((state) => state.menu?.settlementSelectYear);
+      const trackingMonth = useSelector(
+        (state) => state.menu?.settlementSelectMonth
+      );
   //console.log(dashboardDataList)
   const [dashboardList, setDashboardList] = useState([]);
   const [activeList, setActiveList] = useState([]);
@@ -139,55 +147,55 @@ useEffect(() => {
 }, [dashboardList]);
 
 useEffect(()=>{
-    if(currentUGTGroup?.id && selectMonth && selectYear){
+    if(currentUGTGroup?.id && trackingMonth && trackingYear){
       if (
               userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
               userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
             ) {
-              dispatch(getGenerateDataDashBoard(currentUGTGroup?.id,state.id,selectYear,selectMonth,1))
-              dispatch(getGenerateDataInfoList(currentUGTGroup?.id,state.id,selectYear,selectMonth,1))
+              dispatch(getGenerateDataDashBoard(currentUGTGroup?.id,state.id,trackingYear,trackingMonth,1))
+              dispatch(getGenerateDataInfoList(currentUGTGroup?.id,state.id,trackingYear,trackingMonth,1))
             } else if (
               userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
               userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
             ) {
-              dispatch(getGenerateDataDashBoard(currentUGTGroup?.id,state.id,selectYear,selectMonth,2))
-              dispatch(getGenerateDataInfoList(currentUGTGroup?.id,state.id,selectYear,selectMonth,2))
+              dispatch(getGenerateDataDashBoard(currentUGTGroup?.id,state.id,trackingYear,trackingMonth,2))
+              dispatch(getGenerateDataInfoList(currentUGTGroup?.id,state.id,trackingYear,trackingMonth,2))
             } else if (
               userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
               userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
             ) {
-              dispatch(getGenerateDataDashBoard(currentUGTGroup?.id,state.id,selectYear,selectMonth,3))
-              dispatch(getGenerateDataInfoList(currentUGTGroup?.id,state.id,selectYear,selectMonth,3))
+              dispatch(getGenerateDataDashBoard(currentUGTGroup?.id,state.id,trackingYear,trackingMonth,3))
+              dispatch(getGenerateDataInfoList(currentUGTGroup?.id,state.id,trackingYear,trackingMonth,3))
             } else {
-              dispatch(getGenerateDataDashBoard(currentUGTGroup?.id,state.id,selectYear,selectMonth,0))
-              dispatch(getGenerateDataInfoList(currentUGTGroup?.id,state.id,selectYear,selectMonth,0))
+              dispatch(getGenerateDataDashBoard(currentUGTGroup?.id,state.id,trackingYear,trackingMonth,0))
+              dispatch(getGenerateDataInfoList(currentUGTGroup?.id,state.id,trackingYear,trackingMonth,0))
             }
         
         
     }
-},[currentUGTGroup?.id,selectMonth,selectYear])
+},[currentUGTGroup?.id,trackingMonth,trackingYear])
 
-useEffect(()=>{
+/*useEffect(()=>{
     if(generateInfoYearList.yearList){
         if(!selectYear){
             setSelectyear(generateInfoYearList.yearList[0])
         }
     }
-},[generateInfoYearList])
+},[generateInfoYearList])*/
 
 useEffect(()=>{
-    if(currentUGTGroup?.id && selectYear){
-        dispatch(getGenerateDataInfoMonthList(currentUGTGroup?.id,selectYear,state.id))
+    if(currentUGTGroup?.id && trackingYear){
+        dispatch(getGenerateDataInfoMonthList(currentUGTGroup?.id,trackingYear,state.id))
     }
-},[currentUGTGroup?.id,selectYear])
+},[currentUGTGroup?.id,trackingYear])
 
-useEffect(()=>{
+/*useEffect(()=>{
     if(generateInfoMontList.monthList){
         if(!selectMonth){
             setSelectMonth(generateInfoMontList.monthList[0])
         }
     }
-},[generateInfoMontList])
+},[generateInfoMontList])*/
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(
@@ -373,8 +381,8 @@ useEffect(()=>{
             type="button"
             state={{ deviceid: row?.deviceid,
                 devicename: row?.deviceName,
-                year: selectYear,
-                month: selectMonth,
+                year: trackingYear,
+                month: trackingMonth,
                 portfolioId: state.id,
               portName:state.name }}
             to={WEB_URL.SETTLEMENT_GENERATE_DATA_DETAIL}
@@ -397,6 +405,20 @@ useEffect(()=>{
     setSearchQueryActive(e.target.value);
   };
 
+    const handleChangeTrackingYear = (year) => {
+        // setTrackingYear(year);
+        dispatch(setSettlementSelectedYear(year));
+    
+        // reset month list and selected month
+        dispatch(setSettlementSelectedMonth(null));
+      };
+    
+      const handleChangeTrackingMonth = (month) => {
+        console.log(month);
+        // setTrackingMonth(month);
+        dispatch(setSettlementSelectedMonth(month));
+      };
+
   console.log(state)
   return (
     <div>
@@ -418,8 +440,8 @@ useEffect(()=>{
                     <Form.Item className="col-span-2 col-start-1">
                         <Select
                           size="large"
-                          value={selectYear}
-                          onChange={(value) => setSelectyear(value)}
+                          value={trackingYear}
+                          onChange={(value) => handleChangeTrackingYear(value)}
                         >
                           {generateInfoYearList?.yearList?.map((item, index) => (
                             <Select.Option
@@ -436,8 +458,8 @@ useEffect(()=>{
                     <Form.Item className="col-span-2 col-start-3 ml-2">
                         <Select
                           size="large"
-                          value={selectMonth}
-                          onChange={(value) => setSelectMonth(value)}
+                          value={trackingMonth}
+                          onChange={(value) => handleChangeTrackingMonth(value)}
                         >
                           {generateInfoMontList?.monthList?.map((item, index) => (
                             <Select.Option

@@ -15,6 +15,10 @@ import {
   getLoadDataYearList,
   getLoadDataMonthList,
 } from "../../Redux/Settlement/Action";
+import {
+  setSettlementSelectedYear,
+  setSettlementSelectedMonth,
+} from "../../Redux/Menu/Action";
 
 const LoadDataList = () => {
   const navigate = useNavigate();
@@ -38,12 +42,17 @@ const LoadDataList = () => {
   const loadDataYearList = useSelector(
     (state) => state.settlement.loadDataInputYearList
   );
+  const trackingYear = useSelector((state) => state.menu?.settlementSelectYear);
+  const trackingMonth = useSelector(
+    (state) => state.menu?.settlementSelectMonth
+  );
+  console.log(trackingYear, trackingMonth);
   console.log(currentUGTGroup?.id);
   console.log(userData);
   //console.log(generateDataList);
-  const [selectYear, setSelectyear] = useState("");
+  const [selectYear, setSelectyear] = useState(trackingYear);
 
-  const [selectMonth, setSelectMonth] = useState("");
+  const [selectMonth, setSelectMonth] = useState(trackingMonth);
 
   const [searchQueryActive, setSearchQueryActive] = useState("");
 
@@ -52,33 +61,54 @@ const LoadDataList = () => {
   );
 
   useEffect(() => {
-    if (currentUGTGroup?.id && selectYear && selectMonth) {
+    if (currentUGTGroup?.id && trackingYear && trackingMonth) {
       if (
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
       ) {
+        console.log("OnChange Data");
         dispatch(
-          getLoadDataInputList(currentUGTGroup?.id, selectYear, selectMonth, 1)
+          getLoadDataInputList(
+            currentUGTGroup?.id,
+            trackingYear,
+            trackingMonth,
+            1
+          )
         );
       } else if (
         userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
       ) {
         dispatch(
-          getLoadDataInputList(currentUGTGroup?.id, selectYear, selectMonth, 2)
+          getLoadDataInputList(
+            currentUGTGroup?.id,
+            trackingYear,
+            trackingMonth,
+            2
+          )
         );
       } else if (
         userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
       ) {
         dispatch(
-          getLoadDataInputList(currentUGTGroup?.id, selectYear, selectMonth, 3)
+          getLoadDataInputList(
+            currentUGTGroup?.id,
+            trackingYear,
+            trackingMonth,
+            3
+          )
         );
       } else {
         dispatch(
-          getLoadDataInputList(currentUGTGroup?.id, selectYear, selectMonth, 0)
+          getLoadDataInputList(
+            currentUGTGroup?.id,
+            trackingYear,
+            trackingMonth,
+            0
+          )
         );
       }
     }
@@ -89,25 +119,37 @@ const LoadDataList = () => {
     }
 
     if (currentUGTGroup?.id && selectYear) {
-      dispatch(getLoadDataMonthList(currentUGTGroup?.id, selectYear));
+      dispatch(getLoadDataMonthList(currentUGTGroup?.id, trackingYear));
     }
-  }, [selectYear, selectMonth, currentUGTGroup?.id]);
+  }, [trackingYear, trackingMonth, currentUGTGroup?.id]);
 
   useEffect(() => {
-    if (loadDataYearList.yearList) {
-      if (!selectYear) {
+    /*if (loadDataYearList.yearList) {
+      if (!trackingYear) {
         setSelectyear(loadDataYearList.yearList[0]);
+        dispatch(setSettlementSelectedYear(loadDataYearList.yearList[0]));
       }
+    }*/
+    if (
+      loadDataYearList.yearList &&
+      !loadDataYearList.yearList.includes(trackingYear)
+    ) {
+      const lastesr_year = loadDataYearList.yearList.slice(-1);
+      console.log(lastesr_year[0]);
+      console.log(trackingYear);
+      //dispatch(setSelectedYear(lastesr_year[0]))
+      dispatch(setSettlementSelectedYear(lastesr_year[0]));
     }
   }, [loadDataYearList]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (loadDataMonthList.monthList) {
-      if (!selectMonth) {
+      if (!trackingMonth) {
         setSelectMonth(loadDataMonthList.monthList[0]);
+        dispatch(setSettlementSelectedMonth(loadDataMonthList.monthList[0]))
       }
     }
-  }, [loadDataMonthList]);
+  }, [loadDataMonthList]);*/
 
   const handleSearchChangeActive = (e) => {
     setSearchQueryActive(e.target.value);
@@ -219,8 +261,8 @@ const LoadDataList = () => {
             state={{
               id: row?.portfolioId,
               name: row?.portfolioName,
-              year: selectYear,
-              month: selectMonth,
+              year: trackingYear,
+              month: trackingMonth,
             }}
             to={WEB_URL.SETTLEMENT_LOAD_DATA_INFO}
             className="flex no-underline rounded p-2 cursor-pointer text-sm items-center w-[100px] justify-center hover:bg-[#4D6A00] bg-[#87BE33]"
@@ -235,6 +277,20 @@ const LoadDataList = () => {
 
     // Add more columns as needed
   ];
+
+  const handleChangeTrackingYear = (year) => {
+    // setTrackingYear(year);
+    dispatch(setSettlementSelectedYear(year));
+
+    // reset month list and selected month
+    dispatch(setSettlementSelectedMonth(null));
+  };
+
+  const handleChangeTrackingMonth = (month) => {
+    console.log(month);
+    // setTrackingMonth(month);
+    dispatch(setSettlementSelectedMonth(month));
+  };
 
   console.log(selectMonth, selectYear, loadDataMonthList, loadDataYearList);
   return (
@@ -257,8 +313,8 @@ const LoadDataList = () => {
                   <Form.Item className="col-span-1 col-start-3">
                     <Select
                       size="large"
-                      value={selectYear}
-                      onChange={(value) => setSelectyear(value)}
+                      value={trackingYear}
+                      onChange={(value) => handleChangeTrackingYear(value)}
                     >
                       {loadDataYearList?.yearList?.map((item, index) => (
                         <Select.Option
@@ -275,8 +331,8 @@ const LoadDataList = () => {
                   <Form.Item className="col-span-1 col-start-4 ml-2">
                     <Select
                       size="large"
-                      value={selectMonth}
-                      onChange={(value) => setSelectMonth(value)}
+                      value={trackingMonth}
+                      onChange={(value) => handleChangeTrackingMonth(value)}
                     >
                       {loadDataMonthList?.monthList?.map((item, index) => (
                         <Select.Option

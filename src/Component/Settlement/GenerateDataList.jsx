@@ -15,6 +15,10 @@ import {
   getGenerateDataYearList,
   getGenerateDataMonthList,
 } from "../../Redux/Settlement/Action";
+import {
+  setSettlementSelectedYear,
+  setSettlementSelectedMonth,
+} from "../../Redux/Menu/Action";
 
 const GenerateDataList = () => {
   const navigate = useNavigate();
@@ -38,6 +42,11 @@ const GenerateDataList = () => {
   const generateDataYearList = useSelector(
     (state) => state.settlement.generateDataYearList
   );
+
+  const trackingYear = useSelector((state) => state.menu?.settlementSelectYear);
+    const trackingMonth = useSelector(
+      (state) => state.menu?.settlementSelectMonth
+    );
   console.log(currentUGTGroup?.id);
   console.log(generateDataList);
   const [selectYear, setSelectyear] = useState("");
@@ -51,7 +60,7 @@ const GenerateDataList = () => {
   );
 
   useEffect(() => {
-    if (currentUGTGroup?.id && selectYear && selectMonth) {
+    if (currentUGTGroup?.id && trackingYear && trackingMonth) {
       if (
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
@@ -59,8 +68,8 @@ const GenerateDataList = () => {
         dispatch(
           getGenerateDataInputList(
             currentUGTGroup?.id,
-            selectYear,
-            selectMonth,
+            trackingYear,
+            trackingMonth,
             1
           )
         );
@@ -71,8 +80,8 @@ const GenerateDataList = () => {
         dispatch(
           getGenerateDataInputList(
             currentUGTGroup?.id,
-            selectYear,
-            selectMonth,
+            trackingYear,
+            trackingMonth,
             2
           )
         );
@@ -83,8 +92,8 @@ const GenerateDataList = () => {
         dispatch(
           getGenerateDataInputList(
             currentUGTGroup?.id,
-            selectYear,
-            selectMonth,
+            trackingYear,
+            trackingMonth,
             3
           )
         );
@@ -92,8 +101,8 @@ const GenerateDataList = () => {
         dispatch(
           getGenerateDataInputList(
             currentUGTGroup?.id,
-            selectYear,
-            selectMonth,
+            trackingYear,
+            trackingMonth,
             0
           )
         );
@@ -122,26 +131,37 @@ const GenerateDataList = () => {
       }*/
     }
 
-    if (currentUGTGroup?.id && selectYear) {
-      dispatch(getGenerateDataMonthList(currentUGTGroup?.id, selectYear));
+    if (currentUGTGroup?.id && trackingYear) {
+      dispatch(getGenerateDataMonthList(currentUGTGroup?.id, trackingYear));
     }
-  }, [selectYear, selectMonth, currentUGTGroup?.id]);
+  }, [trackingYear, trackingMonth, currentUGTGroup?.id]);
 
   useEffect(() => {
-    if (generateDataYearList.yearList) {
+    /*if (generateDataYearList.yearList) {
       if (!selectYear) {
         setSelectyear(generateDataYearList.yearList[0]);
       }
-    }
+    }*/
+
+    if (
+      generateDataYearList.yearList &&
+          !generateDataYearList.yearList.includes(trackingYear)
+        ) {
+          const lastesr_year = generateDataYearList.yearList.slice(-1);
+          console.log(lastesr_year[0]);
+          console.log(trackingYear);
+          //dispatch(setSelectedYear(lastesr_year[0]))
+          dispatch(setSettlementSelectedYear(lastesr_year[0]));
+        }
   }, [generateDataYearList]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (generateDataMonthList.monthList) {
       if (!selectMonth) {
         setSelectMonth(generateDataMonthList.monthList[0]);
       }
     }
-  }, [generateDataMonthList]);
+  }, [generateDataMonthList]);*/
 
   const handleSearchChangeActive = (e) => {
     setSearchQueryActive(e.target.value);
@@ -253,8 +273,8 @@ const GenerateDataList = () => {
             state={{
               id: row?.portfolioId,
               name: row?.portfolioName,
-              year: selectYear,
-              month: selectMonth,
+              year: trackingYear,
+              month: trackingMonth,
             }}
             to={WEB_URL.SETTLEMENT_GENERATE_DATA_INFO}
             className="flex no-underline rounded p-2 cursor-pointer text-sm items-center w-[100px] justify-center hover:bg-[#4D6A00] bg-[#87BE33]"
@@ -270,7 +290,21 @@ const GenerateDataList = () => {
     // Add more columns as needed
   ];
 
-  console.log(selectMonth, selectYear, generateDataMonthList);
+  const handleChangeTrackingYear = (year) => {
+      // setTrackingYear(year);
+      dispatch(setSettlementSelectedYear(year));
+  
+      // reset month list and selected month
+      dispatch(setSettlementSelectedMonth(null));
+    };
+  
+    const handleChangeTrackingMonth = (month) => {
+      console.log(month);
+      // setTrackingMonth(month);
+      dispatch(setSettlementSelectedMonth(month));
+    };
+
+  console.log(trackingMonth, trackingYear, generateDataMonthList);
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
@@ -291,8 +325,8 @@ const GenerateDataList = () => {
                   <Form.Item className="col-span-1 col-start-3">
                     <Select
                       size="large"
-                      value={selectYear}
-                      onChange={(value) => setSelectyear(value)}
+                      value={trackingYear}
+                      onChange={(value) => handleChangeTrackingYear(value)}
                     >
                       {generateDataYearList?.yearList?.map((item, index) => (
                         <Select.Option
@@ -309,8 +343,8 @@ const GenerateDataList = () => {
                   <Form.Item className="col-span-1 col-start-4 ml-2">
                     <Select
                       size="large"
-                      value={selectMonth}
-                      onChange={(value) => setSelectMonth(value)}
+                      value={trackingMonth}
+                      onChange={(value) => handleChangeTrackingMonth(value)}
                     >
                       {generateDataMonthList?.monthList?.map((item, index) => (
                         <Select.Option

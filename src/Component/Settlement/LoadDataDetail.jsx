@@ -35,6 +35,10 @@ import CircleTime from "../assets/CircleTime.svg";
 import DataTableSettlement from "./DataTableSettlement";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import LoadDataRevision from "./LoadDataRevision";
+import {
+  setSettlementSelectedYear,
+  setSettlementSelectedMonth,
+} from "../../Redux/Menu/Action";
 
 const itemsPerPage = 5;
 const LoadDataDetail = (props) => {
@@ -51,15 +55,19 @@ const LoadDataDetail = (props) => {
   const userData = useSelector((state) => state.login.userobj);
 
   const loadInfoYearList = useSelector(
-      (state) => state.settlement.loadDataInfoYearList
-    );
+    (state) => state.settlement.loadDataInfoYearList
+  );
   const loadInfoMontList = useSelector(
-      (state) => state.settlement.loadDataInfoMonthList
-    );
+    (state) => state.settlement.loadDataInfoMonthList
+  );
   const loadRevision = useSelector(
     (state) => state.settlement.loadDataRevision
   );
 
+  const trackingYear = useSelector((state) => state.menu?.settlementSelectYear);
+  const trackingMonth = useSelector(
+    (state) => state.menu?.settlementSelectMonth
+  );
   console.log(loadRevision);
 
   const [selectYear, setSelectyear] = useState(state.year);
@@ -72,59 +80,57 @@ const LoadDataDetail = (props) => {
     if (currentUGTGroup?.id) {
       dispatch(PortfolioManagementDashboard(currentUGTGroup?.id));
       dispatch(PortfolioManagementDashboardList(currentUGTGroup?.id));
-      dispatch(
-        getLoadDataInfoYearList(currentUGTGroup?.id, state.portfolioId)
-      );
+      dispatch(getLoadDataInfoYearList(currentUGTGroup?.id, state.portfolioId));
     }
   }, [currentUGTGroup?.id]);
 
   useEffect(() => {
-    if (currentUGTGroup?.id && selectMonth && selectYear) {
+    if (currentUGTGroup?.id && trackingMonth && trackingYear) {
       dispatch(
         getLoadDataRevision(
           currentUGTGroup?.id,
           state.portfolioId,
-          selectYear,
-          selectMonth,
+          trackingYear,
+          trackingMonth,
           state.subscriberId
         )
       );
     }
-  }, [currentUGTGroup?.id, selectMonth, selectYear]);
+  }, [currentUGTGroup?.id, trackingMonth, trackingYear]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (loadInfoYearList.yearList) {
       if (!selectYear) {
         setSelectyear(loadInfoYearList.yearList[0]);
       }
     }
-  }, [loadInfoYearList]);
+  }, [loadInfoYearList]);*/
 
   useEffect(() => {
-    if (currentUGTGroup?.id && selectYear) {
+    if (currentUGTGroup?.id && trackingYear) {
       dispatch(
         getLoadDataInfoMonthList(
           currentUGTGroup?.id,
-          selectYear,
+          trackingYear,
           state.portfolioId
         )
       );
     }
-  }, [currentUGTGroup?.id, selectYear]);
+  }, [currentUGTGroup?.id, trackingYear]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (loadInfoMontList.monthList) {
       if (!selectMonth) {
         setSelectMonth(loadInfoMontList.monthList[0]);
       }
     }
-  }, [loadInfoMontList]);
+  }, [loadInfoMontList]);*/
 
-  useEffect(()=>{
-    if(loadRevision){
-      setSelectTab(loadRevision?.revisionList?.[0])
+  /*useEffect(() => {
+    if (loadRevision) {
+      setSelectTab(loadRevision?.revisionList?.[0]);
     }
-  },[loadRevision])
+  }, [loadRevision]);*/
 
   console.log(loadRevision?.revisionList?.[0]);
   return (
@@ -143,7 +149,7 @@ const LoadDataDetail = (props) => {
                 </p>
               </div>
             </div>
-            
+
             {/* Active */}
             <Card
               shadow="md"
@@ -181,40 +187,36 @@ const LoadDataDetail = (props) => {
                       <Form.Item className="pt-3 w-[130px]">
                         <Select
                           size="large"
-                          value={selectYear}
-                          onChange={(value) => setSelectyear(value)}
+                          value={trackingYear}
+                          onChange={(value) => dispatch(setSettlementSelectedYear(value))}
                         >
-                          {loadInfoYearList?.yearList?.map(
-                            (item, index) => (
-                              <Select.Option
-                                key={index}
-                                value={item}
-                                //disabled={item > latestYearHasData}
-                              >
-                                {item}
-                              </Select.Option>
-                            )
-                          )}
+                          {loadInfoYearList?.yearList?.map((item, index) => (
+                            <Select.Option
+                              key={index}
+                              value={item}
+                              //disabled={item > latestYearHasData}
+                            >
+                              {item}
+                            </Select.Option>
+                          ))}
                         </Select>
                       </Form.Item>
 
                       <Form.Item className="pt-3 w-[130px]">
                         <Select
                           size="large"
-                          value={selectMonth}
-                          onChange={(value) => setSelectMonth(value)}
+                          value={trackingMonth}
+                          onChange={(value) => dispatch(setSettlementSelectedMonth(value))}
                         >
-                          {loadInfoMontList?.monthList?.map(
-                            (item, index) => (
-                              <Select.Option
-                                key={index}
-                                value={MONTH_LIST[item - 1].month}
-                                //disabled={item > latestYearHasData}
-                              >
-                                {MONTH_LIST[item - 1].name}
-                              </Select.Option>
-                            )
-                          )}
+                          {loadInfoMontList?.monthList?.map((item, index) => (
+                            <Select.Option
+                              key={index}
+                              value={MONTH_LIST[item - 1].month}
+                              //disabled={item > latestYearHasData}
+                            >
+                              {MONTH_LIST[item - 1].name}
+                            </Select.Option>
+                          ))}
                         </Select>
                       </Form.Item>
                     </div>
@@ -270,8 +272,8 @@ const LoadDataDetail = (props) => {
                 <LoadDataRevision
                   revision={selectTab}
                   portfolioId={state.portfolioId}
-                  year={selectYear}
-                  month={selectMonth}
+                  year={trackingYear}
+                  month={trackingMonth}
                   subscriberId={state.subscriberId}
                   ugtGroupId={currentUGTGroup?.id}
                 />

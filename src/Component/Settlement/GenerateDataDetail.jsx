@@ -35,6 +35,10 @@ import CircleTime from "../assets/CircleTime.svg";
 import DataTableSettlement from "./DataTableSettlement";
 import { FaChevronCircleLeft } from "react-icons/fa";
 import GenerateDataRevision from "./GenerateDataRevision";
+import {
+  setSettlementSelectedYear,
+  setSettlementSelectedMonth,
+} from "../../Redux/Menu/Action";
 
 const itemsPerPage = 5;
 const GenerateDataDetail = (props) => {
@@ -59,6 +63,10 @@ const GenerateDataDetail = (props) => {
   const generateRevision = useSelector(
     (state) => state.settlement.revisionList
   );
+  const trackingYear = useSelector((state) => state.menu?.settlementSelectYear);
+        const trackingMonth = useSelector(
+          (state) => state.menu?.settlementSelectMonth
+        );
 
   console.log(generateRevision);
 
@@ -79,50 +87,64 @@ const GenerateDataDetail = (props) => {
   }, [currentUGTGroup?.id]);
 
   useEffect(() => {
-    if (currentUGTGroup?.id && selectMonth && selectYear) {
+    if (currentUGTGroup?.id && trackingMonth && trackingYear) {
       dispatch(
         getGenerateDataRevision(
           currentUGTGroup?.id,
           state.portfolioId,
-          selectYear,
-          selectMonth,
+          trackingYear,
+          trackingMonth,
           state.deviceid
         )
       );
     }
-  }, [currentUGTGroup?.id, selectMonth, selectYear]);
+  }, [currentUGTGroup?.id, trackingMonth, trackingYear]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (generateInfoYearList.yearList) {
       if (!selectYear) {
         setSelectyear(generateInfoYearList.yearList[0]);
       }
     }
-  }, [generateInfoYearList]);
+  }, [generateInfoYearList]);*/
 
   useEffect(() => {
-    if (currentUGTGroup?.id && selectYear) {
+    if (currentUGTGroup?.id && trackingYear) {
       dispatch(
         getGenerateDataInfoMonthList(
           currentUGTGroup?.id,
-          selectYear,
+          trackingYear,
           state.portfolioId
         )
       );
     }
-  }, [currentUGTGroup?.id, selectYear]);
+  }, [currentUGTGroup?.id, trackingYear]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (generateInfoMontList.monthList) {
       if (!selectMonth) {
         setSelectMonth(generateInfoMontList.monthList[0]);
       }
     }
-  }, [generateInfoMontList]);
+  }, [generateInfoMontList]);*/
 
   useEffect(()=>{
     setSelectTab(generateRevision?.revisionList?.[0])
   },[generateRevision])
+
+  const handleChangeTrackingYear = (year) => {
+          // setTrackingYear(year);
+          dispatch(setSettlementSelectedYear(year));
+      
+          // reset month list and selected month
+          dispatch(setSettlementSelectedMonth(null));
+        };
+      
+        const handleChangeTrackingMonth = (month) => {
+          console.log(month);
+          // setTrackingMonth(month);
+          dispatch(setSettlementSelectedMonth(month));
+        };
 
   console.log(state);
   return (
@@ -179,8 +201,8 @@ const GenerateDataDetail = (props) => {
                       <Form.Item className="pt-3 w-[130px]">
                         <Select
                           size="large"
-                          value={selectYear}
-                          onChange={(value) => setSelectyear(value)}
+                          value={trackingYear}
+                          onChange={(value) => handleChangeTrackingYear(value)}
                         >
                           {generateInfoYearList?.yearList?.map(
                             (item, index) => (
@@ -199,8 +221,8 @@ const GenerateDataDetail = (props) => {
                       <Form.Item className="pt-3 w-[130px]">
                         <Select
                           size="large"
-                          value={selectMonth}
-                          onChange={(value) => setSelectMonth(value)}
+                          value={trackingMonth}
+                          onChange={(value) => handleChangeTrackingMonth(value)}
                         >
                           {generateInfoMontList?.monthList?.map(
                             (item, index) => (
@@ -268,8 +290,8 @@ const GenerateDataDetail = (props) => {
                 <GenerateDataRevision
                   revision={selectTab}
                   portfolioId={state.portfolioId}
-                  year={selectYear}
-                  month={selectMonth}
+                  year={trackingYear}
+                  month={trackingMonth}
                   deviceId={state.deviceid}
                   ugtGroupId={currentUGTGroup?.id}
                 />

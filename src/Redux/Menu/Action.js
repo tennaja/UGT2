@@ -11,6 +11,8 @@ import {
   SET_EAC_SELECTED_YEAR,
   SET_EAC_SELECTED_MONTH,
   SET_OPEN_MENU,
+  SET_SETTLEMENT_SELECT_MONTH,
+  SET_SETTLEMENT_SELECT_YEAR
 } from "../../Redux/ActionType";
 
 import {
@@ -22,6 +24,7 @@ import {
   GET_SUB_MENU_SETTLEMENT_URL
 } from "../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../Utils/FuncUtils";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 export const setMenuList = (data) => {
   return {
@@ -91,6 +94,19 @@ export const setOpenMenu = (value) => {
   return {
     type: SET_OPEN_MENU,
     payload: value,
+  };
+};
+
+export const setSettlementSelectedYear = (year) => {
+  return {
+    type: SET_SETTLEMENT_SELECT_YEAR,
+    payload: year,
+  };
+};
+export const setSettlementSelectedMonth = (month) => {
+  return {
+    type: SET_SETTLEMENT_SELECT_MONTH,
+    payload: month,
   };
 };
 

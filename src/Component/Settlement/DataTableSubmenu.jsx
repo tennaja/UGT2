@@ -88,7 +88,7 @@ const DataTableSubmenu = ({
 
   useEffect(() => {
     if (editDatetime) {
-      console.log("data === ", data);
+      //console.log("data === ", data);
       data?.map((data) => {
         setValue(
           "startDate_" + data?.id,
@@ -214,7 +214,7 @@ const DataTableSubmenu = ({
 
   const filteredData = data?.filter((obj) => {
     for (let key in obj) {
-      console.log(key)
+      //console.log(key)
       if (key === "id") continue;
       if (key == "subscriberTypeId") {
         if (String(obj[key]) == 1) {
@@ -261,8 +261,8 @@ const DataTableSubmenu = ({
           }
         }
       }else {
-        console.log(searchTerm)
-        console.log(String(obj[key]).toLowerCase().includes(searchTerm?.toLowerCase()))
+        //console.log(searchTerm)
+        //console.log(String(obj[key]).toLowerCase().includes(searchTerm?.toLowerCase()))
         if (
           String(obj[key]).toLowerCase().includes(searchTerm?.toLowerCase())
         ) {
@@ -275,7 +275,7 @@ const DataTableSubmenu = ({
     }
   });
 
-console.log(filteredData)
+//console.log(filteredData)
 
   const paginatedData = filteredData?.slice(
     page * rowsPerPage,
@@ -332,14 +332,14 @@ if (checkStartDate) {
         (parsedRetailStartDate && previousDateStart > parsedRetailStartDate)) {
           tempStartDate = parseDate(previousDateStart instanceof Date ? previousDateStart.toISOString().slice(0, 10) : previousDateStart);
 
-        console.log("Using Previous Start Date:", tempStartDate);
+        //console.log("Using Previous Start Date:", tempStartDate);
     } else {
         tempStartDate = parsedRegistrationDate || parsedRetailStartDate 
-        console.log("Parsed Start Date:", tempStartDate);
+        //console.log("Parsed Start Date:", tempStartDate);
     }
 } else {
     tempStartDate = parseDate(previousDateStart);
-    console.log("Default Start Date:", tempStartDate); // ตั้งค่าเป็น previousDate ถ้าไม่มี
+    //console.log("Default Start Date:", tempStartDate); // ตั้งค่าเป็น previousDate ถ้าไม่มี
 }
 
   
@@ -370,7 +370,7 @@ if (checkStartDate) {
       data.find((item) => item.id === index)?.endDate ||
       data.find((item) => item.id === index)?.subEndDate;
 
-    console.log("Check End Date:", checkEndDate);
+    //console.log("Check End Date:", checkEndDate);
     let tempEndDate;
     
     if (checkEndDate) {
@@ -387,15 +387,15 @@ if (checkStartDate) {
           (parsedRetailEndDate && parsedPortfolioEndDate < parsedRetailEndDate)
       ) {
           tempEndDate = previousDateEnd;
-          console.log("Using Previous End Date:", previousDateEnd);
+          //console.log("Using Previous End Date:", previousDateEnd);
       } else {
           // Use the available valid date or fallback to previousDateEnd
           tempEndDate = parsedExpiryDate || parsedRetailEndDate || previousDateEnd;
-          console.log("Using Available End Date:", tempEndDate);
+          //console.log("Using Available End Date:", tempEndDate);
       }
   } else {
       tempEndDate = previousDateEnd;
-      console.log("No End Date Found, Using Previous End Date:", tempEndDate);
+      //console.log("No End Date Found, Using Previous End Date:", tempEndDate);
   }
   
   

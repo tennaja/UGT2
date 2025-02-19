@@ -18,11 +18,15 @@ import { message } from "antd";
 import DataDashBoard from "../assets/DataDashBoardIcon.svg";
 import GraphDashboard from "../assets/GraphDashboardIcon.svg";
 import ChartDashboard from "../assets/ChartDashBoardIcon.svg";
-import { MONTH_LIST,USER_GROUP_ID } from "../../Constants/Constants";
+import { MONTH_LIST, USER_GROUP_ID } from "../../Constants/Constants";
 import { Form, Select } from "antd";
 import CircleCheck from "../assets/CircleCheck.svg";
 import CircleTime from "../assets/CircleTime.svg";
 import DataTableSettlement from "./DataTableSettlement";
+import {
+  setSettlementSelectedYear,
+  setSettlementSelectedMonth,
+} from "../../Redux/Menu/Action";
 
 const LoadDatainfo = (props) => {
   const navigate = useNavigate();
@@ -49,8 +53,12 @@ const LoadDatainfo = (props) => {
   const loadDataInfoList = useSelector(
     (state) => state.settlement.loadDataInfoList
   );
-
-  console.log(loadDataInfoList)
+  const trackingYear = useSelector((state) => state.menu?.settlementSelectYear);
+  const trackingMonth = useSelector(
+    (state) => state.menu?.settlementSelectMonth
+  );
+console.log(trackingMonth,trackingYear)
+  console.log(loadDataInfoList);
 
   const [selectYear, setSelectyear] = useState(state.year);
 
@@ -63,112 +71,121 @@ const LoadDatainfo = (props) => {
   }, [currentUGTGroup?.id]);
 
   useEffect(() => {
-    if (currentUGTGroup?.id && selectMonth && selectYear) {
+    if (currentUGTGroup?.id && trackingMonth && trackingYear) {
       if (
-                    userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
-                    userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
-                  ) {
-                    dispatch(
-                      getLoadDataDashBoard(
-                        currentUGTGroup?.id,
-                        state.id,
-                        selectYear,
-                        selectMonth,1
-                      )
-                    );
-                    dispatch(
-                      getLoadDataInfoList(
-                        currentUGTGroup?.id,
-                        state.id,
-                        selectYear,
-                        selectMonth,1
-                      )
-                    );
-                  } else if (
-                    userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
-                    userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
-                  ) {
-                    dispatch(
-                      getLoadDataDashBoard(
-                        currentUGTGroup?.id,
-                        state.id,
-                        selectYear,
-                        selectMonth,2
-                      )
-                    );
-                    dispatch(
-                      getLoadDataInfoList(
-                        currentUGTGroup?.id,
-                        state.id,
-                        selectYear,
-                        selectMonth,2
-                      )
-                    );
-                  } else if (
-                    userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
-                    userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
-                  ) {
-                    dispatch(
-                      getLoadDataDashBoard(
-                        currentUGTGroup?.id,
-                        state.id,
-                        selectYear,
-                        selectMonth,3
-                      )
-                    );
-                    dispatch(
-                      getLoadDataInfoList(
-                        currentUGTGroup?.id,
-                        state.id,
-                        selectYear,
-                        selectMonth,3
-                      )
-                    );
-                  } else {
-                    dispatch(
-                      getLoadDataDashBoard(
-                        currentUGTGroup?.id,
-                        state.id,
-                        selectYear,
-                        selectMonth,0
-                      )
-                    );
-                    dispatch(
-                      getLoadDataInfoList(
-                        currentUGTGroup?.id,
-                        state.id,
-                        selectYear,
-                        selectMonth,0
-                      )
-                    );
-                  }
-      
-    }
-  }, [currentUGTGroup?.id, selectMonth, selectYear]);
-
-  useEffect(() => {
-    if (loadInfoYearList.yearList) {
-      if (!selectYear) {
-        setSelectyear(loadInfoYearList.yearList[0]);
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        dispatch(
+          getLoadDataDashBoard(
+            currentUGTGroup?.id,
+            state.id,
+            trackingYear,
+            trackingMonth,
+            1
+          )
+        );
+        dispatch(
+          getLoadDataInfoList(
+            currentUGTGroup?.id,
+            state.id,
+            trackingYear,
+            trackingMonth,
+            1
+          )
+        );
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        dispatch(
+          getLoadDataDashBoard(
+            currentUGTGroup?.id,
+            state.id,
+            trackingYear,
+            trackingMonth,
+            2
+          )
+        );
+        dispatch(
+          getLoadDataInfoList(
+            currentUGTGroup?.id,
+            state.id,
+            trackingYear,
+            trackingMonth,
+            2
+          )
+        );
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        dispatch(
+          getLoadDataDashBoard(
+            currentUGTGroup?.id,
+            state.id,
+            trackingYear,
+            trackingMonth,
+            3
+          )
+        );
+        dispatch(
+          getLoadDataInfoList(
+            currentUGTGroup?.id,
+            state.id,
+            trackingYear,
+            trackingMonth,
+            3
+          )
+        );
+      } else {
+        dispatch(
+          getLoadDataDashBoard(
+            currentUGTGroup?.id,
+            state.id,
+            trackingYear,
+            trackingMonth,
+            0
+          )
+        );
+        dispatch(
+          getLoadDataInfoList(
+            currentUGTGroup?.id,
+            state.id,
+            trackingYear,
+            trackingMonth,
+            0
+          )
+        );
       }
     }
-  }, [loadInfoYearList]);
+  }, [currentUGTGroup?.id, trackingMonth, trackingYear]);
+
+  /*useEffect(() => {
+    if (loadInfoYearList.yearList) {
+      if (!trackingYear) {
+        setSelectyear(loadInfoYearList.yearList[0]);
+        dispatch(setSettlementSelectedYear(loadInfoYearList.yearList[0]))
+      }
+    }
+  }, [loadInfoYearList]);*/
 
   useEffect(() => {
-    if (currentUGTGroup?.id && selectYear) {
+    if (currentUGTGroup?.id && trackingYear) {
       dispatch(
-        getLoadDataInfoMonthList(currentUGTGroup?.id, selectYear, state.id)
+        getLoadDataInfoMonthList(currentUGTGroup?.id, trackingYear, state.id)
       );
     }
-  }, [currentUGTGroup?.id, selectYear]);
+  }, [currentUGTGroup?.id, trackingYear]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (loadInfoMontList.monthList) {
-      if (!selectMonth) {
+      if (!trackingMonth) {
         setSelectMonth(loadInfoMontList.monthList[0]);
+        dispatch(setSettlementSelectedMonth(loadInfoMontList.monthList[0]))
       }
     }
-  }, [loadInfoMontList]);
+  }, [loadInfoMontList]);*/
 
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
@@ -203,31 +220,33 @@ const LoadDatainfo = (props) => {
               highlightTag={Highlight}
               searchWords={[searchQueryActive]}
               autoEscape={true}
-              textToHighlight={row.subscriberType == 1? "Subscriber": "Aggregate Subscriber"}
+              textToHighlight={
+                row.subscriberType == 1 ? "Subscriber" : "Aggregate Subscriber"
+              }
             />
           </label>
         </div>
       ),
     },
     {
-        id: "subscriberCode",
-        label: "Subscriber Code",
-        align: "left",
-        maxWidth: "300px",
-        render: (row) => (
-          <div className="flex flex-col justify-center">
-            <div className="break-words">
-              <Highlighter
-                highlightClassName="highlight"
-                highlightTag={Highlight}
-                searchWords={[searchQueryActive]}
-                autoEscape={true}
-                textToHighlight={row.subscriberCode}
-              />
-            </div>
+      id: "subscriberCode",
+      label: "Subscriber Code",
+      align: "left",
+      maxWidth: "300px",
+      render: (row) => (
+        <div className="flex flex-col justify-center">
+          <div className="break-words">
+            <Highlighter
+              highlightClassName="highlight"
+              highlightTag={Highlight}
+              searchWords={[searchQueryActive]}
+              autoEscape={true}
+              textToHighlight={row.subscriberCode}
+            />
           </div>
-        ),
-      },
+        </div>
+      ),
+    },
     {
       id: "utility",
       label: "Utility",
@@ -276,9 +295,7 @@ const LoadDatainfo = (props) => {
           highlightTag={Highlight}
           searchWords={[searchQueryActive]}
           autoEscape={true}
-          textToHighlight={numeral(row.totalLoad1).format(
-            "0,0.00"
-          )}
+          textToHighlight={numeral(row.totalLoad1).format("0,0.00")}
         />
       ),
     },
@@ -317,9 +334,7 @@ const LoadDatainfo = (props) => {
           highlightTag={Highlight}
           searchWords={[searchQueryActive]}
           autoEscape={true}
-          textToHighlight={numeral(row.totalLoad2).format(
-            "0,0.00"
-          )}
+          textToHighlight={numeral(row.totalLoad2).format("0,0.00")}
         />
       ),
     },
@@ -359,8 +374,8 @@ const LoadDatainfo = (props) => {
             state={{
               subscriberId: row?.subscriberid,
               subscriberName: row?.subscriberName,
-              year: selectYear,
-              month: selectMonth,
+              year: trackingYear,
+              month: trackingMonth,
               portfolioId: state.id,
               portName: state.name,
             }}
@@ -405,8 +420,8 @@ const LoadDatainfo = (props) => {
                   <Form.Item className="col-span-2 col-start-1">
                     <Select
                       size="large"
-                      value={selectYear}
-                      onChange={(value) => setSelectyear(value)}
+                      value={trackingYear}
+                      onChange={(value) => dispatch(setSettlementSelectedYear(value))}
                     >
                       {loadInfoYearList?.yearList?.map((item, index) => (
                         <Select.Option
@@ -423,8 +438,8 @@ const LoadDatainfo = (props) => {
                   <Form.Item className="col-span-2 col-start-3 ml-2">
                     <Select
                       size="large"
-                      value={selectMonth}
-                      onChange={(value) => setSelectMonth(value)}
+                      value={trackingMonth}
+                      onChange={(value) => dispatch(setSettlementSelectedMonth(value))}
                     >
                       {loadInfoMontList?.monthList?.map((item, index) => (
                         <Select.Option
@@ -469,8 +484,7 @@ const LoadDatainfo = (props) => {
                         </label>
                         <span> </span>
                         <label className="text-base font-medium text-slate-500">
-                          {"out of " +
-                            loadDateDashBoard?.outOf}
+                          {"out of " + loadDateDashBoard?.outOf}
                         </label>
                       </div>
                     </div>
@@ -509,13 +523,12 @@ const LoadDatainfo = (props) => {
                         </label>
                         <span> </span>
                         <label className="text-base font-medium text-slate-500">
-                          {"out of " +
-                            loadDateDashBoard?.outOf}
+                          {"out of " + loadDateDashBoard?.outOf}
                         </label>
                       </div>
                     </div>
                     <div className="font-bold mt-1">
-                    Load Data Input (Revision 2)
+                      Load Data Input (Revision 2)
                     </div>
                     <div className="text-gray-500 text-xs">
                       A number of Load Data Inputs submitted via API
@@ -546,9 +559,7 @@ const LoadDatainfo = (props) => {
                     </div>
                     <div className="text-end">
                       <label className="text-4xl font-semibold flex justify-end">
-                        {numeral(loadDateDashBoard?.totalLoad).format(
-                          "0,0.00"
-                        )}
+                        {numeral(loadDateDashBoard?.totalLoad).format("0,0.00")}
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
