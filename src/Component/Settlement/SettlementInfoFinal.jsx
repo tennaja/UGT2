@@ -28,7 +28,7 @@ import Highlighter from "react-highlight-words";
 import CollapsDataTable from "./CollapsDataTable";
 import { getSettlementMonthlyDetailFinal } from "../../Redux/Settlement/Action";
 import DonutChart from "./DonutChart";
-
+import noContent from "../assets/no-content.png";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 // Chart import
@@ -85,7 +85,8 @@ const SettlementInfoFinal = ({
   utilityId = 0,
   selectTab = "final",
   isGenPDF = false,
-  status
+  status,
+  hideBtn
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -1178,6 +1179,13 @@ const SettlementInfoFinal = ({
         setIsShowDetailMonthly(true)
       }
     }
+
+    if(settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0){
+        hideBtn(false)
+    }
+    else{
+      hideBtn(true)
+    }
   }, [settlementMonthlySummaryData]);
 
   const getNewCenter =()=>{
@@ -1873,7 +1881,7 @@ console.log(settlemtDetailDevice)
         </div>
       )}
 
-      {isShowMainDetail  && (
+      {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowMainDetail  && (
         <div
           className={`
         ${
@@ -2810,7 +2818,10 @@ console.log(settlemtDetailDevice)
             </div>
           :undefined}
         </div>
-      )}
+      ):(<div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4 h-[400px]">
+                      <img src={noContent} alt="React Logo" width={50} height={50} />
+                      <div>No Data Found.</div>
+                    </div>)}
 
       {isShowAwaitConfirm && 
       (

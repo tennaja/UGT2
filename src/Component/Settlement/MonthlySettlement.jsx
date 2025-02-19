@@ -49,6 +49,7 @@ const MonthlySettlement = (props) => {
   );
 console.log(settlementStatus,monthListData)
   const [isShowView, setIsShowView] = useState(false);
+  const [hideBtn,setHideBtn] = useState(false)
   console.log(settlementYear, settlementMonth);
   useEffect(() => {
     if (settlementYear != null && settlementMonth != null) {
@@ -299,6 +300,7 @@ console.log(settlementStatus,monthListData)
           settlementMonth={settlementMonth}
           isShowDetail={isShowDetail}
           status={settlementStatus.status}
+          hideBtn={setHideBtn}
         />
       </Card>
     )

@@ -328,6 +328,7 @@ export const getSettlementMonthlySummary = (ugtGroupId, portfolioId, year, month
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            console.log(response)
             dispatch(_getSettlementMonthlySummary(response.data));
         }).catch((error) => {
             dispatch(failRequest(error.message))
@@ -347,8 +348,11 @@ export const getSettlementMonthlySummaryFinal = (ugtGroupId, portfolioId, year, 
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            //console.log(response)
             dispatch(_getSettlementMonthlySummaryFinal(response.data));
         }).catch((error) => {
+            //console.log(error)
+            dispatch(_getSettlementMonthlySummaryFinal({}));
             dispatch(failRequest(error.message))
         }).finally(() => {
             setTimeout(() => {

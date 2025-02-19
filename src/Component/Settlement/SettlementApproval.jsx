@@ -164,6 +164,7 @@ export default function SettlementApproval() {
   const RemarkReject = useRef("");
   const RemarkRequestEdit = useRef("");
   const contentRef = useRef();
+  const [hideBtn,setHideBtn] = useState(false)
 
   let isDeviceOwner = false;
   if(userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG || userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG || userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ){
@@ -1248,10 +1249,14 @@ export default function SettlementApproval() {
               ) : selectTab == "final" ? (
                 <>
                   {/*Final Tabs */}
-                  <div className="text-xl font-semibold text-[#4D6A00]">
+                  <div className={
+                        hideBtn
+                          ? `text-xl font-semibold text-[#4D6A00] mt-[30px]`
+                          : `text-xl font-semibold text-[#4D6A00]`
+                      }>
                     Monthly Settlement
                   </div>
-                  <Form layout="horizontal" size="large">
+                  {hideBtn == false?<Form layout="horizontal" size="large">
                     <div
                       className={
                         isCanVerify
@@ -1360,7 +1365,7 @@ export default function SettlementApproval() {
                         />
                       )}
                     </div>
-                  </Form>
+                  </Form>:undefined}
                 </>
               ) : (
                 <>
@@ -1417,6 +1422,7 @@ export default function SettlementApproval() {
                 selectTab={selectTab}
                 isGenPDF={isGenPDF}
                 status={settlementDetailStatus.status}
+                hideBtn={setHideBtn}
               />
             ) : (
               <HistoryLogSettlement
@@ -1455,7 +1461,7 @@ export default function SettlementApproval() {
             )}
           </div>*/}
 
-          {selectTab == "final" && isGenPDF == false ? (
+          {hideBtn == false && selectTab == "final" && isGenPDF == false ? (
             settlementDetailStatus.status == "N" && isCanVerify == true ? (
               <div className="flex justify-between px-4 mt-4">
                 <div>
