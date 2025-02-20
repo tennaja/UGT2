@@ -1430,7 +1430,7 @@ const ItemIssue = ({
         </div>
       ) : undefined}
 
-      {issueRequest.issueRequestHistory.length !== 0 && (
+      {issueRequest !== null && issueRequest.issueRequestHistory.length !== 0 ? (
         <div className="border-3 border-dotted px-[20px] py-[10px] mt-4">
           {issueRequest.issueRequestHistory.map((item, index) => {
             return (
@@ -1445,7 +1445,7 @@ const ItemIssue = ({
             );
           })}
         </div>
-      )}
+      ):undefined}
 
       <Modal
         opened={openModalConfirm}
