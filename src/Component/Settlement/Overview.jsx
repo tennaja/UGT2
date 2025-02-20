@@ -55,9 +55,9 @@ const customLegendBarRow2 = [
 ];
 
 const customLegendLine = [
-  { name: "Contracted Consumption", color: "#B0BAC9", style: "dash" },
-  { name: "Actual Consumption", color: "#005E4D", style: "solid" },
-  { name: "Net Deliverables", color: "#EF4835", style: "solid" },
+  { name: "Total Contracted Load", color: "#B0BAC9", style: "dash" },
+  { name: "Total Load", color: "#005E4D", style: "solid" },
+  { name: "Net Green Deliverables", color: "#EF4835", style: "solid" },
 ];
 
 const Overview = (props) => {

@@ -1809,7 +1809,7 @@ console.log(settlemtDetailDevice)
         </div>
       )}
 
-      {isShowGotiVerify && (
+      {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowGotiVerify && (
         <div className="flex justify-center z-1">
           <Card
             radius="lg"
@@ -1843,9 +1843,9 @@ console.log(settlemtDetailDevice)
             </div>
           </Card>
         </div>
-      )}
+      ):undefined}
 
-      {isShowGotoConfirm && (
+      {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowGotoConfirm && (
         <div className="flex justify-center z-1">
           <Card
             radius="lg"
@@ -1879,7 +1879,7 @@ console.log(settlemtDetailDevice)
             </div>
           </Card>
         </div>
-      )}
+      ):undefined}
 
       {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowMainDetail  && (
         <div

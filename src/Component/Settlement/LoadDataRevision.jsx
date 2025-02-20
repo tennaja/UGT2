@@ -1217,6 +1217,22 @@ const LoadDataRevision = ({
                         </div>
                       </div>
                     </div>
+                    {/*Row 8 */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                      {/*Assign Utility */}
+                      <div>
+                        <label className="text-[#6B7280] text-xs ">
+                          Data Source
+                        </label>
+                        <div className="break-words	font-bold">
+                          {renderData(loadDataRevision?.dataSource)}
+                        </div>
+                      </div>
+                      {/* */}
+                      <div>
+                        
+                      </div>
+                    </div>
                   </div>
 
                   <Divider
