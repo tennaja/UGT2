@@ -19,6 +19,8 @@ import { setCurrentUgtGroup, setOpenMenu } from "../../Redux/Menu/Action";
 import { Group, Avatar, Text, Menu, UnstyledButton } from "@mantine/core";
 import { FaCaretDown, FaBars } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
+import NavBarIcon from "../assets/UGTNavBarIcon.png"
+import NavIcon from "../assets/NavIcon.png"
 const imageProfile =
   "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
 
@@ -154,9 +156,9 @@ const Navbar = () => {
             <div className="flex flex-1 items-center justify-start lg:block">
               <div className="flex flex-shrink-0 items-center ">
                 <span className="text-white font-medium text-lg lg:text-lg">
-                  UGT PLATFORM
+                <img src={NavIcon} alt="NavBarIcon" width={110} height={50}/>
                 </span>
-                <ImLeaf className="ml-2 text-white"></ImLeaf>
+                {/*<ImLeaf className="ml-2 text-white"></ImLeaf>*/}
               </div>
             </div>
 

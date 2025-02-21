@@ -11,6 +11,7 @@ import { useState } from "react";
 import ModalFail from "../Control/Modal/ModalFail";
 import * as WEB_URL from "../../Constants/WebURL";
 import ModelLoadPage from "../Control/NewLoadDing";
+import UGTLoginIcon from "../assets/UGTLoginIcon.png"
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -108,14 +109,14 @@ const LoginForm = () => {
                 <img
                   alt={"ig"}
                   // src={"/icon-green-login-1000-px.png"}
-                  src={UGTLogo}
-                  width={250}
-                  height={250}
-                  className="ml-7"
+                  src={UGTLoginIcon}
+                  width={350}
+                  height={350}
+                  className="mt-20"
                 ></img>
               </div>
               <h1 className="mt-2 text-xl font-bold leading-tight tracking-tight text-black md:text-2xl dark:text-white">
-                UGT PLATFORM
+                {/*UGT PLATFORM*/}
                 <label className="block mb-2 text-sm font-medium text-gray-300 ">
                   Your Gateway to Empowering Sustainability
                 </label>

@@ -78,6 +78,7 @@ import submenuPortfolioLogoInfoSelected from "../assets/graphInfo_selected.svg";
 import dayjs from "dayjs";
 import { useMediaQuery } from "@mantine/hooks";
 import { set } from "lodash";
+import UGTFAVIcon from "../../../public/UGTFAVIcon.png"
 // const initMainMenu = 5;
 // const initSubMenu = 1; // Info
 
@@ -604,14 +605,16 @@ const Sidebar2 = ({ children }) => {
     <div className="flex w-full">
       {openMenu && (
         <div className="bg-[#071437] lg:flex lg:flex-col  xs:w-3/12 xs:h-128 w-24">
-          <div className="flex justify-center">
+          <div className="flex justify-center w-24 h-[60px]">
+            <div>
             <img
               alt={"ig"}
-              src={UGTLogo}
-              width={60}
-              height={60}
-              className="ml-2"
+              src={UGTFAVIcon}
+              width={40}
+              height={40}
+              className="ml-2 mt-2"
             ></img>
+            </div>
           </div>
 
           <hr className="border-1 border-solid border-slate-400 mt-0" />
