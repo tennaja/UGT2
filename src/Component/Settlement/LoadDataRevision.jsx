@@ -1264,7 +1264,7 @@ const LoadDataRevision = ({
                       File upload
                     </div>
                     <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
-                      (.pdf) <label className="text-red-600">*</label>
+                    {loadDataRevision.subscriberTypeId == 1?<div>(.pdf) <label className="text-red-600">*</label></div>:<div> หนังสือยืนยันหน่วย (.pdf) <label className="text-red-600">*</label></div>}
                     </div>
                     <Dragger
                       {...props}
@@ -1286,7 +1286,7 @@ const LoadDataRevision = ({
                   </div>
                   <div className="flex flex-col w-1/2 mt-2 ">
                     <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
-                      (.xls) <label className="text-red-600">*</label>
+                    {loadDataRevision.subscriberTypeId == 1?<div>(.xls) <label className="text-red-600">*</label></div>:<div>ข้อมูลหน่วยแยกผู้รับ (blinded) in detail (.xls) <label className="text-red-600">*</label></div>}
                     </div>
                     <Dragger
                       {...propsContractInvoice}
