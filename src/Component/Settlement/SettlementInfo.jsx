@@ -61,6 +61,7 @@ import ModalRemainingEnergyAttribute from "./ModalRemainingEnergyAttribute";
 import WaitApprove from "../assets/WaitApprove.png"
 import { AiOutlineConsoleSql } from "react-icons/ai";
 import { FaLessThanEqual } from "react-icons/fa";
+import noContent from "../assets/no-content.png";
 
 const COLORS = [
   "#FF8042",
@@ -86,7 +87,8 @@ const SettlementInfo = ({
   utilityId = 0,
   selectTab = "final",
   isGenPDF = false,
-  status
+  status,
+  hideBtn
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -1169,6 +1171,13 @@ console.log(userData)
         setIsShowDetailMonthly(true)
       }
     }
+
+    if(settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0){
+      hideBtn(false)
+  }
+  else{
+    hideBtn(true)
+  }
   }, [settlementMonthlySummaryData]);
 
   const getNewCenter =()=>{
@@ -1860,7 +1869,7 @@ console.log(settlemtDetailDevice)
           </Card>
         </div>
       )}
-      {isShowSettlementProgress && 
+      {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowSettlementProgress && 
       (
         <div className="w-full h-[400px] items-center content-center">
           <div className="flex justify-center items-center">
@@ -1876,9 +1885,9 @@ console.log(settlemtDetailDevice)
           Settlement in progress
           </label>
         </div>
-      ) }
+      ) :undefined}
 
-      {isShowAwaitConfirm && 
+      {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowAwaitConfirm && 
       (
         <div className="w-full h-[400px] items-center content-center">
           <div className="flex justify-center items-center">
@@ -1894,9 +1903,9 @@ console.log(settlemtDetailDevice)
             Awaiting For Confirmation
           </label>
         </div>
-      )}
+      ):undefined}
 
-      {isShowMainDetail && (
+      {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowMainDetail && (
         <div
           className={`
         ${
@@ -2347,7 +2356,10 @@ console.log(settlemtDetailDevice)
             </div>
           :undefined}
         </div>
-      )}
+      ):(<div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4 h-[400px]">
+                            <img src={noContent} alt="React Logo" width={50} height={50} />
+                            <div>No Data Found.</div>
+                          </div>)}
 
       {/*isShowDetailMonthly*/ hideData && (
         <div

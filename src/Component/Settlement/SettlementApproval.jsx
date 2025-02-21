@@ -165,6 +165,7 @@ export default function SettlementApproval() {
   const RemarkRequestEdit = useRef("");
   const contentRef = useRef();
   const [hideBtn,setHideBtn] = useState(false)
+  const [hideBtnInitial,setHideBtnInitial] = useState(false)
 
   let isDeviceOwner = false;
   if(userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG || userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG || userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ){
@@ -1158,10 +1159,14 @@ export default function SettlementApproval() {
               {selectTab == "initial" ? (
                 <>
                   {/*Initial Tabs*/}
-                  <div className="text-xl font-semibold text-[#4D6A00]">
+                  <div className={
+                        hideBtnInitial
+                          ? `text-xl font-semibold text-[#4D6A00] mt-[30px]`
+                          : `text-xl font-semibold text-[#4D6A00]`
+                      }>
                     Monthly Settlement
                   </div>
-                  <Form layout="horizontal" size="large">
+                  {hideBtnInitial == false?<Form layout="horizontal" size="large">
                     <div className={`grid gap-4 pt-4 grid-cols-3`}>
                       {/*<Form.Item className="col-span-1"></Form.Item>*/}
                       {/*Select Year filter */}
@@ -1244,7 +1249,7 @@ export default function SettlementApproval() {
                         ]}
                       />
                     </div>
-                  </Form>
+                  </Form>:undefined}
                 </>
               ) : selectTab == "final" ? (
                 <>
@@ -1408,6 +1413,7 @@ export default function SettlementApproval() {
                 selectTab={selectTab}
                 isGenPDF={isGenPDF}
                 status={settlementDetailStatus.status}
+                hideBtn={setHideBtnInitial}
               />
             ) : selectTab == "final" ? (
               <SettlementInfoFinal

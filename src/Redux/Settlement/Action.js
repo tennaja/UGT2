@@ -331,6 +331,7 @@ export const getSettlementMonthlySummary = (ugtGroupId, portfolioId, year, month
             console.log(response)
             dispatch(_getSettlementMonthlySummary(response.data));
         }).catch((error) => {
+            dispatch(_getSettlementMonthlySummary({}));
             dispatch(failRequest(error.message))
         }).finally(() => {
             setTimeout(() => {
