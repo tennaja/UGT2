@@ -139,7 +139,7 @@ const Navbar = () => {
   };
   return (
     <>
-      <nav className="bg-gradient-to-r from-[#BEE484] to-[#87BE33]">
+      <nav className="bg-gradient-to-r from-[#BEE484] via-[#9FCB5D] to-[#87BE33]">
         <div className="px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between md:justify-evenly gap-2">
             {/* Mobile toggle*/}
