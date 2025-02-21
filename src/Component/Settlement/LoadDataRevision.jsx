@@ -1049,300 +1049,306 @@ const LoadDataRevision = ({
     setPopupConfirm(false);
   };
 
-  console.log(loadDataRevision)
+  console.log(loadDataRevision);
 
   return (
     <div>
       <div className="min-h-screen p-6 items-center justify-center">
         <div className="container max-w-screen-lg mx-auto">
           <div className="text-left flex flex-col gap-3">
-            { loadDataRevision && Object.keys(loadDataRevision).length !== 0 ?(<div>
-              <div className="md:col-span-6">
-                <div className="grid grid-cols-12 gap-1">
-                  <div className="row-span-3 col-span-12 lg:col-span-3">
-                    <div className="shrink-0">
-                      <h6 className="text-PRIMARY_TEXT">
-                        <b>Subscriber Information</b>
-                      </h6>
+            {loadDataRevision && Object.keys(loadDataRevision).length !== 0 ? (
+              <div>
+                <div className="md:col-span-6">
+                  <div className="grid grid-cols-12 gap-1">
+                    <div className="row-span-3 col-span-12 lg:col-span-3">
+                      <div className="shrink-0">
+                        <h6 className="text-PRIMARY_TEXT">
+                          <b>Subscriber Information</b>
+                        </h6>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="col-span-12 lg:col-span-9">
-                    {/*Row 1 */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Subscriber Name */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs">
-                          Subscriber Name
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(loadDataRevision?.subscriberName)}
+                    <div className="col-span-12 lg:col-span-9">
+                      {/*Row 1 */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                        {/*Subscriber Name */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs">
+                            Subscriber Name
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderData(loadDataRevision?.subscriberName)}
+                          </div>
+                        </div>
+                        {/*Status */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs ">
+                            Subscriber Code
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderData(loadDataRevision?.subscriberCode)}
+                          </div>
                         </div>
                       </div>
-                      {/*Status */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs ">
-                          Subscriber Code
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(loadDataRevision?.subscriberCode)}
+                      {/*Row 2 */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                        {/*Assign Utility */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs ">
+                            Utility
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderData(loadDataRevision?.utility)}
+                          </div>
+                        </div>
+                        {/*Subscriber Code */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs">
+                            UGT Type
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderData(loadDataRevision?.ugtType)}
+                          </div>
+                        </div>
+                      </div>
+                      {/*Row 3 */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                        {/*Assign Utility */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs ">
+                            Portfolio Code
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderData(loadDataRevision?.portfolioCode)}
+                          </div>
+                        </div>
+                        {/*Subscriber Code */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs">
+                            Approve Date
+                          </label>
+                          <div className="break-words	font-bold">
+                            {getFullDate(loadDataRevision?.approvedDate)}
+                          </div>
+                        </div>
+                      </div>
+                      {/*Row 4 */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                        {/*Trade Accout Name */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs">
+                            Settlement Month
+                          </label>
+                          <div className="break-words	font-bold">
+                            {getNameMonth(loadDataRevision?.settlementMonth)}
+                          </div>
+                        </div>
+                        {/*Trade Account Code */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs ">
+                            Settlement Year
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderData(loadDataRevision?.settlementYear)}
+                          </div>
+                        </div>
+                      </div>
+                      {/*Row 5 */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                        {/*Assign Utility */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs ">
+                            Data Start Date
+                          </label>
+                          <div className="break-words	font-bold">
+                            {getFullDate(loadDataRevision?.dataStartDate)}
+                          </div>
+                        </div>
+                        {/*Subscriber Code */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs">
+                            Data End Date
+                          </label>
+                          <div className="break-words	font-bold">
+                            {getFullDate(loadDataRevision?.dataEndDate)}
+                          </div>
+                        </div>
+                      </div>
+                      {/*Row 6 */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                        {/*Assign Utility */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs ">
+                            Total Load
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderNumeric(loadDataRevision?.totalLoad)}
+                          </div>
+                        </div>
+                        {/*Subscriber Code */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs">
+                            Settlement Revision
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderData(
+                              "Revision " + loadDataRevision?.settlementRevision
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      {/*Row 7 */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                        {/*Assign Utility */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs ">
+                            Peak Load
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderData(loadDataRevision?.peakLoad)}
+                          </div>
+                        </div>
+                        {/*Subscriber Code */}
+                        <div>
+                          <label className="text-[#6B7280] text-xs">
+                            Off-Peak Load
+                          </label>
+                          <div className="break-words	font-bold">
+                            {renderData(loadDataRevision?.offPeakLoad)}
+                          </div>
                         </div>
                       </div>
                     </div>
-                    {/*Row 2 */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Assign Utility */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs ">
-                          Utility
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(loadDataRevision?.utility)}
-                        </div>
-                      </div>
-                      {/*Subscriber Code */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs">
-                          UGT Type
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(loadDataRevision?.ugtType)}
-                        </div>
-                      </div>
-                    </div>
-                    {/*Row 3 */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Assign Utility */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs ">
-                          Portfolio Code
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(loadDataRevision?.portfolioCode)}
-                        </div>
-                      </div>
-                      {/*Subscriber Code */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs">
-                          Approve Date
-                        </label>
-                        <div className="break-words	font-bold">
-                          {getFullDate(loadDataRevision?.approvedDate)}
-                        </div>
-                      </div>
-                    </div>
-                    {/*Row 4 */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Trade Accout Name */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs">
-                          Settlement Month
-                        </label>
-                        <div className="break-words	font-bold">
-                          {getNameMonth(loadDataRevision?.settlementMonth)}
-                        </div>
-                      </div>
-                      {/*Trade Account Code */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs ">
-                          Settlement Year
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(loadDataRevision?.settlementYear)}
-                        </div>
-                      </div>
-                    </div>
-                    {/*Row 5 */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Assign Utility */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs ">
-                          Data Start Date
-                        </label>
-                        <div className="break-words	font-bold">
-                          {getFullDate(loadDataRevision?.dataStartDate)}
-                        </div>
-                      </div>
-                      {/*Subscriber Code */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs">
-                          Data End Date
-                        </label>
-                        <div className="break-words	font-bold">
-                          {getFullDate(loadDataRevision?.dataEndDate)}
-                        </div>
-                      </div>
-                    </div>
-                    {/*Row 6 */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Assign Utility */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs ">
-                          Total Load
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderNumeric(loadDataRevision?.totalLoad)}
-                        </div>
-                      </div>
-                      {/*Subscriber Code */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs">
-                          Settlement Revision
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(
-                            "Revision " + loadDataRevision?.settlementRevision
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    {/*Row 7 */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Assign Utility */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs ">
-                          Peak Load
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(loadDataRevision?.peakLoad)}
-                        </div>
-                      </div>
-                      {/*Subscriber Code */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs">
-                          Off-Peak Load
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(loadDataRevision?.offPeakLoad)}
-                        </div>
-                      </div>
-                    </div>
-                    {/*Row 8 */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Assign Utility */}
-                      <div>
-                        <label className="text-[#6B7280] text-xs ">
-                          Data Source
-                        </label>
-                        <div className="break-words	font-bold">
-                          {renderData(loadDataRevision?.dataSource)}
-                        </div>
-                      </div>
-                      {/* */}
-                      <div>
+
+                    <Divider
+                      className="mt-3 col-span-12 lg:col-span-9"
+                      orientation="horizontal"
+                      size={"xs"}
+                    />
+                  </div>
+                  <div className="grid grid-cols-12 gap-1">
+                  <div className="row-span-3 col-span-12 lg:col-span-3">
+                      <div className="shrink-0">
                         
                       </div>
                     </div>
-                  </div>
-
-                  <Divider
-                    className="mt-3 col-span-12 lg:col-span-9"
-                    orientation="horizontal"
-                    size={"xs"}
-                  />
-                </div>
-                <div className="text-right text-[#6B7280] text-sm">
-                  {"Date: " +
-                    getDate(loadDataRevision?.datetime, true) +
-                    " | Time: " +
-                    getDate(loadDataRevision?.datetime, false)}
-                </div>
-              </div>
-
-              <div className="mt-2">
-                <div>
-                  <label className="text-PRIMARY_TEXT text-lg font-semibold">
-                    <b>Documents Information Attachments</b>
-                  </label>
-                </div>
-                <div className="flex flex-col w-1/2  ">
-                  <div className="text-left text-[#6B7280] text-xs mt-1">
-                    File upload
-                  </div>
-                  <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
-                    (.pdf) <label className="text-red-600">*</label>
-                  </div>
-                  <Dragger
-                    {...props}
-                    fileList={fileMetering}
-                    className="custom-dragger"
-                    disabled={!canUpload}
-                  >
-                    <p className="ant-upload-drag-icon">
-                      <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
-                    </p>
-                    <p className="ant-upload-text">
-                      Drop files here or click to upload.
-                    </p>
-                    <p className="ant-upload-hint">
-                      Acceptable formats : pdf Each file can be a maximum of
-                      20MB.
-                    </p>
-                  </Dragger>
-                </div>
-                <div className="flex flex-col w-1/2 mt-2 ">
-                  <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
-                    (.xls) <label className="text-red-600">*</label>
-                  </div>
-                  <Dragger
-                    {...propsContractInvoice}
-                    fileList={fileContractInvoice}
-                    className="custom-dragger"
-                    disabled={!canUpload}
-                  >
-                    <p className="ant-upload-drag-icon">
-                      <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
-                    </p>
-                    <p className="ant-upload-text">
-                      Drop files here or click to upload.
-                    </p>
-                    <p className="ant-upload-hint">
-                      Acceptable formats : .xls, .xlsx Each file can be a
-                      maximum of 20MB.
-                    </p>
-                  </Dragger>
-                </div>
-                <div className="flex flex-col w-1/2 mt-3">
-                  <button
-                    className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center"
-                    onClick={() => downloadAllFile()}
-                  >
-                    <div className="flex items-center justify-center cursor-pointer">
-                      <LiaDownloadSolid className=" w-5 h-5 text-PRIMARY_TEXT" />
-                      <label className="text-PRIMARY_TEXT ml-2 font-semibold cursor-pointer">
-                        Download All file in (.zip)
-                      </label>
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              <div className="mt-5 text-right">
-                {canUpload == true && (
-                  <Button
-                    className="bg-lime-500 w-[150px] hover:bg-[#4D6A00] text-[#fff]"
-                    size="lg"
-                    onClick={OpenPopupConfirm}
-                  >
-                    Save
-                  </Button>
-                )}
-                {isMandatoryError && (
-                  <div className="justify-items-end">
-                    <div className="font-medium text-base flex items-center w-auto justify-center border-solid bg-[#fdeeee] border-red-300 border-3 rounded-[5px]  my-2 px-4 py-2 text-red-400 ">
-                      <div className="mr-2">
-                        <BiErrorCircle className="w-[25px] h-[25px] text-red-600" />
+                  <div className="col-span-12 lg:col-span-9">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                      {/*Assign Utility */}
+                      <div>
+                        <div className="text-left text-[#6B7280] text-sm">
+                          Data Source:{" "}
+                          {renderData(loadDataRevision?.dataSource)}
+                        </div>
                       </div>
-                      <div className="">Please Upload File</div>
+                      {/*Subscriber Code */}
+                      <div className="text-right text-[#6B7280] text-sm">
+                        {"Date: " +
+                          getDate(loadDataRevision?.datetime, true) +
+                          " | Time: " +
+                          getDate(loadDataRevision?.datetime, false)}
+                      </div>
                     </div>
                   </div>
-                )}
+                  </div>
+                </div>
+
+                <div className="mt-2">
+                  <div>
+                    <label className="text-PRIMARY_TEXT text-lg font-semibold">
+                      <b>Documents Information Attachments</b>
+                    </label>
+                  </div>
+                  <div className="flex flex-col w-1/2  ">
+                    <div className="text-left text-[#6B7280] text-xs mt-1">
+                      File upload
+                    </div>
+                    <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
+                      (.pdf) <label className="text-red-600">*</label>
+                    </div>
+                    <Dragger
+                      {...props}
+                      fileList={fileMetering}
+                      className="custom-dragger"
+                      disabled={!canUpload}
+                    >
+                      <p className="ant-upload-drag-icon">
+                        <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
+                      </p>
+                      <p className="ant-upload-text">
+                        Drop files here or click to upload.
+                      </p>
+                      <p className="ant-upload-hint">
+                        Acceptable formats : pdf Each file can be a maximum of
+                        20MB.
+                      </p>
+                    </Dragger>
+                  </div>
+                  <div className="flex flex-col w-1/2 mt-2 ">
+                    <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
+                      (.xls) <label className="text-red-600">*</label>
+                    </div>
+                    <Dragger
+                      {...propsContractInvoice}
+                      fileList={fileContractInvoice}
+                      className="custom-dragger"
+                      disabled={!canUpload}
+                    >
+                      <p className="ant-upload-drag-icon">
+                        <AiOutlineCloudUpload className="w-[50px] h-[50px] text-[#87be33]"></AiOutlineCloudUpload>
+                      </p>
+                      <p className="ant-upload-text">
+                        Drop files here or click to upload.
+                      </p>
+                      <p className="ant-upload-hint">
+                        Acceptable formats : .xls, .xlsx Each file can be a
+                        maximum of 20MB.
+                      </p>
+                    </Dragger>
+                  </div>
+                  <div className="flex flex-col w-1/2 mt-3">
+                    <button
+                      className="items-center px-2 py-2 border-[#4D6A00] border-2 w-full rounded-[5px] text-center"
+                      onClick={() => downloadAllFile()}
+                    >
+                      <div className="flex items-center justify-center cursor-pointer">
+                        <LiaDownloadSolid className=" w-5 h-5 text-PRIMARY_TEXT" />
+                        <label className="text-PRIMARY_TEXT ml-2 font-semibold cursor-pointer">
+                          Download All file in (.zip)
+                        </label>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-5 text-right">
+                  {canUpload == true && (
+                    <Button
+                      className="bg-lime-500 w-[150px] hover:bg-[#4D6A00] text-[#fff]"
+                      size="lg"
+                      onClick={OpenPopupConfirm}
+                    >
+                      Save
+                    </Button>
+                  )}
+                  {isMandatoryError && (
+                    <div className="justify-items-end">
+                      <div className="font-medium text-base flex items-center w-auto justify-center border-solid bg-[#fdeeee] border-red-300 border-3 rounded-[5px]  my-2 px-4 py-2 text-red-400 ">
+                        <div className="mr-2">
+                          <BiErrorCircle className="w-[25px] h-[25px] text-red-600" />
+                        </div>
+                        <div className="">Please Upload File</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>):
-            (<div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4 h-[400px]">
-                            <img src={noContent} alt="React Logo" width={50} height={50} />
-                            <div>No Data Found.</div>
-                          </div>)}
+            ) : (
+              <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4 h-[400px]">
+                <img src={noContent} alt="React Logo" width={50} height={50} />
+                <div>No Data Found.</div>
+              </div>
+            )}
           </div>
         </div>
       </div>

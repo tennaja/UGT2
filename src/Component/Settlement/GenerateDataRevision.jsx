@@ -1267,11 +1267,30 @@ const GenerateDataRevision = ({
                       size={"xs"}
                     />
                   </div>
-                  <div className="text-right text-[#6B7280] text-sm">
-                    {"Date: " +
-                      getDate(generateDataRevision?.datetime, true) +
-                      " | Time: " +
-                      getDate(generateDataRevision?.datetime, false)}
+                  <div className="grid grid-cols-12 gap-1">
+                  <div className="row-span-3 col-span-12 lg:col-span-3">
+                      <div className="shrink-0">
+                        
+                      </div>
+                    </div>
+                  <div className="col-span-12 lg:col-span-9">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                      {/*Assign Utility */}
+                      <div>
+                        <div className="text-left text-[#6B7280] text-sm">
+                          Data Source:{" "}
+                          {renderData(generateDataRevision?.dataSource)}
+                        </div>
+                      </div>
+                      {/*Subscriber Code */}
+                      <div className="text-right text-[#6B7280] text-sm">
+                        {"Date: " +
+                          getDate(generateDataRevision?.datetime, true) +
+                          " | Time: " +
+                          getDate(generateDataRevision?.datetime, false)}
+                      </div>
+                    </div>
+                  </div>
                   </div>
                 </div>
 
