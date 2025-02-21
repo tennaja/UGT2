@@ -144,7 +144,7 @@ const LoadDataDetail = (props) => {
                   Load Data Input
                 </h2>
                 <p className={`text-BREAD_CRUMB text-sm font-normal truncate`}>
-                  {currentUGTGroup?.name} / Settlement Management / Generation
+                  {currentUGTGroup?.name} / Settlement Management / Load
                   Data Input / {state.portName} / {state.subscriberName}
                 </p>
               </div>

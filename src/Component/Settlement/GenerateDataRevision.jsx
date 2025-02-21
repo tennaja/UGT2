@@ -1203,7 +1203,7 @@ const GenerateDataRevision = ({
                         {/*Assign Utility */}
                         <div>
                           <label className="text-[#6B7280] text-xs ">
-                            Total Gen
+                            Total Gen (kWh)
                           </label>
                           <div className="break-words	font-bold">
                             {renderNumeric(generateDataRevision?.totalGen)}
@@ -1227,7 +1227,7 @@ const GenerateDataRevision = ({
                         {/*Assign Utility */}
                         <div>
                           <label className="text-[#6B7280] text-xs ">
-                            Peak
+                            Peak (kWh)
                           </label>
                           <div className="break-words	font-bold">
                             {renderData(generateDataRevision?.peak)}
@@ -1236,7 +1236,7 @@ const GenerateDataRevision = ({
                         {/*Subscriber Code */}
                         <div>
                           <label className="text-[#6B7280] text-xs">
-                            Off-Peak
+                            Off-Peak (kWh)
                           </label>
                           <div className="break-words	font-bold">
                             {renderData(generateDataRevision?.offPeak)}

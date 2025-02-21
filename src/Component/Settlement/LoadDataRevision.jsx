@@ -1179,7 +1179,7 @@ const LoadDataRevision = ({
                         {/*Assign Utility */}
                         <div>
                           <label className="text-[#6B7280] text-xs ">
-                            Total Load
+                            Total Load (kWh)
                           </label>
                           <div className="break-words	font-bold">
                             {renderNumeric(loadDataRevision?.totalLoad)}
@@ -1202,7 +1202,7 @@ const LoadDataRevision = ({
                         {/*Assign Utility */}
                         <div>
                           <label className="text-[#6B7280] text-xs ">
-                            Peak Load
+                            Peak Load (kWh)
                           </label>
                           <div className="break-words	font-bold">
                             {renderData(loadDataRevision?.peakLoad)}
@@ -1211,7 +1211,7 @@ const LoadDataRevision = ({
                         {/*Subscriber Code */}
                         <div>
                           <label className="text-[#6B7280] text-xs">
-                            Off-Peak Load
+                            Off-Peak Load (kWh)
                           </label>
                           <div className="break-words	font-bold">
                             {renderData(loadDataRevision?.offPeakLoad)}

@@ -1601,7 +1601,8 @@ export default function SettlementApproval() {
                     openCheckBox={false}
                     setRemark={RemarkReject}
                     sizeModal={"md"}
-                    textButton="Confirm"
+                    textButton="Reject"
+                    buttonTypeColor={"danger"}
                   />
                 )}
 
