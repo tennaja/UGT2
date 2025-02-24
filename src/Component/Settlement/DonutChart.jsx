@@ -47,9 +47,9 @@ const DonutChart = ({data,totalPercent,unit,convertUnit,additional}) => {
   ])
 
   useEffect(() => {
-    
+     let percentNew = numeral(totalPercent).format("0,000.00")
       setChartData(data); // อัปเดตข้อมูลกราฟ
-      setTotalLoadPercentage(totalPercent); // อัปเดตเปอร์เซ็นต์
+      setTotalLoadPercentage(percentNew); // อัปเดตเปอร์เซ็นต์
       setChartKey((prevKey) => prevKey + 1);
       setAdditionalData(additional)
   }, [data]);

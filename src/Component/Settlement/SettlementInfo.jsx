@@ -417,8 +417,9 @@ console.log(userData)
     //let actualHydro = settlementMonthlySummaryData.actualHydroPercentage?settlementMonthlySummaryData.actualHydroPercentage:0
     let UGT2Inventory = settlementMonthlySummaryData.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData.ugt2InventoryMatchedPercentage:0
     let UGT1Inventory = settlementMonthlySummaryData.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData.ugt1InventoryMatchedPercentage:0
-
+    console.log(actualSolar,UGT2Inventory,UGT1Inventory)
     let total = actualSolar+UGT2Inventory+UGT1Inventory
+    console.log(total)
     
     return total
   }

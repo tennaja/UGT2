@@ -254,7 +254,7 @@ const DataTableSettlement = ({
 console.log(sortedData)
   const filteredData = sortedData?.filter((obj) => {
     for (let key in obj) {
-      console.log(key,searchTerm)
+      //console.log(key,searchTerm)
       if (key === "id") continue;
       if (key == "subscriberTypeId") {
        // console.log("subType")

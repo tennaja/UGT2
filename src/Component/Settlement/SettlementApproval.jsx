@@ -73,9 +73,9 @@ export default function SettlementApproval() {
     prevSelectedYear,
     prevSelectedMonth,
   } = location.state;
-  console.log(location.state);
+  //console.log(location.state);
   const currentUGTGroup = useSelector((state) => state.menu?.currentUGTGroup);
-  console.log(ugtGroupId);
+  //console.log(ugtGroupId);
   const settlementApprovalResponse = useSelector(
     (state) => state.settlement.settlementApproval
   );
@@ -109,12 +109,12 @@ export default function SettlementApproval() {
     (state) => state.settlement.settlementStatus
   );
 
-  console.log(settlementDetailStatus);
+  //console.log(settlementDetailStatus);
 
   const excelData = useSelector((state) => state.settlement.dataExcel);
   const [settlementYear, setSettlementYear] = useState(prevSelectedYear);
   const [settlementMonth, setSettlementMonth] = useState(prevSelectedMonth);
-  console.log(prevSelectedMonth);
+  //console.log(prevSelectedMonth);
   const [prevMonth, setPrevMonth] = useState(prevSelectedMonth);
   const [latestYearHasData, setLatestYearHasData] = useState(
     yearListData.latestYearHasData
@@ -839,7 +839,7 @@ export default function SettlementApproval() {
   };
 
   const checkMonth = (month) => {
-    console.log(month);
+    //console.log(month);
     if (
       userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
       userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
