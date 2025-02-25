@@ -1216,7 +1216,7 @@ export default function SettlementApproval() {
                             icon: (
                               <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
                             ),
-                            label: "Table",
+                            label: "Contract Table",
                             onClick: exportTablePDf,
                             rightTxt: "(.pdf)",
                             hide: isDeviceOwner
@@ -1234,7 +1234,7 @@ export default function SettlementApproval() {
                             icon: (
                               <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
                             ),
-                            label: "Table",
+                            label: "Contract Table",
                             onClick: exportTableExcelInitial,
                             rightTxt: "(.xls)",
                             hide: isDeviceOwner
@@ -1243,7 +1243,7 @@ export default function SettlementApproval() {
                             icon: (
                               <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
                             ),
-                            label: "Screen",
+                            label: "Screen Table",
                             onClick: exportScreenExcelInitial,
                             rightTxt: "(.xls)",
                             hide: false
@@ -1317,7 +1317,7 @@ export default function SettlementApproval() {
                             icon: (
                               <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
                             ),
-                            label: "Table",
+                            label: "Contract Table",
                             onClick: exportTablePDfFinal,
                             rightTxt: "(.pdf)",
                             hide: isDeviceOwner
@@ -1335,7 +1335,7 @@ export default function SettlementApproval() {
                             icon: (
                               <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
                             ),
-                            label: "Table",
+                            label: "Contract Table",
                             onClick: exportTableExcelFinal,
                             rightTxt: "(.xls)",
                             hide: isDeviceOwner
@@ -1344,7 +1344,7 @@ export default function SettlementApproval() {
                             icon: (
                               <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
                             ),
-                            label: "Screen",
+                            label: "Screen Table",
                             onClick: exportScreenExcelFinal,
                             rightTxt: "(.xls)",
                             hide: false
