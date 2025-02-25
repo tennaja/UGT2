@@ -507,7 +507,8 @@ const ItemRedemption = (props) => {
         <ModalFail
           onClickOk={handleCloseFailModal}
           title="Oops!"
-          content={modalFailContent}
+          content={"Something went wrong. Please go back and try again."}
+          //content={modalFailContent}
         />
       )}
     </>

@@ -627,7 +627,7 @@ console.log(inventoryTransaction)
       //const form = await handleGeneratePDFFileForm()
       console.log(base);
       //setIsGenarate(false)
-      openPDFInNewTab(base.binaryBase, "application/pdf", "test.pdf");
+      openPDFInNewTab(base.binaryBase, "application/pdf", base.file.name);
 
       console.log(base);
     } else if (inventoryTransaction.fileSF04) {
@@ -1779,7 +1779,7 @@ console.log(issueRequestStatus)
         </div>
       </Modal>
 
-      {showModalFail && <ModalFail onClickOk={handleCloseFailModal} />}
+      {showModalFail && <ModalFail  content={"Something went wrong. Please go back and try again."} onClickOk={handleCloseFailModal} />}
     </div>
   );
 };

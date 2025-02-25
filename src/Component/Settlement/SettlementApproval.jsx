@@ -788,7 +788,8 @@ export default function SettlementApproval() {
         settlementMonth,
         settlementDetailStatus.portfolioUgtId,
         true,
-        selectOptionUtilityID
+        selectOptionUtilityID,
+        portfolioName
       )
     );
   };
@@ -801,7 +802,8 @@ export default function SettlementApproval() {
         settlementMonth,
         settlementDetailStatus.portfolioUgtId,
         false,
-        selectOptionUtilityID
+        selectOptionUtilityID,
+        portfolioName
       )
     );
   };

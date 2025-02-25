@@ -614,7 +614,7 @@ const ItemIssue = ({
       //const form = await handleGeneratePDFFileForm()
       console.log(base);
       //setIsGenarate(false)
-      openPDFInNewTab(base.binaryBase, "application/pdf", "test.pdf");
+      openPDFInNewTab(base.binaryBase, "application/pdf", base.file.name);
 
       console.log(base);
     } else if (issueRequest.fileSF04) {
@@ -1875,7 +1875,7 @@ const ItemIssue = ({
         isSign={setSign.current}
         Sign={userData.firstName + " " + userData.lastName}
       />
-      {showModalFail && <ModalFail onClickOk={handleCloseFailModal} />}
+      {showModalFail && <ModalFail content={"Something went wrong. Please go back and try again."} onClickOk={handleCloseFailModal} />}
     </>
   );
 };
