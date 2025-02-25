@@ -851,7 +851,7 @@ export const getUnmatchedEnergyData = (ugtGroupId, portfolioId, year, month) => 
 export const getFileExcelSettlement =(portfolioId,year,month,ugtGroup,isInitial,utility,portName)=>{
     const URLAPI = `${GET_EXCEL_FILE_SETTLEMENT}?portfolioId=${portfolioId}&year=${year}&month=${month}&UgtGroupId=${ugtGroup}&Utility=${utility}&IsInitial=${isInitial}`
     console.log('URL', URL)
-
+    const initial = isInitial?"initial":"final"
     return async (dispatch) => {
         try {
           const response = await axios.get(URLAPI, { ...getHeaderConfig() });
@@ -869,7 +869,7 @@ export const getFileExcelSettlement =(portfolioId,year,month,ugtGroup,isInitial,
             const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "Report_Settlement_"+portName+"_"+month+"_"+year+".xlsx";
+            link.download = "ContractTable_"+initial+"_"+portName+"_"+String(month).padStart(2, '0')+"_"+year+".xlsx";
             link.click();
             URL.revokeObjectURL(link.href);
         } catch (error) {
@@ -879,10 +879,10 @@ export const getFileExcelSettlement =(portfolioId,year,month,ugtGroup,isInitial,
       };
 }
 
-export const getFileExcelScreenSettlement =(portfolioId,year,month,ugtGroup,isInitial)=>{
+export const getFileExcelScreenSettlement =(portfolioId,year,month,ugtGroup,isInitial,portCode)=>{
     const URLAPI = `${EXCEL_FILE_SCREEN_SETTLEMENT}?portfolioId=${portfolioId}&year=${year}&month=${month}&UgtGroupId=${ugtGroup}&IsInitial=${isInitial}`
     console.log('URL', URL)
-
+    const initial = isInitial?"initial":"final"
     return async (dispatch) => {
         try {
           const response = await axios.get(URLAPI, { ...getHeaderConfig() });
@@ -900,7 +900,7 @@ export const getFileExcelScreenSettlement =(portfolioId,year,month,ugtGroup,isIn
             const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "ReportScreen_Settlement.xlsx";
+            link.download = "ScreenTable_"+initial+"_"+portCode+"_"+String(month).padStart(2, '0')+"_"+year+".xlsx";
             link.click();
             URL.revokeObjectURL(link.href);
         } catch (error) {
