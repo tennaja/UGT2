@@ -75,6 +75,11 @@ import LoadDataSelect from "../assets/LoadDataSelect.svg"
 import submenuPortfolioLogoInfo from "../assets/graphInfo.svg";
 import submenuPortfolioLogoInfoSelected from "../assets/graphInfo_selected.svg";
 
+import IconMenu_Inventory from "../assets/IconMenu_Inventory.svg"
+import IconMenu_Inventory_Select from "../assets/IconMenu_Inventory_Select.svg"
+import IconSubMenu_Inventory from "../assets/IconSubMenu_Inventory.svg"
+import IconSubMenu_Inventory_Select from "../assets/IconSubMenu_Inventory_Select.svg"
+
 import dayjs from "dayjs";
 import { useMediaQuery } from "@mantine/hooks";
 import { set } from "lodash";
@@ -98,6 +103,7 @@ const Sidebar2 = ({ children }) => {
   const [submenu, setSubmenu] = useState([]);
   const [mainMenu, setMainMenu] = useState([]);
   //console.log(currentSubMenuList)
+  console.log(menuList)
   const setDefaultMenu = (userData) => {
     let userGroupID = userData?.userGroup?.id;
     let defaultMenu = null;
@@ -299,6 +305,9 @@ const Sidebar2 = ({ children }) => {
       if(selectedMenuID == 5){
         setSubmenu(currentSubMenuList)
       }
+      if(selectedMenuID == 7){
+        setSubmenu(currentSubMenuList)
+      }
     }
   }, [currentSubMenuList]);
 
@@ -383,6 +392,11 @@ const Sidebar2 = ({ children }) => {
           path = WEB_URL.EAC_REDEMPTION_CERTIFICATE;
           break;
       }
+    } else if(selectedMenuID == MENU_ID.INVENTORY){
+      switch (submenuID){
+        case 1:
+          path = WEB_URL.INVENTORY_INFO
+      }
     }
     //console.log(path)
     return path;
@@ -422,6 +436,9 @@ const Sidebar2 = ({ children }) => {
         }
         else if (id == 5){
           navigate(WEB_URL.SETTLEMENT_INFO)
+        }
+        else if(id == 7){
+          navigate(WEB_URL.INVENTORY_INFO)
         }
       } else {
         // onClickSubmenu(currentSubmenu);
@@ -477,6 +494,11 @@ const Sidebar2 = ({ children }) => {
       if(selectedMenuID == menuId) {
         logo = Settlement_Selected;
       }else logo = Settlement
+    } else if(menuId == MENU_ID.INVENTORY){
+      if(selectedMenuID == menuId){
+        logo = IconMenu_Inventory_Select
+      }
+      else logo = IconMenu_Inventory
     }
 
     return logo;
@@ -598,6 +620,31 @@ const Sidebar2 = ({ children }) => {
           break;
       }
     }
+    else if (selectedMenuID == MENU_ID.INVENTORY){
+      switch(submenuId){
+        case 1:
+          if (selectedSubMenu == submenuId) {
+            logo = IconSubMenu_Inventory_Select;
+          } else {
+            logo = IconSubMenu_Inventory;
+          }
+          break;
+       /* case 2:
+          if (selectedSubMenu == submenuId) {
+            logo = GenerateDataSelect;
+          } else {
+            logo = GenerateData;
+          }
+          break;
+        case 3:
+          if (selectedSubMenu == submenuId) {
+            logo = LoadDataSelect;
+          } else {
+            logo = LoadData;
+          }
+          break;*/
+      }
+    }
     return logo;
   };
 
@@ -622,6 +669,7 @@ const Sidebar2 = ({ children }) => {
           {mainMenu?.map((menu, index) => {
             return (
               <>
+              {menu.menuId == 7?undefined:
                 <div
                   onClick={() => {
                     onCLickMenuList(menu.menuId);
@@ -644,8 +692,9 @@ const Sidebar2 = ({ children }) => {
                   >
                     {menu?.name ? menu?.name.toUpperCase() : "-"}
                   </p>
-                </div>
-                <hr className="border-1 border-solid border-slate-400 my-2" />
+                  
+                </div>}
+                {menu.menuId == 7?undefined:<hr className="border-1 border-solid border-slate-400 my-2" />}
               </>
             );
           })}

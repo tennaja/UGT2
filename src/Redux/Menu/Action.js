@@ -21,7 +21,8 @@ import {
   GET_SUB_MENU_SUBSCRIBER_LIST_URL,
   GET_SUB_MENU_PORTFOLIO_LIST_URL,
   GET_SUB_MENU_EAC_TRACKING_LIST_URL,
-  GET_SUB_MENU_SETTLEMENT_URL
+  GET_SUB_MENU_SETTLEMENT_URL,
+  GET_SUB_MENU_INVENTORY
 } from "../../Constants/ServiceURL";
 import { getHeaderConfig } from "../../Utils/FuncUtils";
 import { ConstructionOutlined } from "@mui/icons-material";
@@ -134,6 +135,7 @@ export const FetchSubMenuList = (menuId) => {
   const subMenuListPorfolioURL = GET_SUB_MENU_PORTFOLIO_LIST_URL;
   const subMenuListEacTrackingURL = GET_SUB_MENU_EAC_TRACKING_LIST_URL;
   const subMenuListSettlement = GET_SUB_MENU_SETTLEMENT_URL
+  const subMenuListInventory = GET_SUB_MENU_INVENTORY
 
   if (menuId == 1) {
     return async (dispatch) => {};
@@ -200,5 +202,17 @@ export const FetchSubMenuList = (menuId) => {
         });
       //dispatch(setSubMenuList([{id:1,name:"Settlement Info"},{id:2,name:"Generation Data Input"},{id:3,name:"Load Data Input"}]))
     };
+  } else if(menuId == 7){
+    return async (dispatch) => {
+      await axios
+        .get(subMenuListInventory, getHeaderConfig())
+        .then((res) => {
+          console.log(res?.data?.submenuList)
+          dispatch(setSubMenuList(res?.data?.submenuList));
+        })
+        .catch((err) => {
+          dispatch(failRequest(err.message));
+        });
+      }
   }
 };
