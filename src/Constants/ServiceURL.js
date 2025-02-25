@@ -37,6 +37,7 @@ export const GET_SUB_MENU_SUBSCRIBER_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/subsc
 export const GET_SUB_MENU_PORTFOLIO_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-management/submenu-list`;
 export const GET_SUB_MENU_EAC_TRACKING_LIST_URL = `${DOMAIN_URL_EGAT}/ugt/v1/eac-tracking/submenu-list`;
 export const GET_SUB_MENU_SETTLEMENT_URL = `${DOMAIN_URL_EGAT}/ugt/v1/portfolio-view-settlement/submenu-list`;
+export const GET_SUB_MENU_INVENTORY = `${DOMAIN_URL_EGAT}/ugt/v1/inventory-management/submenu-list`;
 
 //Dropdrow
 export const UGT_GROUP_LIST = `${DOMAIN_URL}/ugt/v1/ugtgroup-list`;

@@ -848,7 +848,7 @@ export const getUnmatchedEnergyData = (ugtGroupId, portfolioId, year, month) => 
     // return _getInventorySupplyUsage(inventorySupplyUsageData)
 }
 
-export const getFileExcelSettlement =(portfolioId,year,month,ugtGroup,isInitial,utility)=>{
+export const getFileExcelSettlement =(portfolioId,year,month,ugtGroup,isInitial,utility,portName)=>{
     const URLAPI = `${GET_EXCEL_FILE_SETTLEMENT}?portfolioId=${portfolioId}&year=${year}&month=${month}&UgtGroupId=${ugtGroup}&Utility=${utility}&IsInitial=${isInitial}`
     console.log('URL', URL)
 
@@ -869,7 +869,7 @@ export const getFileExcelSettlement =(portfolioId,year,month,ugtGroup,isInitial,
             const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "Report_Settlement.xlsx";
+            link.download = "Report_Settlement_"+portName+"_"+month+"_"+year+".xlsx";
             link.click();
             URL.revokeObjectURL(link.href);
         } catch (error) {

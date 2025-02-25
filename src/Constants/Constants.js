@@ -7,6 +7,7 @@ export const MENU_ID = {
   PORTFOLIO: 4,
   EAC_TRACKING: 6,
   SETTLEMENT: 5,
+  INVENTORY: 7,
 };
 
 export const SUB_MENU_ID = {

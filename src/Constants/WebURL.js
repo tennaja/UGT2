@@ -51,3 +51,6 @@ export const EAC_REDEMPTION_CERT = '/eac/certificate/redemptionCert'
 export const SETTLEMENT_INFO = '/settlement/info'
 export const SETTLEMENT_DATA = '/settlement/datasettlement'
 
+//Inventory Link
+export const INVENTORY_INFO = "/inventory/info"
+
