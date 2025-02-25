@@ -778,12 +778,12 @@ console.log(inventoryTransaction)
     setShowModalSignAndSubmit(false);
     handleTakeActionSignAndSubmit();
   };
-
+  //console.log(inventoryTransaction.issueRequestHistory.filter((item)=>item.action === "Rejected"))
   const issueRequestDetailCreate = async (data,dataGen) => {
     console.log(data);
 
     console.log(issueTransactionData);
-
+    const checkStatus = inventoryTransaction.issueRequestHistory.filter((item)=>item.action === "Rejected")
     let fileUidArray = [];
     console.log(inventoryTransaction);
     inventoryTransaction.fileUploaded.map((item) =>
@@ -815,7 +815,7 @@ console.log(inventoryTransaction)
       fuel: `/fuels/${issueTransactionData.fuelCode}`,
       recipientAccount: `/accounts/${inventoryTransaction.tradeAccountCode}`,
       status:
-        issueRequestStatus?.toLowerCase() == "rejected" ? `Submitted` : `Draft`,
+      checkStatus.length != 0 ? `Submitted` : `Draft`,
       notes: note,
       issuerNotes: note,
       files: fileUidArray,

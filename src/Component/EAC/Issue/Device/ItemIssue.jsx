@@ -803,7 +803,7 @@ const ItemIssue = ({
       hideLoading();
     }
   };
-
+  //console.log(issueRequest.issueRequestHistory.filter((item)=>item.action === "Rejected"))
   const issueRequestDetailCreate = async (data,dataGen) => {
     console.log(data);
     let fileUidArray = [];
@@ -821,7 +821,7 @@ const ItemIssue = ({
     }
     )
     console.log(fileUidArray);
-
+    const checkStatus = issueRequest.issueRequestHistory.filter((item)=>item.action === "Rejected")
     const paramsDraft = {
       issueRequestId: issueRequestId,
       deviceCode: issueTransactionData.deviceCode,
@@ -837,7 +837,7 @@ const ItemIssue = ({
       fuel: `/fuels/${issueTransactionData.fuelCode}`,
       recipientAccount: `/accounts/${issueRequest.tradeAccountCode}`,
       status:
-        issueRequestStatus?.toLowerCase() == "rejected" ? `Submitted` : `Draft`,
+      checkStatus.length != 0 ? `Submitted` : `Draft`,
       notes: note,
       issuerNotes: note,
       files: fileUidArray,

@@ -98,6 +98,7 @@ export default function SettlementApproval() {
   const settlementDetailData = useSelector(
     (state) => state.settlement.settlementDetail
   );
+  console.log(settlementDetailData)
   const isShowModalFail = useSelector(
     (state) => state.settlement.isFailRequest
   );
@@ -164,14 +165,17 @@ export default function SettlementApproval() {
   const RemarkReject = useRef("");
   const RemarkRequestEdit = useRef("");
   const contentRef = useRef();
-  const [hideBtn,setHideBtn] = useState(false)
-  const [hideBtnInitial,setHideBtnInitial] = useState(false)
+  const [hideBtn, setHideBtn] = useState(false);
+  const [hideBtnInitial, setHideBtnInitial] = useState(false);
 
   let isDeviceOwner = false;
-  if(userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG || userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG || userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ){
-    isDeviceOwner = true
-  }
-  else{
+  if (
+    userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+    userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+    userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG
+  ) {
+    isDeviceOwner = true;
+  } else {
     isDeviceOwner = false;
   }
 
@@ -578,8 +582,9 @@ export default function SettlementApproval() {
     }
     //const form = await handleGeneratePDFFileForm()
     console.log(base);
+    const filenameNew = "ContractTable_initial_"+settlementDetailData?.portfolioCode+"_"+String(settlementMonth).padStart(2, '0')+"_"+settlementYear+".pdf"
     //setIsGenarate(false)
-    openPDFInNewTab(base.binaryBase, "application/pdf", base.file.name);
+    openPDFInNewTab(base.binaryBase, "application/pdf", filenameNew);
 
     console.log(base);
     setIsGen(false);
@@ -632,9 +637,10 @@ export default function SettlementApproval() {
     }
 
     //const form = await handleGeneratePDFFileForm()
-    console.log(base);
+    const fileNameNew = "ContractTable_final_"+settlementDetailData?.portfolioCode+"_"+String(settlementMonth).padStart(2, '0')+"_"+settlementYear+".pdf"
+    console.log(fileNameNew);
     //setIsGenarate(false)
-    openPDFInNewTab(base.binaryBase, "application/pdf", base.file.name);
+    openPDFInNewTab(base.binaryBase, "application/pdf", fileNameNew);
 
     console.log(base);
     setIsGen(false);
@@ -741,7 +747,7 @@ export default function SettlementApproval() {
 
         // Append the iframe to the new window's body
         pdfWindow.document.body.appendChild(iframe);
-        
+
         // Optionally, automatically trigger file download with correct name
       } else {
         alert("Unable to open new tab. Please allow popups for this website.");
@@ -789,7 +795,7 @@ export default function SettlementApproval() {
         settlementDetailStatus.portfolioUgtId,
         true,
         selectOptionUtilityID,
-        portfolioName
+        settlementDetailData?.portfolioCode
       )
     );
   };
@@ -803,13 +809,17 @@ export default function SettlementApproval() {
         settlementDetailStatus.portfolioUgtId,
         false,
         selectOptionUtilityID,
-        portfolioName
+        settlementDetailData?.portfolioCode
       )
     );
   };
 
   const exportScreenPDF = () => {
     generatePDFScreen();
+  };
+
+  const exportScreenPDFFinal = () => {
+    generatePDFScreenFinal();
   };
 
   const exportScreenExcelInitial = () => {
@@ -820,7 +830,8 @@ export default function SettlementApproval() {
         settlementYear,
         settlementMonth,
         ugtGroupId,
-        true
+        true,
+        settlementDetailData?.portfolioCode
       )
     );
     hideLoading();
@@ -834,7 +845,8 @@ export default function SettlementApproval() {
         settlementYear,
         settlementMonth,
         ugtGroupId,
-        false
+        false,
+        settlementDetailData?.portfolioCode
       )
     );
     hideLoading();
@@ -957,10 +969,62 @@ export default function SettlementApproval() {
             .toString()
             .padStart(2, "0")}_${now.getSeconds().toString().padStart(2, "0")}`;
           const fileName = formattedDateTime + ".pdf";
+          const fileNameNew = "Screen_initial_"+settlementDetailData?.portfolioCode+"_"+String(settlementMonth).padStart(2, '0')+"_"+settlementYear+".pdf"
           openPDFInNewTab(
             base64Content,
             "application/pdf",
-            "ReportScreen_Settlement.pdf"
+            fileNameNew
+          );
+          setIsGenPDF(false);
+        });
+    }, 1200);
+  };
+
+  const generatePDFScreenFinal = () => {
+    //let oldSelect = selectTab
+    //setSelectTab("final")
+    setIsGenPDF(true);
+    setTimeout(() => {
+      // เลือก DOM element ที่ต้องการแปลงเป็น PDF
+      const element = contentRef.current; //document.getElementById('pdf-content');
+
+      // กำหนดตัวเลือกสำหรับ html2pdf
+      const options = {
+        margin: 0,
+        filename: "webscreen.pdf",
+        image: { type: "jpeg", quality: 50 },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+        html2canvas: { scale: 2 }, // เพิ่ม scale เพื่อเพิ่มความละเอียด
+        jsPDF: { unit: "cm", format: "a3", orientation: "portrait" },
+      };
+
+      // สร้าง PDF ด้วย html2pdf และดึง base64 string
+      html2pdf()
+        .from(element)
+        .set(options)
+        .outputPdf("datauristring") // ดึงข้อมูลออกมาเป็น Base64 string
+        .then((pdfBase64) => {
+          console.log(pdfBase64); // แสดง base64 string ใน console
+          const base64Content = pdfBase64.split(",")[1];
+          const now = new Date();
+          const formattedDateTime = `${now
+            .getDate()
+            .toString()
+            .padStart(2, "0")}_${(now.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}_${now.getFullYear()}_${now
+            .getHours()
+            .toString()
+            .padStart(2, "0")}_${now
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}_${now.getSeconds().toString().padStart(2, "0")}`;
+          const fileName = formattedDateTime + ".pdf";
+          const fileNameNew = "Screen_final_"+settlementDetailData?.portfolioCode+"_"+String(settlementMonth).padStart(2, '0')+"_"+settlementYear+".pdf"
+          openPDFInNewTab(
+            base64Content,
+            "application/pdf",
+            fileNameNew
           );
           setIsGenPDF(false);
         });
@@ -1161,220 +1225,234 @@ export default function SettlementApproval() {
               {selectTab == "initial" ? (
                 <>
                   {/*Initial Tabs*/}
-                  <div className={
-                        hideBtnInitial
-                          ? `text-xl font-semibold text-[#4D6A00] mt-[30px]`
-                          : `text-xl font-semibold text-[#4D6A00]`
-                      }>
+                  <div
+                    className={
+                      hideBtnInitial
+                        ? `text-xl font-semibold text-[#4D6A00] mt-[30px]`
+                        : `text-xl font-semibold text-[#4D6A00]`
+                    }
+                  >
                     Monthly Settlement
                   </div>
-                  {hideBtnInitial == false?<Form layout="horizontal" size="large">
-                    <div className={`grid gap-4 pt-4 grid-cols-3`}>
-                      {/*<Form.Item className="col-span-1"></Form.Item>*/}
-                      {/*Select Year filter */}
-                      <Form.Item className="col-span-1 col-start-1">
-                        <Select
-                          size="large"
-                          value={selectOptionUtilityID}
-                          onChange={(value) => handleChangeUtility(value)}
-                        >
-                          {listOptionUtility.map((item, index) => (
-                            <Select.Option
-                              key={index}
-                              value={item.id}
-                              //disabled={item > latestYearHasData}
-                            >
-                              {item.abbr}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
+                  {hideBtnInitial == false ? (
+                    <Form layout="horizontal" size="large">
+                      <div className={`grid gap-4 pt-4 grid-cols-3`}>
+                        {/*<Form.Item className="col-span-1"></Form.Item>*/}
+                        {/*Select Year filter */}
+                        <Form.Item className="col-span-1 col-start-1">
+                          <Select
+                            size="large"
+                            value={selectOptionUtilityID}
+                            onChange={(value) => handleChangeUtility(value)}
+                          >
+                            {listOptionUtility.map((item, index) => (
+                              <Select.Option
+                                key={index}
+                                value={item.id}
+                                //disabled={item > latestYearHasData}
+                              >
+                                {item.abbr}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
 
-                      {/*Select Unit Filter convert */}
-                      <Form.Item className="col-span-1 col-start-2">
-                        <Select
-                          size="large"
-                          value={overviewDataUnit}
-                          variant="borderless"
-                          onChange={(value) => handleChangeOverviewUnit(value)}
-                          className={
-                            /*`${!canViewSettlementDetail && "opacity-20"}`*/ ""
-                          }
-                        >
-                          {CONVERT_UNIT?.map((item, index) => (
-                            <Select.Option key={index} value={item.unit}>
-                              {item.unit}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
+                        {/*Select Unit Filter convert */}
+                        <Form.Item className="col-span-1 col-start-2">
+                          <Select
+                            size="large"
+                            value={overviewDataUnit}
+                            variant="borderless"
+                            onChange={(value) =>
+                              handleChangeOverviewUnit(value)
+                            }
+                            className={
+                              /*`${!canViewSettlementDetail && "opacity-20"}`*/ ""
+                            }
+                          >
+                            {CONVERT_UNIT?.map((item, index) => (
+                              <Select.Option key={index} value={item.unit}>
+                                {item.unit}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
 
-                      <SettlementMenu
-                        labelBtn={"Export"}
-                        actionList={[
-                          {
-                            icon: (
-                              <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
-                            ),
-                            label: "Contract Table",
-                            onClick: exportTablePDf,
-                            rightTxt: "(.pdf)",
-                            hide: isDeviceOwner
-                          },
-                          {
-                            icon: (
-                              <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
-                            ),
-                            label: "Screen",
-                            onClick: exportScreenPDF,
-                            rightTxt: "(.pdf)",
-                            hide: false
-                          },
-                          {
-                            icon: (
-                              <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
-                            ),
-                            label: "Contract Table",
-                            onClick: exportTableExcelInitial,
-                            rightTxt: "(.xls)",
-                            hide: isDeviceOwner
-                          },
-                          {
-                            icon: (
-                              <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
-                            ),
-                            label: "Screen Table",
-                            onClick: exportScreenExcelInitial,
-                            rightTxt: "(.xls)",
-                            hide: false
-                          },
-                        ]}
-                      />
-                    </div>
-                  </Form>:undefined}
+                        <SettlementMenu
+                          labelBtn={"Export"}
+                          actionList={[
+                            {
+                              icon: (
+                                <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
+                              ),
+                              label: "Contract Table",
+                              onClick: exportTablePDf,
+                              rightTxt: "(.pdf)",
+                              hide: isDeviceOwner,
+                            },
+                            {
+                              icon: (
+                                <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
+                              ),
+                              label: "Screen",
+                              onClick: exportScreenPDF,
+                              rightTxt: "(.pdf)",
+                              hide: false,
+                            },
+                            {
+                              icon: (
+                                <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
+                              ),
+                              label: "Contract Table",
+                              onClick: exportTableExcelInitial,
+                              rightTxt: "(.xls)",
+                              hide: isDeviceOwner,
+                            },
+                            {
+                              icon: (
+                                <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
+                              ),
+                              label: "Screen Table",
+                              onClick: exportScreenExcelInitial,
+                              rightTxt: "(.xls)",
+                              hide: false,
+                            },
+                          ]}
+                        />
+                      </div>
+                    </Form>
+                  ) : undefined}
                 </>
               ) : selectTab == "final" ? (
                 <>
                   {/*Final Tabs */}
-                  <div className={
-                        hideBtn
-                          ? `text-xl font-semibold text-[#4D6A00] mt-[30px]`
-                          : `text-xl font-semibold text-[#4D6A00]`
-                      }>
+                  <div
+                    className={
+                      hideBtn
+                        ? `text-xl font-semibold text-[#4D6A00] mt-[30px]`
+                        : `text-xl font-semibold text-[#4D6A00]`
+                    }
+                  >
                     Monthly Settlement
                   </div>
-                  {hideBtn == false?<Form layout="horizontal" size="large">
-                    <div
-                      className={
-                        isCanVerify
-                          ? `grid gap-4 pt-4 grid-cols-4`
-                          : `grid gap-4 pt-4 grid-cols-3`
-                      }
-                    >
-                      {/*<Form.Item className="col-span-1"></Form.Item>*/}
-                      {/*Select Year filter */}
-                      <Form.Item className="col-span-1 col-start-1">
-                        <Select
-                          size="large"
-                          value={selectOptionUtilityID}
-                          onChange={(value) => handleChangeUtility(value)}
-                        >
-                          {listOptionUtility.map((item, index) => (
-                            <Select.Option
-                              key={index}
-                              value={item.id}
-                              //disabled={item > latestYearHasData}
-                            >
-                              {item.abbr}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
+                  {hideBtn == false ? (
+                    <Form layout="horizontal" size="large">
+                      <div
+                        className={
+                          isCanVerify
+                            ? `grid gap-4 pt-4 grid-cols-4`
+                            : `grid gap-4 pt-4 grid-cols-3`
+                        }
+                      >
+                        {/*<Form.Item className="col-span-1"></Form.Item>*/}
+                        {/*Select Year filter */}
+                        <Form.Item className="col-span-1 col-start-1">
+                          <Select
+                            size="large"
+                            value={selectOptionUtilityID}
+                            onChange={(value) => handleChangeUtility(value)}
+                          >
+                            {listOptionUtility.map((item, index) => (
+                              <Select.Option
+                                key={index}
+                                value={item.id}
+                                //disabled={item > latestYearHasData}
+                              >
+                                {item.abbr}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
 
-                      {/*Select Unit Filter convert */}
-                      <Form.Item className="col-span-1 col-start-2">
-                        <Select
-                          size="large"
-                          value={overviewDataUnit}
-                          variant="borderless"
-                          onChange={(value) => handleChangeOverviewUnit(value)}
-                          className={
-                            /*`${!canViewSettlementDetail && "opacity-20"}`*/ ""
-                          }
-                        >
-                          {CONVERT_UNIT?.map((item, index) => (
-                            <Select.Option key={index} value={item.unit}>
-                              {item.unit}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
+                        {/*Select Unit Filter convert */}
+                        <Form.Item className="col-span-1 col-start-2">
+                          <Select
+                            size="large"
+                            value={overviewDataUnit}
+                            variant="borderless"
+                            onChange={(value) =>
+                              handleChangeOverviewUnit(value)
+                            }
+                            className={
+                              /*`${!canViewSettlementDetail && "opacity-20"}`*/ ""
+                            }
+                          >
+                            {CONVERT_UNIT?.map((item, index) => (
+                              <Select.Option key={index} value={item.unit}>
+                                {item.unit}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
 
-                      <SettlementMenu
-                        labelBtn={"Export"}
-                        actionList={[
-                          {
-                            icon: (
-                              <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
-                            ),
-                            label: "Contract Table",
-                            onClick: exportTablePDfFinal,
-                            rightTxt: "(.pdf)",
-                            hide: isDeviceOwner
-                          },
-                          {
-                            icon: (
-                              <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
-                            ),
-                            label: "Screen",
-                            onClick: exportScreenPDF,
-                            rightTxt: "(.pdf)",
-                            hide: false
-                          },
-                          {
-                            icon: (
-                              <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
-                            ),
-                            label: "Contract Table",
-                            onClick: exportTableExcelFinal,
-                            rightTxt: "(.xls)",
-                            hide: isDeviceOwner
-                          },
-                          {
-                            icon: (
-                              <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
-                            ),
-                            label: "Screen Table",
-                            onClick: exportScreenExcelFinal,
-                            rightTxt: "(.xls)",
-                            hide: false
-                          },
-                        ]}
-                      />
-
-                      {isCanVerify && (
                         <SettlementMenu
-                          labelBtn={"Manage"}
+                          labelBtn={"Export"}
                           actionList={[
                             {
                               icon: (
-                                <RiPencilFill className="w-[20px] h-[20px]" />
+                                <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
                               ),
-                              label: "Request Edit",
-                              onClick: requestEditAction,
-                              hide: false
+                              label: "Contract Table",
+                              onClick: exportTablePDfFinal,
+                              rightTxt: "(.pdf)",
+                              hide: isDeviceOwner,
                             },
                             {
-                              icon: <LuSearch className="w-[20px] h-[20px]" />,
-                              label: "Verify",
-                              onClick: verifyAction,
-                              hide: false
+                              icon: (
+                                <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
+                              ),
+                              label: "Screen",
+                              onClick: exportScreenPDFFinal,
+                              rightTxt: "(.pdf)",
+                              hide: false,
+                            },
+                            {
+                              icon: (
+                                <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
+                              ),
+                              label: "Contract Table",
+                              onClick: exportTableExcelFinal,
+                              rightTxt: "(.xls)",
+                              hide: isDeviceOwner,
+                            },
+                            {
+                              icon: (
+                                <FaRegFileExcel className="text-green-600 w-[20px] h-[20px]" />
+                              ),
+                              label: "Screen Table",
+                              onClick: exportScreenExcelFinal,
+                              rightTxt: "(.xls)",
+                              hide: false,
                             },
                           ]}
                         />
-                      )}
-                    </div>
-                  </Form>:undefined}
+
+                        {isCanVerify && (
+                          <SettlementMenu
+                            labelBtn={"Manage"}
+                            actionList={[
+                              {
+                                icon: (
+                                  <RiPencilFill className="w-[20px] h-[20px]" />
+                                ),
+                                label: "Request Edit",
+                                onClick: requestEditAction,
+                                hide: false,
+                              },
+                              {
+                                icon: (
+                                  <LuSearch className="w-[20px] h-[20px]" />
+                                ),
+                                label: "Verify",
+                                onClick: verifyAction,
+                                hide: false,
+                              },
+                            ]}
+                          />
+                        )}
+                      </div>
+                    </Form>
+                  ) : undefined}
                 </>
               ) : (
                 <>
