@@ -174,8 +174,7 @@ console.log(inventoryTransaction)
   } else if (issueRequestStatus.toLowerCase() === "draft") {
     issueRequestStatus = "Draft";
   } else if (
-    issueRequestStatus.toLowerCase() === "in progress" ||
-    issueRequestStatus.toLowerCase() === "submitted"
+    issueRequestStatus.toLowerCase() === "in progress"
   ) {
     issueRequestStatus = "In Progress";
   } else if (issueRequestStatus.toLowerCase() === "completed") {
@@ -184,6 +183,8 @@ console.log(inventoryTransaction)
     issueRequestStatus = "Rejected";
   } else if (issueRequestStatus.toLowerCase() === "verified") {
     issueRequestStatus = "Verified";
+  } else if(issueRequestStatus.toLowerCase() === "submitted"){
+    issueRequestStatus = "Submitted"
   }
 
   // control action status
