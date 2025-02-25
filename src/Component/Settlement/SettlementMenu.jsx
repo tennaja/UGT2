@@ -19,7 +19,7 @@ const SettlementMenu = ({ actionList,labelBtn }) => {
           {labelBtn}
         </Button>
       </Menu.Target>
-      <Menu.Dropdown>
+      <Menu.Dropdown style={{ width: "250px" }}>
         {actionList.map((action, index) => (
           action.hide == false?<>
             <Menu.Item
