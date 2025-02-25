@@ -1230,7 +1230,7 @@ const GenerateDataRevision = ({
                             Peak (kWh)
                           </label>
                           <div className="break-words	font-bold">
-                            {renderData(generateDataRevision?.peak)}
+                            {renderNumeric(generateDataRevision?.peak)}
                           </div>
                         </div>
                         {/*Subscriber Code */}
@@ -1239,7 +1239,7 @@ const GenerateDataRevision = ({
                             Off-Peak (kWh)
                           </label>
                           <div className="break-words	font-bold">
-                            {renderData(generateDataRevision?.offPeak)}
+                            {renderNumeric(generateDataRevision?.offPeak)}
                           </div>
                         </div>
                       </div>

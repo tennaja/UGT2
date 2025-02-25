@@ -1205,7 +1205,7 @@ const LoadDataRevision = ({
                             Peak Load (kWh)
                           </label>
                           <div className="break-words	font-bold">
-                            {renderData(loadDataRevision?.peakLoad)}
+                            {renderNumeric(loadDataRevision?.peakLoad)}
                           </div>
                         </div>
                         {/*Subscriber Code */}
@@ -1214,7 +1214,7 @@ const LoadDataRevision = ({
                             Off-Peak Load (kWh)
                           </label>
                           <div className="break-words	font-bold">
-                            {renderData(loadDataRevision?.offPeakLoad)}
+                            {renderNumeric(loadDataRevision?.offPeakLoad)}
                           </div>
                         </div>
                       </div>

@@ -220,11 +220,11 @@ const TemplatePDFExcel = ({ data }) => {
 
       const dataUri = pdf.output("datauristring");
       const base64String = dataUri.split(",")[1]; // Remove "data:application/pdf;base64,"
-
+        console.log(data?.fileName)
       // Create a File object from the Blob with a filename
       const pdfFile = new File(
         [pdfBlob],
-        `Report_Settlement.pdf`,
+        `Report_Settlement_${data.fileName}.pdf`,
         { type: "application/pdf" }
       );
       console.log(pdfFile, data);
