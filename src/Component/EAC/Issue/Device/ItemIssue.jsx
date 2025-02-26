@@ -174,9 +174,7 @@ const ItemIssue = ({
     issueRequestStatus = "Pending";
   } else if (issueRequestStatus.toLowerCase() === "draft") {
     issueRequestStatus = "Draft";
-  } else if (
-    issueRequestStatus.toLowerCase() === "in progress"
-  ) {
+  } else if (issueRequestStatus.toLowerCase() === "in progress") {
     issueRequestStatus = "In Progress";
   } else if (issueRequestStatus.toLowerCase() === "completed") {
     issueRequestStatus = "Issued";
@@ -184,8 +182,8 @@ const ItemIssue = ({
     issueRequestStatus = "Rejected";
   } else if (issueRequestStatus.toLowerCase() === "verified") {
     issueRequestStatus = "Verified";
-  } else if(issueRequestStatus.toLowerCase() === "submitted"){
-    issueRequestStatus = "Submitted"
+  } else if (issueRequestStatus.toLowerCase() === "submitted") {
+    issueRequestStatus = "Submitted";
   }
 
   // control action status
@@ -805,7 +803,7 @@ const ItemIssue = ({
     }
   };
   //console.log(issueRequest.issueRequestHistory.filter((item)=>item.action === "Rejected"))
-  const issueRequestDetailCreate = async (data,dataGen) => {
+  const issueRequestDetailCreate = async (data, dataGen) => {
     console.log(data);
     let fileUidArray = [];
     console.log(issueTransactionData);
@@ -815,14 +813,15 @@ const ItemIssue = ({
     if (data.uid != "") {
       fileUidArray.push(`/files/${data.uid}`);
     }
-    dataGen.map((item)=>{
-      if(item.uid !== ""){
-        fileUidArray.push(`/files/${item.uid}`)
+    dataGen.map((item) => {
+      if (item.uid !== "") {
+        fileUidArray.push(`/files/${item.uid}`);
       }
-    }
-    )
+    });
     console.log(fileUidArray);
-    const checkStatus = issueRequest.issueRequestHistory.filter((item)=>item.action === "Rejected")
+    const checkStatus = issueRequest.issueRequestHistory.filter(
+      (item) => item.action === "Rejected"
+    );
     const paramsDraft = {
       issueRequestId: issueRequestId,
       deviceCode: issueTransactionData.deviceCode,
@@ -837,8 +836,7 @@ const ItemIssue = ({
       productionVolume: numeral(totalProduction).format("0.000000"),
       fuel: `/fuels/${issueTransactionData.fuelCode}`,
       recipientAccount: `/accounts/${issueRequest.tradeAccountCode}`,
-      status:
-      checkStatus.length != 0 ? `Submitted` : `Draft`,
+      status: checkStatus.length != 0 ? `Submitted` : `Draft`,
       notes: note,
       issuerNotes: note,
       files: fileUidArray,
@@ -920,15 +918,13 @@ const ItemIssue = ({
       // อัปโหลด PDF
       const uploadResult = await uploadPdf(pdfResult);
       if (uploadResult.success) {
-        const uploadGenResult = await uploadFileGenToEvident(fileGeneration)
-        if(uploadGenResult.success){
-          issueRequestDetailCreate(uploadResult.data,uploadGenResult.data);
-        }
-        else{
+        const uploadGenResult = await uploadFileGenToEvident(fileGeneration);
+        if (uploadGenResult.success) {
+          issueRequestDetailCreate(uploadResult.data, uploadGenResult.data);
+        } else {
           console.error("Upload failed", uploadGenResult.error);
           setShowModalFail(true);
         }
-        
       } else {
         console.error("Upload failed", uploadResult.error);
         setShowModalFail(true);
@@ -976,7 +972,7 @@ const ItemIssue = ({
     }
   };
 
-  const uploadFileGenToEvident = async (fileUpload)=>{
+  const uploadFileGenToEvident = async (fileUpload) => {
     /*let file = []
 
     fileUpload.forEach((item,index)=>{
@@ -1006,8 +1002,8 @@ const ItemIssue = ({
 
     const param = {
       issueRequestDetailId: issueRequestDetailId,
-      generationFileList: fileUpload
-    }
+      generationFileList: fileUpload,
+    };
 
     try {
       const response = await axios.post(
@@ -1015,7 +1011,7 @@ const ItemIssue = ({
         param
       );
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data)
+        console.log(response.data);
         return { success: true, data: response.data };
       }
       return { success: false, error: response };
@@ -1023,24 +1019,24 @@ const ItemIssue = ({
       console.error("Error uploading PDF:", error);
       return { success: false, error };
     }
-  }
+  };
 
-  function base64ToBlob(base64, mimeType = '') {
+  function base64ToBlob(base64, mimeType = "") {
     // แยก header ออกจากข้อมูล base64 (ถ้ามี)
     const byteCharacters = atob(base64);
-    
+
     // แปลงเป็นอาร์เรย์ของ byte
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
-    
+
     // สร้าง Uint8Array
     const byteArray = new Uint8Array(byteNumbers);
 
     // สร้าง Blob
     return new Blob([byteArray], { type: mimeType });
-}
+  }
 
   const handleOpenModalVerify = () => {
     setShowModalConfirmVerify(true);
@@ -1155,22 +1151,20 @@ const ItemIssue = ({
     return day + "/" + month + "/" + year + " " + fulltime;
   };
 
-  const getLogType=(action)=>{
-    console.log(action)
-    if(action == "Verified"){
-      return "Verified By "
+  const getLogType = (action) => {
+    console.log(action);
+    if (action == "Verified") {
+      return "Verified By ";
+    } else if (action == "Submitted") {
+      return "Submitted By ";
+    } else if (action == "Returned") {
+      return "Returned By ";
+    } else if (action == "Rejected") {
+      return "Rejected By ";
     }
-    else if(action == "Submitted"){
-      return "Submitted By "
-    }
-    else if(action == "Returned"){
-      return "Returned By "
-    }
-    else if(action == "Rejected"){
-      return "Rejected By "
-    }
-  }
+  };
   console.log(fileUploaded);
+  console.log(issueRequest?.settlementDetail)
   return (
     <>
       <div className="grid grid-cols-2  gap-8">
@@ -1252,138 +1246,144 @@ const ItemIssue = ({
           </div>
         </div>
       </div>
-      <div className="text-right mt-4">
-        {/*<Button
+
+      {issueRequest?.settlementDetail && Object.keys(issueRequest?.settlementDetail).length !== 0?<>
+        <div className="text-right mt-4">
+          {/*<Button
           className={"border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00] mr-2"}
           onClick={ExportExcel}
         >
           <FaFileExcel className="mr-1" /> Export Excel
         </Button>*/}
-        <Button
-          className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
-          onClick={showbase}
-        >
-          <IoDocumentTextOutline className="mr-1" /> Preview SF-04
-        </Button>
-      </div>
-      <Table stickyHeader verticalSpacing="sm" className="mt-10">
-        <Table.Thead className="bg-[#F4F6F9]">
-          <Table.Tr className="text-[#071437]">
-            <Table.Th className="text-center w-48">Period</Table.Th>
-            <Table.Th className="text-center w-64 ">
-              Recipient Account (Trade Account)
-            </Table.Th>
-            <Table.Th className="text-center w-64 ">
-              Allocation Account
-            </Table.Th>
-            <Table.Th className="text-right min-w-64 max-w-full">
-              Production (MWh)
-            </Table.Th>
-            <Table.Th className="text-center w-32 ">Start Date</Table.Th>
-            <Table.Th className="text-center w-32 ">End Date</Table.Th>
-            <Table.Th className="text-center w-32 ">Status</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {issueRequest?.settlementDetail?.map((row, index) => (
-            <Table.Tr key={index} className="text-[#071437] font-semibold">
-              {index == 0 && (
-                <Table.Td
-                  rowSpan={issueRequest?.settlementDetail.length}
-                  className="text-center align-top w-48"
-                >
-                  {dayjs(`${issueRequest.year}-${issueRequest.month}`).format(
-                    "MMMM YYYY"
+          <Button
+            className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
+            onClick={showbase}
+          >
+            <IoDocumentTextOutline className="mr-1" /> Preview SF-04
+          </Button>
+        </div>
+        <Table stickyHeader verticalSpacing="sm" className="mt-10">
+          <Table.Thead className="bg-[#F4F6F9]">
+            <Table.Tr className="text-[#071437]">
+              <Table.Th className="text-center w-48">Period</Table.Th>
+              <Table.Th className="text-center w-64 ">
+                Recipient Account (Trade Account)
+              </Table.Th>
+              <Table.Th className="text-center w-64 ">
+                Allocation Account
+              </Table.Th>
+              <Table.Th className="text-right min-w-64 max-w-full">
+                Production (MWh)
+              </Table.Th>
+              <Table.Th className="text-center w-32 ">Start Date</Table.Th>
+              <Table.Th className="text-center w-32 ">End Date</Table.Th>
+              <Table.Th className="text-center w-32 ">Status</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {issueRequest?.settlementDetail?.map((row, index) => (
+              <Table.Tr key={index} className="text-[#071437] font-semibold">
+                {index == 0 && (
+                  <Table.Td
+                    rowSpan={issueRequest?.settlementDetail.length}
+                    className="text-center align-top w-48"
+                  >
+                    {dayjs(`${issueRequest.year}-${issueRequest.month}`).format(
+                      "MMMM YYYY"
+                    )}
+                  </Table.Td>
+                )}
+
+                <Table.Td className="text-center w-64 ">
+                  {issueRequest?.tradeAccountName}
+                </Table.Td>
+                <Table.Td className="text-center w-64 ">
+                  {row.allocationAccount}
+                </Table.Td>
+                <Table.Td className="text-right min-w-64 max-w-full">
+                  {numeral(numeral(row?.production).value() / 1000).format(
+                    "0,000.000000"
                   )}
                 </Table.Td>
-              )}
-
-              <Table.Td className="text-center w-64 ">
-                {issueRequest?.tradeAccountName}
-              </Table.Td>
-              <Table.Td className="text-center w-64 ">
-                {row.allocationAccount}
-              </Table.Td>
-              <Table.Td className="text-right min-w-64 max-w-full">
-                {numeral(numeral(row?.production).value() / 1000).format(
-                  "0,000.000000"
-                )}
-              </Table.Td>
-              <Table.Td className="text-center w-32 capitalize">
-                {dayjs(row.startDate).format("DD/MM/YYYY")}
-              </Table.Td>
-              <Table.Td className="text-center w-32 capitalize">
-                {dayjs(row.endDate).format("DD/MM/YYYY")}
-              </Table.Td>
-              <Table.Td className="text-center w-32 ">
-                <StatusLabel
-                  status={issueRequestStatus ?? "Pending"}
-                  type="xs"
-                />
-              </Table.Td>
+                <Table.Td className="text-center w-32 capitalize">
+                  {dayjs(row.startDate).format("DD/MM/YYYY")}
+                </Table.Td>
+                <Table.Td className="text-center w-32 capitalize">
+                  {dayjs(row.endDate).format("DD/MM/YYYY")}
+                </Table.Td>
+                <Table.Td className="text-center w-32 ">
+                  <StatusLabel
+                    status={issueRequestStatus ?? "Pending"}
+                    type="xs"
+                  />
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+          <Table.Tfoot>
+            <Table.Tr className="bg-[#F4F6F9]">
+              <Table.Th className="text-center w-48">Total</Table.Th>
+              <Table.Th className="text-center w-64"></Table.Th>
+              <Table.Th className="text-center w-64"></Table.Th>
+              <Table.Th className="text-right min-w-64 max-w-full">
+                {numeral(numeral(totalProduction).value()).format("0,0.000000")}
+              </Table.Th>
+              <Table.Th className="text-center w-32"></Table.Th>
+              <Table.Th className="text-center w-32"></Table.Th>
+              <Table.Th className="text-center w-32"></Table.Th>
             </Table.Tr>
-          ))}
-        </Table.Tbody>
-        <Table.Tfoot>
-          <Table.Tr className="bg-[#F4F6F9]">
-            <Table.Th className="text-center w-48">Total</Table.Th>
-            <Table.Th className="text-center w-64"></Table.Th>
-            <Table.Th className="text-center w-64"></Table.Th>
-            <Table.Th className="text-right min-w-64 max-w-full">
-              {numeral(numeral(totalProduction).value()).format("0,0.000000")}
-            </Table.Th>
-            <Table.Th className="text-center w-32"></Table.Th>
-            <Table.Th className="text-center w-32"></Table.Th>
-            <Table.Th className="text-center w-32"></Table.Th>
-          </Table.Tr>
-        </Table.Tfoot>
-      </Table>
-      <div className="grid grid-col-3 gap-5 pt-3 ">
-        <div className="flex gap-2">
-          {canUpload && (
-            <Button
-              className={classNames({
-                "bg-[#F5F4E9] text-[#4D6A00] px-8": canUpload,
-              })}
-              onClick={() => setOpenModalUpload(!openModalUpload)}
-            >
-              Upload Files
-            </Button>
-          )}
-          {fileUploaded.length > 0 || fileGeneration.length > 0 ? (
-            <Button
-              className="text-[#4D6A00] underline px-8"
-              onClick={() => setOpenModalUpload(!openModalUpload)}
-            >
-              {fileUploaded.length + fileGeneration.length == 1
-                ? `${fileUploaded.length + fileGeneration.length} File Uploaded`
-                : `${
-                    fileUploaded.length + fileGeneration.length
-                  } Files Uploaded`}
-            </Button>
-          ) : undefined}
-        </div>
-        <div className="gap-2 col-start-3 h-auto">
-          <div>
-            <div className="text-sm font-normal mb-2 text-[#91918A]">Note</div>
-            {canSendIssue || canVerify ? (
-              <div className="text-sm">
-                <Textarea
-                  size="md"
-                  value={note}
-                  onChange={(event) => setNote(event.currentTarget.value)}
-                  //minRows={4}  // กำหนดจำนวนแถวเริ่มต้น
-                  //sx={{ height: 100 }}
-                  rows={4}
-                />
-              </div>
-            ) : (
-              <div className="w-52 lg:w-96 lg:break-words text-sm font-normal">
-                {note || "-"}
-              </div>
+          </Table.Tfoot>
+        </Table>
+        <div className="grid grid-col-3 gap-5 pt-3 ">
+          <div className="flex gap-2">
+            {canUpload && (
+              <Button
+                className={classNames({
+                  "bg-[#F5F4E9] text-[#4D6A00] px-8": canUpload,
+                })}
+                onClick={() => setOpenModalUpload(!openModalUpload)}
+              >
+                Upload Files
+              </Button>
             )}
+            {fileUploaded.length > 0 || fileGeneration.length > 0 ? (
+              <Button
+                className="text-[#4D6A00] underline px-8"
+                onClick={() => setOpenModalUpload(!openModalUpload)}
+              >
+                {fileUploaded.length + fileGeneration.length == 1
+                  ? `${
+                      fileUploaded.length + fileGeneration.length
+                    } File Uploaded`
+                  : `${
+                      fileUploaded.length + fileGeneration.length
+                    } Files Uploaded`}
+              </Button>
+            ) : undefined}
           </div>
-          {/*canSendIssue && (
+          <div className="gap-2 col-start-3 h-auto">
+            <div>
+              <div className="text-sm font-normal mb-2 text-[#91918A]">
+                Note
+              </div>
+              {canSendIssue || canVerify ? (
+                <div className="text-sm">
+                  <Textarea
+                    size="md"
+                    value={note}
+                    onChange={(event) => setNote(event.currentTarget.value)}
+                    //minRows={4}  // กำหนดจำนวนแถวเริ่มต้น
+                    //sx={{ height: 100 }}
+                    rows={4}
+                  />
+                </div>
+              ) : (
+                <div className="w-52 lg:w-96 lg:break-words text-sm font-normal">
+                  {note || "-"}
+                </div>
+              )}
+            </div>
+            {/*canSendIssue && (
             <Button
               className="bg-[#87BE33] text-white px-8"
               onClick={() => setOpenModalConfirm(!openModalConfirm)}
@@ -1391,62 +1391,64 @@ const ItemIssue = ({
               Send
             </Button>
           )*/}
-        </div>
-      </div>
-      {/*Sign and Submit Button */}
-      {canSendIssue &&
-      issueRequestStatus.toLowerCase().replace(" ", "") == "verified" ? (
-        <div className="flex justify-between mt-4">
-          <div>
-            <Button
-              className="bg-[#EF4835] text-white px-8 w-[150px]"
-              onClick={() => handleOpenModalReturn()}
-            >
-              Return
-            </Button>
           </div>
-          <div>
+        </div>
+        {/*Sign and Submit Button */}
+        {canSendIssue &&
+        issueRequestStatus.toLowerCase().replace(" ", "") == "verified" ? (
+          <div className="flex justify-between mt-4">
+            <div>
+              <Button
+                className="bg-[#EF4835] text-white px-8 w-[150px]"
+                onClick={() => handleOpenModalReturn()}
+              >
+                Return
+              </Button>
+            </div>
+            <div>
+              <Button
+                className="bg-[#87BE33] text-white px-8"
+                onClick={() => handleModalConfirm()}
+              >
+                Sign & Submit
+              </Button>
+            </div>
+          </div>
+        ) : undefined}
+
+        {/*Verify Button */}
+        {(issueRequestStatus.toLowerCase().replace(" ", "") == "pending" ||
+          issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
+          issueRequestStatus.toLowerCase().replace(" ", "") == "returned") &&
+        canVerify ? (
+          <div className="mt-4 text-right">
             <Button
               className="bg-[#87BE33] text-white px-8"
-              onClick={() => handleModalConfirm()}
+              onClick={() => handleOpenModalVerify()}
             >
-              Sign & Submit
+              Verify
             </Button>
           </div>
-        </div>
-      ) : undefined}
+        ) : undefined}
 
-      {/*Verify Button */}
-      {(issueRequestStatus.toLowerCase().replace(" ", "") == "pending" ||
-        issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
-        issueRequestStatus.toLowerCase().replace(" ", "") == "returned") &&
-      canVerify ? (
-        <div className="mt-4 text-right">
-          <Button
-            className="bg-[#87BE33] text-white px-8"
-            onClick={() => handleOpenModalVerify()}
-          >
-            Verify
-          </Button>
-        </div>
-      ) : undefined}
-
-      {issueRequest !== null && issueRequest.issueRequestHistory.length !== 0 ? (
-        <div className="border-3 border-dotted px-[20px] py-[10px] mt-4">
-          {issueRequest.issueRequestHistory.map((item, index) => {
-            return (
-              <div className="text-right w-full text-sm" key={index}>
-                <label>
-                  {getLogType(item.action)}{" "}
-                </label>
-                <label className="font-bold ml-1">
-                  {item.createBy + " " + splitDateTimeLog(item.createDateTime)}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      ):undefined}
+        {issueRequest !== null &&
+        issueRequest.issueRequestHistory.length !== 0 ? (
+          <div className="border-3 border-dotted px-[20px] py-[10px] mt-4">
+            {issueRequest.issueRequestHistory.map((item, index) => {
+              return (
+                <div className="text-right w-full text-sm" key={index}>
+                  <label>{getLogType(item.action)} </label>
+                  <label className="font-bold ml-1">
+                    {item.createBy +
+                      " " +
+                      splitDateTimeLog(item.createDateTime)}
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+        ) : undefined}
+      </>:undefined}
 
       <Modal
         opened={openModalConfirm}
@@ -1799,7 +1801,8 @@ const ItemIssue = ({
           sizeModal={"lg"}
           textButton={"Yes, submit request"}
           isHaveFile={
-            issueTransactionData?.issueRequest?.fileUploaded.length == 0 && fileGeneration.length == 0
+            issueTransactionData?.issueRequest?.fileUploaded.length == 0 &&
+            fileGeneration.length == 0
               ? false
               : true
           }
@@ -1876,7 +1879,12 @@ const ItemIssue = ({
         isSign={setSign.current}
         Sign={userData.firstName + " " + userData.lastName}
       />
-      {showModalFail && <ModalFail content={"Something went wrong. Please go back and try again."} onClickOk={handleCloseFailModal} />}
+      {showModalFail && (
+        <ModalFail
+          content={"Something went wrong. Please go back and try again."}
+          onClickOk={handleCloseFailModal}
+        />
+      )}
     </>
   );
 };

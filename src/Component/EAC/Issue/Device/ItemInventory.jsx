@@ -139,7 +139,7 @@ const ItemInventory = ({
   const issueRequestId = inventoryTransaction?.issueRequestId;
   const issueRequestDetailId = inventoryTransaction?.issueRequestDetailId;
   const dataPDF = useSelector((state) => state.eac?.dataSF04PDF);
-console.log(inventoryTransaction)
+  console.log(inventoryTransaction);
   const [openModalConfirm, setOpenModalConfirm] = useState(false);
   const [openModalUpload, setOpenModalUpload] = useState(false);
   const [showModalComplete, setShowModalComplete] = useState(false);
@@ -173,9 +173,7 @@ console.log(inventoryTransaction)
     issueRequestStatus = "Pending";
   } else if (issueRequestStatus.toLowerCase() === "draft") {
     issueRequestStatus = "Draft";
-  } else if (
-    issueRequestStatus.toLowerCase() === "in progress"
-  ) {
+  } else if (issueRequestStatus.toLowerCase() === "in progress") {
     issueRequestStatus = "In Progress";
   } else if (issueRequestStatus.toLowerCase() === "completed") {
     issueRequestStatus = "Issued";
@@ -183,8 +181,8 @@ console.log(inventoryTransaction)
     issueRequestStatus = "Rejected";
   } else if (issueRequestStatus.toLowerCase() === "verified") {
     issueRequestStatus = "Verified";
-  } else if(issueRequestStatus.toLowerCase() === "submitted"){
-    issueRequestStatus = "Submitted"
+  } else if (issueRequestStatus.toLowerCase() === "submitted") {
+    issueRequestStatus = "Submitted";
   }
 
   // control action status
@@ -780,11 +778,13 @@ console.log(inventoryTransaction)
     handleTakeActionSignAndSubmit();
   };
   //console.log(inventoryTransaction.issueRequestHistory.filter((item)=>item.action === "Rejected"))
-  const issueRequestDetailCreate = async (data,dataGen) => {
+  const issueRequestDetailCreate = async (data, dataGen) => {
     console.log(data);
 
     console.log(issueTransactionData);
-    const checkStatus = inventoryTransaction.issueRequestHistory.filter((item)=>item.action === "Rejected")
+    const checkStatus = inventoryTransaction.issueRequestHistory.filter(
+      (item) => item.action === "Rejected"
+    );
     let fileUidArray = [];
     console.log(inventoryTransaction);
     inventoryTransaction.fileUploaded.map((item) =>
@@ -794,12 +794,11 @@ console.log(inventoryTransaction)
       fileUidArray.push(`/files/${data.uid}`);
     }
 
-    dataGen.map((item)=>{
-      if(item.uid !== ""){
-        fileUidArray.push(`/files/${item.uid}`)
+    dataGen.map((item) => {
+      if (item.uid !== "") {
+        fileUidArray.push(`/files/${item.uid}`);
       }
-    }
-    )
+    });
     console.log(fileUidArray);
     const paramsDraft = {
       issueRequestId: issueRequestId,
@@ -815,8 +814,7 @@ console.log(inventoryTransaction)
       productionVolume: numeral(totalProduction).format("0.000000"),
       fuel: `/fuels/${issueTransactionData.fuelCode}`,
       recipientAccount: `/accounts/${inventoryTransaction.tradeAccountCode}`,
-      status:
-      checkStatus.length != 0 ? `Submitted` : `Draft`,
+      status: checkStatus.length != 0 ? `Submitted` : `Draft`,
       notes: note,
       issuerNotes: note,
       files: fileUidArray,
@@ -896,7 +894,16 @@ console.log(inventoryTransaction)
   const handleTakeActionSignAndSubmit = async () => {
     try {
       // ดึงข้อมูลที่จำเป็น
-      await fetchSettlementData(device, portfolio, year, month, UgtGroup, true,inventoryTransaction.prodYear,inventoryTransaction.prodMonth);
+      await fetchSettlementData(
+        device,
+        portfolio,
+        year,
+        month,
+        UgtGroup,
+        true,
+        inventoryTransaction.prodYear,
+        inventoryTransaction.prodMonth
+      );
       setDataSF04(dataPDF);
       //setSign.current = true
       // สร้าง PDF ครั้งเดียว
@@ -912,11 +919,10 @@ console.log(inventoryTransaction)
       // อัปโหลด PDF
       const uploadResult = await uploadPdf(pdfResult);
       if (uploadResult.success) {
-        const uploadGenResult = await uploadFileGenToEvident(fileGeneration)
-        if(uploadGenResult.success){
-          issueRequestDetailCreate(uploadResult.data,uploadGenResult.data);
-        }
-        else{
+        const uploadGenResult = await uploadFileGenToEvident(fileGeneration);
+        if (uploadGenResult.success) {
+          issueRequestDetailCreate(uploadResult.data, uploadGenResult.data);
+        } else {
           console.error("Upload failed", uploadGenResult.error);
           setShowModalFail(true);
         }
@@ -932,12 +938,11 @@ console.log(inventoryTransaction)
     }
   };
 
-  const uploadFileGenToEvident = async (fileUpload)=>{
-
+  const uploadFileGenToEvident = async (fileUpload) => {
     const param = {
       issueRequestDetailId: issueRequestDetailId,
-      generationFileList: fileUpload
-    }
+      generationFileList: fileUpload,
+    };
 
     try {
       const response = await axios.post(
@@ -945,7 +950,7 @@ console.log(inventoryTransaction)
         param
       );
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data)
+        console.log(response.data);
         return { success: true, data: response.data };
       }
       return { success: false, error: response };
@@ -953,7 +958,7 @@ console.log(inventoryTransaction)
       console.error("Error uploading PDF:", error);
       return { success: false, error };
     }
-  }
+  };
 
   // ฟังก์ชันสร้าง PDF
   const handleGeneratePDFSign = async () => {
@@ -1019,7 +1024,7 @@ console.log(inventoryTransaction)
       // เรียก createIssueDetail อีกครั้งแต่ส่ง status: `Submitted`
       getIssueTransaction();
       modalVerifySuccess.open();
-      
+
       hideLoading();
     } else {
       getIssueTransaction();
@@ -1136,158 +1141,160 @@ console.log(inventoryTransaction)
     return day + "/" + month + "/" + year + " " + fulltime;
   };
 
-  const getLogType=(action)=>{
-    console.log(action)
-    if(action == "Verified"){
-      return "Verified By "
+  const getLogType = (action) => {
+    console.log(action);
+    if (action == "Verified") {
+      return "Verified By ";
+    } else if (action == "Submitted") {
+      return "Submitted By ";
+    } else if (action == "Returned") {
+      return "Returned By ";
+    } else if (action == "Rejected") {
+      return "Rejected By ";
     }
-    else if(action == "Submitted"){
-      return "Submitted By "
-    }
-    else if(action == "Returned"){
-      return "Returned By "
-    }
-    else if(action == "Rejected"){
-      return "Rejected By "
-    }
-  }
-console.log(issueRequestStatus)
+  };
+  console.log(issueRequestStatus);
   return (
     <div className="mb-4">
-      <div className="text-right mt-4 mb-3">
-        {/*<Button className={"border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00] mr-2"}
+      {inventoryTransaction?.inventorySettlementDetail && Object.keys(inventoryTransaction?.inventorySettlementDetail).length !== 0?<>
+        <div className="text-right mt-4 mb-3">
+          {/*<Button className={"border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00] mr-2"}
                   onClick={ExportExcel}>
                 <FaFileExcel className="mr-1"/> Export Excel
                 </Button>*/}
-        <Button
-          className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
-          onClick={showbase}
-        >
-          <IoDocumentTextOutline className="mr-1" /> Preview SF-04
-        </Button>
-      </div>
-      <Table stickyHeader verticalSpacing="sm">
-        <Table.Thead className="bg-[#F4F6F9]">
-          <Table.Tr className="text-[#071437]">
-            <Table.Th className="text-center w-48 ">Period</Table.Th>
-            <Table.Th className="text-center w-64 ">
-              Recipient Account (Trade Account)
-            </Table.Th>
-            <Table.Th className="text-center w-64 ">
-              Allocation Account
-            </Table.Th>
-            <Table.Th className="text-right min-w-64 max-w-full">
-              Production (MWh)
-            </Table.Th>
-            <Table.Th className="text-center w-32 ">Start Date</Table.Th>
-            <Table.Th className="text-center w-32 ">End Date</Table.Th>
-            <Table.Th className="text-center w-32 ">Status</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>
-          {inventoryTransaction?.inventorySettlementDetail?.map(
-            (row, index) => (
-              <Table.Tr key={index} className="text-[#071437] font-semibold">
-                {index == 0 && (
-                  <Table.Td
-                    rowSpan={
-                      inventoryTransaction?.inventorySettlementDetail.length
-                    }
-                    className="text-center align-top w-48 "
-                  >
-                    {dayjs(
-                      `${inventoryTransaction.prodYear}-${inventoryTransaction.prodMonth}`
-                    ).format("MMMM YYYY")}
-                  </Table.Td>
-                )}
-
-                <Table.Td className="text-center w-64 ">
-                  {inventoryTransaction.tradeAccountName}
-                </Table.Td>
-                <Table.Td className="text-center w-64">
-                  {row.allocationAccount}
-                </Table.Td>
-                <Table.Td className="text-right min-w-64 max-w-full">
-                  {numeral(numeral(row?.production).value() / 1000).format(
-                    "0,000.000000"
-                  )}
-                </Table.Td>
-                <Table.Td className="text-center w-32  capitalize">
-                  {dayjs(row.startDate).format("DD/MM/YYYY")}
-                </Table.Td>
-                <Table.Td className="text-center w-32  capitalize">
-                  {dayjs(row.endDate).format("DD/MM/YYYY")}
-                </Table.Td>
-                <Table.Td className="text-center w-32 ">
-                  <StatusLabel
-                    status={issueRequestStatus ?? "Pending"}
-                    type="xs"
-                  />
-                </Table.Td>
-              </Table.Tr>
-            )
-          )}
-        </Table.Tbody>
-        <Table.Tfoot>
-          <Table.Tr className="border-t border-slate-200">
-            <Table.Th className="text-center w-48">Total</Table.Th>
-            <Table.Th className="text-center w-64"></Table.Th>
-            <Table.Th className="text-center w-64"></Table.Th>
-            <Table.Th className="text-right min-w-64 max-w-full">
-              {numeral(numeral(totalProduction).value()).format("0,0.000000")}
-            </Table.Th>
-            <Table.Th className="text-center w-32"></Table.Th>
-            <Table.Th className="text-center w-32"></Table.Th>
-            <Table.Th className="text-center w-32"></Table.Th>
-          </Table.Tr>
-        </Table.Tfoot>
-      </Table>
-      <div className="grid grid-col-3 gap-5 pt-3 ">
-        <div className="flex gap-2">
-          {canUpload && (
-            <Button
-              className={classNames({
-                "bg-[#F5F4E9] text-[#4D6A00] px-8": canUpload,
-              })}
-              onClick={() => setOpenModalUpload(!openModalUpload)}
-            >
-              Upload Files
-            </Button>
-          )}
-          {fileUploaded.length > 0 || fileGeneration.length > 0 ? (
-            <Button
-              className="text-[#4D6A00] underline px-8"
-              onClick={() => setOpenModalUpload(!openModalUpload)}
-            >
-              {fileUploaded.length + fileGeneration.length == 1
-                ? `${fileUploaded.length + fileGeneration.length} File Uploaded`
-                : `${
-                    fileUploaded.length + fileGeneration.length
-                  } Files Uploaded`}
-            </Button>
-          ) : undefined}
+          <Button
+            className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
+            onClick={showbase}
+          >
+            <IoDocumentTextOutline className="mr-1" /> Preview SF-04
+          </Button>
         </div>
-        <div className="gap-2 col-start-3 h-auto">
-          <div>
-            <div className="text-sm font-normal mb-2 text-[#91918A]">Note</div>
-            {canSendIssue || canVerify ? (
-              <div className="text-sm">
-                <Textarea
-                  size="md"
-                  value={note}
-                  onChange={(event) => setNote(event.currentTarget.value)}
-                  //minRows={4}  // กำหนดจำนวนแถวเริ่มต้น
-                  //sx={{ height: 100 }}
-                  rows={4}
-                />
-              </div>
-            ) : (
-              <div className="w-96 lg:break-words text-sm font-normal">
-                {note || "-"}
-              </div>
+        <Table stickyHeader verticalSpacing="sm">
+          <Table.Thead className="bg-[#F4F6F9]">
+            <Table.Tr className="text-[#071437]">
+              <Table.Th className="text-center w-48 ">Period</Table.Th>
+              <Table.Th className="text-center w-64 ">
+                Recipient Account (Trade Account)
+              </Table.Th>
+              <Table.Th className="text-center w-64 ">
+                Allocation Account
+              </Table.Th>
+              <Table.Th className="text-right min-w-64 max-w-full">
+                Production (MWh)
+              </Table.Th>
+              <Table.Th className="text-center w-32 ">Start Date</Table.Th>
+              <Table.Th className="text-center w-32 ">End Date</Table.Th>
+              <Table.Th className="text-center w-32 ">Status</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            {inventoryTransaction?.inventorySettlementDetail?.map(
+              (row, index) => (
+                <Table.Tr key={index} className="text-[#071437] font-semibold">
+                  {index == 0 && (
+                    <Table.Td
+                      rowSpan={
+                        inventoryTransaction?.inventorySettlementDetail.length
+                      }
+                      className="text-center align-top w-48 "
+                    >
+                      {dayjs(
+                        `${inventoryTransaction.prodYear}-${inventoryTransaction.prodMonth}`
+                      ).format("MMMM YYYY")}
+                    </Table.Td>
+                  )}
+
+                  <Table.Td className="text-center w-64 ">
+                    {inventoryTransaction.tradeAccountName}
+                  </Table.Td>
+                  <Table.Td className="text-center w-64">
+                    {row.allocationAccount}
+                  </Table.Td>
+                  <Table.Td className="text-right min-w-64 max-w-full">
+                    {numeral(numeral(row?.production).value() / 1000).format(
+                      "0,000.000000"
+                    )}
+                  </Table.Td>
+                  <Table.Td className="text-center w-32  capitalize">
+                    {dayjs(row.startDate).format("DD/MM/YYYY")}
+                  </Table.Td>
+                  <Table.Td className="text-center w-32  capitalize">
+                    {dayjs(row.endDate).format("DD/MM/YYYY")}
+                  </Table.Td>
+                  <Table.Td className="text-center w-32 ">
+                    <StatusLabel
+                      status={issueRequestStatus ?? "Pending"}
+                      type="xs"
+                    />
+                  </Table.Td>
+                </Table.Tr>
+              )
             )}
+          </Table.Tbody>
+          <Table.Tfoot>
+            <Table.Tr className="border-t border-slate-200">
+              <Table.Th className="text-center w-48">Total</Table.Th>
+              <Table.Th className="text-center w-64"></Table.Th>
+              <Table.Th className="text-center w-64"></Table.Th>
+              <Table.Th className="text-right min-w-64 max-w-full">
+                {numeral(numeral(totalProduction).value()).format("0,0.000000")}
+              </Table.Th>
+              <Table.Th className="text-center w-32"></Table.Th>
+              <Table.Th className="text-center w-32"></Table.Th>
+              <Table.Th className="text-center w-32"></Table.Th>
+            </Table.Tr>
+          </Table.Tfoot>
+        </Table>
+        <div className="grid grid-col-3 gap-5 pt-3 ">
+          <div className="flex gap-2">
+            {canUpload && (
+              <Button
+                className={classNames({
+                  "bg-[#F5F4E9] text-[#4D6A00] px-8": canUpload,
+                })}
+                onClick={() => setOpenModalUpload(!openModalUpload)}
+              >
+                Upload Files
+              </Button>
+            )}
+            {fileUploaded.length > 0 || fileGeneration.length > 0 ? (
+              <Button
+                className="text-[#4D6A00] underline px-8"
+                onClick={() => setOpenModalUpload(!openModalUpload)}
+              >
+                {fileUploaded.length + fileGeneration.length == 1
+                  ? `${
+                      fileUploaded.length + fileGeneration.length
+                    } File Uploaded`
+                  : `${
+                      fileUploaded.length + fileGeneration.length
+                    } Files Uploaded`}
+              </Button>
+            ) : undefined}
           </div>
-          {/*canSendIssue && (
+          <div className="gap-2 col-start-3 h-auto">
+            <div>
+              <div className="text-sm font-normal mb-2 text-[#91918A]">
+                Note
+              </div>
+              {canSendIssue || canVerify ? (
+                <div className="text-sm">
+                  <Textarea
+                    size="md"
+                    value={note}
+                    onChange={(event) => setNote(event.currentTarget.value)}
+                    //minRows={4}  // กำหนดจำนวนแถวเริ่มต้น
+                    //sx={{ height: 100 }}
+                    rows={4}
+                  />
+                </div>
+              ) : (
+                <div className="w-96 lg:break-words text-sm font-normal">
+                  {note || "-"}
+                </div>
+              )}
+            </div>
+            {/*canSendIssue && (
             <Button
               className="bg-[#87BE33] text-white px-8"
               onClick={() => setOpenModalConfirm(!openModalConfirm)}
@@ -1295,59 +1302,62 @@ console.log(issueRequestStatus)
               Send
             </Button>
           )*/}
-        </div>
-      </div>
-
-      {canSendIssue &&
-      issueRequestStatus.toLowerCase().replace(" ", "") == "verified" ? (
-        <div className="flex justify-between mt-4">
-          <div>
-            <Button
-              className="bg-[#EF4835] text-white px-8 w-[150px]"
-              onClick={() => handleOpenModalReturn()}
-            >
-              Return
-            </Button>
           </div>
-          <div>
+        </div>
+
+        {canSendIssue &&
+        issueRequestStatus.toLowerCase().replace(" ", "") == "verified" ? (
+          <div className="flex justify-between mt-4">
+            <div>
+              <Button
+                className="bg-[#EF4835] text-white px-8 w-[150px]"
+                onClick={() => handleOpenModalReturn()}
+              >
+                Return
+              </Button>
+            </div>
+            <div>
+              <Button
+                className="bg-[#87BE33] text-white px-8"
+                onClick={() => handleModalConfirm()}
+              >
+                Sign & Submit
+              </Button>
+            </div>
+          </div>
+        ) : undefined}
+        {/*Verify Button */}
+        {(issueRequestStatus.toLowerCase().replace(" ", "") == "pending" ||
+          issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
+          issueRequestStatus.toLowerCase().replace(" ", "") == "returned") &&
+        canVerify ? (
+          <div className="mt-4 text-right">
             <Button
               className="bg-[#87BE33] text-white px-8"
-              onClick={() => handleModalConfirm()}
+              onClick={() => handleOpenModalVerify()}
             >
-              Sign & Submit
+              Verify
             </Button>
           </div>
-        </div>
-      ) : undefined}
-      {/*Verify Button */}
-      {(issueRequestStatus.toLowerCase().replace(" ", "") == "pending" ||
-        issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
-        issueRequestStatus.toLowerCase().replace(" ", "") == "returned") &&
-      canVerify ? (
-        <div className="mt-4 text-right">
-          <Button
-            className="bg-[#87BE33] text-white px-8"
-            onClick={() => handleOpenModalVerify()}
-          >
-            Verify
-          </Button>
-        </div>
-      ) : undefined}
+        ) : undefined}
 
-      {inventoryTransaction.issueRequestHistory.length !== 0 && (
-        <div className="border-3 border-dotted px-[20px] py-[10px] mt-4">
-          {inventoryTransaction.issueRequestHistory.map((item, index) => {
-            return (
-              <div className="text-right w-full text-sm" key={index}>
-                <label>{getLogType(item.action)} </label>
-                <label className="font-bold ml-1">
-                  {item.createBy + " " + splitDateTimeLog(item.createDateTime)}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      )}
+        {inventoryTransaction.issueRequestHistory.length !== 0 && (
+          <div className="border-3 border-dotted px-[20px] py-[10px] mt-4">
+            {inventoryTransaction.issueRequestHistory.map((item, index) => {
+              return (
+                <div className="text-right w-full text-sm" key={index}>
+                  <label>{getLogType(item.action)} </label>
+                  <label className="font-bold ml-1">
+                    {item.createBy +
+                      " " +
+                      splitDateTimeLog(item.createDateTime)}
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </>:undefined}
 
       <Modal
         opened={openModalConfirm}
@@ -1780,7 +1790,12 @@ console.log(issueRequestStatus)
         </div>
       </Modal>
 
-      {showModalFail && <ModalFail  content={"Something went wrong. Please go back and try again."} onClickOk={handleCloseFailModal} />}
+      {showModalFail && (
+        <ModalFail
+          content={"Something went wrong. Please go back and try again."}
+          onClickOk={handleCloseFailModal}
+        />
+      )}
     </div>
   );
 };
