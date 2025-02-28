@@ -25,7 +25,7 @@ const imageProfile =
   "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
 
 const Navbar = () => {
-  const [ugtGroupList, setUgtGroupList] = useState([]);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userObj = useSelector((state) => state?.login?.userobj);
@@ -46,30 +46,19 @@ const Navbar = () => {
   const location = useLocation(); // Get current location
   const isDeviceListPage = location.pathname === WEB_URL.DEVICE_LIST; // Check if current page is DEVICE_LIST
 
-  useEffect(() => {
-    // const ugtGroup = [{
-    //     "ugtGroupId": 1,
-    //     "ugtGroupName": "UGT-1",
-    //     "startDate": "2024-01-01",
-    //     "stopDate": "9999-99-99"
-    //   },{
-    //     "ugtGroupId": 2,
-    //     "ugtGroupName": "UGT-2",
-    //     "startDate": "2024-01-01",
-    //     "stopDate": "9999-99-99"
-    //   },{
-    //     "ugtGroupId": 3,
-    //     "ugtGroupName": "UGT-3",
-    //     "startDate": "2024-01-01",
-    //     "stopDate": "9999-99-99"
-    //   }]
-    const ugtGroup = ugtGroups;
-    setUgtGroupList(ugtGroup);
-    const defaultUgtGroup = ugtGroup?.length > 0 ? ugtGroup[0] : [];
-    console.log(defaultUgtGroup)
-    dispatch(setCurrentUgtGroup(defaultUgtGroup)); //setDefaultValue ugtgroup
-    setValue("ugtGroup", defaultUgtGroup); //setDefaultValue ugtgroup
-  }, [ugtGroups]);
+  const initialUgtGroupList = ugtGroups || []; 
+const initialDefaultUgtGroup = isDeviceListPage
+  ? initialUgtGroupList.find(group => group.ugtGroupName === "UGT-1") || initialUgtGroupList[0] || []
+  : initialUgtGroupList[0] || [];
+
+const [ugtGroupList, setUgtGroupList] = useState(initialUgtGroupList);
+
+useEffect(() => {
+  setUgtGroupList(ugtGroups);
+  dispatch(setCurrentUgtGroup(initialDefaultUgtGroup));
+  setValue("ugtGroup", initialDefaultUgtGroup);
+}, [ugtGroups, isDeviceListPage]);
+
   
   const modifiedUgtGroupList = isDeviceListPage 
   ? ugtGroupList.filter(option => option.name !== 'UGT-2') // Omit UGT-2 if on DEVICE_LIST
