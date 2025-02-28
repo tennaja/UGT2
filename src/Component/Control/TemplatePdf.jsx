@@ -377,7 +377,7 @@ submission`})</em></p>
               </tr>
               <tr>
                 <td className="border p-2 font-bold">Country</td>
-                <td className="border p-2 text-left break-all" colSpan={3}>{data?.countryCode}</td>
+                <td className="border p-2 text-left break-all" colSpan={3}>{data?.countryName}</td>
               </tr>
               <tr>
                 <td className="border p-2  font-bold"><div className="flex text-left"><p>Latitude</p><p className='text-[8px] text-gray-500 ml-1'><em>(±n.nnnnnn)</em></p></div></td>
