@@ -564,6 +564,7 @@ const ItemIssue = ({
         name: item.fileName,
         status: "done",
         type: item.mimeType,
+        createDate:item.createDate,
         // url: `https://api.sandbox.evident.dev/files/${item.uid}/download`, // รอเปลี่ยนเป็น API ของ Backend ที่ใช้สำหรับโหลดไฟล์
         url: `${EAC_ISSUE_REQUEST_DOWNLOAD_FILE}`,
       };
@@ -785,6 +786,7 @@ const ItemIssue = ({
       issueRequestId: issueRequestId,
       issueRequestDetailId: issueRequestDetailId,
       createBy: userData.firstName + " " + userData.lastName,
+      note:note
     };
 
     const responseDraft = await verifyIssueDetail(param);
@@ -1589,7 +1591,16 @@ const ItemIssue = ({
                       width={35}
                       height={35}
                     />
-                    <span className="text-sm font-normal">{file.name}</span>
+                    <div>
+                      <span className="text-sm font-normal">
+                      {file.name}
+                    </span>
+                    <div>
+                    <label className="text-gray-500 text-xs">{file.createDate}</label>
+                    </div>
+                    </div>
+                    
+                    
                   </div>
                   <div>
                     {/* ปุ่ม Download */}
@@ -1672,7 +1683,14 @@ const ItemIssue = ({
                       width={35}
                       height={35}
                     />
-                    <span className="text-sm font-normal">{file.name}</span>
+                    <div>
+                      <span className="text-sm font-normal">
+                      {file.name}
+                    </span>
+                    <div>
+                    <label className="text-gray-500 text-xs">{file.createDate}</label>
+                    </div>
+                    </div>
                   </div>
                   <div>
                     {/* ปุ่ม Download */}
