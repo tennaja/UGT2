@@ -1169,7 +1169,7 @@ export const getGenerateDataInputList = (ugtGroupId, year, month,utilityId) => {
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
-            let dataResponse = []
+            /*let dataResponse = []
             for(let i = 0;i < response.data.length;i++){
                 let tempData = {
                     portfolioId : response.data[i].portfolioId,
@@ -1182,8 +1182,8 @@ export const getGenerateDataInputList = (ugtGroupId, year, month,utilityId) => {
                 }
                 
                 dataResponse.push(tempData)
-            }
-            dispatch(_getGenerateDataInputList(dataResponse));
+            }*/
+            dispatch(_getGenerateDataInputList(response.data));
         }, (error) => {
             dispatch(failRequest(error.message))
         });
@@ -1487,7 +1487,7 @@ export const getLoadDataInputList = (ugtGroupId, year, month,utilityId) => {
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
-            let dataResponse = []
+            /*let dataResponse = []
             for(let i = 0;i < response.data.length;i++){
                 let tempData = {
                     portfolioId : response.data[i].portfolioId,
@@ -1500,8 +1500,8 @@ export const getLoadDataInputList = (ugtGroupId, year, month,utilityId) => {
                 }
                 
                 dataResponse.push(tempData)
-            }
-            dispatch(_getLoadDataInputList(dataResponse));
+            }*/
+            dispatch(_getLoadDataInputList(response.data));
         }, (error) => {
             dispatch(failRequest(error.message))
         });
