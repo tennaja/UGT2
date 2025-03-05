@@ -131,14 +131,14 @@ console.log(settlementStatus,monthListData)
   useEffect(() => {
     // set selected month
     if (monthListData?.monthList?.length > 0) {
-      if (
+     /* if (
         userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
         userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
         userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG ||
         userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
-      ) {
+      ) {*/
         if (
           monthListData?.monthList.some((item) => item == settlementMonth) &&
           settlementMonth <= monthListData?.defaultMonth
@@ -147,7 +147,7 @@ console.log(settlementStatus,monthListData)
         } else {
           dispatch(setSelectedMonth(monthListData?.defaultMonth));
         }
-      } else {
+      /*} else {
         if (monthListData?.defaultMonth == 12) {
           dispatch(setSelectedMonth(monthListData?.defaultMonth));
         }
@@ -157,7 +157,7 @@ console.log(settlementStatus,monthListData)
           let defualtMonth = monthListData?.defaultMonth - 1;
           dispatch(setSelectedMonth(defualtMonth));
         }
-      }
+      }*/
       setLatestMonthHasData(monthListData.defaultMonth); // เอาไว้เช็ค dropdown และ set disable ไว้
     }
 
