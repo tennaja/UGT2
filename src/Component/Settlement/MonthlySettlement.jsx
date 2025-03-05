@@ -270,7 +270,7 @@ console.log(settlementStatus,monthListData)
                       <Select.Option
                         key={index}
                         value={MONTH_LIST[item - 1].month}
-                        disabled={checkMonth(item)}
+                        disabled={/*checkMonth(item)*/item > latestMonthHasData}
                       >
                         {MONTH_LIST[item - 1].name}
                       </Select.Option>
