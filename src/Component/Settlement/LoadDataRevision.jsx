@@ -1002,42 +1002,79 @@ const LoadDataRevision = ({
   const saveLoadData = () => {
     console.log("Save");
     ClosePopupupConfirm();
-    if (fileMetering.length !== 0 && fileContractInvoice.length !== 0) {
+    if (revision !== 1) {
+      if (fileMetering.length !== 0 && fileContractInvoice.length !== 0) {
+        showLoading();
+        let tempMeteringFile = [];
+        let tempContractFile = [];
+        fileMetering.map((item) => {
+          tempMeteringFile.push({
+            id: item.id,
+            guid: item.id == 0 ? "" : item.guid,
+            binary: item.binary,
+            name: item.name,
+            type: item.type,
+          });
+        });
+        fileContractInvoice.map((item) => {
+          tempContractFile.push({
+            id: item.id,
+            guid: item.id == 0 ? "" : item.guid,
+            binary: item.binary,
+            name: item.name,
+            type: item.type,
+          });
+        });
+        //console.log(tempMeteringFile,tempContractFile,tempOther)
+        const param = {
+          portfolioId: portfolioId,
+          year: year,
+          month: month,
+          revision: revision,
+          parentId: subscriberId,
+          filePdf: tempMeteringFile,
+          fileXls: tempContractFile,
+        };
+        dispatch(LoadDataSave(param, () => {}));
+        console.log(param);
+      } else {
+        setIsMandatoryError(true);
+      }
+    }
+    else{
       showLoading();
-      let tempMeteringFile = [];
-      let tempContractFile = [];
-      fileMetering.map((item) => {
-        tempMeteringFile.push({
-          id: item.id,
-          guid: item.id == 0 ? "" : item.guid,
-          binary: item.binary,
-          name: item.name,
-          type: item.type,
+        let tempMeteringFile = [];
+        let tempContractFile = [];
+        fileMetering.map((item) => {
+          tempMeteringFile.push({
+            id: item.id,
+            guid: item.id == 0 ? "" : item.guid,
+            binary: item.binary,
+            name: item.name,
+            type: item.type,
+          });
         });
-      });
-      fileContractInvoice.map((item) => {
-        tempContractFile.push({
-          id: item.id,
-          guid: item.id == 0 ? "" : item.guid,
-          binary: item.binary,
-          name: item.name,
-          type: item.type,
+        fileContractInvoice.map((item) => {
+          tempContractFile.push({
+            id: item.id,
+            guid: item.id == 0 ? "" : item.guid,
+            binary: item.binary,
+            name: item.name,
+            type: item.type,
+          });
         });
-      });
-      //console.log(tempMeteringFile,tempContractFile,tempOther)
-      const param = {
-        portfolioId: portfolioId,
-        year: year,
-        month: month,
-        revision: revision,
-        parentId: subscriberId,
-        filePdf: tempMeteringFile,
-        fileXls: tempContractFile,
-      };
-      dispatch(LoadDataSave(param, () => {}));
-      console.log(param);
-    } else {
-      setIsMandatoryError(true);
+        //console.log(tempMeteringFile,tempContractFile,tempOther)
+        const param = {
+          portfolioId: portfolioId,
+          year: year,
+          month: month,
+          revision: revision,
+          parentId: subscriberId,
+          filePdf: tempMeteringFile,
+          fileXls: tempContractFile,
+        };
+        dispatch(LoadDataSave(param, () => {}));
+        console.log(param);
     }
   };
 
@@ -1227,29 +1264,27 @@ const LoadDataRevision = ({
                     />
                   </div>
                   <div className="grid grid-cols-12 gap-1">
-                  <div className="row-span-3 col-span-12 lg:col-span-3">
-                      <div className="shrink-0">
-                        
-                      </div>
+                    <div className="row-span-3 col-span-12 lg:col-span-3">
+                      <div className="shrink-0"></div>
                     </div>
-                  <div className="col-span-12 lg:col-span-9">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Assign Utility */}
-                      <div>
-                        <div className="text-left text-[#6B7280] text-sm">
-                          Data Source:{" "}
-                          {renderData(loadDataRevision?.dataSource)}
+                    <div className="col-span-12 lg:col-span-9">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                        {/*Assign Utility */}
+                        <div>
+                          <div className="text-left text-[#6B7280] text-sm">
+                            Data Source:{" "}
+                            {renderData(loadDataRevision?.dataSource)}
+                          </div>
+                        </div>
+                        {/*Subscriber Code */}
+                        <div className="text-right text-[#6B7280] text-sm">
+                          {"Date: " +
+                            getDate(loadDataRevision?.datetime, true) +
+                            " | Time: " +
+                            getDate(loadDataRevision?.datetime, false)}
                         </div>
                       </div>
-                      {/*Subscriber Code */}
-                      <div className="text-right text-[#6B7280] text-sm">
-                        {"Date: " +
-                          getDate(loadDataRevision?.datetime, true) +
-                          " | Time: " +
-                          getDate(loadDataRevision?.datetime, false)}
-                      </div>
                     </div>
-                  </div>
                   </div>
                 </div>
 
@@ -1264,7 +1299,17 @@ const LoadDataRevision = ({
                       File upload
                     </div>
                     <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
-                    {loadDataRevision.subscriberTypeId == 1?<div>(.pdf) <label className="text-red-600">*</label></div>:<div> หนังสือยืนยันหน่วย (.pdf) <label className="text-red-600">*</label></div>}
+                      {loadDataRevision.subscriberTypeId == 1 ? (
+                        <div>
+                          (.pdf) {revision !== 1?<label className="text-red-600">*</label>:undefined}
+                        </div>
+                      ) : (
+                        <div>
+                          {" "}
+                          หนังสือยืนยันหน่วย (.pdf){" "}
+                          {revision !== 1?<label className="text-red-600">*</label>:undefined}
+                        </div>
+                      )}
                     </div>
                     <Dragger
                       {...props}
@@ -1286,7 +1331,16 @@ const LoadDataRevision = ({
                   </div>
                   <div className="flex flex-col w-1/2 mt-2 ">
                     <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
-                    {loadDataRevision.subscriberTypeId == 1?<div>(.xls) <label className="text-red-600">*</label></div>:<div>ข้อมูลหน่วยแยกผู้รับ (blinded) in detail (.xls) <label className="text-red-600">*</label></div>}
+                      {loadDataRevision.subscriberTypeId == 1 ? (
+                        <div>
+                          (.xls) {revision !== 1?<label className="text-red-600">*</label>:undefined}
+                        </div>
+                      ) : (
+                        <div>
+                          ข้อมูลหน่วยแยกผู้รับ (blinded) in detail (.xls){" "}
+                          {revision !== 1?<label className="text-red-600">*</label>:undefined}
+                        </div>
+                      )}
                     </div>
                     <Dragger
                       {...propsContractInvoice}

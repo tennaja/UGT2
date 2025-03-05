@@ -1012,7 +1012,57 @@ const GenerateDataRevision = ({
   const saveGenerateData = () => {
     console.log("Save");
     ClosePopupupConfirm();
-    if (fileMetering.length !== 0 && fileContractInvoice.length !== 0) {
+    if (revision !== 1) {
+      if (fileMetering.length !== 0 && fileContractInvoice.length !== 0) {
+        showLoading();
+        let tempMeteringFile = [];
+        let tempContractFile = [];
+        let tempOther = [];
+        fileMetering.map((item) => {
+          tempMeteringFile.push({
+            id: item.id,
+            guid: item.id == 0 ? "" : item.guid,
+            binary: item.binary,
+            name: item.name,
+            type: item.type,
+          });
+        });
+        fileContractInvoice.map((item) => {
+          tempContractFile.push({
+            id: item.id,
+            guid: item.id == 0 ? "" : item.guid,
+            binary: item.binary,
+            name: item.name,
+            type: item.type,
+          });
+        });
+        fileOther.map((item) => {
+          tempOther.push({
+            id: item.id,
+            guid: item.id == 0 ? "" : item.guid,
+            binary: item.binary,
+            name: item.name,
+            type: item.type,
+          });
+        });
+        //console.log(tempMeteringFile,tempContractFile,tempOther)
+        const param = {
+          portfolioId: portfolioId,
+          year: year,
+          month: month,
+          revision: revision,
+          parentId: deviceId,
+          fileMeteringData: tempMeteringFile,
+          fileContractSalesInvoice: tempContractFile,
+          fileOthers: tempOther,
+        };
+        dispatch(GenerateDataSave(param, () => {}));
+        console.log(param);
+      } else {
+        setIsMandatoryError(true);
+      }
+    }
+    else{
       showLoading();
       let tempMeteringFile = [];
       let tempContractFile = [];
@@ -1057,8 +1107,6 @@ const GenerateDataRevision = ({
       };
       dispatch(GenerateDataSave(param, () => {}));
       console.log(param);
-    } else {
-      setIsMandatoryError(true);
     }
   };
 
@@ -1078,7 +1126,8 @@ const GenerateDataRevision = ({
       <div className="min-h-screen p-6 items-center justify-center">
         <div className="container max-w-screen-lg mx-auto">
           <div className="text-left flex flex-col gap-3">
-            {generateDataRevision && Object.keys(generateDataRevision).length !== 0 ? (
+            {generateDataRevision &&
+            Object.keys(generateDataRevision).length !== 0 ? (
               <div>
                 <div className="md:col-span-6">
                   <div className="grid grid-cols-12 gap-1">
@@ -1243,7 +1292,6 @@ const GenerateDataRevision = ({
                           </div>
                         </div>
                       </div>
-                      
                     </div>
 
                     <Divider
@@ -1253,29 +1301,27 @@ const GenerateDataRevision = ({
                     />
                   </div>
                   <div className="grid grid-cols-12 gap-1">
-                  <div className="row-span-3 col-span-12 lg:col-span-3">
-                      <div className="shrink-0">
-                        
-                      </div>
+                    <div className="row-span-3 col-span-12 lg:col-span-3">
+                      <div className="shrink-0"></div>
                     </div>
-                  <div className="col-span-12 lg:col-span-9">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
-                      {/*Assign Utility */}
-                      <div>
-                        <div className="text-left text-[#6B7280] text-sm">
-                          Data Source:{" "}
-                          {renderData(generateDataRevision?.dataSource)}
+                    <div className="col-span-12 lg:col-span-9">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mb-3">
+                        {/*Assign Utility */}
+                        <div>
+                          <div className="text-left text-[#6B7280] text-sm">
+                            Data Source:{" "}
+                            {renderData(generateDataRevision?.dataSource)}
+                          </div>
+                        </div>
+                        {/*Subscriber Code */}
+                        <div className="text-right text-[#6B7280] text-sm">
+                          {"Date: " +
+                            getDate(generateDataRevision?.datetime, true) +
+                            " | Time: " +
+                            getDate(generateDataRevision?.datetime, false)}
                         </div>
                       </div>
-                      {/*Subscriber Code */}
-                      <div className="text-right text-[#6B7280] text-sm">
-                        {"Date: " +
-                          getDate(generateDataRevision?.datetime, true) +
-                          " | Time: " +
-                          getDate(generateDataRevision?.datetime, false)}
-                      </div>
                     </div>
-                  </div>
                   </div>
                 </div>
 
@@ -1290,7 +1336,10 @@ const GenerateDataRevision = ({
                       File upload
                     </div>
                     <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
-                      Metering Data <label className="text-red-600">*</label>
+                      Metering Data{" "}
+                      {revision !== 1 ? (
+                        <label className="text-red-600">*</label>
+                      ) : undefined}
                     </div>
                     <Dragger
                       {...props}
@@ -1314,7 +1363,9 @@ const GenerateDataRevision = ({
                   <div className="flex flex-col w-1/2 mt-2 ">
                     <div className="text-left text-PRIMARY_TEXT text-sm mt-2 font-semibold mb-2">
                       Contract Sales Invoice{" "}
-                      <label className="text-red-600">*</label>
+                      {revision !== 1 ? (
+                        <label className="text-red-600">*</label>
+                      ) : undefined}
                     </div>
                     <Dragger
                       {...propsContractInvoice}
