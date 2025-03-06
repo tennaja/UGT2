@@ -445,7 +445,7 @@ const SettlementInfoFinal = ({
     },
     {
       id: "totalGeneration",
-      label: "Total Generation (kWh)",
+      label: `Total Generation (${unit})`,
       align: "right",
       render: (row) => (
         <Highlighter
@@ -458,7 +458,7 @@ const SettlementInfoFinal = ({
     },
     {
       id: "actualGeneration",
-      label: "Actual Generation Matched (kWh)",
+      label: `Actual Generation Matched (${unit})`,
       align: "right",
       render: (row) => (
         <Highlighter
@@ -470,8 +470,8 @@ const SettlementInfoFinal = ({
       ),
     },
     {
-      id: "inventoryMatched",
-      label: "Inventory Matched (kWh)",
+      id: "inventoryMatch",
+      label: `Inventory Matched (${unit})`,
       align: "right",
       render: (row) => (
         <Highlighter
@@ -484,7 +484,7 @@ const SettlementInfoFinal = ({
     },
     {
       id: "netGreenDeliverables",
-      label: "Net Green Deliverables (kWh)",
+      label: `Net Green Deliverables (${unit})`,
       align: "right",
       render: (row) => (
         <Highlighter
@@ -504,9 +504,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={
-            renderValues(row?.percentageActualGeneration) + "%"
-          }
+          textToHighlight={numeral(row?.percentageActualGeneration).format("0,0.000") + "%"}
         />
       ),
     },
@@ -527,7 +525,7 @@ const SettlementInfoFinal = ({
     },
     {
       id: "totalLoad",
-      label: "Total Load (kWh)",
+      label: `Total Load (${unit})`,
       align: "right",
       render: (row) => (
         <Highlighter
@@ -540,7 +538,7 @@ const SettlementInfoFinal = ({
     },
     {
       id: "actualLoadMatched",
-      label: "Actual Load Matched (kWh)",
+      label: `Actual Load Matched (${unit})`,
       align: "right",
       render: (row) => (
         <Highlighter
@@ -553,7 +551,7 @@ const SettlementInfoFinal = ({
     },
     {
       id: "inventoryMatched",
-      label: "Inventory Matched (kWh)",
+      label: `Inventory Matched (${unit})`,
       align: "right",
       render: (row) => (
         <Highlighter
@@ -566,7 +564,7 @@ const SettlementInfoFinal = ({
     },
     {
       id: "netGreenDeliverables",
-      label: "Net Green Deliverables (kWh)",
+      label: `Net Green Deliverables (${unit})`,
       align: "right",
       render: (row) => (
         <Highlighter
@@ -586,9 +584,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={
-            renderValues(row?.percentageActualLoadMatched) + "%"
-          }
+          textToHighlight={numeral(row?.percentageActualLoadMatched).format("0,0.000") + "%"}
         />
       ),
     },
@@ -602,7 +598,7 @@ const SettlementInfoFinal = ({
           searchWords={[searchSubscriber]}
           autoEscape={true}
           textToHighlight={
-            renderValues(row?.percentageNetGreenDeliverables)+ "%"
+            numeral(row?.percentageNetGreenDeliverables).format("0,0.000") + "%"
           }
         />
       ),
