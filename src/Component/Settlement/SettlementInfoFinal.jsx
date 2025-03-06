@@ -452,7 +452,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.totalGeneration).format("0,0.000")}
+          textToHighlight={renderValues(row?.totalGeneration)}
         />
       ),
     },
@@ -465,9 +465,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.actualGeneration).format(
-            "0,0.000"
-          )}
+          textToHighlight={renderValues(row?.actualGeneration)}
         />
       ),
     },
@@ -480,7 +478,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.inventoryMatched).format("0,0.000")}
+          textToHighlight={renderValues(row?.inventoryMatched)}
         />
       ),
     },
@@ -493,7 +491,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.netGreenDeliverables).format("0,0.000")}
+          textToHighlight={renderValues(row?.netGreenDeliverables)}
         />
       ),
     },
@@ -507,7 +505,7 @@ const SettlementInfoFinal = ({
           searchWords={[searchDevice]}
           autoEscape={true}
           textToHighlight={
-            numeral(row?.percentageActualGeneration).format("0,0.00") + "%"
+            renderValues(row?.percentageActualGeneration) + "%"
           }
         />
       ),
@@ -536,7 +534,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={numeral(row?.totalLoad).format("0,0.000")}
+          textToHighlight={renderValues(row?.totalLoad)}
         />
       ),
     },
@@ -549,7 +547,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={numeral(row?.actualLoadMatched).format("0,0.000")}
+          textToHighlight={renderValues(row?.actualLoadMatched)}
         />
       ),
     },
@@ -562,7 +560,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={numeral(row?.inventoryMatched).format("0,0.000")}
+          textToHighlight={renderValues(row?.inventoryMatched)}
         />
       ),
     },
@@ -575,7 +573,7 @@ const SettlementInfoFinal = ({
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={numeral(row?.netGreenDeliverables).format("0,0.000")}
+          textToHighlight={renderValues(row?.netGreenDeliverables)}
         />
       ),
     },
@@ -589,7 +587,7 @@ const SettlementInfoFinal = ({
           searchWords={[searchSubscriber]}
           autoEscape={true}
           textToHighlight={
-            numeral(row?.percentageActualLoadMatched).format("0,0.00") + "%"
+            renderValues(row?.percentageActualLoadMatched) + "%"
           }
         />
       ),
@@ -604,7 +602,7 @@ const SettlementInfoFinal = ({
           searchWords={[searchSubscriber]}
           autoEscape={true}
           textToHighlight={
-            numeral(row?.percentageNetGreenDeliverables).format("0,0.00") + "%"
+            renderValues(row?.percentageNetGreenDeliverables)+ "%"
           }
         />
       ),
@@ -2212,6 +2210,8 @@ console.log(settlemtDetailDevice)
               checkbox={false}
               isTotal={"Total"}
               isSubTotal={"Device"}
+              unit={unit}
+                            convertUnit={convertUnit}
             />
           </div>
           {/*Table Subscriber */}
@@ -2223,6 +2223,8 @@ console.log(settlemtDetailDevice)
               checkbox={false}
               isTotal={"Total"}
               isSubTotal={"Subscriber"}
+              unit={unit}
+                            convertUnit={convertUnit}
             />
           </div>
               {/*<div className="grid grid-cols-2 container mx-auto px-0 gap-8 mt-10 text-left">

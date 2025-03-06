@@ -427,31 +427,31 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                     {"พลังงานไฟฟ้าพร้อม REC จาก UGT " + "2" + " Inventory"}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.ugT1InventoryMatchPEA
+                    {data?.dataDetailSheet1?.ugT2InventoryMatchPEA
                       ? numeral(
-                          data?.dataDetailSheet1?.ugT1InventoryMatchPEA
+                          data?.dataDetailSheet1?.ugT2InventoryMatchPEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.ugT1InventoryMatchMEA
+                    {data?.dataDetailSheet1?.ugT2InventoryMatchMEA
                       ? numeral(
-                          data?.dataDetailSheet1?.ugT1InventoryMatchMEA
+                          data?.dataDetailSheet1?.ugT2InventoryMatchMEA
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-0 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                    {data?.dataDetailSheet1?.ugT2InventoryMatchEGAT
                       ? numeral(
-                          data?.dataDetailSheet1?.ugT1InventoryMatchEGAT
+                          data?.dataDetailSheet1?.ugT2InventoryMatchEGAT
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>
                   
                   <td className="w-[200px] border-t-0 border-b-2 border-l-2 border-r-2 break-all border-black text-sm text-center ">
-                    {data?.dataDetailSheet1?.ugT1InventoryMatch
+                    {data?.dataDetailSheet1?.ugT2InventoryMatch
                       ? numeral(
-                          data?.dataDetailSheet1?.ugT1InventoryMatch
+                          data?.dataDetailSheet1?.ugT2InventoryMatch
                         ).format("0,0.000")
                       : numeral(0).format("0,0.000")}
                   </td>

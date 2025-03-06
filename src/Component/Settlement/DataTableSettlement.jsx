@@ -39,7 +39,9 @@ const DataTableSettlement = ({
   openpopupDeviceError,
   openpopupSubError,
   error,
-  isSubTotal
+  isSubTotal,
+  unit,
+  convertUnit
 }) => {
   const {
     handleSubmit,
@@ -65,15 +67,15 @@ const DataTableSettlement = ({
   }));
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
-  const [totalValue, setTotalValue] = useState([]);
-  const [totalLoadDevice,setTotalLoadDevice] = useState([])
-  const [actualGenerationDevice,setActualGenerationDevice] = useState([])
-  const [inventoryMatchDevice,setInventoryMatchDevice] = useState([])
-  const [perActualMatchDevice,setPerActualMatchDevice] = useState([])
-  const [totalLoadSubscriber,setTotalLoadSubscriber] = useState([])
-  const [actualGenerationSubscriber,setActualGenerationSubscriber] = useState([])
-  const [inventoryMatchSubscriber,setInventoryMatchSubscriber] = useState([])
-  const [perActualMatchSubscriber,setPerActualMatchSubscriber] = useState([])
+  const [totalValue, setTotalValue] = useState();
+  const [totalLoadDevice,setTotalLoadDevice] = useState()
+  const [actualGenerationDevice,setActualGenerationDevice] = useState()
+  const [inventoryMatchDevice,setInventoryMatchDevice] = useState()
+  const [perActualMatchDevice,setPerActualMatchDevice] = useState()
+  const [totalLoadSubscriber,setTotalLoadSubscriber] = useState()
+  const [actualGenerationSubscriber,setActualGenerationSubscriber] = useState()
+  const [inventoryMatchSubscriber,setInventoryMatchSubscriber] = useState()
+  const [perActualMatchSubscriber,setPerActualMatchSubscriber] = useState()
 
   // useEffect(() => {
   //   return () => dispatch({ type: "RESET_STATE" });
@@ -140,44 +142,44 @@ const DataTableSettlement = ({
           (acc, row) => acc + (row.totalGeneration || 0),
           0
         );
-        setTotalLoadDevice(numeral(totalloadDevice).format("0,0.000"));
+        setTotalLoadDevice(totalloadDevice);
         const actualGenerateDevice = paginatedData.reduce(
           (acc, row) => acc + (row.actualGeneration || 0),
           0
         );
-        setActualGenerationDevice(numeral(actualGenerateDevice).format("0,0.000"));
+        setActualGenerationDevice(actualGenerateDevice);
         const inventorymatchDevice = paginatedData.reduce(
           (acc, row) => acc + (row.inventoryMatched || 0),
           0
         );
-        setInventoryMatchDevice(numeral(inventorymatchDevice).format("0,0.000"));
+        setInventoryMatchDevice(inventorymatchDevice);
         const perActualMatch = paginatedData.reduce(
           (acc, row) => acc + (row.netGreenDeliverables || 0),
           0
         );
-        setPerActualMatchDevice(numeral(perActualMatch).format("0,0.00"));
+        setPerActualMatchDevice(perActualMatch);
       }
       else if(isSubTotal == "Subscriber"){
         const totalloadDevice = paginatedData.reduce(
           (acc, row) => acc + (row.totalLoad || 0),
           0
         );
-        setTotalLoadSubscriber(numeral(totalloadDevice).format("0,0.000"));
+        setTotalLoadSubscriber(totalloadDevice);
         const actualGenerateDevice = paginatedData.reduce(
           (acc, row) => acc + (row.actualLoadMatched || 0),
           0
         );
-        setActualGenerationSubscriber(numeral(actualGenerateDevice).format("0,0.000"));
+        setActualGenerationSubscriber(actualGenerateDevice);
         const inventorymatchDevice = paginatedData.reduce(
           (acc, row) => acc + (row.inventoryMatched || 0),
           0
         );
-        setInventoryMatchSubscriber(numeral(inventorymatchDevice).format("0,0.000"));
+        setInventoryMatchSubscriber(inventorymatchDevice);
         const perActualMatch = paginatedData.reduce(
           (acc, row) => acc + (row.netGreenDeliverables || 0),
           0
         );
-        setPerActualMatchSubscriber(numeral(perActualMatch).format("0,0.00"));
+        setPerActualMatchSubscriber(perActualMatch);
       }
       
     }
@@ -666,6 +668,46 @@ if (checkStartDate) {
       return <span>{row[column.id]}</span>;
     }
   };
+
+  const renderValues = (value) => {
+        
+    if (value) {
+      
+      return convertData(value * convertUnit);
+    } else {
+      
+      return convertData(0 * convertUnit);
+    }
+  };
+
+  const convertData = (value) => {
+      let decFixed = 3;
+      if (unit == "kWh") {
+        decFixed = 3;
+      } else if (unit == "MWh") {
+        decFixed = 6;
+      } else if (unit == "GWh") {
+        decFixed = 6;
+      }
+      
+      if (value) {
+       
+        if (decFixed == 3) {
+          return numeral(value).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(value).format("0,0.000000");
+        }
+      } else {
+       
+        if (decFixed == 3) {
+          return numeral(0).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(0).format("0,0.000000");
+        }
+      }
+    };
   
   return (
     <div>
@@ -994,9 +1036,8 @@ if (checkStartDate) {
                           >
                             <strong>
                               {" "}
-                              {totalLoadDevice
-                                ? numeral(totalLoadDevice).format("0,0.000")
-                                : ""}
+                              {renderValues(totalLoadDevice)
+                                }
                             </strong>
                           </TableCell>
                         );
@@ -1013,9 +1054,8 @@ if (checkStartDate) {
                           >
                             <strong>
                               {" "}
-                              {actualGenerationDevice
-                                ? numeral(actualGenerationDevice).format("0,0.000")
-                                : ""}
+                              {renderValues(actualGenerationDevice)
+                                }
                             </strong>
                           </TableCell>
                         );
@@ -1032,9 +1072,8 @@ if (checkStartDate) {
                           >
                             <strong>
                               {" "}
-                              {inventoryMatchDevice
-                                ? numeral(inventoryMatchDevice).format("0,0.000")
-                                : ""}
+                              {renderValues(inventoryMatchDevice)
+                               }
                             </strong>
                           </TableCell>
                         );
@@ -1051,9 +1090,8 @@ if (checkStartDate) {
                           >
                             <strong>
                               {" "}
-                              {perActualMatchDevice
-                                ? numeral(perActualMatchDevice).format("0,0.00")
-                                : ""}
+                              {renderValues(perActualMatchDevice)
+                                }
                             </strong>
                           </TableCell>
                         );
@@ -1074,9 +1112,8 @@ if (checkStartDate) {
                         >
                           <strong>
                             {" "}
-                            {totalLoadSubscriber
-                              ? numeral(totalLoadSubscriber).format("0,0.000")
-                              : ""}
+                            {renderValues(totalLoadSubscriber)
+                              }
                           </strong>
                         </TableCell>
                       );
@@ -1093,9 +1130,8 @@ if (checkStartDate) {
                         >
                           <strong>
                             {" "}
-                            {actualGenerationSubscriber
-                              ? numeral(actualGenerationSubscriber).format("0,0.000")
-                              : ""}
+                            {renderValues(actualGenerationSubscriber)
+                              }
                           </strong>
                         </TableCell>
                       );
@@ -1112,9 +1148,8 @@ if (checkStartDate) {
                         >
                           <strong>
                             {" "}
-                            {inventoryMatchSubscriber
-                              ? numeral(inventoryMatchSubscriber).format("0,0.000")
-                              : ""}
+                            {renderValues(inventoryMatchSubscriber)
+                              }
                           </strong>
                         </TableCell>
                       );
@@ -1131,9 +1166,8 @@ if (checkStartDate) {
                         >
                           <strong>
                             {" "}
-                            {perActualMatchSubscriber
-                              ? numeral(perActualMatchSubscriber).format("0,0.00")
-                              : ""}
+                            {renderValues(perActualMatchSubscriber)
+                              }
                           </strong>
                         </TableCell>
                       );

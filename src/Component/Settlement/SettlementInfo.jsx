@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef  } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button, Divider, Table, ScrollArea, Card } from "@mantine/core";
 import { Form, Select } from "antd";
 import {
@@ -11,7 +11,7 @@ import {
   getRemainingEnergyttribute,
   getSettlementMonthlyDetailSubscriber,
   getSettlementDeviceTable,
-  getSettlementSubscriberTable
+  getSettlementSubscriberTable,
 } from "../../Redux/Settlement/Action";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -58,7 +58,7 @@ import { RxCaretDown } from "react-icons/rx";
 import SettlementDetail from "./SettlementDetail";
 import ModalInventorySupplyUsage from "./ModalInventorySupplyUsage";
 import ModalRemainingEnergyAttribute from "./ModalRemainingEnergyAttribute";
-import WaitApprove from "../assets/WaitApprove.png"
+import WaitApprove from "../assets/WaitApprove.png";
 import { AiOutlineConsoleSql } from "react-icons/ai";
 import { FaLessThanEqual } from "react-icons/fa";
 import noContent from "../assets/no-content.png";
@@ -88,88 +88,91 @@ const SettlementInfo = ({
   selectTab = "final",
   isGenPDF = false,
   status,
-  hideBtn
+  hideBtn,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log(ugtGroupId)
+  console.log(ugtGroupId);
   const userData = useSelector((state) => state.login.userobj);
   //console.log("Year",settlementYear)
   //console.log("Month",settlementMonth)
-  let isShowSettlementProgress = false
-  let isShowGotiVerify = false
-  let isShowAwaitConfirm = false
-  let isShowGotoConfirm = false
-  let isShowMainDetail = false
+  let isShowSettlementProgress = false;
+  let isShowGotiVerify = false;
+  let isShowAwaitConfirm = false;
+  let isShowGotoConfirm = false;
+  let isShowMainDetail = false;
 
-  if(status == "N" || status == "R" || status == "E"){
-    if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER || userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG){
-        if(isShowDetail){
-          isShowGotiVerify = false
-          isShowSettlementProgress = false
-          isShowAwaitConfirm = false
-          isShowGotoConfirm = false
-          isShowMainDetail = true
-        }
-        else{
-          isShowGotiVerify = true
-          isShowSettlementProgress = false
-          isShowAwaitConfirm = false
-          isShowGotoConfirm = false
-          isShowMainDetail = true
-        }
-    }
-    else{
-        isShowGotiVerify = false
-        isShowSettlementProgress = true
-        isShowAwaitConfirm = false
-        isShowGotoConfirm = false
-        isShowMainDetail = false
-    }
-  }
-  else if(status == "V"){
-    if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER || userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG){
-      isShowGotiVerify = false
-      isShowSettlementProgress = false
-      isShowAwaitConfirm = false
-      isShowGotoConfirm = false
-      isShowMainDetail = true
-    }
-    else if(userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN || userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG || userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG){
-      if(isShowDetail){
-        isShowGotiVerify = false
-        isShowSettlementProgress = false
-        isShowAwaitConfirm = false
-        isShowGotoConfirm = false
-        isShowMainDetail = true
+  if (status == "N" || status == "R" || status == "E") {
+    if (
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG
+    ) {
+      if (isShowDetail) {
+        isShowGotiVerify = false;
+        isShowSettlementProgress = false;
+        isShowAwaitConfirm = false;
+        isShowGotoConfirm = false;
+        isShowMainDetail = true;
+      } else {
+        isShowGotiVerify = true;
+        isShowSettlementProgress = false;
+        isShowAwaitConfirm = false;
+        isShowGotoConfirm = false;
+        isShowMainDetail = true;
       }
-      else{
-        isShowGotiVerify = false
-        isShowSettlementProgress = false
-        isShowAwaitConfirm = false
-        isShowGotoConfirm = true
-        isShowMainDetail = true
+    } else {
+      isShowGotiVerify = false;
+      isShowSettlementProgress = true;
+      isShowAwaitConfirm = false;
+      isShowGotoConfirm = false;
+      isShowMainDetail = false;
+    }
+  } else if (status == "V") {
+    if (
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG
+    ) {
+      isShowGotiVerify = false;
+      isShowSettlementProgress = false;
+      isShowAwaitConfirm = false;
+      isShowGotoConfirm = false;
+      isShowMainDetail = true;
+    } else if (
+      userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
+      userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG ||
+      userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+    ) {
+      if (isShowDetail) {
+        isShowGotiVerify = false;
+        isShowSettlementProgress = false;
+        isShowAwaitConfirm = false;
+        isShowGotoConfirm = false;
+        isShowMainDetail = true;
+      } else {
+        isShowGotiVerify = false;
+        isShowSettlementProgress = false;
+        isShowAwaitConfirm = false;
+        isShowGotoConfirm = true;
+        isShowMainDetail = true;
       }
-      
+    } else {
+      isShowGotiVerify = false;
+      isShowSettlementProgress = false;
+      isShowAwaitConfirm = true;
+      isShowGotoConfirm = false;
+      isShowMainDetail = false;
     }
-    else{
-      isShowGotiVerify = false
-      isShowSettlementProgress = false
-      isShowAwaitConfirm = true
-      isShowGotoConfirm = false
-      isShowMainDetail = false
-    }
-  }
-  else if(status == "Y"){
-      isShowGotiVerify = false
-      isShowSettlementProgress = false
-      isShowAwaitConfirm = false
-      isShowGotoConfirm = false
-      isShowMainDetail = true
+  } else if (status == "Y") {
+    isShowGotiVerify = false;
+    isShowSettlementProgress = false;
+    isShowAwaitConfirm = false;
+    isShowGotoConfirm = false;
+    isShowMainDetail = true;
   }
 
-  
   const settlementMonthlySummaryData = useSelector(
     (state) => state.settlement.settlementMonthlySummary
   );
@@ -191,15 +194,21 @@ const SettlementInfo = ({
     (state) => state.settlement.settlementMonthlyDetail
   );
 
-  const settlementDetailMonthlySubscriber = useSelector((state)=> state.settlement.settlementMonthlyDetailSubscriber)
+  const settlementDetailMonthlySubscriber = useSelector(
+    (state) => state.settlement.settlementMonthlyDetailSubscriber
+  );
 
-  const settlementDeviceData = useSelector((state)=>state.settlement.settlementDeviceTable)
-  const settlementSubscriberData = useSelector((state)=>state.settlement.settlementSubscriberTable)
+  const settlementDeviceData = useSelector(
+    (state) => state.settlement.settlementDeviceTable
+  );
+  const settlementSubscriberData = useSelector(
+    (state) => state.settlement.settlementSubscriberTable
+  );
 
-  console.log(settlementDeviceData,settlementSubscriberData)
+  console.log(settlementDeviceData, settlementSubscriberData);
 
   const ref = useRef(null);
-console.log(userData)
+  console.log(userData);
   const chartRef = useRef(null);
   const [isModuleViewerUser, setIsModuleViewerUser] = useState(false);
   const [matchedEnergyData, setMatchedEnergyData] = useState({});
@@ -232,23 +241,24 @@ console.log(userData)
   const [searchDevice, setSearchDevice] = useState();
   const [selectTabSettlementDetail, setSelectTabSettlementDetail] =
     useState("device");
-  const [settlemtDetailDevice,setSettlementDetailDevice] = useState([])
-  const [settlementDetailSubscriber,setSettlementDetailSubscriber] = useState([])
-  const [isApprove,setIsApprove] = useState(false)
-  const [isShowDetailMonthly,setIsShowDetailMonthly] = useState(true)
-  
+  const [settlemtDetailDevice, setSettlementDetailDevice] = useState([]);
+  const [settlementDetailSubscriber, setSettlementDetailSubscriber] = useState(
+    []
+  );
+  const [isApprove, setIsApprove] = useState(false);
+  const [isShowDetailMonthly, setIsShowDetailMonthly] = useState(true);
 
-    //console.log(settlemtDetailDevice)
-  const [legendData,setlegendData] = useState([
+  //console.log(settlemtDetailDevice)
+  const [legendData, setlegendData] = useState([
     { label: "Actual Solar", value: 0, color: "#4D6A00" },
     { label: "Actual Wind", value: 0, color: "#87BE33" }, // ค่า 0 จะไม่ถูก plot
     { label: "Actual Hydro", value: 0, color: "#33BFBF" },
     { label: "UGT2 Inventory", value: 0, color: "#FA6B6E" }, // ค่า 0 จะไม่ถูก plot
     { label: "UGT1 Inventory", value: 0, color: "#61ABFF" },
     { label: "Unmatched Energy", value: 0, color: "#B0BAC9" },
-  ])
+  ]);
 
-  const [data,setData] = useState({
+  const [data, setData] = useState({
     labels: [
       "Actual Solar",
       "Actual Wind",
@@ -284,13 +294,13 @@ console.log(userData)
         labels: {
           usePointStyle: true,
           boxWidth: 10,
-          generateLabels: (chart) =>{
-            return legendData.map((item,index)=>({
+          generateLabels: (chart) => {
+            return legendData.map((item, index) => ({
               text: item.label,
               fillStyle: item.color,
-              hidden: chart.data.datasets[0].data[index]
-            }))
-          }
+              hidden: chart.data.datasets[0].data[index],
+            }));
+          },
         },
       },
       datalabels: {
@@ -357,7 +367,10 @@ console.log(userData)
   const centerTextPlugin = {
     id: "centerText",
     beforeDraw: (chart) => {
-      const { ctx, chartArea: { left, right, top, bottom } } = chart;
+      const {
+        ctx,
+        chartArea: { left, right, top, bottom },
+      } = chart;
       ctx.save();
 
       const centerX = (left + right) / 2;
@@ -382,7 +395,10 @@ console.log(userData)
     {
       id: "centerText",
       beforeDraw: (chart) => {
-        const { ctx, chartArea: { left, right, top, bottom } } = chart;
+        const {
+          ctx,
+          chartArea: { left, right, top, bottom },
+        } = chart;
 
         ctx.save();
         const centerX = (left + right) / 2;
@@ -404,25 +420,32 @@ console.log(userData)
     },
   ];
 
-
-
   //console.log(centerTextPlugin)
 
-  const [totalLoadPercentage,setTotalLoadPercentage] = useState(0)
-  const [additionalData,setAdditionalData] = useState([])
+  const [totalLoadPercentage, setTotalLoadPercentage] = useState(0);
+  const [additionalData, setAdditionalData] = useState([]);
 
-  const sumTotalPercent =()=>{
-    let actualSolar = settlementMonthlySummaryData.actualGenerationMatchedPercentage?settlementMonthlySummaryData.actualGenerationMatchedPercentage:0
+  const sumTotalPercent = () => {
+    let actualSolar =
+      settlementMonthlySummaryData.actualGenerationMatchedPercentage
+        ? settlementMonthlySummaryData.actualGenerationMatchedPercentage
+        : 0;
     //let actualWind = settlementMonthlySummaryData.actualWindPercentage?settlementMonthlySummaryData.actualWindPercentage:0
     //let actualHydro = settlementMonthlySummaryData.actualHydroPercentage?settlementMonthlySummaryData.actualHydroPercentage:0
-    let UGT2Inventory = settlementMonthlySummaryData.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData.ugt2InventoryMatchedPercentage:0
-    let UGT1Inventory = settlementMonthlySummaryData.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData.ugt1InventoryMatchedPercentage:0
-    console.log(actualSolar,UGT2Inventory,UGT1Inventory)
-    let total = actualSolar+UGT2Inventory+UGT1Inventory
-    console.log(total)
-    
-    return total
-  }
+    let UGT2Inventory =
+      settlementMonthlySummaryData.ugt2InventoryMatchedPercentage
+        ? settlementMonthlySummaryData.ugt2InventoryMatchedPercentage
+        : 0;
+    let UGT1Inventory =
+      settlementMonthlySummaryData.ugt1InventoryMatchedPercentage
+        ? settlementMonthlySummaryData.ugt1InventoryMatchedPercentage
+        : 0;
+    console.log(actualSolar, UGT2Inventory, UGT1Inventory);
+    let total = actualSolar + UGT2Inventory + UGT1Inventory;
+    console.log(total);
+
+    return total;
+  };
 
   const columnsDevice = [
     {
@@ -449,7 +472,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.totalGeneration).format("0,0.000")}
+          textToHighlight={renderValues(row?.totalGeneration)}
         />
       ),
     },
@@ -462,9 +485,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.actualGeneration).format(
-            "0,0.000"
-          )}
+          textToHighlight={renderValues(row?.actualGeneration)}
         />
       ),
     },
@@ -477,7 +498,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.inventoryMatched).format("0,0.000")}
+          textToHighlight={renderValues(row?.inventoryMatched)}
         />
       ),
     },
@@ -490,7 +511,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.netGreenDeliverables).format("0,0.000")}
+          textToHighlight={renderValues(row?.netGreenDeliverables)}
         />
       ),
     },
@@ -503,9 +524,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={
-            numeral(row?.percentageActualGeneration).format("0,0.00") + "%"
-          }
+          textToHighlight={renderValues(row?.percentageActualGeneration) + "%"}
         />
       ),
     },
@@ -533,7 +552,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={numeral(row?.totalLoad).format("0,0.000")}
+          textToHighlight={renderValues(row?.totalLoad)}
         />
       ),
     },
@@ -546,7 +565,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={numeral(row?.actualLoadMatched).format("0,0.000")}
+          textToHighlight={renderValues(row?.actualLoadMatched)}
         />
       ),
     },
@@ -559,7 +578,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={numeral(row?.inventoryMatched).format("0,0.000")}
+          textToHighlight={renderValues(row?.inventoryMatched)}
         />
       ),
     },
@@ -572,7 +591,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={numeral(row?.netGreenDeliverables).format("0,0.000")}
+          textToHighlight={renderValues(row?.netGreenDeliverables)}
         />
       ),
     },
@@ -585,9 +604,7 @@ console.log(userData)
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={
-            numeral(row?.percentageActualLoadMatched).format("0,0.00") + "%"
-          }
+          textToHighlight={renderValues(row?.percentageActualLoadMatched) + "%"}
         />
       ),
     },
@@ -601,7 +618,7 @@ console.log(userData)
           searchWords={[searchSubscriber]}
           autoEscape={true}
           textToHighlight={
-            numeral(row?.percentageNetGreenDeliverables).format("0,0.00") + "%"
+            renderValues(row?.percentageNetGreenDeliverables) + "%"
           }
         />
       ),
@@ -1024,9 +1041,11 @@ console.log(userData)
 
   useEffect(() => {
     if (ugtGroupId !== undefined) {
-      if (userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN || 
-        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG || 
-        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG ) {
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
         setIsModuleViewerUser(true);
       }
     }
@@ -1034,7 +1053,7 @@ console.log(userData)
 
   useEffect(() => {
     if (settlementMonth && settlementYear) {
-      console.log(utilityId)
+      console.log(utilityId);
       dispatch(
         getSettlementMonthlySummary(
           ugtGroupId,
@@ -1054,22 +1073,26 @@ console.log(userData)
           generationSortDirection
         )
       );
-      dispatch(getSettlementDeviceTable(
-        ugtGroupId,
+      dispatch(
+        getSettlementDeviceTable(
+          ugtGroupId,
           portfolioId,
           settlementYear,
           settlementMonth,
           generationSortBy,
           generationSortDirection
-      ))
-      dispatch(getSettlementSubscriberTable(
-        ugtGroupId,
+        )
+      );
+      dispatch(
+        getSettlementSubscriberTable(
+          ugtGroupId,
           portfolioId,
           settlementYear,
           settlementMonth,
           generationSortBy,
           generationSortDirection
-      ))
+        )
+      );
       dispatch(
         getSettlementMonthlyConsumtion(
           ugtGroupId,
@@ -1111,22 +1134,24 @@ console.log(userData)
           settlementYear,
           settlementMonth
         )
-      )
+      );
     }
-  }, [settlementMonth, settlementYear,utilityId]);
+  }, [settlementMonth, settlementYear, utilityId]);
 
-  useEffect(()=>{
+  useEffect(() => {
     //console.log(settlementDetailMonthlyDevice)
-    if(settlementDetailMonthlyDevice){
-      setSettlementDetailDevice(settlementDetailMonthlyDevice?.deviceList)
+    if (settlementDetailMonthlyDevice) {
+      setSettlementDetailDevice(settlementDetailMonthlyDevice?.deviceList);
     }
-  },[settlementDetailMonthlyDevice])
+  }, [settlementDetailMonthlyDevice]);
 
-  useEffect(()=>{
-    if(settlementDetailMonthlySubscriber){
-      setSettlementDetailSubscriber(settlementDetailMonthlySubscriber?.subscriberList)
+  useEffect(() => {
+    if (settlementDetailMonthlySubscriber) {
+      setSettlementDetailSubscriber(
+        settlementDetailMonthlySubscriber?.subscriberList
+      );
     }
-  },[settlementDetailMonthlySubscriber])
+  }, [settlementDetailMonthlySubscriber]);
   //console.log(settlementDetailMonthlySubscriber)
 
   // match summary
@@ -1139,49 +1164,47 @@ console.log(userData)
           settlementMonthlySummaryData?.matchedEnergyData
         )
       );
-      setData(convertToDonut())
+      setData(convertToDonut());
       //console.log(sumTotalPercent())
-      setTotalLoadPercentage(sumTotalPercent())
+      setTotalLoadPercentage(sumTotalPercent());
       if (chartRef.current) {
         chartRef.current.update(); // Update chart instance
       }
       //console.log("Status",settlementMonthlySummaryData?.approveStatus)
-      if(settlementMonthlySummaryData?.approveStatus == false){
-        SetsettlementProgress(true)
-        setIsApprove(false)
-      }
-      else{
-        SetsettlementProgress(false)
-        setIsApprove(true)
+      if (settlementMonthlySummaryData?.approveStatus == false) {
+        SetsettlementProgress(true);
+        setIsApprove(false);
+      } else {
+        SetsettlementProgress(false);
+        setIsApprove(true);
       }
 
-      if(isModuleViewerUser == false){
-        if(settlementMonthlySummaryData?.approveStatus == true){
-          setIsShowDetailMonthly(true)
-        }
-        else{
-          if(showWaitApprove == true){
-          setIsShowDetailMonthly(false)
-          }
-          else{
-            setIsShowDetailMonthly(true)
+      if (isModuleViewerUser == false) {
+        if (settlementMonthlySummaryData?.approveStatus == true) {
+          setIsShowDetailMonthly(true);
+        } else {
+          if (showWaitApprove == true) {
+            setIsShowDetailMonthly(false);
+          } else {
+            setIsShowDetailMonthly(true);
           }
         }
-      }
-      else if(isModuleViewerUser == true){
-        setIsShowDetailMonthly(true)
+      } else if (isModuleViewerUser == true) {
+        setIsShowDetailMonthly(true);
       }
     }
 
-    if(settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0){
-      hideBtn(false)
-  }
-  else{
-    hideBtn(true)
-  }
+    if (
+      settlementMonthlySummaryData &&
+      Object.keys(settlementMonthlySummaryData).length !== 0
+    ) {
+      hideBtn(false);
+    } else {
+      hideBtn(true);
+    }
   }, [settlementMonthlySummaryData]);
 
-  const getNewCenter =()=>{
+  const getNewCenter = () => {
     let text = {
       id: "centerText",
       beforeDraw: (chart) => {
@@ -1191,95 +1214,127 @@ console.log(userData)
           width,
           height,
         } = chart;
-  
+
         //console.log("Data chart",left,right,top,bottom)
-  
+
         ctx.save();
         const text = sumTotalPercent();
         const subtext = "of Total Load";
-  
+
         // คำนวณตำแหน่งกลาง
         const centerX = (left + right) / 2;
         const centerY = (top + bottom) / 2;
-  
+
         // ข้อความหลัก
         ctx.font = "bold 24px Arial";
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(text, centerX, centerY - 10);
-  
+
         // ข้อความรอง
         ctx.font = "16px Arial";
         ctx.fillStyle = "#666";
         ctx.fillText(subtext, centerX, centerY + 15);
-  
+
         ctx.restore();
       },
-    }
+    };
 
-    return text
-  }
+    return text;
+  };
 
-  const convertToDonut=()=>{
-    console.log(settlementMonthlySummaryData)
-    let actualSolar = settlementMonthlySummaryData.actualSolarPercentage?settlementMonthlySummaryData.actualSolarPercentage:0
-    let actualWind = settlementMonthlySummaryData.actualWindPercentage?settlementMonthlySummaryData.actualWindPercentage:0
-    let actualHydro = settlementMonthlySummaryData.actualHydroPercentage?settlementMonthlySummaryData.actualHydroPercentage:0
-    let UGT2Inventory = settlementMonthlySummaryData.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData.ugt2InventoryMatchedPercentage:0
-    let UGT1Inventory = settlementMonthlySummaryData.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData.ugt1InventoryMatchedPercentage:0
-    let unmatched = settlementMonthlySummaryData.unmatchedEnergyPercentage?settlementMonthlySummaryData.unmatchedEnergyPercentage:0
+  const convertToDonut = () => {
+    console.log(settlementMonthlySummaryData);
+    let actualSolar = settlementMonthlySummaryData.actualSolarPercentage
+      ? settlementMonthlySummaryData.actualSolarPercentage
+      : 0;
+    let actualWind = settlementMonthlySummaryData.actualWindPercentage
+      ? settlementMonthlySummaryData.actualWindPercentage
+      : 0;
+    let actualHydro = settlementMonthlySummaryData.actualHydroPercentage
+      ? settlementMonthlySummaryData.actualHydroPercentage
+      : 0;
+    let UGT2Inventory =
+      settlementMonthlySummaryData.ugt2InventoryMatchedPercentage
+        ? settlementMonthlySummaryData.ugt2InventoryMatchedPercentage
+        : 0;
+    let UGT1Inventory =
+      settlementMonthlySummaryData.ugt1InventoryMatchedPercentage
+        ? settlementMonthlySummaryData.ugt1InventoryMatchedPercentage
+        : 0;
+    let unmatched = settlementMonthlySummaryData.unmatchedEnergyPercentage
+      ? settlementMonthlySummaryData.unmatchedEnergyPercentage
+      : 0;
 
-    let actualSolarData = settlementMonthlySummaryData.actualSolar?settlementMonthlySummaryData.actualSolar:0
-    let actualWindData = settlementMonthlySummaryData.actualWind?settlementMonthlySummaryData.actualWind:0
-    let actualHydroData = settlementMonthlySummaryData.actualHydro?settlementMonthlySummaryData.actualHydro:0
-    let UGT2InventoryData = settlementMonthlySummaryData.ugt2InventoryMatched?settlementMonthlySummaryData.ugt2InventoryMatched:0
-    let UGT1InventoryData = settlementMonthlySummaryData.ugt1InventoryMatched?settlementMonthlySummaryData.ugt1InventoryMatched:0
-    let unmatchedData = settlementMonthlySummaryData.unmatchedEnergy?settlementMonthlySummaryData.unmatchedEnergy:0
+    let actualSolarData = settlementMonthlySummaryData.actualSolar
+      ? settlementMonthlySummaryData.actualSolar
+      : 0;
+    let actualWindData = settlementMonthlySummaryData.actualWind
+      ? settlementMonthlySummaryData.actualWind
+      : 0;
+    let actualHydroData = settlementMonthlySummaryData.actualHydro
+      ? settlementMonthlySummaryData.actualHydro
+      : 0;
+    let UGT2InventoryData = settlementMonthlySummaryData.ugt2InventoryMatched
+      ? settlementMonthlySummaryData.ugt2InventoryMatched
+      : 0;
+    let UGT1InventoryData = settlementMonthlySummaryData.ugt1InventoryMatched
+      ? settlementMonthlySummaryData.ugt1InventoryMatched
+      : 0;
+    let unmatchedData = settlementMonthlySummaryData.unmatchedEnergy
+      ? settlementMonthlySummaryData.unmatchedEnergy
+      : 0;
     //console.log(actualSolar,actualWind,actualHydro,UGT2Inventory,UGT1Inventory,unmatched)
-    let label = []
-    let datalabel=[]
-    let colorLabel=[]
-    let additionalData =[]
-    
-    if(actualSolar !== 0){
-      label.push("Actual Solar")
-      datalabel.push(actualSolar)
-      colorLabel.push("#4D6A00")
-      additionalData.push({label:"Actual Solar",value: actualSolarData })
+    let label = [];
+    let datalabel = [];
+    let colorLabel = [];
+    let additionalData = [];
+
+    if (actualSolar !== 0) {
+      label.push("Actual Solar");
+      datalabel.push(actualSolar);
+      colorLabel.push("#4D6A00");
+      additionalData.push({ label: "Actual Solar", value: actualSolarData });
     }
-    if(actualWind !== 0){
-      label.push("Actual Wind")
-      datalabel.push(actualWind)
-      colorLabel.push("#87BE33")
-      additionalData.push({label:"Actual Wind",value: actualWindData })
+    if (actualWind !== 0) {
+      label.push("Actual Wind");
+      datalabel.push(actualWind);
+      colorLabel.push("#87BE33");
+      additionalData.push({ label: "Actual Wind", value: actualWindData });
     }
-    if(actualHydro !== 0){
-      label.push("Actual Hydro")
-      datalabel.push(actualHydro)
-      colorLabel.push("#33BFBF")
-      additionalData.push({label:"Actual Hydro",value: actualHydroData })
+    if (actualHydro !== 0) {
+      label.push("Actual Hydro");
+      datalabel.push(actualHydro);
+      colorLabel.push("#33BFBF");
+      additionalData.push({ label: "Actual Hydro", value: actualHydroData });
     }
-    if(UGT2Inventory !== 0){
-      label.push("UGT2 Inventory")
-      datalabel.push(UGT2Inventory)
-      colorLabel.push("#FA6B6E")
-      additionalData.push({label:"UGT2 Inventory",value: UGT2InventoryData })
+    if (UGT2Inventory !== 0) {
+      label.push("UGT2 Inventory");
+      datalabel.push(UGT2Inventory);
+      colorLabel.push("#FA6B6E");
+      additionalData.push({
+        label: "UGT2 Inventory",
+        value: UGT2InventoryData,
+      });
     }
-    if(UGT1Inventory !== 0){
-      label.push("UGT1 Inventory")
-      datalabel.push(UGT1Inventory)
-      colorLabel.push("#70B2FF")
-      additionalData.push({label:"UGT1 Inventory",value: UGT1InventoryData })
+    if (UGT1Inventory !== 0) {
+      label.push("UGT1 Inventory");
+      datalabel.push(UGT1Inventory);
+      colorLabel.push("#70B2FF");
+      additionalData.push({
+        label: "UGT1 Inventory",
+        value: UGT1InventoryData,
+      });
     }
-    if(unmatched !== 0){
-      label.push("Unmatched Energy")
-      datalabel.push(unmatched)
-      colorLabel.push("#B0BAC9")
-      additionalData.push({label:"Unmatched Energy",value: unmatchedData })
+    if (unmatched !== 0) {
+      label.push("Unmatched Energy");
+      datalabel.push(unmatched);
+      colorLabel.push("#B0BAC9");
+      additionalData.push({ label: "Unmatched Energy", value: unmatchedData });
     }
-    setAdditionalData(additionalData)
-    console.log("addition",additionalData)
+    setAdditionalData(additionalData);
+    console.log("addition", additionalData);
     let dataChart = {
       labels: label,
       datasets: [
@@ -1289,68 +1344,100 @@ console.log(userData)
           borderWidth: 1,
         },
       ],
-    }
-    return dataChart
-  }
-  const additionalDataPie=()=>{
-    console.log(settlementMonthlySummaryData)
-    let actualSolar = settlementMonthlySummaryData.actualSolarPercentage?settlementMonthlySummaryData.actualSolarPercentage:0
-    let actualWind = settlementMonthlySummaryData.actualWindPercentage?settlementMonthlySummaryData.actualWindPercentage:0
-    let actualHydro = settlementMonthlySummaryData.actualHydroPercentage?settlementMonthlySummaryData.actualHydroPercentage:0
-    let UGT2Inventory = settlementMonthlySummaryData.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData.ugt2InventoryMatchedPercentage:0
-    let UGT1Inventory = settlementMonthlySummaryData.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData.ugt1InventoryMatchedPercentage:0
-    let unmatched = settlementMonthlySummaryData.unmatchedEnergyPercentage?settlementMonthlySummaryData.unmatchedEnergyPercentage:0
+    };
+    return dataChart;
+  };
+  const additionalDataPie = () => {
+    console.log(settlementMonthlySummaryData);
+    let actualSolar = settlementMonthlySummaryData.actualSolarPercentage
+      ? settlementMonthlySummaryData.actualSolarPercentage
+      : 0;
+    let actualWind = settlementMonthlySummaryData.actualWindPercentage
+      ? settlementMonthlySummaryData.actualWindPercentage
+      : 0;
+    let actualHydro = settlementMonthlySummaryData.actualHydroPercentage
+      ? settlementMonthlySummaryData.actualHydroPercentage
+      : 0;
+    let UGT2Inventory =
+      settlementMonthlySummaryData.ugt2InventoryMatchedPercentage
+        ? settlementMonthlySummaryData.ugt2InventoryMatchedPercentage
+        : 0;
+    let UGT1Inventory =
+      settlementMonthlySummaryData.ugt1InventoryMatchedPercentage
+        ? settlementMonthlySummaryData.ugt1InventoryMatchedPercentage
+        : 0;
+    let unmatched = settlementMonthlySummaryData.unmatchedEnergyPercentage
+      ? settlementMonthlySummaryData.unmatchedEnergyPercentage
+      : 0;
 
-    let actualSolarData = settlementMonthlySummaryData.actualSolar?settlementMonthlySummaryData.actualSolar:0
-    let actualWindData = settlementMonthlySummaryData.actualWind?settlementMonthlySummaryData.actualWind:0
-    let actualHydroData = settlementMonthlySummaryData.actualHydro?settlementMonthlySummaryData.actualHydro:0
-    let UGT2InventoryData = settlementMonthlySummaryData.ugt2InventoryMatched?settlementMonthlySummaryData.ugt2InventoryMatched:0
-    let UGT1InventoryData = settlementMonthlySummaryData.ugt1InventoryMatched?settlementMonthlySummaryData.ugt1InventoryMatched:0
-    let unmatchedData = settlementMonthlySummaryData.unmatchedEnergy?settlementMonthlySummaryData.unmatchedEnergy:0
+    let actualSolarData = settlementMonthlySummaryData.actualSolar
+      ? settlementMonthlySummaryData.actualSolar
+      : 0;
+    let actualWindData = settlementMonthlySummaryData.actualWind
+      ? settlementMonthlySummaryData.actualWind
+      : 0;
+    let actualHydroData = settlementMonthlySummaryData.actualHydro
+      ? settlementMonthlySummaryData.actualHydro
+      : 0;
+    let UGT2InventoryData = settlementMonthlySummaryData.ugt2InventoryMatched
+      ? settlementMonthlySummaryData.ugt2InventoryMatched
+      : 0;
+    let UGT1InventoryData = settlementMonthlySummaryData.ugt1InventoryMatched
+      ? settlementMonthlySummaryData.ugt1InventoryMatched
+      : 0;
+    let unmatchedData = settlementMonthlySummaryData.unmatchedEnergy
+      ? settlementMonthlySummaryData.unmatchedEnergy
+      : 0;
     //console.log(actualSolar,actualWind,actualHydro,UGT2Inventory,UGT1Inventory,unmatched)
-    let label = []
-    let datalabel=[]
-    let colorLabel=[]
-    let additionalData =[]
+    let label = [];
+    let datalabel = [];
+    let colorLabel = [];
+    let additionalData = [];
 
-    if(actualSolar !== 0){
-      label.push("Actual Solar")
-      datalabel.push(actualSolar)
-      colorLabel.push("#4D6A00")
-      additionalData.push({label:"Actual Solar",value: actualSolarData })
+    if (actualSolar !== 0) {
+      label.push("Actual Solar");
+      datalabel.push(actualSolar);
+      colorLabel.push("#4D6A00");
+      additionalData.push({ label: "Actual Solar", value: actualSolarData });
     }
-    if(actualWind !== 0){
-      label.push("Actual Wind")
-      datalabel.push(actualWind)
-      colorLabel.push("#87BE33")
-      additionalData.push({label:"Actual Wind",value: actualWindData })
+    if (actualWind !== 0) {
+      label.push("Actual Wind");
+      datalabel.push(actualWind);
+      colorLabel.push("#87BE33");
+      additionalData.push({ label: "Actual Wind", value: actualWindData });
     }
-    if(actualHydro !== 0){
-      label.push("Actual Hydro")
-      datalabel.push(actualHydro)
-      colorLabel.push("#33BFBF")
-      additionalData.push({label:"Actual Hydro",value: actualHydroData })
+    if (actualHydro !== 0) {
+      label.push("Actual Hydro");
+      datalabel.push(actualHydro);
+      colorLabel.push("#33BFBF");
+      additionalData.push({ label: "Actual Hydro", value: actualHydroData });
     }
-    if(UGT2Inventory !== 0){
-      label.push("UGT2 Inventory")
-      datalabel.push(UGT2Inventory)
-      colorLabel.push("#FA6B6E")
-      additionalData.push({label:"UGT2 Inventory",value: UGT2InventoryData })
+    if (UGT2Inventory !== 0) {
+      label.push("UGT2 Inventory");
+      datalabel.push(UGT2Inventory);
+      colorLabel.push("#FA6B6E");
+      additionalData.push({
+        label: "UGT2 Inventory",
+        value: UGT2InventoryData,
+      });
     }
-    if(UGT1Inventory !== 0){
-      label.push("UGT1 Inventory")
-      datalabel.push(UGT1Inventory)
-      colorLabel.push("#70B2FF")
-      additionalData.push({label:"UGT1 Inventory",value: UGT1InventoryData })
+    if (UGT1Inventory !== 0) {
+      label.push("UGT1 Inventory");
+      datalabel.push(UGT1Inventory);
+      colorLabel.push("#70B2FF");
+      additionalData.push({
+        label: "UGT1 Inventory",
+        value: UGT1InventoryData,
+      });
     }
-    if(unmatched !== 0){
-      label.push("Unmatched Energy")
-      datalabel.push(unmatched)
-      colorLabel.push("#B0BAC9")
-      additionalData.push({label:"Unmatched Energy",value: unmatchedData })
+    if (unmatched !== 0) {
+      label.push("Unmatched Energy");
+      datalabel.push(unmatched);
+      colorLabel.push("#B0BAC9");
+      additionalData.push({ label: "Unmatched Energy", value: unmatchedData });
     }
-    setAdditionalData(additionalData)
-    console.log("addition",additionalData)
+    setAdditionalData(additionalData);
+    console.log("addition", additionalData);
     let dataChart = {
       labels: label,
       datasets: [
@@ -1360,9 +1447,9 @@ console.log(userData)
           borderWidth: 1,
         },
       ],
-    }
-    return dataChart
-  }
+    };
+    return dataChart;
+  };
 
   // generation
   useEffect(() => {
@@ -1396,9 +1483,7 @@ console.log(userData)
     setTmpMonthlyConsumpData(convertMonthlyConsumpData(monthlyConsumpData));
   }, [unit, settlementMonth]);
 
-  useEffect(()=>{
-    
-  },[isModuleViewerUser,settlementMonth, settlementYear])
+  useEffect(() => {}, [isModuleViewerUser, settlementMonth, settlementYear]);
 
   const convertMatchedEnergyData = (matchedEnergyData) => {
     const new_match = matchedEnergyData?.data?.map((item) => {
@@ -1566,7 +1651,7 @@ console.log(userData)
   };
 
   const GenerationCustomTooltip = ({ payload }) => {
-    console.log(payload)
+    console.log(payload);
     const _deviceName = payload?.[0]?.payload?.deviceName;
     const _utilityContract = payload?.[0]?.payload?.utilityContract;
     const _actualGeneration =
@@ -1751,55 +1836,61 @@ console.log(userData)
   };
 
   const renderValues = (value) => {
-    console.log(value)
-    console.log()
+    console.log(value);
+    console.log();
     if (value) {
       return convertData(value * convertUnit);
     } else {
       return convertData(0 * convertUnit);
     }
   };
-  const hideData = false
-console.log(settlemtDetailDevice)
+  const hideData = false;
+  console.log(settlemtDetailDevice);
   //console.log(settlementDetailMonthlyDevice.settlementPeriod )
-  console.log(settlementMonthlySummaryData)
+  console.log(settlementMonthlySummaryData);
   return (
     <>
-      {/*!settlementMonthlySummaryData?.approveStatus && isModuleViewerUser && showWaitApprove*/hideData && (
-        <div className="flex justify-center z-1">
-          <Card
-            radius="lg"
-            className="absolute items-center shadow-2xl"
-            style={{
-              width: "50%",
-              marginTop: "20%",
-            }}
-          >
-            <div className="grid gap-5 py-20">
-              <div className="text-xl font-semibold">Awaiting for Confirmation</div>
+      {
+        /*!settlementMonthlySummaryData?.approveStatus && isModuleViewerUser && showWaitApprove*/ hideData && (
+          <div className="flex justify-center z-1">
+            <Card
+              radius="lg"
+              className="absolute items-center shadow-2xl"
+              style={{
+                width: "50%",
+                marginTop: "20%",
+              }}
+            >
+              <div className="grid gap-5 py-20">
+                <div className="text-xl font-semibold">
+                  Awaiting for Confirmation
+                </div>
 
-              {isModuleViewerUser && (
-                <Button
-                  className="bg-[#87BE33] text-white px-8 h-10 hover:bg-[#4D6A00]"
-                  onClick={() =>
-                    navigate(WEB_URL.SETTLEMENT_APPROVAL, {
-                      state: {
-                        ugtGroupId: ugtGroupId,
-                        portfolioId: portfolioId,
-                        portfolioName: portfolioName,
-                        prevSelectedYear: settlementYear,
-                        prevSelectedMonth: settlementMonth,
-                      },
-                    })
-                  }
-                >
-                  <span className="pl-2 text-lg font-bold">Go to Confirm</span>
-                </Button>
-              )}
-            </div>
-          </Card>
-        </div>
-      )}
+                {isModuleViewerUser && (
+                  <Button
+                    className="bg-[#87BE33] text-white px-8 h-10 hover:bg-[#4D6A00]"
+                    onClick={() =>
+                      navigate(WEB_URL.SETTLEMENT_APPROVAL, {
+                        state: {
+                          ugtGroupId: ugtGroupId,
+                          portfolioId: portfolioId,
+                          portfolioName: portfolioName,
+                          prevSelectedYear: settlementYear,
+                          prevSelectedMonth: settlementMonth,
+                        },
+                      })
+                    }
+                  >
+                    <span className="pl-2 text-lg font-bold">
+                      Go to Confirm
+                    </span>
+                  </Button>
+                )}
+              </div>
+            </Card>
+          </div>
+        )
+      }
       {isShowGotoConfirm && (
         <div className="flex justify-center z-1">
           <Card
@@ -1811,7 +1902,9 @@ console.log(settlemtDetailDevice)
             }}
           >
             <div className="grid gap-5 py-20">
-              <div className="text-xl font-semibold">Awaiting for Confirmation</div>
+              <div className="text-xl font-semibold">
+                Awaiting for Confirmation
+              </div>
 
               {isModuleViewerUser && (
                 <Button
@@ -1846,9 +1939,14 @@ console.log(settlemtDetailDevice)
             }}
           >
             <div className="grid gap-5 py-20">
-              <div className="text-xl font-semibold">Awaiting for Verification</div>
+              <div className="text-xl font-semibold">
+                Awaiting for Verification
+              </div>
 
-              {userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY || userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER || userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ? (
+              {userData?.userGroup?.id ==
+                USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+              userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+              userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG ? (
                 <Button
                   className="bg-[#87BE33] text-white px-8 h-10 hover:bg-[#4D6A00]"
                   onClick={() =>
@@ -1865,849 +1963,934 @@ console.log(settlemtDetailDevice)
                 >
                   <span className="pl-2 text-lg font-bold">Go to Verify</span>
                 </Button>
-              ):undefined}
+              ) : undefined}
             </div>
           </Card>
         </div>
       )}
-      {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowSettlementProgress && 
-      (
-        <div className="w-full h-[400px] items-center content-center">
-          <div className="flex justify-center items-center">
-            <img
-              src={WaitApprove}
-              alt="WaitApprove"
-              width={100}
-              height={100}
-              className="content-center"
-            />
-          </div>
-          <label className="text-[#000000CC] font-semibold">
-          Settlement in progress
-          </label>
-        </div>
-      ) :undefined}
-
-      {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowAwaitConfirm && 
-      (
-        <div className="w-full h-[400px] items-center content-center">
-          <div className="flex justify-center items-center">
-            <img
-              src={WaitApprove}
-              alt="WaitApprove"
-              width={100}
-              height={100}
-              className="content-center"
-            />
-          </div>
-          <label className="text-[#000000CC] font-semibold">
-            Awaiting For Confirmation
-          </label>
-        </div>
-      ):undefined}
-
-      {settlementMonthlySummaryData && Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowMainDetail && (
-        <div
-          className={`
-        ${
-          isShowGotoConfirm || isShowGotiVerify
-            ? "opacity-10"
-            : ""
-        } `}
-        >
-          {/*Card Dashboard */}
-          <div>
-            <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
-              
-              <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Total Contracted Load
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.totalContractedLoad
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+      {settlementMonthlySummaryData &&
+      Object.keys(settlementMonthlySummaryData).length !== 0
+        ? isShowSettlementProgress && (
+            <div className="w-full h-[400px] items-center content-center">
+              <div className="flex justify-center items-center">
+                <img
+                  src={WaitApprove}
+                  alt="WaitApprove"
+                  width={100}
+                  height={100}
+                  className="content-center"
+                />
               </div>
-              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Total Generation
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(settlementMonthlySummaryData?.totalGeneration)}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Beginning UGT2 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.beginningUgt2Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Beginning UGT1 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.beginningUgt1Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
+              <label className="text-[#000000CC] font-semibold">
+                Settlement in progress
+              </label>
             </div>
+          )
+        : undefined}
 
-            <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
-              <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Total Load
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(settlementMonthlySummaryData?.totalLoad)}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+      {settlementMonthlySummaryData &&
+      Object.keys(settlementMonthlySummaryData).length !== 0
+        ? isShowAwaitConfirm && (
+            <div className="w-full h-[400px] items-center content-center">
+              <div className="flex justify-center items-center">
+                <img
+                  src={WaitApprove}
+                  alt="WaitApprove"
+                  width={100}
+                  height={100}
+                  className="content-center"
+                />
               </div>
-
-              <div className="col-span-3 container mx-auto px-0 gap-2 text-left">
-                <div className=" grid grid-cols-4 gap-2">
-                  <div className="col-span-2">
-                    <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="text-sm text-[#5B5C5C] break-words">
-                            Actual Generation Matched
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.actualGenerationMatched
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                            {settlementMonthlySummaryData?.actualGenerationMatchedPercentage?settlementMonthlySummaryData?.actualGenerationMatchedPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="text-sm text-[#5B5C5C] break-words">
-                            UGT2 Inventory Matched
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.ugt2InventoryMatched
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                            {settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="text-sm text-[#5B5C5C] break-words">
-                            UGT1 Inventory Matched
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.ugt1InventoryMatched
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                          {settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[#E9E9E9] mt-2 px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="grid grid-col-2">
-                            <label className="col-start-1 text-sm text-[#5B5C5C] break-words">
-                              Unmatched Energy
-                            </label>{" "}
-                            <div className="col-start-2 ml-1 inline-block content-center">
-                              <Tooltips
-                                title="Load Energy that can not be delivered bundle with REC"
-                                placement="top"
-                                arrow
-                              >
-                                <img
-                                  src={InfoWarning}
-                                  alt="Info"
-                                  width={15}
-                                  height={15}
-                                />
-                              </Tooltips>
-                            </div>
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.unmatchedEnergy
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                          {settlementMonthlySummaryData?.unmatchedEnergyPercentage?settlementMonthlySummaryData?.unmatchedEnergyPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  {/*Donut Chart */}
-                  <div className="col-start-3 col-span-2 px-4 py-4 rounded-[5px] border-2 border-solid border-[#CDCDCD]">
-                    <div className="grid grid-cols-[200px_50px]">
-                      <label className="col-start-1 text-lg font-bold text-[#5B5C5C] break-words">
-                        Net Green Deliverables
-                      </label>{" "}
-                      <div className="col-start-2 ml-1 inline-block content-center">
-                        <Tooltips
-                          title="Load Energy that can be delivered bundle with REC (exclude Unmatched Energy)"
-                          placement="top"
-                          arrow
-                        >
-                          <img
-                            src={InfoWarning}
-                            alt="Info"
-                            width={15}
-                            height={15}
-                          />
-                        </Tooltips>
-                      </div>
-                    </div>
-                    <div className="text-2xl font-bold break-words">
-                      {renderValue(
-                        settlementMonthlySummaryData?.netGreenDeliverables
-                      )}
-                    </div>
-                    <div className="text-base text-[#5B5C5C] break-words">
-                      {unit}
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "275px",
-                          margin: "auto",
-                        }}
-                      >
-                        <DonutChart
-                          data={data}
-                          totalPercent={totalLoadPercentage}
-                          unit={unit}
-                          convertUnit={convertUnit}
-                          additional={additionalData}
-                          //options={options}
-                          //plugins={[centerTextPlugin]}
-                          //ref={(chartInstance) => (chartRef.current = chartInstance?.chartInstance)} // เชื่อมต่อ ref
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <label className="text-[#000000CC] font-semibold">
+                Awaiting For Confirmation
+              </label>
             </div>
-            <div className="grid grid-cols-3 container mx-auto px-0 gap-2 mt-3 text-left">
-              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Remaining Actual Generation
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.remainingActualGeneration
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
+          )
+        : undefined}
 
-              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Ending UGT2 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.endingUgt2Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-
-              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Ending UGT1 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.endingUgt1Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-            </div>
-
-            {tmpMatchedEnergyData ? (
-              <div className="col-span-2">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart width={850} height={900}>
-                    <Pie
-                      activeIndex={activeIndex}
-                      activeShape={renderActiveShape}
-                      data={tmpMatchedEnergyData.data}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={95}
-                      outerRadius={120}
-                      dataKey="matchedSupply"
-                      onMouseEnter={onPieEnter}
-                    >
-                      {tmpMatchedEnergyData.data?.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-
-                      <Label
-                        content={
-                          <TotalPieLabel
-                            value={tmpMatchedEnergyData.netDeliverables}
-                          />
-                        }
-                      />
-                    </Pie>
-                    <Tooltip content={<TotalCustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            ) : (
-              <div className="col-span-2 flex justify-center items-center">
-                <div className="text-[#848789]">No Data</div>
-              </div>
-            )}
-          </div>
-          
-          {/*Settlement */}
-          {isShowDetail && isGenPDF == false ?
+      {settlementMonthlySummaryData &&
+      Object.keys(settlementMonthlySummaryData).length !== 0 ? (
+        isShowMainDetail && (
+          <div
+            className={`
+        ${isShowGotoConfirm || isShowGotiVerify ? "opacity-10" : ""} `}
+          >
+            {/*Card Dashboard */}
             <div>
-              {/*Table Device */}
-          <div className="w-full mt-5">
-            <DataTableSettlement
-              data={settlementDeviceData}
-              columns={columnsDevice}
-              searchData={searchDevice}
-              checkbox={false}
-              isTotal={"Total"}
-              isSubTotal={"Device"}
-            />
-          </div>
-          {/*Table Subscriber */}
-          <div className="w-full mt-4">
-            <DataTableSettlement
-              data={settlementSubscriberData}
-              columns={columnsSubscriber}
-              searchData={searchSubscriber}
-              checkbox={false}
-              isTotal={"Total"}
-              isSubTotal={"Subscriber"}
-            />
-          </div>
-              <div className="w-full mt-5">
-                <div className="grid grid-cols-2">
-                  <div className="text-left font-bold text-base">
-                    Settlement Detail
+              <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
+                <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Total Contracted Load
                   </div>
-                  <div className="text-=left">
-                    <div className="grid grid-cols-4">
-                      <div className="col-start-1">
-                        <label className="font-bold text-sm">
-                          Settlement Period
-                        </label>
-                      </div>
-                      <div className="col-start-2">
-                        <label className="text-sm">{selectTabSettlementDetail == "device"?settlementDetailMonthlyDevice.settlementPeriod:settlementDetailMonthlySubscriber.settlementPeriod }</label>
-                      </div>
-                      <div className="col-start-3">
-                        <label className="font-bold text-sm">Matched</label>
-                      </div>
-                      <div className="col-start-4 text-left">
-                        <label className="text-sm">{selectTabSettlementDetail == "device"?renderValues(settlementDetailMonthlyDevice.matched) +" "+ unit:renderValues(settlementDetailMonthlySubscriber.matched ) +" "+ unit}</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-2">
-                  <div className="text-sm mt-5">
-                    <div className="mt-4 pl-1 flex">
-                      <div
-                        className={
-                          selectTabSettlementDetail === "device"
-                            ? " w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center "
-                            : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px] text-center border-none"
-                        }
-                      >
-                        <button
-                          className={
-                            selectTabSettlementDetail === "device"
-                              ? "font-bold text-base"
-                              : "text-[#949292] font-thin text-base"
-                          }
-                          onClick={() => setSelectTabSettlementDetail("device")}
-                        >
-                          Devices
-                        </button>
-                      </div>
-                      <div
-                        className={
-                          selectTabSettlementDetail === "subscriber"
-                            ? "w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center ml-2 "
-                            : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px]  text-center ml-2 border-none "
-                        }
-                      >
-                        <button
-                          className={
-                            selectTabSettlementDetail === "subscriber"
-                              ? "font-bold text-base"
-                              : "text-[#949292] font-thin text-base"
-                          }
-                          onClick={() => setSelectTabSettlementDetail("subscriber")}
-                        >
-                          Subscriber
-                        </button>
-                      </div>
-                    </div>
-                    {selectTabSettlementDetail === "device" ? (
-                      <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
-                        <div className="mt-2 p-2">
-                        {settlemtDetailDevice?
-                        <CollapsDataTable
-                            data={settlemtDetailDevice}
-                            rowPerPage={25}
-                            unit={unit}
-                            convertUnit={convertUnit}
-                          />:
-                          <CollapsDataTable
-                          data={[]}
-                          rowPerPage={25}
-                        />}
-
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
-                        <div className="mt-2 p-2">
-                          {settlementDetailSubscriber?
-                          <CollapsDataTable
-                            data={settlementDetailSubscriber}
-                            rowPerPage={25}
-                            isDevice={false}
-                            unit={unit}
-                            convertUnit={convertUnit}
-                          />:
-                          <CollapsDataTable
-                          data={[]}
-                          rowPerPage={25}
-                        />}
-                        </div>
-                      </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.totalContractedLoad
                     )}
                   </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
+                </div>
+                <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Total Generation
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(settlementMonthlySummaryData?.totalGeneration)}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
+                </div>
+                <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Beginning UGT2 Inventory
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.beginningUgt2Inventory
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
+                </div>
+                <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Beginning UGT1 Inventory
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.beginningUgt1Inventory
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
                 </div>
               </div>
-            </div>
-          :undefined}
-        </div>
-      ):(<div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4 h-[400px]">
-                            <img src={noContent} alt="React Logo" width={50} height={50} />
-                            <div>No Data Found.</div>
-                          </div>)}
 
-      {/*isShowDetailMonthly*/ hideData && (
-        <div
-          className={`
+              <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
+                <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Total Load
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(settlementMonthlySummaryData?.totalLoad)}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
+                </div>
+
+                <div className="col-span-3 container mx-auto px-0 gap-2 text-left">
+                  <div className=" grid grid-cols-4 gap-2">
+                    <div className="col-span-2">
+                      <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px] w-full">
+                        <div className="flex justify-between break-all">
+                          <div>
+                            <div className="text-sm text-[#5B5C5C] break-words">
+                              Actual Generation Matched
+                            </div>
+                            <div className="text-lg font-bold break-words">
+                              {renderValue(
+                                settlementMonthlySummaryData?.actualGenerationMatched
+                              )}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              {unit}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold break-words mt-3">
+                              {settlementMonthlySummaryData?.actualGenerationMatchedPercentage
+                                ? settlementMonthlySummaryData?.actualGenerationMatchedPercentage +
+                                  "%"
+                                : 0 + "%"}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              of Total Load
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
+                        <div className="flex justify-between break-all">
+                          <div>
+                            <div className="text-sm text-[#5B5C5C] break-words">
+                              UGT2 Inventory Matched
+                            </div>
+                            <div className="text-lg font-bold break-words">
+                              {renderValue(
+                                settlementMonthlySummaryData?.ugt2InventoryMatched
+                              )}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              {unit}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold break-words mt-3">
+                              {settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage
+                                ? settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage +
+                                  "%"
+                                : 0 + "%"}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              of Total Load
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
+                        <div className="flex justify-between break-all">
+                          <div>
+                            <div className="text-sm text-[#5B5C5C] break-words">
+                              UGT1 Inventory Matched
+                            </div>
+                            <div className="text-lg font-bold break-words">
+                              {renderValue(
+                                settlementMonthlySummaryData?.ugt1InventoryMatched
+                              )}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              {unit}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold break-words mt-3">
+                              {settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage
+                                ? settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage +
+                                  "%"
+                                : 0 + "%"}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              of Total Load
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-[#E9E9E9] mt-2 px-4 py-3 rounded-[5px] w-full">
+                        <div className="flex justify-between break-all">
+                          <div>
+                            <div className="grid grid-col-2">
+                              <label className="col-start-1 text-sm text-[#5B5C5C] break-words">
+                                Unmatched Energy
+                              </label>{" "}
+                              <div className="col-start-2 ml-1 inline-block content-center">
+                                <Tooltips
+                                  title="Load Energy that can not be delivered bundle with REC"
+                                  placement="top"
+                                  arrow
+                                >
+                                  <img
+                                    src={InfoWarning}
+                                    alt="Info"
+                                    width={15}
+                                    height={15}
+                                  />
+                                </Tooltips>
+                              </div>
+                            </div>
+                            <div className="text-lg font-bold break-words">
+                              {renderValue(
+                                settlementMonthlySummaryData?.unmatchedEnergy
+                              )}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              {unit}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold break-words mt-3">
+                              {settlementMonthlySummaryData?.unmatchedEnergyPercentage
+                                ? settlementMonthlySummaryData?.unmatchedEnergyPercentage +
+                                  "%"
+                                : 0 + "%"}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              of Total Load
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/*Donut Chart */}
+                    <div className="col-start-3 col-span-2 px-4 py-4 rounded-[5px] border-2 border-solid border-[#CDCDCD]">
+                      <div className="grid grid-cols-[200px_50px]">
+                        <label className="col-start-1 text-lg font-bold text-[#5B5C5C] break-words">
+                          Net Green Deliverables
+                        </label>{" "}
+                        <div className="col-start-2 ml-1 inline-block content-center">
+                          <Tooltips
+                            title="Load Energy that can be delivered bundle with REC (exclude Unmatched Energy)"
+                            placement="top"
+                            arrow
+                          >
+                            <img
+                              src={InfoWarning}
+                              alt="Info"
+                              width={15}
+                              height={15}
+                            />
+                          </Tooltips>
+                        </div>
+                      </div>
+                      <div className="text-2xl font-bold break-words">
+                        {renderValue(
+                          settlementMonthlySummaryData?.netGreenDeliverables
+                        )}
+                      </div>
+                      <div className="text-base text-[#5B5C5C] break-words">
+                        {unit}
+                      </div>
+                      <div>
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "275px",
+                            margin: "auto",
+                          }}
+                        >
+                          <DonutChart
+                            data={data}
+                            totalPercent={totalLoadPercentage}
+                            unit={unit}
+                            convertUnit={convertUnit}
+                            additional={additionalData}
+                            //options={options}
+                            //plugins={[centerTextPlugin]}
+                            //ref={(chartInstance) => (chartRef.current = chartInstance?.chartInstance)} // เชื่อมต่อ ref
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 container mx-auto px-0 gap-2 mt-3 text-left">
+                <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Remaining Actual Generation
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.remainingActualGeneration
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
+                </div>
+
+                <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Ending UGT2 Inventory
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.endingUgt2Inventory
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
+                </div>
+
+                <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Ending UGT1 Inventory
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.endingUgt1Inventory
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
+                </div>
+              </div>
+
+              {tmpMatchedEnergyData ? (
+                <div className="col-span-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart width={850} height={900}>
+                      <Pie
+                        activeIndex={activeIndex}
+                        activeShape={renderActiveShape}
+                        data={tmpMatchedEnergyData.data}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={95}
+                        outerRadius={120}
+                        dataKey="matchedSupply"
+                        onMouseEnter={onPieEnter}
+                      >
+                        {tmpMatchedEnergyData.data?.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+
+                        <Label
+                          content={
+                            <TotalPieLabel
+                              value={tmpMatchedEnergyData.netDeliverables}
+                            />
+                          }
+                        />
+                      </Pie>
+                      <Tooltip content={<TotalCustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="col-span-2 flex justify-center items-center">
+                  <div className="text-[#848789]">No Data</div>
+                </div>
+              )}
+            </div>
+
+            {/*Settlement */}
+            {isShowDetail && isGenPDF == false ? (
+              <div>
+                {/*Table Device */}
+                <div className="w-full mt-5">
+                  <DataTableSettlement
+                    data={settlementDeviceData}
+                    columns={columnsDevice}
+                    searchData={searchDevice}
+                    checkbox={false}
+                    isTotal={"Total"}
+                    isSubTotal={"Device"}
+                    unit={unit}
+                                convertUnit={convertUnit}
+                  />
+                </div>
+                {/*Table Subscriber */}
+                <div className="w-full mt-4">
+                  <DataTableSettlement
+                    data={settlementSubscriberData}
+                    columns={columnsSubscriber}
+                    searchData={searchSubscriber}
+                    checkbox={false}
+                    isTotal={"Total"}
+                    isSubTotal={"Subscriber"}
+                    unit={unit}
+                                convertUnit={convertUnit}
+                  />
+                </div>
+                <div className="w-full mt-5">
+                  <div className="grid grid-cols-2">
+                    <div className="text-left font-bold text-base">
+                      Settlement Detail
+                    </div>
+                    <div className="text-=left">
+                      <div className="grid grid-cols-4">
+                        <div className="col-start-1">
+                          <label className="font-bold text-sm">
+                            Settlement Period
+                          </label>
+                        </div>
+                        <div className="col-start-2">
+                          <label className="text-sm">
+                            {selectTabSettlementDetail == "device"
+                              ? settlementDetailMonthlyDevice.settlementPeriod
+                              : settlementDetailMonthlySubscriber.settlementPeriod}
+                          </label>
+                        </div>
+                        <div className="col-start-3">
+                          <label className="font-bold text-sm">Matched</label>
+                        </div>
+                        <div className="col-start-4 text-left">
+                          <label className="text-sm">
+                            {selectTabSettlementDetail == "device"
+                              ? renderValues(
+                                  settlementDetailMonthlyDevice.matched
+                                ) +
+                                " " +
+                                unit
+                              : renderValues(
+                                  settlementDetailMonthlySubscriber.matched
+                                ) +
+                                " " +
+                                unit}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-2">
+                    <div className="text-sm mt-5">
+                      <div className="mt-4 pl-1 flex">
+                        <div
+                          className={
+                            selectTabSettlementDetail === "device"
+                              ? " w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center "
+                              : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px] text-center border-none"
+                          }
+                        >
+                          <button
+                            className={
+                              selectTabSettlementDetail === "device"
+                                ? "font-bold text-base"
+                                : "text-[#949292] font-thin text-base"
+                            }
+                            onClick={() =>
+                              setSelectTabSettlementDetail("device")
+                            }
+                          >
+                            Devices
+                          </button>
+                        </div>
+                        <div
+                          className={
+                            selectTabSettlementDetail === "subscriber"
+                              ? "w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center ml-2 "
+                              : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px]  text-center ml-2 border-none "
+                          }
+                        >
+                          <button
+                            className={
+                              selectTabSettlementDetail === "subscriber"
+                                ? "font-bold text-base"
+                                : "text-[#949292] font-thin text-base"
+                            }
+                            onClick={() =>
+                              setSelectTabSettlementDetail("subscriber")
+                            }
+                          >
+                            Subscriber
+                          </button>
+                        </div>
+                      </div>
+                      {selectTabSettlementDetail === "device" ? (
+                        <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
+                          <div className="mt-2 p-2">
+                            {settlemtDetailDevice ? (
+                              <CollapsDataTable
+                                data={settlemtDetailDevice}
+                                rowPerPage={25}
+                                unit={unit}
+                                convertUnit={convertUnit}
+                              />
+                            ) : (
+                              <CollapsDataTable data={[]} rowPerPage={25} />
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
+                          <div className="mt-2 p-2">
+                            {settlementDetailSubscriber ? (
+                              <CollapsDataTable
+                                data={settlementDetailSubscriber}
+                                rowPerPage={25}
+                                isDevice={false}
+                                unit={unit}
+                                convertUnit={convertUnit}
+                              />
+                            ) : (
+                              <CollapsDataTable data={[]} rowPerPage={25} />
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : undefined}
+          </div>
+        )
+      ) : (
+        <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4 h-[400px]">
+          <img src={noContent} alt="React Logo" width={50} height={50} />
+          <div>No Data Found.</div>
+        </div>
+      )}
+
+      {
+        /*isShowDetailMonthly*/ hideData && (
+          <div
+            className={`
         ${
           !settlementMonthlySummaryData?.approveStatus && showWaitApprove
             ? "opacity-10"
             : ""
         } `}
-        >
-          {/*Card Dashboard */}
-          <div>
-            <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
-              
-              <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Total Contracted Load
+          >
+            {/*Card Dashboard */}
+            <div>
+              <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
+                <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Total Contracted Load
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.totalContractedLoad
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
                 </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.totalContractedLoad
-                  )}
+                <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Total Generation
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(settlementMonthlySummaryData?.totalGeneration)}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
                 </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Total Generation
+                <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Beginning UGT2 Inventory
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.beginningUgt2Inventory
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
                 </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(settlementMonthlySummaryData?.totalGeneration)}
+                <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Beginning UGT1 Inventory
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.beginningUgt1Inventory
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
                 </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Beginning UGT2 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.beginningUgt2Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-              <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Beginning UGT1 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.beginningUgt1Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
-              <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Total Load
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(settlementMonthlySummaryData?.totalLoad)}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
               </div>
 
-              <div className="col-span-3 container mx-auto px-0 gap-2 text-left">
-                <div className=" grid grid-cols-4 gap-2">
-                  <div className="col-span-2">
-                    <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="text-sm text-[#5B5C5C] break-words">
-                            Actual Generation Matched
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.actualGenerationMatched
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                            {settlementMonthlySummaryData?.actualGenerationMatchedPercentage?settlementMonthlySummaryData?.actualGenerationMatchedPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="text-sm text-[#5B5C5C] break-words">
-                            UGT2 Inventory Matched
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.ugt2InventoryMatched
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                            {settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="text-sm text-[#5B5C5C] break-words">
-                            UGT1 Inventory Matched
-                          </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.ugt1InventoryMatched
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                          {settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage?settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage+"%":0+"%"}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-[#E9E9E9] mt-2 px-4 py-3 rounded-[5px] w-full">
-                      <div className="flex justify-between break-all">
-                        <div>
-                          <div className="grid grid-col-2">
-                            <label className="col-start-1 text-sm text-[#5B5C5C] break-words">
-                              Unmatched Energy
-                            </label>{" "}
-                            <div className="col-start-2 ml-1 inline-block content-center">
-                              <Tooltips
-                                title="Load Energy that can not be delivered bundle with REC"
-                                placement="top"
-                                arrow
-                              >
-                                <img
-                                  src={InfoWarning}
-                                  alt="Info"
-                                  width={15}
-                                  height={15}
-                                />
-                              </Tooltips>
+              <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
+                <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Total Load
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(settlementMonthlySummaryData?.totalLoad)}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
+                </div>
+
+                <div className="col-span-3 container mx-auto px-0 gap-2 text-left">
+                  <div className=" grid grid-cols-4 gap-2">
+                    <div className="col-span-2">
+                      <div className="bg-[#87BE3326] px-4 py-3 rounded-[5px] w-full">
+                        <div className="flex justify-between break-all">
+                          <div>
+                            <div className="text-sm text-[#5B5C5C] break-words">
+                              Actual Generation Matched
+                            </div>
+                            <div className="text-lg font-bold break-words">
+                              {renderValue(
+                                settlementMonthlySummaryData?.actualGenerationMatched
+                              )}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              {unit}
                             </div>
                           </div>
-                          <div className="text-lg font-bold break-words">
-                            {renderValue(
-                              settlementMonthlySummaryData?.unmatchedEnergy
-                            )}
-                          </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            {unit}
+                          <div className="text-right">
+                            <div className="text-lg font-bold break-words mt-3">
+                              {settlementMonthlySummaryData?.actualGenerationMatchedPercentage
+                                ? settlementMonthlySummaryData?.actualGenerationMatchedPercentage +
+                                  "%"
+                                : 0 + "%"}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              of Total Load
+                            </div>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold break-words mt-3">
-                          {settlementMonthlySummaryData?.unmatchedEnergyPercentage?settlementMonthlySummaryData?.unmatchedEnergyPercentage+"%":0+"%"}
+                      </div>
+                      <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
+                        <div className="flex justify-between break-all">
+                          <div>
+                            <div className="text-sm text-[#5B5C5C] break-words">
+                              UGT2 Inventory Matched
+                            </div>
+                            <div className="text-lg font-bold break-words">
+                              {renderValue(
+                                settlementMonthlySummaryData?.ugt2InventoryMatched
+                              )}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              {unit}
+                            </div>
                           </div>
-                          <div className="text-xs text-[#5B5C5C] break-words">
-                            of Total Load
+                          <div className="text-right">
+                            <div className="text-lg font-bold break-words mt-3">
+                              {settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage
+                                ? settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage +
+                                  "%"
+                                : 0 + "%"}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              of Total Load
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-[#87BE3326] mt-2 px-4 py-3 rounded-[5px] w-full">
+                        <div className="flex justify-between break-all">
+                          <div>
+                            <div className="text-sm text-[#5B5C5C] break-words">
+                              UGT1 Inventory Matched
+                            </div>
+                            <div className="text-lg font-bold break-words">
+                              {renderValue(
+                                settlementMonthlySummaryData?.ugt1InventoryMatched
+                              )}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              {unit}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold break-words mt-3">
+                              {settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage
+                                ? settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage +
+                                  "%"
+                                : 0 + "%"}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              of Total Load
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-[#E9E9E9] mt-2 px-4 py-3 rounded-[5px] w-full">
+                        <div className="flex justify-between break-all">
+                          <div>
+                            <div className="grid grid-col-2">
+                              <label className="col-start-1 text-sm text-[#5B5C5C] break-words">
+                                Unmatched Energy
+                              </label>{" "}
+                              <div className="col-start-2 ml-1 inline-block content-center">
+                                <Tooltips
+                                  title="Load Energy that can not be delivered bundle with REC"
+                                  placement="top"
+                                  arrow
+                                >
+                                  <img
+                                    src={InfoWarning}
+                                    alt="Info"
+                                    width={15}
+                                    height={15}
+                                  />
+                                </Tooltips>
+                              </div>
+                            </div>
+                            <div className="text-lg font-bold break-words">
+                              {renderValue(
+                                settlementMonthlySummaryData?.unmatchedEnergy
+                              )}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              {unit}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold break-words mt-3">
+                              {settlementMonthlySummaryData?.unmatchedEnergyPercentage
+                                ? settlementMonthlySummaryData?.unmatchedEnergyPercentage +
+                                  "%"
+                                : 0 + "%"}
+                            </div>
+                            <div className="text-xs text-[#5B5C5C] break-words">
+                              of Total Load
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  {/*Donut Chart */}
-                  <div className="col-start-3 col-span-2 px-4 py-4 rounded-[5px] border-2 border-solid border-[#CDCDCD]">
-                    <div className="grid grid-cols-[200px_50px]">
-                      <label className="col-start-1 text-lg font-bold text-[#5B5C5C] break-words">
-                        Net Green Deliverables
-                      </label>{" "}
-                      <div className="col-start-2 ml-1 inline-block content-center">
-                        <Tooltips
-                          title="Load Energy that can be delivered bundle with REC (exclude Unmatched Energy)"
-                          placement="top"
-                          arrow
+                    {/*Donut Chart */}
+                    <div className="col-start-3 col-span-2 px-4 py-4 rounded-[5px] border-2 border-solid border-[#CDCDCD]">
+                      <div className="grid grid-cols-[200px_50px]">
+                        <label className="col-start-1 text-lg font-bold text-[#5B5C5C] break-words">
+                          Net Green Deliverables
+                        </label>{" "}
+                        <div className="col-start-2 ml-1 inline-block content-center">
+                          <Tooltips
+                            title="Load Energy that can be delivered bundle with REC (exclude Unmatched Energy)"
+                            placement="top"
+                            arrow
+                          >
+                            <img
+                              src={InfoWarning}
+                              alt="Info"
+                              width={15}
+                              height={15}
+                            />
+                          </Tooltips>
+                        </div>
+                      </div>
+                      <div className="text-2xl font-bold break-words">
+                        {renderValue(
+                          settlementMonthlySummaryData?.netGreenDeliverables
+                        )}
+                      </div>
+                      <div className="text-base text-[#5B5C5C] break-words">
+                        {unit}
+                      </div>
+                      <div>
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "275px",
+                            margin: "auto",
+                          }}
                         >
-                          <img
-                            src={InfoWarning}
-                            alt="Info"
-                            width={15}
-                            height={15}
+                          <DonutChart
+                            data={data}
+                            totalPercent={totalLoadPercentage}
+                            unit={unit}
+                            convertUnit={convertUnit}
+                            additional={additionalData}
+                            //options={options}
+                            //plugins={[centerTextPlugin]}
+                            //ref={(chartInstance) => (chartRef.current = chartInstance?.chartInstance)} // เชื่อมต่อ ref
                           />
-                        </Tooltips>
-                      </div>
-                    </div>
-                    <div className="text-2xl font-bold break-words">
-                      {renderValue(
-                        settlementMonthlySummaryData?.netGreenDeliverables
-                      )}
-                    </div>
-                    <div className="text-base text-[#5B5C5C] break-words">
-                      {unit}
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "275px",
-                          margin: "auto",
-                        }}
-                      >
-                        <DonutChart
-                          data={data}
-                          totalPercent={totalLoadPercentage}
-                          unit={unit}
-                          convertUnit={convertUnit}
-                          additional={additionalData}
-                          //options={options}
-                          //plugins={[centerTextPlugin]}
-                          //ref={(chartInstance) => (chartRef.current = chartInstance?.chartInstance)} // เชื่อมต่อ ref
-                        />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="grid grid-cols-3 container mx-auto px-0 gap-2 mt-3 text-left">
-              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Remaining Actual Generation
+              <div className="grid grid-cols-3 container mx-auto px-0 gap-2 mt-3 text-left">
+                <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Remaining Actual Generation
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.remainingActualGeneration
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
                 </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.remainingActualGeneration
-                  )}
+
+                <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Ending UGT2 Inventory
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.endingUgt2Inventory
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
                 </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
+
+                <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
+                  <div className="text-sm text-[#5B5C5C] break-words">
+                    Ending UGT1 Inventory
+                  </div>
+                  <div className="text-lg font-bold break-words">
+                    {renderValue(
+                      settlementMonthlySummaryData?.endingUgt1Inventory
+                    )}
+                  </div>
+                  <div className="text-xs text-[#5B5C5C] break-words">
+                    {unit}
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Ending UGT2 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.endingUgt2Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-
-              <div className="bg-[#FFF2C9] px-4 py-3 rounded-[5px]">
-                <div className="text-sm text-[#5B5C5C] break-words">
-                  Ending UGT1 Inventory
-                </div>
-                <div className="text-lg font-bold break-words">
-                  {renderValue(
-                    settlementMonthlySummaryData?.endingUgt1Inventory
-                  )}
-                </div>
-                <div className="text-xs text-[#5B5C5C] break-words">{unit}</div>
-              </div>
-            </div>
-
-            {tmpMatchedEnergyData ? (
-              <div className="col-span-2">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart width={850} height={900}>
-                    <Pie
-                      activeIndex={activeIndex}
-                      activeShape={renderActiveShape}
-                      data={tmpMatchedEnergyData.data}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={95}
-                      outerRadius={120}
-                      dataKey="matchedSupply"
-                      onMouseEnter={onPieEnter}
-                    >
-                      {tmpMatchedEnergyData.data?.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-
-                      <Label
-                        content={
-                          <TotalPieLabel
-                            value={tmpMatchedEnergyData.netDeliverables}
+              {tmpMatchedEnergyData ? (
+                <div className="col-span-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart width={850} height={900}>
+                      <Pie
+                        activeIndex={activeIndex}
+                        activeShape={renderActiveShape}
+                        data={tmpMatchedEnergyData.data}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={95}
+                        outerRadius={120}
+                        dataKey="matchedSupply"
+                        onMouseEnter={onPieEnter}
+                      >
+                        {tmpMatchedEnergyData.data?.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
                           />
-                        }
-                      />
-                    </Pie>
-                    <Tooltip content={<TotalCustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            ) : (
-              <div className="col-span-2 flex justify-center items-center">
-                <div className="text-[#848789]">No Data</div>
-              </div>
-            )}
-          </div>
-          
-          {/*Settlement */}
-          {isShowDetail && isGenPDF == false ?
-            <div>
-              {/*Table Device */}
-          <div className="w-full mt-5">
-            <DataTableSettlement
-              data={settlementDeviceData}
-              columns={columnsDevice}
-              searchData={searchDevice}
-              checkbox={false}
-              isTotal={"Total"}
-              isSubTotal={"Device"}
-            />
-          </div>
-          {/*Table Subscriber */}
-          <div className="w-full mt-4">
-            <DataTableSettlement
-              data={settlementSubscriberData}
-              columns={columnsSubscriber}
-              searchData={searchSubscriber}
-              checkbox={false}
-              isTotal={"Total"}
-              isSubTotal={"Subscriber"}
-            />
-          </div>
-              {/*<div className="grid grid-cols-2 container mx-auto px-0 gap-8 mt-10 text-left">
+                        ))}
+
+                        <Label
+                          content={
+                            <TotalPieLabel
+                              value={tmpMatchedEnergyData.netDeliverables}
+                            />
+                          }
+                        />
+                      </Pie>
+                      <Tooltip content={<TotalCustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="col-span-2 flex justify-center items-center">
+                  <div className="text-[#848789]">No Data</div>
+                </div>
+              )}
+            </div>
+
+            {/*Settlement */}
+            {isShowDetail && isGenPDF == false ? (
+              <div>
+                {/*Table Device */}
+                <div className="w-full mt-5">
+                  <DataTableSettlement
+                    data={settlementDeviceData}
+                    columns={columnsDevice}
+                    searchData={searchDevice}
+                    checkbox={false}
+                    isTotal={"Total"}
+                    isSubTotal={"Device"}
+                    unit={unit}
+                    convertUnit={convertUnit}
+                  />
+                </div>
+                {/*Table Subscriber */}
+                <div className="w-full mt-4">
+                  <DataTableSettlement
+                    data={settlementSubscriberData}
+                    columns={columnsSubscriber}
+                    searchData={searchSubscriber}
+                    checkbox={false}
+                    isTotal={"Total"}
+                    isSubTotal={"Subscriber"}
+                    unit={unit}
+                    convertUnit={convertUnit}
+                  />
+                </div>
+                {/*<div className="grid grid-cols-2 container mx-auto px-0 gap-8 mt-10 text-left">
                 <div className="border-r-2">
                   <div className="text-lg font-bold">Generation</div>
 
@@ -3198,134 +3381,150 @@ console.log(settlemtDetailDevice)
                   )}
                 </div>
               </div>*/}
-              <div className="w-full mt-5">
-                <div className="grid grid-cols-2">
-                  <div className="text-left font-bold text-base">
-                    Settlement Detail
-                  </div>
-                  <div className="text-=left">
-                    <div className="grid grid-cols-4">
-                      <div className="col-start-1">
-                        <label className="font-bold text-sm">
-                          Settlement Period
-                        </label>
-                      </div>
-                      <div className="col-start-2">
-                        <label className="text-sm">{selectTabSettlementDetail == "device"?settlementDetailMonthlyDevice.settlementPeriod:settlementDetailMonthlySubscriber.settlementPeriod }</label>
-                      </div>
-                      <div className="col-start-3">
-                        <label className="font-bold text-sm">Matched</label>
-                      </div>
-                      <div className="col-start-4 text-left">
-                        <label className="text-sm">{selectTabSettlementDetail == "device"?renderValues(settlementDetailMonthlyDevice.matched) +" "+ unit:renderValues(settlementDetailMonthlySubscriber.matched ) +" "+ unit}</label>
+                <div className="w-full mt-5">
+                  <div className="grid grid-cols-2">
+                    <div className="text-left font-bold text-base">
+                      Settlement Detail
+                    </div>
+                    <div className="text-=left">
+                      <div className="grid grid-cols-4">
+                        <div className="col-start-1">
+                          <label className="font-bold text-sm">
+                            Settlement Period
+                          </label>
+                        </div>
+                        <div className="col-start-2">
+                          <label className="text-sm">
+                            {selectTabSettlementDetail == "device"
+                              ? settlementDetailMonthlyDevice.settlementPeriod
+                              : settlementDetailMonthlySubscriber.settlementPeriod}
+                          </label>
+                        </div>
+                        <div className="col-start-3">
+                          <label className="font-bold text-sm">Matched</label>
+                        </div>
+                        <div className="col-start-4 text-left">
+                          <label className="text-sm">
+                            {selectTabSettlementDetail == "device"
+                              ? renderValues(
+                                  settlementDetailMonthlyDevice.matched
+                                ) +
+                                " " +
+                                unit
+                              : renderValues(
+                                  settlementDetailMonthlySubscriber.matched
+                                ) +
+                                " " +
+                                unit}
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-2">
-                  <div className="text-sm mt-5">
-                    <div className="mt-4 pl-1 flex">
-                      <div
-                        className={
-                          selectTabSettlementDetail === "device"
-                            ? " w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center "
-                            : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px] text-center border-none"
-                        }
-                      >
-                        <button
+                  <div className="mt-2">
+                    <div className="text-sm mt-5">
+                      <div className="mt-4 pl-1 flex">
+                        <div
                           className={
                             selectTabSettlementDetail === "device"
-                              ? "font-bold text-base"
-                              : "text-[#949292] font-thin text-base"
+                              ? " w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center "
+                              : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px] text-center border-none"
                           }
-                          onClick={() => setSelectTabSettlementDetail("device")}
                         >
-                          Devices
-                        </button>
-                      </div>
-                      <div
-                        className={
-                          selectTabSettlementDetail === "subscriber"
-                            ? "w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center ml-2 "
-                            : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px]  text-center ml-2 border-none "
-                        }
-                      >
-                        <button
+                          <button
+                            className={
+                              selectTabSettlementDetail === "device"
+                                ? "font-bold text-base"
+                                : "text-[#949292] font-thin text-base"
+                            }
+                            onClick={() =>
+                              setSelectTabSettlementDetail("device")
+                            }
+                          >
+                            Devices
+                          </button>
+                        </div>
+                        <div
                           className={
                             selectTabSettlementDetail === "subscriber"
-                              ? "font-bold text-base"
-                              : "text-[#949292] font-thin text-base"
+                              ? "w-36 pl-1 pt-2 pb-1 rounded-t-[10px] bg-[#87BE334D] text-center ml-2 "
+                              : "w-36 pl-1 pb-1 pt-2 rounded-t-[10px]  text-center ml-2 border-none "
                           }
-                          onClick={() => setSelectTabSettlementDetail("subscriber")}
                         >
-                          Subscriber
-                        </button>
+                          <button
+                            className={
+                              selectTabSettlementDetail === "subscriber"
+                                ? "font-bold text-base"
+                                : "text-[#949292] font-thin text-base"
+                            }
+                            onClick={() =>
+                              setSelectTabSettlementDetail("subscriber")
+                            }
+                          >
+                            Subscriber
+                          </button>
+                        </div>
                       </div>
+                      {selectTabSettlementDetail === "device" ? (
+                        <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
+                          <div className="mt-2 p-2">
+                            {settlemtDetailDevice ? (
+                              <CollapsDataTable
+                                data={settlemtDetailDevice}
+                                rowPerPage={25}
+                                unit={unit}
+                                convertUnit={convertUnit}
+                              />
+                            ) : (
+                              <CollapsDataTable data={[]} rowPerPage={25} />
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
+                          <div className="mt-2 p-2">
+                            {settlementDetailSubscriber ? (
+                              <CollapsDataTable
+                                data={settlementDetailSubscriber}
+                                rowPerPage={25}
+                                isDevice={false}
+                                unit={unit}
+                                convertUnit={convertUnit}
+                              />
+                            ) : (
+                              <CollapsDataTable data={[]} rowPerPage={25} />
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    {selectTabSettlementDetail === "device" ? (
-                      <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
-                        <div className="mt-2 p-2">
-                        {settlemtDetailDevice?
-                        <CollapsDataTable
-                            data={settlemtDetailDevice}
-                            rowPerPage={25}
-                            unit={unit}
-                            convertUnit={convertUnit}
-                          />:
-                          <CollapsDataTable
-                          data={[]}
-                          rowPerPage={25}
-                        />}
-
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="border-t-4 border-solid border-t-[#87BE33] border-r-4 border-l-4 border-b-4 border-r-gray border-r-gray border-r-gray p-3 grid gap-4 gap-y-2 rounded-[5px]">
-                        <div className="mt-2 p-2">
-                          {settlementDetailSubscriber?
-                          <CollapsDataTable
-                            data={settlementDetailSubscriber}
-                            rowPerPage={25}
-                            isDevice={false}
-                            unit={unit}
-                            convertUnit={convertUnit}
-                          />:
-                          <CollapsDataTable
-                          data={[]}
-                          rowPerPage={25}
-                        />}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
-            </div>
-          :undefined}
-        </div>
-      )}
-      
-      
-      {/*!isApprove && !isModuleViewerUser && showWaitApprove*/ hideData && 
-      (
-        <div className="w-full h-[400px] items-center content-center">
-          <div className="flex justify-center items-center">
-            <img
-              src={WaitApprove}
-              alt="WaitApprove"
-              width={100}
-              height={100}
-              className="content-center"
-            />
+            ) : undefined}
           </div>
-          <label className="text-[#000000CC] font-semibold">
-            Awaiting For Confirmation
-          </label>
-        </div>
-      )}
+        )
+      }
 
-      
+      {
+        /*!isApprove && !isModuleViewerUser && showWaitApprove*/ hideData && (
+          <div className="w-full h-[400px] items-center content-center">
+            <div className="flex justify-center items-center">
+              <img
+                src={WaitApprove}
+                alt="WaitApprove"
+                width={100}
+                height={100}
+                className="content-center"
+              />
+            </div>
+            <label className="text-[#000000CC] font-semibold">
+              Awaiting For Confirmation
+            </label>
+          </div>
+        )
+      }
     </>
   );
 };
