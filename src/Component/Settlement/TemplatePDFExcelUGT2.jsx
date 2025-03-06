@@ -592,8 +592,8 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                           : numeral(0).format("0,0.000")}
                       </td>
                       <td className="border p-2 break-all text-[10px]">
-                        {item?.ugt1InventoryMatchedPEA
-                          ? numeral(item?.ugt1InventoryMatchedPEA).format(
+                        {item?.ugt2InventoryMatchedPEA
+                          ? numeral(item?.ugt2InventoryMatchedPEA).format(
                               "0,0.000"
                             )
                           : numeral(0).format("0,0.000")}
@@ -630,8 +630,8 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                           : numeral(0).format("0,0.000")}
                       </td>
                       <td className="border p-2 break-all text-[10px]">
-                        {item?.ugt1InventoryMatchedEGAT
-                          ? numeral(item?.ugt1InventoryMatchedEGAT).format(
+                        {item?.ugt2InventoryMatchedEGAT
+                          ? numeral(item?.ugt2InventoryMatchedEGAT).format(
                               "0,0.000"
                             )
                           : numeral(0).format("0,0.000")}
@@ -651,8 +651,8 @@ const TemplatePDFExcelUGT2 = ({ data }) => {
                           : numeral(0).format("0,0.000")}
                       </td>
                       <td className="border p-2 break-all text-[10px]">
-                        {item?.ugt1InventoryMatched
-                          ? numeral(item?.ugt1InventoryMatched).format(
+                        {item?.ugt2InventoryMatched
+                          ? numeral(item?.ugt2InventoryMatched).format(
                               "0,0.000"
                             )
                           : numeral(0).format("0,0.000")}
