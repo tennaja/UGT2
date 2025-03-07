@@ -1891,7 +1891,8 @@ const SettlementInfo = ({
           </div>
         )
       }
-      {isShowGotoConfirm && (
+      {settlementMonthlySummaryData &&
+      Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowGotoConfirm && (
         <div className="flex justify-center z-1">
           <Card
             radius="lg"
@@ -1927,8 +1928,9 @@ const SettlementInfo = ({
             </div>
           </Card>
         </div>
-      )}
-      {isShowGotiVerify && (
+      ):undefined}
+      {settlementMonthlySummaryData &&
+      Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowGotiVerify && (
         <div className="flex justify-center z-1">
           <Card
             radius="lg"
@@ -1967,7 +1969,7 @@ const SettlementInfo = ({
             </div>
           </Card>
         </div>
-      )}
+      ):undefined}
       {settlementMonthlySummaryData &&
       Object.keys(settlementMonthlySummaryData).length !== 0
         ? isShowSettlementProgress && (
