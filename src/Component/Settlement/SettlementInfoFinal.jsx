@@ -102,8 +102,8 @@ const SettlementInfoFinal = ({
 
   if (status == "N" || status == "R" || status == "E") {
     if (
-      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
-      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
+      /*userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||*/
       userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG
     ) {
       if (isShowDetail) {
@@ -119,12 +119,29 @@ const SettlementInfoFinal = ({
         isShowGotoConfirm = false;
         isShowMainDetail = true;
       }
-    } else {
+    } else if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ){
+        if (isShowDetail) {
+          isShowGotiVerify = false;
+          isShowSettlementProgress = false;
+          isShowAwaitConfirm = false;
+          isShowGotoConfirm = false;
+          isShowMainDetail = true;
+        } else {
+          isShowGotiVerify = false;
+          isShowSettlementProgress = true;
+          isShowAwaitConfirm = false;
+          isShowGotoConfirm = false;
+          isShowMainDetail = false;
+          hideBtn(true);
+        }
+    }else {
       isShowGotiVerify = false;
       isShowSettlementProgress = true;
       isShowAwaitConfirm = false;
       isShowGotoConfirm = false;
       isShowMainDetail = false;
+      hideBtn(true);
     }
   } else if (status == "V") {
     if (
@@ -132,11 +149,19 @@ const SettlementInfoFinal = ({
       userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ||
       userData?.userGroup?.id == USER_GROUP_ID.PORTFOLIO_MNG
     ) {
-      isShowGotiVerify = false;
+      if (isShowDetail) {
+        isShowGotiVerify = false;
+        isShowSettlementProgress = false;
+        isShowAwaitConfirm = false;
+        isShowGotoConfirm = false;
+        isShowMainDetail = true;
+      } else {
+        isShowGotiVerify = false;
       isShowSettlementProgress = false;
-      isShowAwaitConfirm = false;
+      isShowAwaitConfirm = true;
       isShowGotoConfirm = false;
-      isShowMainDetail = true;
+      isShowMainDetail = false;
+      }
     } else if (
       userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
       userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG ||
@@ -161,6 +186,7 @@ const SettlementInfoFinal = ({
       isShowAwaitConfirm = true;
       isShowGotoConfirm = false;
       isShowMainDetail = false;
+      hideBtn(true);
     }
   } else if (status == "Y") {
     isShowGotiVerify = false;
@@ -1195,16 +1221,32 @@ const SettlementInfoFinal = ({
         setIsShowDetailMonthly(true);
       }
     }
-
+    
     if (
       settlementMonthlySummaryData &&
       Object.keys(settlementMonthlySummaryData).length !== 0
     ) {
       hideBtn(false);
-    } else {
+    } /*else {
+      hideBtn(true);
+    }*/
+  }, [settlementMonthlySummaryData]);
+
+  const sethideButton=()=>{
+    if (
+      settlementMonthlySummaryData &&
+      Object.keys(settlementMonthlySummaryData).length !== 0
+    ) {
+      hideBtn(false);
+    } else if(isShowAwaitConfirm == true || 
+      isShowAwaitConfirm == true
+    ){
       hideBtn(true);
     }
-  }, [settlementMonthlySummaryData]);
+    else {
+      hideBtn(true);
+    }
+  }
 
   const getNewCenter = () => {
     let text = {
@@ -1996,6 +2038,7 @@ const SettlementInfoFinal = ({
             <div>
               <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
                 <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
+                  final
                   <div className="text-sm text-[#5B5C5C] break-words">
                     Total Contracted Load
                   </div>

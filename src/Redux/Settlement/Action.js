@@ -748,6 +748,7 @@ export const getSettlementDetail = (ugtGroupId, portfolioId, year, month,utility
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
             dispatch(_getSettlementDetail(response.data));
         }, (error) => {
+            dispatch(_getSettlementDetail({}));
             dispatch(failRequest(error.message))
         });
     }

@@ -1891,7 +1891,7 @@ const SettlementInfo = ({
           </div>
         )
       }
-      {settlementMonthlySummaryData &&
+      {hideData &&(settlementMonthlySummaryData &&
       Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowGotoConfirm && (
         <div className="flex justify-center z-1">
           <Card
@@ -1928,8 +1928,8 @@ const SettlementInfo = ({
             </div>
           </Card>
         </div>
-      ):undefined}
-      {settlementMonthlySummaryData &&
+      ):undefined)}
+      {hideData &&(settlementMonthlySummaryData &&
       Object.keys(settlementMonthlySummaryData).length !== 0 ?isShowGotiVerify && (
         <div className="flex justify-center z-1">
           <Card
@@ -1969,8 +1969,9 @@ const SettlementInfo = ({
             </div>
           </Card>
         </div>
-      ):undefined}
-      {settlementMonthlySummaryData &&
+      ):undefined)}
+      
+      {hideData &&(settlementMonthlySummaryData &&
       Object.keys(settlementMonthlySummaryData).length !== 0
         ? isShowSettlementProgress && (
             <div className="w-full h-[400px] items-center content-center">
@@ -1988,9 +1989,9 @@ const SettlementInfo = ({
               </label>
             </div>
           )
-        : undefined}
+        : undefined)}
 
-      {settlementMonthlySummaryData &&
+      {hideData &&(settlementMonthlySummaryData &&
       Object.keys(settlementMonthlySummaryData).length !== 0
         ? isShowAwaitConfirm && (
             <div className="w-full h-[400px] items-center content-center">
@@ -2008,11 +2009,11 @@ const SettlementInfo = ({
               </label>
             </div>
           )
-        : undefined}
+        : undefined)}
 
       {settlementMonthlySummaryData &&
       Object.keys(settlementMonthlySummaryData).length !== 0 ? (
-        isShowMainDetail && (
+        
           <div
             className={`
         ${isShowGotoConfirm || isShowGotiVerify ? "opacity-10" : ""} `}
@@ -2507,7 +2508,7 @@ const SettlementInfo = ({
               </div>
             ) : undefined}
           </div>
-        )
+        
       ) : (
         <div className="flex flex-col items-center justify-center text-sm font-normal gap-2 mt-4 h-[400px]">
           <img src={noContent} alt="React Logo" width={50} height={50} />

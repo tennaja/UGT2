@@ -9,12 +9,14 @@ import {
   getPortfolioMonthList,
   setSelectedMonth,
   getSettlementDetail,
-  getSettlementStatus
+  getSettlementStatus,
+  getSettlementMonthlySummaryFinal
 } from "../../Redux/Settlement/Action";
 import { useNavigate } from "react-router-dom";
 import * as WEB_URL from "../../Constants/WebURL";
 import { USER_GROUP_ID } from "../../Constants/Constants";
 import SettlementInfoFinal from "./SettlementInfoFinal";
+import WaitApprove from "../assets/WaitApprove.png";
 
 // Icon import
 import { AiOutlineExport } from "react-icons/ai";
@@ -44,6 +46,10 @@ const MonthlySettlement = (props) => {
     (state) => state.settlement.settlementDetail
   );
   const settlementStatus = useSelector((state)=>state.settlement.settlementStatus)
+  const settlementMonthlySummaryDataFinal = useSelector(
+      (state) => state.settlement.settlementDetailFinal
+    );
+
   const [latestMonthHasData, setLatestMonthHasData] = useState(
     monthListData.defaultMonth
   );
@@ -62,8 +68,19 @@ console.log(settlementStatus,monthListData)
         )
       );
       dispatch(getSettlementStatus(portfolioId,settlementYear,settlementMonth,ugtGroupId))
+      dispatch(
+        getSettlementMonthlySummaryFinal(
+          ugtGroupId,
+          portfolioId,
+          settlementYear,
+          settlementMonth,
+          0
+        )
+      );
     }
   }, [settlementMonth, settlementYear]);
+
+  console.log(settlementMonthlySummaryData,settlementStatus)
 
   useEffect(() => {
     if (settlementMonthlySummaryData && userData) {
@@ -219,7 +236,7 @@ console.log(settlementStatus,monthListData)
 
           <Form layout="horizontal" size="large">
             <div className="grid grid-cols-[80px_90px_120px] gap-2">
-              {isShowView && (
+              
                 <Button
                   className="bg-[#87BE33] hover:bg-[#4D6A00] w-20 h-[39px]"
                   onClick={() =>
@@ -238,7 +255,7 @@ console.log(settlementStatus,monthListData)
                     View
                   </span>
                 </Button>
-              )}
+              
               <Form.Item className="col-span-1 col-start-2">
                 <Select
                   size="large"
@@ -287,8 +304,9 @@ console.log(settlementStatus,monthListData)
             </div>
           </Form>
         </div>
-
-        <SettlementInfoFinal
+        {settlementMonthlySummaryDataFinal &&
+      Object.keys(settlementMonthlySummaryDataFinal).length !== 0
+        ?<SettlementInfoFinal
           ugtGroupId={ugtGroupId}
           portfolioId={portfolioId}
           portfolioName={portfolioName}
@@ -301,7 +319,20 @@ console.log(settlementStatus,monthListData)
           isShowDetail={isShowDetail}
           status={settlementStatus.status}
           hideBtn={setHideBtn}
-        />
+        />:<div className="w-full h-[400px] items-center content-center">
+                      <div className="flex justify-center items-center">
+                        <img
+                          src={WaitApprove}
+                          alt="WaitApprove"
+                          width={100}
+                          height={100}
+                          className="content-center"
+                        />
+                      </div>
+                      <label className="text-[#000000CC] font-semibold">
+                        Settlement in progress
+                      </label>
+                    </div>}
       </Card>
     )
   );

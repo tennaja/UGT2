@@ -213,9 +213,18 @@ const ItemIssue = ({
       canVerify = false;
     } else {
       if (userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY) {
+        if (
+          issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
+          issueRequestStatus.toLowerCase().replace(" ", "") == "returned"
+        ) {
         canSendIssue = true;
         canUpload = true;
+        canVerify = true;}
+        else{
+          canSendIssue = true;
+        canUpload = true;
         canVerify = false;
+        }
       } else if (
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
       ) {

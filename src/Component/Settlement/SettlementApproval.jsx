@@ -321,6 +321,19 @@ export default function SettlementApproval() {
     return false;
   };
 
+  const checkRoleApprove=()=>{
+    const userGroupID = userData?.userGroup?.id;
+    if (userGroupID == USER_GROUP_ID.WHOLE_SALEER_ADMIN || 
+      userGroupID == USER_GROUP_ID.MEA_SUBSCRIBER_MNG ||
+      userGroupID == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+    ) {
+      console.log("Egat");
+      return true
+    } else {
+      return false
+    } 
+  }
+
   // approve status
   /*useEffect(() => {
     if (getSettlementApproveData) {
@@ -1221,6 +1234,7 @@ export default function SettlementApproval() {
                 </button>
               </div>
             </div>
+            {/*Filter */}
             <div className="flex justify-between items-center my-2">
               {selectTab == "initial" ? (
                 <>
@@ -1572,7 +1586,7 @@ export default function SettlementApproval() {
                 </div>
               </div>
             ) : settlementDetailStatus.status == "E" ? undefined : (
-              <Card
+              settlementDetailStatus.status == "V" && checkRoleApprove()?<Card
                 id="approveInformation"
                 shadow="md"
                 radius="lg"
@@ -1721,7 +1735,7 @@ export default function SettlementApproval() {
                     </div>
                   </div>
                 </Modal>
-              </Card>
+              </Card>:undefined
             )
           ) : undefined}
         </div>
