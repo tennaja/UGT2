@@ -1531,7 +1531,7 @@ export default function SettlementApproval() {
           </div>*/}
 
           {hideBtn == false && selectTab == "final" && isGenPDF == false ? (
-            settlementDetailStatus.status == "N" && isCanVerify == true ? (
+            settlementDetailStatus.status == "N" && isCanVerify == true && hideBtn == false ? (
               <div className="flex justify-between px-4 mt-4">
                 <div>
                   <Button
