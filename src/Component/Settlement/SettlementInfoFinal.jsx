@@ -1227,9 +1227,9 @@ const SettlementInfoFinal = ({
       Object.keys(settlementMonthlySummaryData).length !== 0
     ) {
       hideBtn(false);
-    } /*else {
+    } else {
       hideBtn(true);
-    }*/
+    }
   }, [settlementMonthlySummaryData]);
 
   const sethideButton=()=>{
