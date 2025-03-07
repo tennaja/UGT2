@@ -67,7 +67,7 @@ const StatusLabelEAC = ({ status, type = 'sm', searchQuery }) => {
       bg_color = STATUS_COLOR.INACTIVE.bg;
       text_color = STATUS_COLOR.INACTIVE.text;
       break;
-    case "return":
+    case "returned":
       bg_color = "#FFE1C9";
       text_color = "#DC6A01";
       break;
