@@ -13,6 +13,7 @@ import { USER_GROUP_ID } from "../../../Constants/Constants";
 import StatusLabel from "../../Control/StatusLabel";
 import { createReservationRedeem } from "../../../Redux/EAC/Redemption/Action";
 import { DOWNLOAD_REDEMPTION_STATEMENT_URL } from "../../../Constants/ServiceURL";
+import StatusLabelEAC from "../StatusLabelEAC";
 
 const ItemRedemption = (props) => {
   const dispatch = useDispatch();
@@ -317,7 +318,7 @@ const ItemRedemption = (props) => {
                         style={{ width: "20%" }}
                         className="text-center capitalize"
                       >
-                        <StatusLabel
+                        <StatusLabelEAC
                           status={row?.status || "Pending"}
                           type="xs"
                         />

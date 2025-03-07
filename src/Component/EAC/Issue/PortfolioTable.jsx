@@ -18,6 +18,7 @@ import StatusLabel from "../../Control/StatusLabel";
 import Highlighter from "react-highlight-words";
 import { USER_GROUP_ID } from "../../../Constants/Constants";
 import { useDispatch, useSelector } from "react-redux";
+import StatusLabelEAC from "../StatusLabelEAC";
 
 export default function PortfolioTable({ portData, searchValue }) {
   const navigate = useNavigate();
@@ -126,7 +127,7 @@ export default function PortfolioTable({ portData, searchValue }) {
       label: "Status",
       align: "center",
       render: (row) => (
-        <StatusLabel status={row.status} searchQuery={searchValue} />
+        <StatusLabelEAC status={row.status} searchQuery={searchValue} />
       ),
     },
     {

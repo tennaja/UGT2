@@ -74,7 +74,9 @@ console.log(trackingMonth,trackingYear)
     if (currentUGTGroup?.id && trackingMonth && trackingYear) {
       if (
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+        userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
       ) {
         dispatch(
           getLoadDataDashBoard(

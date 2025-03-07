@@ -15,6 +15,7 @@ import { EAC_ISSUE_SYNC_TRANSFER_ITEM } from "../../../Constants/ServiceURL";
 import axios from "axios";
 import { getHeaderConfig } from "../../../Utils/FuncUtils";
 import SettlementTypeLabel from "../../Control/SettlementTypeLabel";
+import StatusLabelEAC from "../StatusLabelEAC";
 
 const ItemTransfer = (props) => {
   const dispatch = useDispatch();
@@ -303,7 +304,7 @@ const ItemTransfer = (props) => {
                         style={{ width: "25%" }}
                         className="text-center"
                       >
-                        <StatusLabel
+                        <StatusLabelEAC
                           status={row.status == "" ? "Pending" : row.status}
                           type="xs"
                         />

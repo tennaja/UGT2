@@ -9,6 +9,7 @@ import DataTable from "../../Control/Table/DataTable";
 import { useNavigate } from "react-router-dom";
 import StatusLabel from "../../../Component/Control/StatusLabel";
 import Highlighter from "react-highlight-words";
+import StatusLabelEAC from "../StatusLabelEAC";
 
 export default function PortfolioTableCer({ portData,search }) {
   const navigate = useNavigate();
@@ -119,7 +120,7 @@ export default function PortfolioTableCer({ portData,search }) {
       id: "status",
       label: "Status",
       align: "center",
-      render: (row) => <StatusLabel status={row.status} searchQuery={search} />,
+      render: (row) => <StatusLabelEAC status={row.status} searchQuery={search} />,
     },
     {
       id: "",

@@ -12,6 +12,7 @@ import StatusLabel from "../../../../Component/Control/StatusLabel";
 import Highlighter from "react-highlight-words";
 import { USER_GROUP_ID } from "../../../../Constants/Constants";
 import { useDispatch, useSelector } from "react-redux";
+import StatusLabelEAC from "../../StatusLabelEAC";
 
 export default function DeviceTable({
   deviceData,
@@ -143,7 +144,7 @@ export default function DeviceTable({
       label: "Status",
       align: "center",
       render: (row) => (
-        <StatusLabel
+        <StatusLabelEAC
           status={row.status ?? "Pending"}
           searchQuery={searchValue}
         />

@@ -54,6 +54,7 @@ import { RiEyeLine } from "react-icons/ri";
 import ModalConfirmRemarkEAC from "../../ModalConfirmRemarkEAC";
 import { FaFileExcel } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import StatusLabelEAC from "../../StatusLabelEAC";
 
 const { Dragger } = Upload;
 
@@ -1224,7 +1225,7 @@ const ItemInventory = ({
                     {dayjs(row.endDate).format("DD/MM/YYYY")}
                   </Table.Td>
                   <Table.Td className="text-center w-32 ">
-                    <StatusLabel
+                    <StatusLabelEAC
                       status={issueRequestStatus ?? "Pending"}
                       type="xs"
                     />
