@@ -1089,39 +1089,6 @@ export default function SettlementApproval() {
               </div>
 
               <div className="content-center">
-                {/*<div className="flex items-center justify-content-end gap-4">
-                  <div className="flex items-center text-sm">
-                    <span>
-                      Status :{" "}
-                      <b>{approveStatus ? "Approved" : "Not Approved"}</b>
-                    </span>
-                  </div>
-                </div>
-
-                {approveStatus && (
-                  <div className="mt-1 text-right">
-                    <div className="text-xs text-slate-500 italic">
-                      Approved{" "}
-                      {dayjs(approveDate).format(
-                        "dddd, D MMMM YYYY h:mm A [(GMT+7)]"
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                <div
-                  className="flex items-center justify-content-end text-sm text-[#4D6A00] underline cursor-pointer"
-                  onClick={() =>
-                    navigate(WEB_URL.SETTLEMENT, {
-                      state: {
-                        id: portfolioId,
-                        name: portfolioName,
-                      },
-                    })
-                  }
-                >
-                  Go to Summary
-                </div>*/}
                 <Form layout="horizontal" size="large">
                   <div className="grid grid-cols-6 gap-4 items-center pt-2">
                     <div className="col-span-2 text-sm font-bold">
@@ -1164,7 +1131,7 @@ export default function SettlementApproval() {
                             <Select.Option
                               key={index}
                               value={MONTH_LIST[item - 1].month}
-                              disabled={checkMonth(item)}
+                              disabled={item > latestMonthHasData/*checkMonth(item)*/}
                             >
                               {MONTH_LIST[item - 1].name}
                             </Select.Option>
