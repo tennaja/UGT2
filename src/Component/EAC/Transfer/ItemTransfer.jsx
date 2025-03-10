@@ -57,6 +57,7 @@ const ItemTransfer = (props) => {
       portfolioId: portfolioID,
       year: year,
       month: month,
+      utilityAbbr: selectedItemTransfer.assignedUtility,
       items: {
         transferRequestId: selectedItemTransfer.transferRequestId, //int
         items: [
