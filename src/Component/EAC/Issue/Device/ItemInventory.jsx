@@ -1370,17 +1370,26 @@ const ItemInventory = ({
             {inventoryTransaction.issueRequestHistory.map((item, index) => {
               return (
                 <div className="text-right w-full text-sm" key={index}>
-                  <label>{getLogType(item.action)} </label>
-                  <label className="font-bold ml-1">
-                    {item.createBy +
-                      " " +
-                      splitDateTimeLog(item.createDateTime)}
-                  </label>
-                  <label className="ml-1">Remark : </label>
-                  <label className="font-bold ml-1">
-                  {item.remark === null || item.remark === ""?"-":item.remark}
-                  </label>
-                </div>
+                    <div>
+                      <label>{getLogType(item.action)} </label>
+                      <label className="font-bold ml-1">
+                        {item.createBy +
+                          " " +
+                          splitDateTimeLog(item.createDateTime)}
+                      </label>
+                    </div>
+                    {item.action === "Returned" ||
+                      item.action === "Rejected" && (
+                        <div>
+                          <label className="ml-1">Remark : </label>
+                          <label className="font-bold ml-1">
+                            {item.remark === null || item.remark === ""
+                              ? "-"
+                              : item.remark}
+                          </label>
+                        </div>
+                      )}
+                  </div>
               );
             })}
           </div>

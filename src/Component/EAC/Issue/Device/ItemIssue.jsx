@@ -1182,7 +1182,7 @@ const ItemIssue = ({
   };
   console.log(fileUploaded);
   console.log(issueRequest?.settlementDetail);
-  console.log(note)
+  console.log(note);
   return (
     <>
       <div className="grid grid-cols-2  gap-8">
@@ -1409,13 +1409,16 @@ const ItemIssue = ({
                         width: "100%",
                         padding: "10px",
                         fontSize: "16px",
-                        resize:"none",
-                        border: "1px solid #C6C2C4", borderRadius: "5px",
+                        resize: "none",
+                        border: "1px solid #C6C2C4",
+                        borderRadius: "5px",
                         outline: "none",
-                        transition: "border-color 0.3s"
+                        transition: "border-color 0.3s",
                       }}
-                      onFocus={(e) => e.target.style.borderColor = "dodgerblue"}
-                      onBlur={(e) => e.target.style.borderColor = "#C6C2C4"}
+                      onFocus={(e) =>
+                        (e.target.style.borderColor = "dodgerblue")
+                      }
+                      onBlur={(e) => (e.target.style.borderColor = "#C6C2C4")}
                     />
                   </div>
                 ) : (
@@ -1478,16 +1481,25 @@ const ItemIssue = ({
               {issueRequest.issueRequestHistory.map((item, index) => {
                 return (
                   <div className="text-right w-full text-sm" key={index}>
-                    <label>{getLogType(item.action)} </label>
-                    <label className="font-bold ml-1">
-                      {item.createBy +
-                        " " +
-                        splitDateTimeLog(item.createDateTime)}
-                    </label>
-                    <label className="ml-1">Remark : </label>
-                    <label className="font-bold ml-1">
-                  {item.remark === null || item.remark === ""?"-":item.remark}
-                  </label>
+                    <div>
+                      <label>{getLogType(item.action)} </label>
+                      <label className="font-bold ml-1">
+                        {item.createBy +
+                          " " +
+                          splitDateTimeLog(item.createDateTime)}
+                      </label>
+                    </div>
+                    {item.action === "Returned" ||
+                      item.action === "Rejected" && (
+                        <div>
+                          <label className="ml-1">Remark : </label>
+                          <label className="font-bold ml-1">
+                            {item.remark === null || item.remark === ""
+                              ? "-"
+                              : item.remark}
+                          </label>
+                        </div>
+                      )}
                   </div>
                 );
               })}
