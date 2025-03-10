@@ -1484,6 +1484,7 @@ const ItemIssue = ({
                         " " +
                         splitDateTimeLog(item.createDateTime)}
                     </label>
+                    <label className="ml-1">Remark : {item.remark === null || item.remark === ""?"-":item.remark}</label>
                   </div>
                 );
               })}
