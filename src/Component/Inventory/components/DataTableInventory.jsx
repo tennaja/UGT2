@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import DatePicker from "../DayPicker";
+
 import { useForm, Controller } from "react-hook-form";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import numeral from "numeral";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"; // Import the error icon
-import "../Css/DataTable.css";
+import "../../Control/Css/DataTable.css";
 import {
   Table,
   TableBody,
@@ -22,8 +22,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
-import WarningIcon from '@mui/icons-material/Warning';
-const DataTable = ({
+import WarningIcon from "@mui/icons-material/Warning";
+const DataTableInventory = ({
   data,
   columns,
   searchData,
@@ -38,7 +38,9 @@ const DataTable = ({
   portfolioEndDate,
   openpopupDeviceError,
   openpopupSubError,
-  error
+  error,
+  rowPage =10,
+  unit, convertUnit
 }) => {
   const {
     handleSubmit,
@@ -47,12 +49,12 @@ const DataTable = ({
     control,
     formState: { errors },
   } = useForm();
-//console.log(data)
+  //console.log(data)
   const dispatch = useDispatch();
   const [orderBy, setOrderBy] = useState(null);
   const [order, setOrder] = useState("asc");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(rowPage);
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -65,7 +67,8 @@ const DataTable = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [totalValue, setTotalValue] = useState([]);
-
+  const [totalremainginven,setRemainingInven] = useState([])
+  const [totalPopup,setTotalPopup] = useState()
   // useEffect(() => {
   //   return () => dispatch({ type: "RESET_STATE" });
   // }, []);
@@ -124,7 +127,24 @@ const DataTable = ({
         0
       );
       setTotalValue(numeral(total).format("0,0.00"));
+    } else if (isTotal === "Total Inventory"){
+      const total = paginatedData.reduce(
+        (acc, row) => acc + (row.remainingInventory == "-"?0:Number(row.remainingInventory) || 0),
+        0
+      );
+     // console.log("Total:", total);
+//console.log("Is Finite:", Number.isFinite(total));
+//console.log("Is NaN:", Number.isNaN(total));
+//console.log("Formatted:", numeral(total).format("0,0.000"));
+      setRemainingInven(numeral(total).format("0,0.000"));
+    } else if (isTotal === "Total Popup"){
+      const total = paginatedData.reduce(
+        (acc, row) => acc + (row.inventoryMathced || 0),
+        0
+      );
+      setTotalPopup(total)
     }
+
   }, [data]);
 
   useEffect(() => {
@@ -243,7 +263,7 @@ const DataTable = ({
             return true;
           }
         }
-      }else {
+      } else {
         /*  else if (key == "currentSettlement") {
         if (
           dayjs(obj[key], "YYYY-M")
@@ -254,7 +274,7 @@ const DataTable = ({
           return true;
         }
       }  */
-     //console.log(String(obj[key]).toLowerCase())
+       // console.log(String(obj[key]).toLowerCase());
         if (
           String(obj[key]).toLowerCase().includes(searchTerm?.toLowerCase())
         ) {
@@ -267,7 +287,7 @@ const DataTable = ({
     }
   });
 
-  const paginatedData = filteredData?.slice(
+  const paginatedData = sortedData?.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -278,325 +298,141 @@ const DataTable = ({
     const year = parseInt(parts[2], 10);
     return new Date(year, month, day);
   }
-  function formatDateToDDMMYYYY(dateString) {
-    const date = new Date(dateString);
-    
-    // ตรวจสอบว่ามีวันที่ที่ถูกต้องหรือไม่
-    if (isNaN(date)) {
-        return null; // หรือส่งกลับวันที่ที่เป็นค่าเริ่มต้นตามต้องการ
-    }
-
-    // รับวัน เดือน และปี
-    const day = String(date.getDate()).padStart(2, '0'); // เพิ่ม 0 ข้างหน้าถ้าจำนวนน้อยกว่า 10
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // เดือนเริ่มต้นที่ 0
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`; // ส่งกลับวันที่ในรูปแบบ dd/mm/yyyy
-}
-  const parseDate = (dateStr) => {
-    const parts = dateStr.split("/");
-    return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-  };
-  
-  const requestedEffectiveDateDisableDateCal = (day, index, isStartDate = true) => {
-    // startDate calculation
-    const previousDateStart = new Date(portfolioStartDate);
-    previousDateStart.setHours(0, 0, 0, 0);
-  
-    const checkStartDate =
-    data.find((item) => item.id === index)?.startDate ||
-    data.find((item) => item.id === index)?.subStartDate;
-
-let tempStartDate;
-
-if (checkStartDate) {
-    const registrationDate = formatDateToDDMMYYYY(data.find((item) => item.id === index)?.registrationDate);
-    const retailStartDate = data.find((item) => item.id === index)?.retailESAContractStartDate;
-
-    // แปลง registrationDate และ retailStartDate
-    const parsedRegistrationDate = registrationDate ? parseDate(registrationDate) : null;
-    const parsedRetailStartDate = retailStartDate ? parseDate(retailStartDate) : null;
-
-    // ตรวจสอบว่า previousDateStart มีค่าน้อยกว่าหรือเท่ากับ registrationDate หรือ retailStartDate หรือไม่
-    if ((parsedRegistrationDate && previousDateStart > parsedRegistrationDate) || 
-        (parsedRetailStartDate && previousDateStart > parsedRetailStartDate)) {
-          tempStartDate = parseDate(previousDateStart instanceof Date ? previousDateStart.toISOString().slice(0, 10) : previousDateStart);
-
-        console.log("Using Previous Start Date:", tempStartDate);
-    } else {
-        tempStartDate = parsedRegistrationDate || parsedRetailStartDate 
-        console.log("Parsed Start Date:", tempStartDate);
-    }
-} else {
-    tempStartDate = parseDate(previousDateStart);
-    console.log("Default Start Date:", tempStartDate); // ตั้งค่าเป็น previousDate ถ้าไม่มี
-}
-
-  
-    // If checking for start date, we need to ensure it does not exceed the minimum end date
-    if (isStartDate) {
-      let minEndDate = new Date(Math.min(
-        ...data
-          .filter(item => item.id === index)
-          .map(item => {
-            const checkEndDate =
-              item.endDate || item.subEndDate;
-            if (checkEndDate) {
-              return parseDate(checkEndDate);
-            }
-            return Infinity; // return a high value if no date is found
-          })
-      ));
-  
-      const startDateDisabled = day < previousDateStart || day > minEndDate || day < tempStartDate;
-      return startDateDisabled;
-    }
-  
-    // endDate calculation
-    const previousDateEnd = new Date(portfolioEndDate);
-    previousDateEnd.setHours(0, 0, 0, 0);
-  
-    const checkEndDate =
-      data.find((item) => item.id === index)?.endDate ||
-      data.find((item) => item.id === index)?.subEndDate;
-
-    console.log("Check End Date:", checkEndDate);
-    let tempEndDate;
-    
-    if (checkEndDate) {
-      const expiryDate = formatDateToDDMMYYYY(data.find((item) => item.id === index)?.expiryDate);
-      const retailEndDate = data.find((item) => item.id === index)?.retailESAContractEndDate;
-  
-      const parsedExpiryDate = expiryDate ? parseDate(expiryDate) : null;
-      const parsedRetailEndDate = retailEndDate ? parseDate(retailEndDate) : null;
-      const parsedPortfolioEndDate = new Date(portfolioEndDate);
-  
-      // Check if parsedPortfolioEndDate is less than parsedExpiryDate or parsedRetailEndDate
-      if (
-          (parsedExpiryDate && parsedPortfolioEndDate < parsedExpiryDate) ||
-          (parsedRetailEndDate && parsedPortfolioEndDate < parsedRetailEndDate)
-      ) {
-          tempEndDate = previousDateEnd;
-          console.log("Using Previous End Date:", previousDateEnd);
-      } else {
-          // Use the available valid date or fallback to previousDateEnd
-          tempEndDate = parsedExpiryDate || parsedRetailEndDate || previousDateEnd;
-          console.log("Using Available End Date:", tempEndDate);
-      }
-  } else {
-      tempEndDate = previousDateEnd;
-      console.log("No End Date Found, Using Previous End Date:", tempEndDate);
-  }
-  
-  
-  const foundItem = data.find((item) => item.id === index);
-
-  let startDate = null;
-  if (foundItem) {
-      const parsedStartDate = foundItem.startDate ? parseDate(foundItem.startDate) : null;
-      const parsedSubStartDate = foundItem.subStartDate ? parseDate(foundItem.subStartDate) : null;
-  
-      startDate = parsedStartDate || parsedSubStartDate;
-  }
-  
-  // Check for startDate validity
-  if (!startDate) {
-      console.error("Start date could not be determined.");
-  }
-    
-  
-    // Disable logic for end date: must be greater than StartDate
-    const endDateDisabled = day < startDate || day < previousDateStart || day > tempEndDate;
-  
-    return endDateDisabled; // คืนค่า endDateDisabled
-  };
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
 
   const renderCell = (row, column) => {
+    //console.log(row, column);
     const isError = row.isError; // Assuming row has an isError property
     if (column.id === "errorDevice" && isError) {
+      console.log("errorDevice");
       return (
         <div
-        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
-      >
-        <WarningIcon
-          style={{ color: "red", marginLeft: 4 }}
-          titleAccess="Error" // Tooltip text
-        />
-        <div
-         type="button"
-         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
-         onClick={() => openpopupDeviceError(row.id ,row.deviceName,row.startDate,row.endDate)}
+          style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
         >
-          Error Detail
+          <WarningIcon
+            style={{ color: "red", marginLeft: 4 }}
+            titleAccess="Error" // Tooltip text
+          />
+          <div
+            type="button"
+            className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+            onClick={() =>
+              openpopupDeviceError(
+                row.id,
+                row.deviceName,
+                row.startDate,
+                row.endDate
+              )
+            }
+          >
+            Error Detail
+          </div>
         </div>
-      </div>
       );
     }
     if (column.id === "errorSub" && isError) {
+      console.log("errorSub");
       return (
-        <div 
-        style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
-      >
-        <WarningIcon
-          style={{ color: "red", marginLeft: 4 }}
-          titleAccess="Error" // Tooltip text
-        />
         <div
-                                type="button"
-         className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
-         onClick={() => openpopupSubError(row.id,row.startDate,row.endDate,row.subscribersContractInformationId)}
+          style={{ cursor: "pointer", display: "flex", alignItems: "center" }} // Center the icon and make it look clickable
         >
-          Error Detail
+          <WarningIcon
+            style={{ color: "red", marginLeft: 4 }}
+            titleAccess="Error" // Tooltip text
+          />
+          <div
+            type="button"
+            className="w-24 bg-red-500 text-white p-1 rounded hover:bg-red-600 ml-2"
+            onClick={() =>
+              openpopupSubError(
+                row.id,
+                row.startDate,
+                row.endDate,
+                row.subscribersContractInformationId
+              )
+            }
+          >
+            Error Detail
+          </div>
         </div>
-      </div>
       );
     }
     if (column.render) {
+      //console.log("render");
       // ถ้ามี props 'render'
       if (!editDatetime) {
-        return column.render(row)
+          return column.render(row);        
       } else {
+        
         if (isStartPort) {
+          
           // ถ้า Port เริ่มไปแล้ว แก้ไขวันที่ EndDate ได้อย่างเดียว
           if (
             column.id === "startDate" ||
             column.id === "retailESAContractStartDate"
           ) {
+            
             return <span>{row[column.id]}</span>;
-          } else if (
-            column.id === "endDate" ||
-            column.id === "retailESAContractEndDate"
-          ) {
-            return (
-              <Controller
-                name={"endDate" + "_" + row.id}
-                control={control}
-                rules={
-                  {
-                    // required: "This field is required",
-                  }
-                }
-                render={({ field }) => (
-                  <DatePicker
-                    {...field}
-                    id={"endDate" + "_" + row.id}
-                    formatDate={"d/M/yyyy"}
-                    error={errors["endDate" + "_" + row.id]}
-                    onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(newValue, row.id, false); // false for EndDate
-                    }}
-                    onChangeInput={(newValue) => {
-                      const newDate = format(newValue, "dd/MM/yyyy");
-                      dateChange(newDate, row.id, "endDate");
-                    }}
-                    validate={" *"}
-                    // ... other props
-                  />
-                )}
-              />
-            );
           } else {
+            
             // column อื่นๆ
             return column.render(row);
           }
         } else {
-          // ถ้า Port ยังไม่เริ่ม แก้ไขวันที่ Start / EndDate ได้
-          if (
-            column.id === "startDate" ||
-            column.id === "retailESAContractStartDate"
-          ) {
-            return (
-              <Controller
-                name={"startDate" + "_" + row.id}
-                control={control}
-                rules={
-                  {
-                    // required: "This field is required",
-                  }
-                }
-                render={({ field }) => (
-                  <DatePicker
-                    {...field}
-                    id={"startDate" + "_" + row.id}
-                    formatDate={"d/M/yyyy"}
-                    error={errors["startDate" + "_" + row.id]}
-                    onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(newValue, row.id, true); // true for StartDate
-                    }}
-                    onChangeInput={(newValue) => {
-                      const newDate = format(newValue, "dd/MM/yyyy");
-                      dateChange(newDate, row.id, "startDate");
-                    }}
-                    validate={" *"}
-                    // ... other props
-                  />
-                )}
-              />
-            );
-          } else if (
-            column.id === "endDate" ||
-            column.id === "retailESAContractEndDate"
-          ) {
-            return (
-              <Controller
-                name={"endDate" + "_" + row.id}
-                control={control}
-                rules={
-                  {
-                    // required: "This field is required",
-                  }
-                }
-                render={({ field }) => (
-                  <DatePicker
-                    {...field}
-                    id={"endDate" + "_" + row.id}
-                    formatDate={"d/M/yyyy"}
-                    error={errors["endDate" + "_" + row.id]}
-                    onCalDisableDate={(newValue) => {
-                      return requestedEffectiveDateDisableDateCal(newValue, row.id, false); // false for EndDate
-                    }}
-                    onChangeInput={(newValue) => {
-                      const newDate = format(newValue, "dd/MM/yyyy");
-                      dateChange(newDate, row.id, "endDate");
-                    }}
-                    validate={" *"}
-                    // ... other props
-                  />
-                )}
-              />
-            );
-          } else {
+          
+            // ถ้า Port ยังไม่เริ่ม แก้ไขวันที่ Start / EndDate ได้
+
             // column อื่นๆ
             return column.render(row);
-          }
         }
       }
     } else {
+    
       return <span>{row[column.id]}</span>;
     }
   };
+
+    const convertData = (value) => {
+      //console.log("Value Convert",value)
+      let decFixed = 3;
+      if (unit == "kWh") {
+        decFixed = 3;
+      } else if (unit == "MWh") {
+        decFixed = 6;
+      } else if (unit == "GWh") {
+        decFixed = 6;
+      }
   
+      if (value) {
+        //console.log("Set Value")
+        if (decFixed == 3) {
+          return numeral(value).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(value).format("0,0.000000");
+        }
+      } else {
+        //console.log("Set Zero")
+        return numeral(0).format("0,0.000");
+      }
+    };
+  
+    const renderValue = (value) => {
+      //console.log(value)
+      //console.log(convertUnit)
+      if (value) {
+        //console.log("Have value")
+        return convertData(value * convertUnit);
+      } else {
+        //console.log("No have Value")
+        return convertData(0);
+      }
+    };
+
   return (
     <div>
       <TableContainer
         component={Paper}
-        style={{ border: "none", boxShadow: "none" }}
+        style={{ border: "none", boxShadow: "none"}}
       >
         <Table>
           <TableHead>
@@ -634,6 +470,8 @@ if (checkStartDate) {
                   style={{
                     // textAlign: index === 0 ? "left" : "center",
                     backgroundColor: "#F3F6F9",
+                    fontSize: "12px",
+                    fontWeight: "bold"
                   }}
                   align={column.align ? column.align : "center"}
                 >
@@ -661,7 +499,6 @@ if (checkStartDate) {
                     role="checkbox"
                     tabIndex={-1}
                     selected={isItemSelected}
-                    
                     style={{
                       backgroundColor: isError ? "#F4433614" : "", // Light red background on error
                     }}
@@ -681,113 +518,9 @@ if (checkStartDate) {
                       <TableCell
                         key={column.id}
                         align={column.align ? column.align : "center"}
-                        style={{ maxWidth: column.maxWidth }}
-                        // style={{
-                        //   minWidth: index === 0 ? "200px" : "100px",
-                        //   maxWidth: index === 0 ? "300px" : "100px",
-                        //   whiteSpace: "hidden", // Prevents text from wrapping
-                        //   padding: "15px 5px 15px 10px",
-                        // }}
+                        style={{ maxWidth: column.maxWidth,minWidth: column.maxWidth,fontSize: "12px" }}
                       >
                         {renderCell(row, column)}
-
-                        {/* {column.render ? (
-                          column.render(row)
-                        ) : (
-                          <>
-                            {!isStartPort &&
-                            editDatetime &&
-                            (column.id === "startDate" ||
-                              column.id === "retailESAContractStartDate") ? (
-                              <></>
-                            ) : editDatetime &&
-                              (column.id === "endDate" ||
-                                column.id === "retailESAContractEndDate") ? (
-                              <></>
-                            ) : column.id === "capacity" ? (
-                              <span>{row[column.id].toFixed(2)}</span>
-                            ) : column.id === "allocateEnergyAmount" ? (
-                              <span>{row[column.id].toFixed(2)}</span>
-                            ) : (
-                              <span>{row[column.id]}</span>
-                            )}
-                          </>
-                        )}
-
-                        {!isStartPort &&
-                          editDatetime &&
-                          (column.id === "startDate" ||
-                            column.id === "retailESAContractStartDate") && (
-                            <Controller
-                              name={"startDate" + "_" + row.id}
-                              control={control}
-                              rules={
-                                {
-                                  // required: "This field is required",
-                                }
-                              }
-                              render={({ field }) => (
-                                <DatePicker
-                                  {...field}
-                                  id={"startDate" + "_" + row.id}
-                                  formatDate={"d/M/yyyy"}
-                                  error={errors["startDate" + "_" + row.id]}
-                                  onCalDisableDate={(newValue) => {
-                                    return requestedEffectiveDateDisableDateCal(
-                                      newValue,
-                                      row.id
-                                    );
-                                  }}
-                                  onChangeInput={(newValue) => {
-                                    const newDate = format(
-                                      newValue,
-                                      "dd/MM/yyyy"
-                                    );
-                                    dateChange(newDate, row.id, "startDate");
-                                  }}
-                                  validate={" *"}
-                                  // ... other props
-                                />
-                              )}
-                            />
-                          )}
-
-                        {editDatetime &&
-                          (column.id === "endDate" ||
-                            column.id === "retailESAContractEndDate") && (
-                            <Controller
-                              name={"endDate" + "_" + row.id}
-                              control={control}
-                              rules={
-                                {
-                                  // required: "This field is required",
-                                }
-                              }
-                              render={({ field }) => (
-                                <DatePicker
-                                  {...field}
-                                  id={"endDate" + "_" + row.id}
-                                  formatDate={"d/M/yyyy"}
-                                  error={errors["endDate" + "_" + row.id]}
-                                  onCalDisableDate={(newValue) => {
-                                    return requestedEffectiveDateDisableDateCal(
-                                      newValue,
-                                      row.id
-                                    );
-                                  }}
-                                  onChangeInput={(newValue) => {
-                                    const newDate = format(
-                                      newValue,
-                                      "dd/MM/yyyy"
-                                    );
-                                    dateChange(newDate, row.id, "endDate");
-                                  }}
-                                  validate={" *"}
-                                  // ... other props
-                                />
-                              )}
-                            />
-                          )} */}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -824,10 +557,10 @@ if (checkStartDate) {
                           textAlign: "left",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
-                          fontSize : "99%"
+                          fontSize: "99%",
                         }}
                       >
-                        <strong> {isTotal} </strong>
+                        <strong> {isTotal === "Total Inventory" || isTotal == "Total Popup"?"Total":isTotal} </strong>
                       </TableCell>
                     );
                   } else if (isTotal === "Total Capacity" && index === 3) {
@@ -838,7 +571,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
-                    fontSize : "99%"
+                          fontSize: "99%",
                         }}
                       >
                         <strong>
@@ -859,7 +592,7 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
-                    fontSize : "99%"
+                          fontSize: "99%",
                         }}
                       >
                         <strong>
@@ -878,7 +611,6 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
-                    
                         }}
                       >
                         <strong>
@@ -897,7 +629,6 @@ if (checkStartDate) {
                           textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
-                    
                         }}
                       >
                         <strong>
@@ -905,6 +636,42 @@ if (checkStartDate) {
                           {totalValue
                             ? numeral(totalValue).format("0,0.00")
                             : ""}
+                        </strong>
+                      </TableCell>
+                    );
+                  } else if (isTotal === "Total Inventory" && index === 5){
+                    return (
+                      <TableCell
+                        key={`footer-total-capacity`}
+                        style={{
+                          textAlign: "center",
+                          backgroundColor: "#F3F6F9",
+                          padding: "1rem",
+                          fontSize: "12px"
+                        }}
+                      >
+                        <strong>
+                          {" "}
+                          {totalremainginven
+                            ? convertData(totalremainginven)
+                            : ""}
+                        </strong>
+                      </TableCell>
+                    );
+                  } else if(isTotal === "Total Popup" && index === 1){
+                    return (
+                      <TableCell
+                        key={`footer-total-capacity`}
+                        style={{
+                          textAlign: "left",
+                          backgroundColor: "#F3F6F9",
+                          padding: "1rem",
+                          fontSize: "12px"
+                        }}
+                      >
+                        <strong>
+                          {" "}
+                          {totalPopup}
                         </strong>
                       </TableCell>
                     );
@@ -916,7 +683,6 @@ if (checkStartDate) {
                           textAlign: "center",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
-                    
                         }}
                       />
                     );
@@ -928,9 +694,9 @@ if (checkStartDate) {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25, 100]}
+        rowsPerPageOptions={[5, 10, 20, 25, 100]}
         component="div"
-        count={filteredData?.length}
+        count={sortedData?.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
@@ -944,4 +710,4 @@ if (checkStartDate) {
   );
 };
 
-export default DataTable;
+export default DataTableInventory;

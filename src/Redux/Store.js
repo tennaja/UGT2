@@ -13,6 +13,7 @@ import { TransferReducer } from "./EAC/Transfer/TransferReducer";
 import { RedemptionReducer } from "./EAC/Redemption/RedemptionReducer";
 import { SettlementReducer } from "./Settlement/SettlementReducer";
 import { EACReducer } from "./EAC/EACReducer";
+import {InventoryReducer} from "./Inventory/InventoryReducer"
 
 const rootreducer = combineReducers({
   book: BookReducer,
@@ -27,6 +28,7 @@ const rootreducer = combineReducers({
   redeem: RedemptionReducer,
   settlement: SettlementReducer,
   eac: EACReducer,
+  inventory:InventoryReducer
 });
 
 // Determine if we're in 'qas' or 'production' mode

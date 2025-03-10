@@ -184,3 +184,14 @@ export const LOAD_DATA_INFO_REVISION = `${DOMAIN_URL}/ugt/v1/portfolio-view-sett
 export const LOAD_DATA_DETAIL_REVISION = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/GetLoadDataInputSubscriber`;
 export const LOAD_DATA_DETAIL_REVISION_FILE = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/GetLoadDataInputFileList`;
 export const LOAD_DATA_SAVE = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/CreateOrUpdateLoadDataInputFile`;
+
+//Inventory
+export const INVENTORY_LIST = `${DOMAIN_URL}/ugt/v1/inventory-management/portfolio-list`;
+export const INVENTORY_INFO_FILTER = `${DOMAIN_URL}/ugt/v1/inventory-management/inventoryInfoDateList`;
+export const INVENTORY_INFO_CARD = `${DOMAIN_URL}/ugt/v1/inventory-management/CardInventoryinfo`;
+export const INVENTORY_INFO_GRAPH = `${DOMAIN_URL}/ugt/v1/inventory-management/graphInventoryInfo`;
+export const INVENTORY_INFO_EXCEL = `${DOMAIN_URL}/ugt/v1/inventory-management/ExportExcelInventoryinfo`;
+export const INVENTORY_DETAIL_FILTER = `${DOMAIN_URL}/ugt/v1/inventory-management/inventoryByDeviceDateList`;
+export const INVENTORY_DETAIL_DATA = `${DOMAIN_URL}/ugt/v1/inventory-management/inventoryByDevice`;
+export const INVENTORY_DETAIL_DATA_POPUP = `${DOMAIN_URL}/ugt/v1/inventory-management/inventoryUsagePopUp`;
+export const INVENTORY_DETAIL_EXCEL = `${DOMAIN_URL}/ugt/v1/inventory-management/ExportExcel`;

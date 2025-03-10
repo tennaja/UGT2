@@ -62,6 +62,9 @@ import GenerateDataDetail from "./Component/Settlement/GenerateDataDetail";
 import LoadDatainfo from "./Component/Settlement/LoadDataInfo";
 import LoadDataDetail from "./Component/Settlement/LoadDataDetail";
 
+import InventoryList from "./Component/Inventory/InventoryList";
+import InventoryDetail from "./Component/Inventory/InventoryDetail";
+
 function App() {
   return (
     <Provider store={Store}>
@@ -209,30 +212,45 @@ function App() {
                   element={<SettlementListing></SettlementListing>}
                 />
 
-                <Route 
-                path={webURL.SETTLEMENT_GENERATE_DATA}
-                element={<GenerateDataList></GenerateDataList>}
+                <Route
+                  path={webURL.SETTLEMENT_GENERATE_DATA}
+                  element={<GenerateDataList></GenerateDataList>}
                 />
 
                 <Route
-                path={webURL.SETTLEMENT_LOAD_DATA}
-                element={<LoadDataList></LoadDataList>}/>
+                  path={webURL.SETTLEMENT_LOAD_DATA}
+                  element={<LoadDataList></LoadDataList>}
+                />
 
                 <Route
-                path={webURL.SETTLEMENT_GENERATE_DATA_INFO}
-                element={<GenerateDataInfo></GenerateDataInfo>}/>
+                  path={webURL.SETTLEMENT_GENERATE_DATA_INFO}
+                  element={<GenerateDataInfo></GenerateDataInfo>}
+                />
 
                 <Route
-                path={webURL.SETTLEMENT_GENERATE_DATA_DETAIL}
-                element={<GenerateDataDetail></GenerateDataDetail>}/>
+                  path={webURL.SETTLEMENT_GENERATE_DATA_DETAIL}
+                  element={<GenerateDataDetail></GenerateDataDetail>}
+                />
 
                 <Route
-                path={webURL.SETTLEMENT_LOAD_DATA_INFO}
-                element={<LoadDatainfo></LoadDatainfo>}/>
+                  path={webURL.SETTLEMENT_LOAD_DATA_INFO}
+                  element={<LoadDatainfo></LoadDatainfo>}
+                />
 
                 <Route
-                path={webURL.SETTLEMENT_LOAD_DATA_DETAIL}
-                element={<LoadDataDetail></LoadDataDetail>}/>
+                  path={webURL.SETTLEMENT_LOAD_DATA_DETAIL}
+                  element={<LoadDataDetail></LoadDataDetail>}
+                />
+
+                <Route
+                  path={webURL.INVENTORY_INFO}
+                  element={<InventoryList></InventoryList>}
+                />
+
+                <Route
+                  path={webURL.INVENTORY_DETAIL}
+                  element={<InventoryDetail></InventoryDetail>}
+                />
 
                 <Route path="/map2" element={<Map />}></Route>
               </Route>

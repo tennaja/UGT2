@@ -103,7 +103,7 @@ const Sidebar2 = ({ children }) => {
   const [submenu, setSubmenu] = useState([]);
   const [mainMenu, setMainMenu] = useState([]);
   //console.log(currentSubMenuList)
-  console.log(menuList)
+  //console.log(menuList)
   const setDefaultMenu = (userData) => {
     let userGroupID = userData?.userGroup?.id;
     let defaultMenu = null;
@@ -669,7 +669,7 @@ const Sidebar2 = ({ children }) => {
           {mainMenu?.map((menu, index) => {
             return (
               <>
-              {menu.menuId == 7?undefined:
+              
                 <div
                   onClick={() => {
                     onCLickMenuList(menu.menuId);
@@ -693,8 +693,8 @@ const Sidebar2 = ({ children }) => {
                     {menu?.name ? menu?.name.toUpperCase() : "-"}
                   </p>
                   
-                </div>}
-                {menu.menuId == 7?undefined:<hr className="border-1 border-solid border-slate-400 my-2" />}
+                </div>
+                <hr className="border-1 border-solid border-slate-400 my-2" />
               </>
             );
           })}
@@ -716,7 +716,7 @@ const Sidebar2 = ({ children }) => {
       <div className="flex-1">
         {/* //Navbar Desktop View// */}
         <div className="text-2xl 	">
-          <Navbar></Navbar>
+          <Navbar menuId={selectedMenuID}></Navbar>
         </div>
 
         <div className="flex   bg-[#F3F6F9]">

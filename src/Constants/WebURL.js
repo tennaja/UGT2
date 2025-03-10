@@ -53,4 +53,5 @@ export const SETTLEMENT_DATA = '/settlement/datasettlement'
 
 //Inventory Link
 export const INVENTORY_INFO = "/inventory/info"
+export const INVENTORY_DETAIL = "/inventory/detail"
 
