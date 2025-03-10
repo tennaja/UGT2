@@ -161,7 +161,7 @@ const ItemIssue = ({
   const [isSign, setIsSign] = useState(true);
   const [actual, setActual] = useState("Actual");
 
-  const [note, setNote] = useState(issueRequest?.note);
+  const [note, setNote] = useState(issueRequest?.note ?? "");
   const [totalProduction, setTotalProduction] = useState(0);
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
   const [fileSF04Preview, setFileSF04Preview] = useState({});
@@ -554,7 +554,7 @@ const ItemIssue = ({
     if (issueRequest?.settlementDetail) {
       prepareFileUploadData();
       setFileGeneration(issueRequest.generationFileList);
-      setNote(issueRequest?.note);
+      //setNote(issueRequest?.note);
     }
   }, [issueRequest]);
 

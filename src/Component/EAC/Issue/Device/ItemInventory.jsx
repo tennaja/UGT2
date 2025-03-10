@@ -146,7 +146,7 @@ const ItemInventory = ({
   const [showModalComplete, setShowModalComplete] = useState(false);
   const [showModalFail, setShowModalFail] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
-  const [note, setNote] = useState(inventoryTransaction?.note);
+  const [note, setNote] = useState(inventoryTransaction?.note ?? "");
   const [totalProduction, setTotalProduction] = useState(0);
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
 
@@ -831,7 +831,7 @@ const ItemInventory = ({
       files: fileUidArray,
       createBy: userData.firstName + " " + userData.lastName,
     };
-    getIssueTransaction();
+    //getIssueTransaction();
     console.log("paramsDraft", paramsDraft);
     // showSwal();
     //showLoading();
