@@ -866,7 +866,7 @@ const ItemIssue = ({
 
       modalSignAndSubmitSuccess.open();
       getIssueTransaction();
-      hideLoading();
+      //hideLoading();
     } else {
       try {
         const res = await axios.delete(

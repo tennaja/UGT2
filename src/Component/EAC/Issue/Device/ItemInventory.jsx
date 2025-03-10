@@ -213,10 +213,19 @@ const ItemInventory = ({
       canVerify = false;
     } else {
       if (userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY) {
-        canSendIssue = true;
-        canUpload = true;
-        canVerify = false;
-      } else if (
+              if (
+                issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
+                issueRequestStatus.toLowerCase().replace(" ", "") == "returned"
+              ) {
+                canSendIssue = true;
+                canUpload = true;
+                canVerify = true;
+              } else {
+                canSendIssue = true;
+                canUpload = true;
+                canVerify = false;
+              }
+            } else if (
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
       ) {
         canSendIssue = false;
@@ -836,7 +845,7 @@ const ItemInventory = ({
       // To do.
       // 1.call api fetch data again which status will be changed to Completed
       getIssueTransaction();
-      hideLoading();
+      //hideLoading();
     } else {
       try {
         const res = await axios.delete(
