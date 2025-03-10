@@ -1376,7 +1376,10 @@ const ItemInventory = ({
                       " " +
                       splitDateTimeLog(item.createDateTime)}
                   </label>
-                  <label className="ml-1">Remark : {item.remark === null || item.remark === ""?"-":item.remark}</label>
+                  <label className="ml-1">Remark : </label>
+                  <label className="font-bold ml-1">
+                  {item.remark === null || item.remark === ""?"-":item.remark}
+                  </label>
                 </div>
               );
             })}
