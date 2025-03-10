@@ -126,11 +126,13 @@ export default function IssueInfo({ portfolioData, deviceData }) {
   };
 
   useEffect(() => {
-    if (currentUGTGroup?.id !== undefined && trackingMonth !== undefined)
+    if (currentUGTGroup?.id !== undefined && trackingMonth !== undefined){
       getIssueTransaction();
-    if(trackingMonth){
+    
       getLastedUpdateSyncStatus()
     }
+      
+    
   }, [currentUGTGroup, trackingMonth, trackingYear]);
 
   useEffect(() => {

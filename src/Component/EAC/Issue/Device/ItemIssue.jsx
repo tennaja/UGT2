@@ -161,7 +161,7 @@ const ItemIssue = ({
   const [isSign, setIsSign] = useState(true);
   const [actual, setActual] = useState("Actual");
 
-  const [note, setNote] = useState(issueRequest?.note ?? "");
+  const [note, setNote] = useState(issueRequest?.note);
   const [totalProduction, setTotalProduction] = useState(0);
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
   const [fileSF04Preview, setFileSF04Preview] = useState({});
@@ -217,13 +217,13 @@ const ItemIssue = ({
           issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
           issueRequestStatus.toLowerCase().replace(" ", "") == "returned"
         ) {
-        canSendIssue = true;
-        canUpload = true;
-        canVerify = true;}
-        else{
           canSendIssue = true;
-        canUpload = true;
-        canVerify = false;
+          canUpload = true;
+          canVerify = true;
+        } else {
+          canSendIssue = true;
+          canUpload = true;
+          canVerify = false;
         }
       } else if (
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
@@ -554,6 +554,7 @@ const ItemIssue = ({
     if (issueRequest?.settlementDetail) {
       prepareFileUploadData();
       setFileGeneration(issueRequest.generationFileList);
+      setNote(issueRequest?.note);
     }
   }, [issueRequest]);
 
@@ -574,7 +575,7 @@ const ItemIssue = ({
         name: item.fileName,
         status: "done",
         type: item.mimeType,
-        createDate:item.createDate,
+        createDate: item.createDate,
         // url: `https://api.sandbox.evident.dev/files/${item.uid}/download`, // รอเปลี่ยนเป็น API ของ Backend ที่ใช้สำหรับโหลดไฟล์
         url: `${EAC_ISSUE_REQUEST_DOWNLOAD_FILE}`,
       };
@@ -796,7 +797,7 @@ const ItemIssue = ({
       issueRequestId: issueRequestId,
       issueRequestDetailId: issueRequestDetailId,
       createBy: userData.firstName + " " + userData.lastName,
-      note:note
+      note: note,
     };
 
     const responseDraft = await verifyIssueDetail(param);
@@ -1175,8 +1176,13 @@ const ItemIssue = ({
       return "Rejected By ";
     }
   };
+
+  const handleChange = (event) => {
+    setNote(event.target.value);
+  };
   console.log(fileUploaded);
-  console.log(issueRequest?.settlementDetail)
+  console.log(issueRequest?.settlementDetail);
+  console.log(note)
   return (
     <>
       <div className="grid grid-cols-2  gap-8">
@@ -1259,143 +1265,166 @@ const ItemIssue = ({
         </div>
       </div>
 
-      {issueRequest?.settlementDetail && Object.keys(issueRequest?.settlementDetail).length !== 0?<>
-        <div className="text-right mt-4">
-          {/*<Button
+      {issueRequest?.settlementDetail &&
+      Object.keys(issueRequest?.settlementDetail).length !== 0 ? (
+        <>
+          <div className="text-right mt-4">
+            {/*<Button
           className={"border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00] mr-2"}
           onClick={ExportExcel}
         >
           <FaFileExcel className="mr-1" /> Export Excel
         </Button>*/}
-          <Button
-            className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
-            onClick={showbase}
-          >
-            <IoDocumentTextOutline className="mr-1" /> Preview SF-04
-          </Button>
-        </div>
-        <Table stickyHeader verticalSpacing="sm" className="mt-10">
-          <Table.Thead className="bg-[#F4F6F9]">
-            <Table.Tr className="text-[#071437]">
-              <Table.Th className="text-center w-48">Period</Table.Th>
-              <Table.Th className="text-center w-64 ">
-                Recipient Account (Trade Account)
-              </Table.Th>
-              <Table.Th className="text-center w-64 ">
-                Allocation Account
-              </Table.Th>
-              <Table.Th className="text-right min-w-64 max-w-full">
-                Production (MWh)
-              </Table.Th>
-              <Table.Th className="text-center w-32 ">Start Date</Table.Th>
-              <Table.Th className="text-center w-32 ">End Date</Table.Th>
-              <Table.Th className="text-center w-32 ">Status</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {issueRequest?.settlementDetail?.map((row, index) => (
-              <Table.Tr key={index} className="text-[#071437] font-semibold">
-                {index == 0 && (
-                  <Table.Td
-                    rowSpan={issueRequest?.settlementDetail.length}
-                    className="text-center align-top w-48"
-                  >
-                    {dayjs(`${issueRequest.year}-${issueRequest.month}`).format(
-                      "MMMM YYYY"
+            <Button
+              className="border-2 border-[#4D6A00] bg-[#fff] text-[#4D6A00]"
+              onClick={showbase}
+            >
+              <IoDocumentTextOutline className="mr-1" /> Preview SF-04
+            </Button>
+          </div>
+          <Table stickyHeader verticalSpacing="sm" className="mt-10">
+            <Table.Thead className="bg-[#F4F6F9]">
+              <Table.Tr className="text-[#071437]">
+                <Table.Th className="text-center w-48">Period</Table.Th>
+                <Table.Th className="text-center w-64 ">
+                  Recipient Account (Trade Account)
+                </Table.Th>
+                <Table.Th className="text-center w-64 ">
+                  Allocation Account
+                </Table.Th>
+                <Table.Th className="text-right min-w-64 max-w-full">
+                  Production (MWh)
+                </Table.Th>
+                <Table.Th className="text-center w-32 ">Start Date</Table.Th>
+                <Table.Th className="text-center w-32 ">End Date</Table.Th>
+                <Table.Th className="text-center w-32 ">Status</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {issueRequest?.settlementDetail?.map((row, index) => (
+                <Table.Tr key={index} className="text-[#071437] font-semibold">
+                  {index == 0 && (
+                    <Table.Td
+                      rowSpan={issueRequest?.settlementDetail.length}
+                      className="text-center align-top w-48"
+                    >
+                      {dayjs(
+                        `${issueRequest.year}-${issueRequest.month}`
+                      ).format("MMMM YYYY")}
+                    </Table.Td>
+                  )}
+
+                  <Table.Td className="text-center w-64 ">
+                    {issueRequest?.tradeAccountName}
+                  </Table.Td>
+                  <Table.Td className="text-center w-64 ">
+                    {row.allocationAccount}
+                  </Table.Td>
+                  <Table.Td className="text-right min-w-64 max-w-full">
+                    {numeral(numeral(row?.production).value() / 1000).format(
+                      "0,000.000000"
                     )}
                   </Table.Td>
-                )}
-
-                <Table.Td className="text-center w-64 ">
-                  {issueRequest?.tradeAccountName}
-                </Table.Td>
-                <Table.Td className="text-center w-64 ">
-                  {row.allocationAccount}
-                </Table.Td>
-                <Table.Td className="text-right min-w-64 max-w-full">
-                  {numeral(numeral(row?.production).value() / 1000).format(
-                    "0,000.000000"
+                  <Table.Td className="text-center w-32 capitalize">
+                    {dayjs(row.startDate).format("DD/MM/YYYY")}
+                  </Table.Td>
+                  <Table.Td className="text-center w-32 capitalize">
+                    {dayjs(row.endDate).format("DD/MM/YYYY")}
+                  </Table.Td>
+                  <Table.Td className="text-center w-32 ">
+                    <StatusLabelEAC
+                      status={issueRequestStatus ?? "Pending"}
+                      type="xs"
+                    />
+                  </Table.Td>
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
+            <Table.Tfoot>
+              <Table.Tr className="bg-[#F4F6F9]">
+                <Table.Th className="text-center w-48">Total</Table.Th>
+                <Table.Th className="text-center w-64"></Table.Th>
+                <Table.Th className="text-center w-64"></Table.Th>
+                <Table.Th className="text-right min-w-64 max-w-full">
+                  {numeral(numeral(totalProduction).value()).format(
+                    "0,0.000000"
                   )}
-                </Table.Td>
-                <Table.Td className="text-center w-32 capitalize">
-                  {dayjs(row.startDate).format("DD/MM/YYYY")}
-                </Table.Td>
-                <Table.Td className="text-center w-32 capitalize">
-                  {dayjs(row.endDate).format("DD/MM/YYYY")}
-                </Table.Td>
-                <Table.Td className="text-center w-32 ">
-                  <StatusLabelEAC
-                    status={issueRequestStatus ?? "Pending"}
-                    type="xs"
-                  />
-                </Table.Td>
+                </Table.Th>
+                <Table.Th className="text-center w-32"></Table.Th>
+                <Table.Th className="text-center w-32"></Table.Th>
+                <Table.Th className="text-center w-32"></Table.Th>
               </Table.Tr>
-            ))}
-          </Table.Tbody>
-          <Table.Tfoot>
-            <Table.Tr className="bg-[#F4F6F9]">
-              <Table.Th className="text-center w-48">Total</Table.Th>
-              <Table.Th className="text-center w-64"></Table.Th>
-              <Table.Th className="text-center w-64"></Table.Th>
-              <Table.Th className="text-right min-w-64 max-w-full">
-                {numeral(numeral(totalProduction).value()).format("0,0.000000")}
-              </Table.Th>
-              <Table.Th className="text-center w-32"></Table.Th>
-              <Table.Th className="text-center w-32"></Table.Th>
-              <Table.Th className="text-center w-32"></Table.Th>
-            </Table.Tr>
-          </Table.Tfoot>
-        </Table>
-        <div className="grid grid-col-3 gap-5 pt-3 ">
-          <div className="flex gap-2">
-            {canUpload && (
-              <Button
-                className={classNames({
-                  "bg-[#F5F4E9] text-[#4D6A00] px-8": canUpload,
-                })}
-                onClick={() => setOpenModalUpload(!openModalUpload)}
-              >
-                Upload Files
-              </Button>
-            )}
-            {fileUploaded.length > 0 || fileGeneration.length > 0 ? (
-              <Button
-                className="text-[#4D6A00] underline px-8"
-                onClick={() => setOpenModalUpload(!openModalUpload)}
-              >
-                {fileUploaded.length + fileGeneration.length == 1
-                  ? `${
-                      fileUploaded.length + fileGeneration.length
-                    } File Uploaded`
-                  : `${
-                      fileUploaded.length + fileGeneration.length
-                    } Files Uploaded`}
-              </Button>
-            ) : undefined}
-          </div>
-          <div className="gap-2 col-start-3 h-auto">
-            <div>
-              <div className="text-sm font-normal mb-2 text-[#91918A]">
-                Note
-              </div>
-              {canSendIssue || canVerify ? (
-                <div className="text-sm">
-                  <Textarea
-                    size="md"
-                    value={note}
-                    onChange={(event) => setNote(event.currentTarget.value)}
-                    //minRows={4}  // กำหนดจำนวนแถวเริ่มต้น
-                    //sx={{ height: 100 }}
-                    rows={4}
-                  />
-                </div>
-              ) : (
-                <div className="w-52 lg:w-96 lg:break-words text-sm font-normal">
-                  {note || "-"}
-                </div>
+            </Table.Tfoot>
+          </Table>
+          <div className="grid grid-col-3 gap-5 pt-3 ">
+            <div className="flex gap-2">
+              {canUpload && (
+                <Button
+                  className={classNames({
+                    "bg-[#F5F4E9] text-[#4D6A00] px-8": canUpload,
+                  })}
+                  onClick={() => setOpenModalUpload(!openModalUpload)}
+                >
+                  Upload Files
+                </Button>
               )}
+              {fileUploaded.length > 0 || fileGeneration.length > 0 ? (
+                <Button
+                  className="text-[#4D6A00] underline px-8"
+                  onClick={() => setOpenModalUpload(!openModalUpload)}
+                >
+                  {fileUploaded.length + fileGeneration.length == 1
+                    ? `${
+                        fileUploaded.length + fileGeneration.length
+                      } File Uploaded`
+                    : `${
+                        fileUploaded.length + fileGeneration.length
+                      } Files Uploaded`}
+                </Button>
+              ) : undefined}
             </div>
-            {/*canSendIssue && (
+            <div className="gap-2 col-start-3 h-auto">
+              <div>
+                <div className="text-sm font-normal mb-2 text-[#91918A]">
+                  Note
+                </div>
+                {canSendIssue || canVerify ? (
+                  <div className="text-sm">
+                    {/*<Textarea
+                      size="md"
+                      //value={note}
+                      defaultValue={note} // ใช้ defaultValue แทน
+                      onChange={(event) => setNote(event.currentTarget.value)}
+                      //minRows={4}  // กำหนดจำนวนแถวเริ่มต้น
+                      //sx={{ height: 100 }}
+                      rows={4}
+                    />*/}
+                    <textarea
+                      value={note}
+                      onChange={handleChange}
+                      rows={5}
+                      //cols={40}
+                      //placeholder="พิมพ์ข้อความที่นี่..."
+                      style={{
+                        width: "100%",
+                        padding: "10px",
+                        fontSize: "16px",
+                        resize:"none",
+                        border: "1px solid #C6C2C4", borderRadius: "5px",
+                        outline: "none",
+                        transition: "border-color 0.3s"
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = "dodgerblue"}
+                      onBlur={(e) => e.target.style.borderColor = "#C6C2C4"}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-52 lg:w-96 lg:break-words text-sm font-normal">
+                    {note || "-"}
+                  </div>
+                )}
+              </div>
+              {/*canSendIssue && (
             <Button
               className="bg-[#87BE33] text-white px-8"
               onClick={() => setOpenModalConfirm(!openModalConfirm)}
@@ -1403,64 +1432,65 @@ const ItemIssue = ({
               Send
             </Button>
           )*/}
-          </div>
-        </div>
-        {/*Sign and Submit Button */}
-        {canSendIssue &&
-        issueRequestStatus.toLowerCase().replace(" ", "") == "verified" ? (
-          <div className="flex justify-between mt-4">
-            <div>
-              <Button
-                className="bg-[#EF4835] text-white px-8 w-[150px]"
-                onClick={() => handleOpenModalReturn()}
-              >
-                Return
-              </Button>
             </div>
-            <div>
+          </div>
+          {/*Sign and Submit Button */}
+          {canSendIssue &&
+          issueRequestStatus.toLowerCase().replace(" ", "") == "verified" ? (
+            <div className="flex justify-between mt-4">
+              <div>
+                <Button
+                  className="bg-[#EF4835] text-white px-8 w-[150px]"
+                  onClick={() => handleOpenModalReturn()}
+                >
+                  Return
+                </Button>
+              </div>
+              <div>
+                <Button
+                  className="bg-[#87BE33] text-white px-8"
+                  onClick={() => handleModalConfirm()}
+                >
+                  Sign & Submit
+                </Button>
+              </div>
+            </div>
+          ) : undefined}
+
+          {/*Verify Button */}
+          {(issueRequestStatus.toLowerCase().replace(" ", "") == "pending" ||
+            issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
+            issueRequestStatus.toLowerCase().replace(" ", "") == "returned") &&
+          canVerify ? (
+            <div className="mt-4 text-right">
               <Button
                 className="bg-[#87BE33] text-white px-8"
-                onClick={() => handleModalConfirm()}
+                onClick={() => handleOpenModalVerify()}
               >
-                Sign & Submit
+                Verify
               </Button>
             </div>
-          </div>
-        ) : undefined}
+          ) : undefined}
 
-        {/*Verify Button */}
-        {(issueRequestStatus.toLowerCase().replace(" ", "") == "pending" ||
-          issueRequestStatus.toLowerCase().replace(" ", "") == "rejected" ||
-          issueRequestStatus.toLowerCase().replace(" ", "") == "returned") &&
-        canVerify ? (
-          <div className="mt-4 text-right">
-            <Button
-              className="bg-[#87BE33] text-white px-8"
-              onClick={() => handleOpenModalVerify()}
-            >
-              Verify
-            </Button>
-          </div>
-        ) : undefined}
-
-        {issueRequest !== null &&
-        issueRequest.issueRequestHistory.length !== 0 ? (
-          <div className="border-3 border-dotted px-[20px] py-[10px] mt-4">
-            {issueRequest.issueRequestHistory.map((item, index) => {
-              return (
-                <div className="text-right w-full text-sm" key={index}>
-                  <label>{getLogType(item.action)} </label>
-                  <label className="font-bold ml-1">
-                    {item.createBy +
-                      " " +
-                      splitDateTimeLog(item.createDateTime)}
-                  </label>
-                </div>
-              );
-            })}
-          </div>
-        ) : undefined}
-      </>:undefined}
+          {issueRequest !== null &&
+          issueRequest.issueRequestHistory.length !== 0 ? (
+            <div className="border-3 border-dotted px-[20px] py-[10px] mt-4">
+              {issueRequest.issueRequestHistory.map((item, index) => {
+                return (
+                  <div className="text-right w-full text-sm" key={index}>
+                    <label>{getLogType(item.action)} </label>
+                    <label className="font-bold ml-1">
+                      {item.createBy +
+                        " " +
+                        splitDateTimeLog(item.createDateTime)}
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          ) : undefined}
+        </>
+      ) : undefined}
 
       <Modal
         opened={openModalConfirm}
@@ -1602,15 +1632,13 @@ const ItemIssue = ({
                       height={35}
                     />
                     <div>
-                      <span className="text-sm font-normal">
-                      {file.name}
-                    </span>
-                    <div>
-                    <label className="text-gray-500 text-xs">{file.createDate}</label>
+                      <span className="text-sm font-normal">{file.name}</span>
+                      <div>
+                        <label className="text-gray-500 text-xs">
+                          {file.createDate}
+                        </label>
+                      </div>
                     </div>
-                    </div>
-                    
-                    
                   </div>
                   <div>
                     {/* ปุ่ม Download */}
@@ -1694,12 +1722,12 @@ const ItemIssue = ({
                       height={35}
                     />
                     <div>
-                      <span className="text-sm font-normal">
-                      {file.name}
-                    </span>
-                    <div>
-                    <label className="text-gray-500 text-xs">{file.createDate}</label>
-                    </div>
+                      <span className="text-sm font-normal">{file.name}</span>
+                      <div>
+                        <label className="text-gray-500 text-xs">
+                          {file.createDate}
+                        </label>
+                      </div>
                     </div>
                   </div>
                   <div>

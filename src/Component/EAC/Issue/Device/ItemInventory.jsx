@@ -146,7 +146,7 @@ const ItemInventory = ({
   const [showModalComplete, setShowModalComplete] = useState(false);
   const [showModalFail, setShowModalFail] = useState(false);
   const [fileUploaded, setFileUploaded] = useState([]);
-  const [note, setNote] = useState(inventoryTransaction?.note ?? "");
+  const [note, setNote] = useState(inventoryTransaction?.note);
   const [totalProduction, setTotalProduction] = useState(0);
   const [isConfirmChecked, setIsConfirmChecked] = useState(false);
 
@@ -1157,6 +1157,9 @@ const ItemInventory = ({
     }
   };
   console.log(issueRequestStatus);
+  const handleChange = (event) => {
+    setNote(event.target.value);
+  };
   return (
     <div className="mb-4">
       {inventoryTransaction?.inventorySettlementDetail && Object.keys(inventoryTransaction?.inventorySettlementDetail).length !== 0?<>
@@ -1282,14 +1285,32 @@ const ItemInventory = ({
               </div>
               {canSendIssue || canVerify ? (
                 <div className="text-sm">
-                  <Textarea
+                  {/*<Textarea
                     size="md"
                     value={note}
                     onChange={(event) => setNote(event.currentTarget.value)}
                     //minRows={4}  // กำหนดจำนวนแถวเริ่มต้น
                     //sx={{ height: 100 }}
                     rows={4}
-                  />
+                  />*/}
+                  <textarea
+                      value={note}
+                      onChange={handleChange}
+                      rows={5}
+                      //cols={40}
+                      //placeholder="พิมพ์ข้อความที่นี่..."
+                      style={{
+                        width: "100%",
+                        padding: "10px",
+                        fontSize: "16px",
+                        resize:"none",
+                        border: "1px solid #C6C2C4", borderRadius: "5px",
+                        outline: "none",
+                        transition: "border-color 0.3s"
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = "dodgerblue"}
+                      onBlur={(e) => e.target.style.borderColor = "#C6C2C4"}
+                    />
                 </div>
               ) : (
                 <div className="w-96 lg:break-words text-sm font-normal">
