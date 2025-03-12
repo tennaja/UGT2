@@ -63,8 +63,8 @@ const InventoryDetail = (props) => {
   );
 
   const [serchQuery, setSerchQuery] = useState("");
-  const [selectedStart, setSelectedStart] = useState(dayjs());
-  const [selectedEnd, setSelectedEnd] = useState(dayjs());
+  const [selectedStart, setSelectedStart] = useState();
+  const [selectedEnd, setSelectedEnd] = useState();
 
   const [fileterUGT, setSelectUGT] = useState(0);
   const [filterDevice, setFilterDevice] = useState([]);
@@ -80,6 +80,7 @@ const InventoryDetail = (props) => {
   const [maxDate, setMaxDate] = useState();
   const [isGenerate, setIsGenerate] = useState(false);
   const contentRef = useRef();
+  const [isSelectDevice,setIsSelectDevice] = useState(false)
   console.log(minDate, maxDate, selectedStart, selectedEnd);
   console.log(inventoryFilter);
 
@@ -128,29 +129,37 @@ const InventoryDetail = (props) => {
       setMinDate(dayjs(minDateTemp));
       setSelectedStart(dayjs(minDateTemp));
       setSelectedEnd(dayjs(maxDateTemp));
-      fetchDetailData(true);
+      //fetchDetailData(true);
     }
   }, [inventoryFilter]);
+console.log(inventoryFilter && Object.keys(inventoryFilter).length !== 0)
 
   useEffect(() => {
     if (inventoryFilter && Object.keys(inventoryFilter).length !== 0) {
+        console.log("Fetch not in Device")
       fetchDetailData(true);
     }
-  }, [selected, selectedStart, selectedEnd, filterStatus]);
+  }, [selected, selectedStart, selectedEnd, ]);
 
   useEffect(() => {
     if (inventoryDetailDropdown) {
       setFilterPortList(inventoryDetailDropdown);
+      setIsSelectDevice(false)
     }
   }, [inventoryDetailDropdown]);
 
   useEffect(() => {
     if (inventoryFilter && Object.keys(inventoryFilter).length !== 0) {
-      fetchDetailData(false);
+        console.log("Fetch in Device")
+        if(isSelectDevice == true){
+            fetchDetailData(false);
+        }
     }
-  }, [filterDevice]);
+  }, [filterDevice,filterStatus]);
 
   const fetchDetailData = (isFetchDrop) => {
+    if(selectedStart && selectedEnd){
+        console.log("Fetch in")
     if (selected == "all") {
       let deviceList = [];
       for (let i = 0; i < filterDevice.length; i++) {
@@ -196,8 +205,10 @@ const InventoryDetail = (props) => {
         setFilterDevice([]);
         dispatch(getInventoryDetailDropdown(param));
       }
+      setIsSelectDevice(false)
     } else if (selected == "month") {
       console.log(filterStatus);
+      console.log(selectedStart,selectedEnd)
       const startDate =
         String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
         "/" +
@@ -250,10 +261,12 @@ const InventoryDetail = (props) => {
         setFilterDevice([]);
         dispatch(getInventoryDetailDropdown(param));
       }
+      setIsSelectDevice(false)
     }
+}
   };
 
-  console.log(selectedStart.$d.getMonth());
+  //console.log(selectedStart.$d.getMonth());
 
   const handleChangeOverviewUnit = (unit) => {
     console.log("Handle unit", unit);
@@ -526,10 +539,12 @@ const InventoryDetail = (props) => {
 
   const handleChangeAssignFilter = (value) => {
     setFilterDevice(value);
+    setIsSelectDevice(true)
   };
 
   const handleChangeStatusFilter = (value) => {
     setFilterStatus(value);
+    setIsSelectDevice(true)
   };
   const handleChangeToggle = (value) => {
     setSelected(value);

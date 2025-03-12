@@ -94,8 +94,8 @@ const InventoryList = (props) => {
 
   //console.log(inventoryInfoGraph);
   const [serchQuery, setSerchQuery] = useState("");
-  const [selectedStart, setSelectedStart] = useState(dayjs());
-  const [selectedEnd, setSelectedEnd] = useState(dayjs());
+  const [selectedStart, setSelectedStart] = useState();
+  const [selectedEnd, setSelectedEnd] = useState();
 
   const [fileterUGT, setSelectUGT] = useState(0);
   const [filterPort, setFilterPort] = useState([]);
@@ -111,6 +111,7 @@ const InventoryList = (props) => {
   const [zoomDomain, setZoomDomain] = useState([0, tempChart.length - 1]);
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
+  const [isSelectPort,setIsSelectPort] = useState(false)
   const contentRef = useRef();
 
   useEffect(() => {
@@ -189,9 +190,9 @@ const InventoryList = (props) => {
           "/" +
           selectedEnd.$y;
         let port = [];
-        for (let i = 0; i < filterPort.length; i++) {
+        /*for (let i = 0; i < filterPort.length; i++) {
           port.push(filterPort[i].id);
-        }
+        }*/
 
         let utilityId = 0;
         if (
@@ -239,21 +240,23 @@ const InventoryList = (props) => {
         dispatch(getInventoryList(param));
       }
     }
-  }, [selectedStart, selectedEnd, fileterUGT, userData]);
+  }, [selectedStart, selectedEnd, fileterUGT]);
 
   useEffect(() => {
-    handleChangeAssignFilter([], "TYPE");
+    setFilterPort([]);
     setFilterPortList(inventoryDropdownList);
+    setIsSelectPort(false)
   }, [inventoryDropdownList]);
 
   useEffect(() => {
     console.log("Fetch in port");
-    if (filterPort) {
+    if (filterPort && isSelectPort == true) {
       console.log("Fetch");
       if (
         inventoryInfoFilter &&
         Object.keys(inventoryInfoFilter).length !== 0
       ) {
+        if(userData?.userGroup?.id){
       const startDate =
         String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
         "/" +
@@ -310,6 +313,8 @@ const InventoryList = (props) => {
       //dispatch(getInventoryInfoGraph(param));
       dispatch(getInventoryInfoCardAndGraph(param))
       dispatch(getInventoryList(param));
+      setIsSelectPort(false)
+    }
     }
 }
   }, [filterPort]);
@@ -1611,7 +1616,7 @@ const InventoryList = (props) => {
   };
 
   const convertData = (value) => {
-      console.log(overviewDataUnit,typeof value,"Value Convert",value)
+      //console.log(overviewDataUnit,typeof value,"Value Convert",value)
       let decFixed = 3;
       if (overviewDataUnit == "kWh") {
         decFixed = 3;
@@ -1625,7 +1630,7 @@ const InventoryList = (props) => {
   
   // ตรวจสอบว่า value เป็นตัวเลขในรูปแบบวิทยาศาสตร์ (เลขทศนิยมที่เล็กมาก)
   const isScientific = value.toString().includes('e');
-  console.log(isNumber,isScientific)
+  //console.log(isNumber,isScientific)
   if(isNumber == true && isScientific == false){
       if (value) {
         //console.log("Set Value")
@@ -1669,6 +1674,7 @@ const InventoryList = (props) => {
   };
   const handleChangeAssignFilter = (value) => {
     setFilterPort(value);
+    setIsSelectPort(true)
   };
 
   const calTopercent = (value, total) => {

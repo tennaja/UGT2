@@ -4,7 +4,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextField from "@mui/material/TextField";
 import dayjs from "dayjs";
 
-const MonthPicker = ({mindate = dayjs("2023/1/1"),maxdate = dayjs("2025/12/31"),value,setValue,isDisable = false}) => {
+const MonthPicker = ({mindate = dayjs("2023/1/1"),maxdate = dayjs("2025/12/31"),value = dayjs(),setValue,isDisable = false}) => {
     //const [value, setValue] = useState(dayjs());
   //console.log(value)
   //console.log(mindate,maxdate)
