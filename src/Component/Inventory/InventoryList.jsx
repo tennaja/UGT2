@@ -2184,10 +2184,10 @@ const InventoryList = (props) => {
                               }}
                             />
                             <Tooltip content={<CustomTooltip />} />
-
+                            
                             <Bar
                               dataKey="totalInventory"
-                              stackId="a"
+                              stackId="1"
                               barSize={25}
                               fill={
                                 fileterUGT === 0
@@ -2197,16 +2197,15 @@ const InventoryList = (props) => {
                                   : "#FA6B6E"
                               }
                             />
-                            
                             <Bar
                               dataKey="inventoryUsage"
-                              stackId="a"
+                              stackId="2"
                               barSize={25}
                               fill="#F7A042"
                             />
                             <Bar
                               dataKey="expiredInventory"
-                              stackId="a"
+                              stackId="3"
                               barSize={25}
                               fill="#979797"
                             />

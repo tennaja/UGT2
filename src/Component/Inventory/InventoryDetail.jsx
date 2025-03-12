@@ -75,7 +75,7 @@ const InventoryDetail = (props) => {
   const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[0].convertValue);
 
   const [filterPortList, setFilterPortList] = useState([]);
-  const [selected, setSelected] = useState("all");
+  const [selected, setSelected] = useState("month");
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
   const [isGenerate, setIsGenerate] = useState(false);

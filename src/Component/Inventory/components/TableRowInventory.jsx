@@ -10,6 +10,11 @@ import StatusTag from "./StatusTag";
 import { getInventoryDetailPopup } from "../../../Redux/Inventory/InventoryAction";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "../../Control/Table/DataTable";
+import {
+  CONVERT_UNIT,
+  USER_GROUP_ID,
+  MONTH_LIST,
+} from "../../../Constants/Constants";
 
 const RowInventory = (props) => {
   const dispatch = useDispatch();
@@ -29,6 +34,7 @@ const RowInventory = (props) => {
   const dataPopup = useSelector(
     (state) => state.inventory.inventoryDetailPopup
   );
+  const userData = useSelector((state) => state.login.userobj);
   const [open, setOpen] = useState(false);
   const [showModalComplete, setShowModalComplete] = useState(false);
   const [periodTemp, setPeriodTemp] = useState();
@@ -131,7 +137,25 @@ const RowInventory = (props) => {
   };
 
   const handleModal = (year,month) => {
-    
+    let utilityId = 0;
+          if (
+            userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+            userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+          ) {
+            utilityId = 1;
+          } else if (
+            userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+            userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+          ) {
+            utilityId = 2;
+          } else if (
+            userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+            userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+          ) {
+            utilityId = 3;
+          } else {
+            utilityId = 0;
+          }
     dispatch(
       getInventoryDetailPopup(
         portId,
