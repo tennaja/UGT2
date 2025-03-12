@@ -366,9 +366,9 @@ export const _getInventoryDetailPopup = (data) => {
     }
 }
 
-export const getInventoryDetailPopup = (portfolioId, deviceId, year,month,unit,convertUnit) => {
+export const getInventoryDetailPopup = (portfolioId, deviceId, year,month,unit,convertUnit,roleId,utilityId) => {
 
-    const URL = `${INVENTORY_DETAIL_DATA_POPUP}?PortfolioId=${portfolioId}&DeviceId=${deviceId}&Year=${year}&Month=${month}&UnitPrefix=${unit}&Unit=${convertUnit}`
+    const URL = `${INVENTORY_DETAIL_DATA_POPUP}?PortfolioId=${portfolioId}&DeviceId=${deviceId}&Year=${year}&Month=${month}&UnitPrefix=${unit}&Unit=${convertUnit}&RoleId=${roleId}&UtilityId=${utilityId}`
     //console.log('URL', URL)
 
     return async (dispatch) => {

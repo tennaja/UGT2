@@ -400,7 +400,7 @@ const RowInventory = (props) => {
   ];
 
   return (
-    <>
+    <div style={{pageBreakAfter:"always"}}>
       <TableRow
         className="bg-[#F4F6F9] cursor-pointer"
         onClick={() => {
@@ -497,7 +497,7 @@ const RowInventory = (props) => {
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
 
