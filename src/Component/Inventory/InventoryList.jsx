@@ -39,6 +39,7 @@ import {
   downloadExcelInventoryInfo,
   getInventoryInfoCard,
   getInventoryInfoGraph,
+  getInventoryInfoCardAndGraph
 } from "../../Redux/Inventory/InventoryAction";
 
 // Chart import
@@ -231,10 +232,10 @@ const InventoryList = (props) => {
           utilityId: utilityId,
         };
 
-        dispatch(getInventoryInfoCard(paramCard));
-
+        //dispatch(getInventoryInfoCard(paramCard));
+        dispatch(getInventoryInfoCardAndGraph(param))
         dispatch(getInventoryDropdownList(param));
-        dispatch(getInventoryInfoGraph(param));
+        //dispatch(getInventoryInfoGraph(param));
         dispatch(getInventoryList(param));
       }
     }
@@ -305,8 +306,9 @@ const InventoryList = (props) => {
         roleId: userData?.userGroup?.id,
         utilityId: utilityId,
       };
-      dispatch(getInventoryInfoCard(paramCard));
-      dispatch(getInventoryInfoGraph(param));
+      //dispatch(getInventoryInfoCard(paramCard));
+      //dispatch(getInventoryInfoGraph(param));
+      dispatch(getInventoryInfoCardAndGraph(param))
       dispatch(getInventoryList(param));
     }
 }
@@ -1578,19 +1580,15 @@ const InventoryList = (props) => {
           <div className="pb-2">
             <div className="text-sm font-bold">{_period}</div>
             <div className="text-xs">
-              Period:{" "}
-              <label className="text-[#4D6A00] font-semibold">{` ${_period}`}</label>
-            </div>
-            <div className="text-xs">
-              Remaining Inventory:{" "}
-              <label className="text-[#4D6A00] font-semibold">{` ${
-                _remainInven + " " + overviewDataUnit
-              }`}</label>
-            </div>
-            <div className="text-xs">
               Total Inventory:{" "}
               <label className="text-[#4D6A00] font-semibold">{` ${
                 _totalInven + " " + overviewDataUnit
+              }`}</label>
+            </div>
+            <div className="text-xs">
+              Inventory Usage:{" "}
+              <label className="text-[#4D6A00] font-semibold">{` ${
+                _inventoryUsage + " " + overviewDataUnit
               }`}</label>
             </div>
             <div className="text-xs">
@@ -1600,9 +1598,9 @@ const InventoryList = (props) => {
               }`}</label>
             </div>
             <div className="text-xs">
-              Inventory Usage:{" "}
+              Remaining Inventory:{" "}
               <label className="text-[#4D6A00] font-semibold">{` ${
-                _inventoryUsage + " " + overviewDataUnit
+                _remainInven + " " + overviewDataUnit
               }`}</label>
             </div>
           </div>

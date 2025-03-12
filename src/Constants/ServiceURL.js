@@ -195,3 +195,4 @@ export const INVENTORY_DETAIL_FILTER = `${DOMAIN_URL}/ugt/v1/inventory-managemen
 export const INVENTORY_DETAIL_DATA = `${DOMAIN_URL}/ugt/v1/inventory-management/inventoryByDevice`;
 export const INVENTORY_DETAIL_DATA_POPUP = `${DOMAIN_URL}/ugt/v1/inventory-management/inventoryUsagePopUp`;
 export const INVENTORY_DETAIL_EXCEL = `${DOMAIN_URL}/ugt/v1/inventory-management/ExportExcel`;
+export const INVEMTORY_CARD_GRAPH_INFO = `${DOMAIN_URL}/ugt/v1/inventory-management/graphAndCardInventoryinfo`;

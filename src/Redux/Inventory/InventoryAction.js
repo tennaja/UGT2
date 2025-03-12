@@ -9,7 +9,8 @@ import {
     INVENTORY_INFO_FILTER,
     INVENTORY_INFO_EXCEL,
     INVENTORY_INFO_CARD,
-    INVENTORY_INFO_GRAPH
+    INVENTORY_INFO_GRAPH,
+    INVEMTORY_CARD_GRAPH_INFO
 } from '../../Constants/ServiceURL'
 
 import {
@@ -44,22 +45,7 @@ export const _getInventoryList = (data) => {
   };
 
 export const getInventoryList = (data, callback) => {
-    /*Swal.fire({
-        title: 'Please Wait...',
-        html: `กำลังโหลด...`,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        timerProgressBar: true,
-        backdrop: `
-    rgba(0,0,0,0.4) !important
-  `,
-        didOpen: () => {
-            Swal.showLoading();
-            // ✅ ปรับ z-index ให้ Swal อยู่หน้าสุด
-    document.querySelector(".swal2-container").style.zIndex = "9999";
-    document.querySelector(".swal2-popup").style.zIndex = "10000";
-        },
-    })*/
+    
     const param = data;
     const URL = INVENTORY_LIST;
     return async (dispatch) => {
@@ -84,9 +70,7 @@ export const getInventoryList = (data, callback) => {
           callback && callback(error);
         }
       ).finally(() => {
-        /*setTimeout(() => {
-            Swal.close()
-        }, 300);*/
+        
     });;
     };
 };
@@ -150,6 +134,58 @@ export const getInventoryInfoCard = (data, callback) => {
             //console.log("Create Success")
             //console.log(response?.data)
             dispatch(_getInventoryInfoCard(response?.data));
+          } else {
+            //console.log("Create not success")
+            //dispatch(setOpenFailModal());
+            dispatch(failRequest(error.message));
+          }
+          callback && callback(response?.status);
+        },
+        (error) => {
+          //console.log("Create Error")
+          //dispatch(setOpenFailModal());
+          dispatch(failRequest(error.message));
+          callback && callback(error);
+        }
+      ).catch((error) => {
+        dispatch(failRequest(error.message))
+    }).finally(() => {
+        setTimeout(() => {
+            Swal.close()
+        }, 300);
+    });;
+    };
+};
+
+//Get Card and Graph info
+export const getInventoryInfoCardAndGraph = (data, callback) => {
+    const param = data;
+    const URL = INVEMTORY_CARD_GRAPH_INFO;
+    Swal.fire({
+        title: 'Please Wait...',
+        html: `กำลังโหลด...`,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        timerProgressBar: true,
+        backdrop: `
+    rgba(0,0,0,0.4) !important
+  `,
+        didOpen: () => {
+            Swal.showLoading();
+            // ✅ ปรับ z-index ให้ Swal อยู่หน้าสุด
+    document.querySelector(".swal2-container").style.zIndex = "9999";
+    document.querySelector(".swal2-popup").style.zIndex = "10000";
+        },
+    })
+    return async (dispatch) => {
+      await axios.post(URL, param).then(
+        (response) => {
+          //console.log("Response Create Statue",response?.status)
+          if (response?.status == 200) {
+            //console.log("Create Success")
+            //console.log(response?.data)
+            dispatch(_getInventoryInfoCard(response?.data?.inventoryInfoCard));
+            dispatch(_getInventoryInfoGraph(response?.data?.inventoryInfoGraphList))
           } else {
             //console.log("Create not success")
             //dispatch(setOpenFailModal());

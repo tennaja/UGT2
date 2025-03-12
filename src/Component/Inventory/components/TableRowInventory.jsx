@@ -248,7 +248,7 @@ if(isNumber == true && isScientific == false){
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
         >
-          {row.generation === "-" ? "-" : renderValue(Number(row.generation))}
+          {row.generation <= 0 ? "-" : renderValue(Number(row.generation))}
         </div>
       ),
     },
@@ -265,7 +265,7 @@ if(isNumber == true && isScientific == false){
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
-            {row.totalInventory === "-"
+            {row.totalInventory <= 0
               ? "-"
               : renderValue(Number(row.totalInventory))}
           </div>
@@ -289,7 +289,7 @@ if(isNumber == true && isScientific == false){
               className="underline underline-offset-2 hover:cursor-pointer"
               onClick={() => handleModal(row.year,row.month)}
             >
-              {row.inventoryUsage === "-"
+              {row.inventoryUsage <= 0
                 ? "-"
                 : renderValue(Number(row.inventoryUsage))}
             </label>
@@ -310,7 +310,7 @@ if(isNumber == true && isScientific == false){
               wordWrap: "break-word",
             }}
           >
-            {row.expiredInventory === "-"
+            {row.expiredInventory <= 0
               ? "-"
               : renderValue(Number(row.expiredInventory))}
           </div>
@@ -330,7 +330,7 @@ if(isNumber == true && isScientific == false){
               wordWrap: "break-word",
             }}
           >
-            {row.remainingInventory === "-"
+            {row.remainingInventory <= 0
               ? "-"
               : renderValue(Number(row.remainingInventory))}
           </div>
