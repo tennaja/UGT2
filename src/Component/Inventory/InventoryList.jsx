@@ -189,7 +189,7 @@ const InventoryList = (props) => {
           "/" +
           selectedEnd.$y;
         let port = [];
-        for (let i = 0; i > filterPort.length; i++) {
+        for (let i = 0; i < filterPort.length; i++) {
           port.push(filterPort[i].id);
         }
 
@@ -549,7 +549,7 @@ const InventoryList = (props) => {
         "/" +
         selectedEnd.$y;
       let port = [];
-      for (let i = 0; i > filterPort.length; i++) {
+      for (let i = 0; i < filterPort.length; i++) {
         port.push(filterPort[i].id);
       }
 
