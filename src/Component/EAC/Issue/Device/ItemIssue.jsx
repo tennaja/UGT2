@@ -223,7 +223,7 @@ const ItemIssue = ({
         } else {
           canSendIssue = true;
           canUpload = true;
-          canVerify = false;
+          canVerify = true;
         }
       } else if (
         userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
