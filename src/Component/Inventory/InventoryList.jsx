@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Card, Button } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
@@ -38,7 +38,7 @@ import {
   getInventoryInfoFilter,
   downloadExcelInventoryInfo,
   getInventoryInfoCard,
-  getInventoryInfoGraph
+  getInventoryInfoGraph,
 } from "../../Redux/Inventory/InventoryAction";
 
 // Chart import
@@ -56,7 +56,7 @@ import {
 
 import { Stack } from "@mui/material";
 import html2pdf from "html2pdf.js";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const customLegendLine = [
   { name: "Remaining Inventory", color: "#4D6A00", style: "solid" },
@@ -84,8 +84,12 @@ const InventoryList = (props) => {
   const inventoryInfoFilter = useSelector(
     (state) => state.inventory.inventoryInfoFilter
   );
-  const inventoryInfoCard = useSelector((state)=>state.inventory.inventoryInfoCard)
-  const inventoryInfoGraph = useSelector((state)=>state.inventory.inventoryInfoGraph)
+  const inventoryInfoCard = useSelector(
+    (state) => state.inventory.inventoryInfoCard
+  );
+  const inventoryInfoGraph = useSelector(
+    (state) => state.inventory.inventoryInfoGraph
+  );
 
   //console.log(inventoryInfoGraph);
   const [serchQuery, setSerchQuery] = useState("");
@@ -106,15 +110,34 @@ const InventoryList = (props) => {
   const [zoomDomain, setZoomDomain] = useState([0, tempChart.length - 1]);
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
-    const contentRef = useRef();
+  const contentRef = useRef();
 
   useEffect(() => {
-    //console.log(!inventoryInfoFilter)
-    if (inventoryInfoFilter) {
+    console.log(userData);
+    if (inventoryInfoFilter && userData?.userGroup?.id) {
       //console.log("ComeFetch")
-      dispatch(getInventoryInfoFilter());
+      let utilityId = 0;
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        utilityId = 1;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 2;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 3;
+      } else {
+        utilityId = 0;
+      }
+      dispatch(getInventoryInfoFilter(userData?.userGroup?.id, utilityId));
     }
-  }, []);
+  }, [userData]);
 
   useEffect(() => {
     if (inventoryInfoFilter && Object.keys(inventoryInfoFilter).length !== 0) {
@@ -148,43 +171,74 @@ const InventoryList = (props) => {
   }, [overviewDataUnit]);
 
   useEffect(() => {
-    if (selectedStart && selectedEnd) {
-        //console.log("Change start end UGT")
-      const startDate =
-        String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
-        "/" +
-        selectedStart.$y;
-      const endDate =
-        String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
-        "/" +
-        selectedEnd.$y;
-      let port = [];
-      for (let i = 0; i > filterPort.length; i++) {
-        port.push(filterPort[i].id);
+    console.log("Fetch not in port");
+    if (selectedStart && selectedEnd && userData?.userGroup?.id) {
+      console.log("Fetch in not in port");
+      //console.log("Change start end UGT")
+      if (
+        inventoryInfoFilter &&
+        Object.keys(inventoryInfoFilter).length !== 0
+      ) {
+        const startDate =
+          String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
+          "/" +
+          selectedStart.$y;
+        const endDate =
+          String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
+          "/" +
+          selectedEnd.$y;
+        let port = [];
+        for (let i = 0; i > filterPort.length; i++) {
+          port.push(filterPort[i].id);
+        }
+
+        let utilityId = 0;
+        if (
+          userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+        ) {
+          utilityId = 1;
+        } else if (
+          userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+        ) {
+          utilityId = 2;
+        } else if (
+          userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+        ) {
+          utilityId = 3;
+        } else {
+          utilityId = 0;
+        }
+        //console.log(port);
+        const param = {
+          startDate: startDate,
+          endDate: endDate,
+          ugtGroupId: fileterUGT,
+          portfolioId: port,
+          roleId: userData?.userGroup?.id,
+          utilityId: utilityId,
+        };
+        const paramCard = {
+          startDate: startDate,
+          endDate: endDate,
+          ugtGroupId: fileterUGT,
+          portfolioId: port,
+          unitPrefix: overviewDataUnit,
+          unit: convertUnit,
+          roleId: userData?.userGroup?.id,
+          utilityId: utilityId,
+        };
+
+        dispatch(getInventoryInfoCard(paramCard));
+
+        dispatch(getInventoryDropdownList(param));
+        dispatch(getInventoryInfoGraph(param));
+        dispatch(getInventoryList(param));
       }
-      //console.log(port);
-      const param = {
-        startDate: startDate,
-        endDate: endDate,
-        ugtGroupId: fileterUGT,
-        portfolioId: port,
-      };
-      
-      dispatch(getInventoryList(param));
-      dispatch(getInventoryDropdownList(param));
-      
-      const paramCard = {
-        startDate: startDate,
-        endDate: endDate,
-        ugtGroupId: fileterUGT,
-        portfolioId: port,
-        unitPrefix: overviewDataUnit,
-        unit: convertUnit,
-      };
-      dispatch(getInventoryInfoGraph(paramCard))
-      dispatch(getInventoryInfoCard(paramCard))
     }
-  }, [selectedStart, selectedEnd, fileterUGT]);
+  }, [selectedStart, selectedEnd, fileterUGT, userData]);
 
   useEffect(() => {
     handleChangeAssignFilter([], "TYPE");
@@ -192,8 +246,13 @@ const InventoryList = (props) => {
   }, [inventoryDropdownList]);
 
   useEffect(() => {
+    console.log("Fetch in port");
     if (filterPort) {
-      //console.log("Fetch");
+      console.log("Fetch");
+      if (
+        inventoryInfoFilter &&
+        Object.keys(inventoryInfoFilter).length !== 0
+      ) {
       const startDate =
         String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
         "/" +
@@ -207,15 +266,35 @@ const InventoryList = (props) => {
       for (let i = 0; i < filterPort.length; i++) {
         port.push(filterPort[i].id);
       }
+
+      let utilityId = 0;
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        utilityId = 1;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 2;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 3;
+      } else {
+        utilityId = 0;
+      }
       //console.log(port);
       const param = {
         startDate: startDate,
         endDate: endDate,
         ugtGroupId: fileterUGT,
         portfolioId: port,
+        roleId: userData?.userGroup?.id,
+        utilityId: utilityId,
       };
-      dispatch(getInventoryList(param));
-      
       const paramCard = {
         startDate: startDate,
         endDate: endDate,
@@ -223,19 +302,21 @@ const InventoryList = (props) => {
         portfolioId: port,
         unitPrefix: overviewDataUnit,
         unit: convertUnit,
+        roleId: userData?.userGroup?.id,
+        utilityId: utilityId,
       };
-      dispatch(getInventoryInfoGraph(param))
-      dispatch(getInventoryInfoCard(paramCard))
+      dispatch(getInventoryInfoCard(paramCard));
+      dispatch(getInventoryInfoGraph(param));
+      dispatch(getInventoryList(param));
     }
+}
   }, [filterPort]);
 
-  useEffect(()=>{
-    if(inventoryInfoGraph){
-        setTempChart(convertChartData(inventoryInfoGraph, convertUnit));
+  useEffect(() => {
+    if (inventoryInfoGraph) {
+      setTempChart(convertChartData(inventoryInfoGraph, convertUnit));
     }
-  },[inventoryInfoGraph])
-  //console.log(filterPort);
-  //console.log(tempChart);
+  }, [inventoryInfoGraph]);
 
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
@@ -452,7 +533,7 @@ const InventoryList = (props) => {
   };
 
   const handleExportPDF = () => {
-    generatePDFScreenFinal()
+    generatePDFScreenFinal();
   };
 
   const handleExportExcel = () => {
@@ -469,6 +550,26 @@ const InventoryList = (props) => {
       for (let i = 0; i > filterPort.length; i++) {
         port.push(filterPort[i].id);
       }
+
+      let utilityId = 0;
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        utilityId = 1;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 2;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 3;
+      } else {
+        utilityId = 0;
+      }
       //console.log(port);
       const param = {
         startDate: startDate,
@@ -477,6 +578,8 @@ const InventoryList = (props) => {
         unit: convertUnit,
         ugtGroupId: fileterUGT,
         portfolioId: port,
+        roleId: userData?.userGroup?.id,
+        utilityId: utilityId,
       };
       dispatch(downloadExcelInventoryInfo(param));
     }
@@ -1510,29 +1613,29 @@ const InventoryList = (props) => {
   };
 
   const convertData = (value) => {
-        //console.log("Value Convert",value)
-        let decFixed = 3;
-        if (overviewDataUnit == "kWh") {
-          decFixed = 3;
-        } else if (overviewDataUnit == "MWh") {
-          decFixed = 6;
-        } else if (overviewDataUnit == "GWh") {
-          decFixed = 6;
-        }
-    
-        if (value) {
-          //console.log("Set Value")
-          if (decFixed == 3) {
-            return numeral(value).format("0,0.000");
-          }
-          if (decFixed == 6) {
-            return numeral(value).format("0,0.000000");
-          }
-        } else {
-          //console.log("Set Zero")
-          return numeral(0).format("0,0.000");
-        }
-      };
+    //console.log("Value Convert",value)
+    let decFixed = 3;
+    if (overviewDataUnit == "kWh") {
+      decFixed = 3;
+    } else if (overviewDataUnit == "MWh") {
+      decFixed = 6;
+    } else if (overviewDataUnit == "GWh") {
+      decFixed = 6;
+    }
+
+    if (value) {
+      //console.log("Set Value")
+      if (decFixed == 3) {
+        return numeral(value).format("0,0.000");
+      }
+      if (decFixed == 6) {
+        return numeral(value).format("0,0.000000");
+      }
+    } else {
+      //console.log("Set Zero")
+      return numeral(0).format("0,0.000");
+    }
+  };
   const handleAssignedSearchChange = (e) => {
     setSerchQuery(e.target.value);
   };
@@ -1540,148 +1643,164 @@ const InventoryList = (props) => {
     setFilterPort(value);
   };
 
-  const calTopercent=(value,total)=>{
-    return numeral((Number(value)/Number(total))*100).format("0,0.00")
-  }
+  const calTopercent = (value, total) => {
+    return numeral((Number(value) / Number(total)) * 100).format("0,0.00");
+  };
 
   const generatePDFScreenFinal = () => {
-      //let oldSelect = selectTab
-      //setSelectTab("final")
-      Swal.fire({
-              title: 'Please Wait...',
-              html: `กำลังโหลด...`,
-              allowOutsideClick: false,
-              showConfirmButton: false,
-              timerProgressBar: true,
-              didOpen: () => {
-                  Swal.showLoading();
-              },
-          })
-      
-      setTimeout(() => {
-          //console.log("GEN PDF")
-        // เลือก DOM element ที่ต้องการแปลงเป็น PDF
-        const element = contentRef.current; //document.getElementById('pdf-content');
-  
-        // กำหนดตัวเลือกสำหรับ html2pdf
-        const options = {
-          margin: 0,
-          filename: "webscreen.pdf",
-          image: { type: "jpeg", quality: 50 },
-          pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-          html2canvas: { scale: 2 }, // เพิ่ม scale เพื่อเพิ่มความละเอียด
-          jsPDF: { unit: "cm", format: "a3", orientation: "portrait" },
-        };
-  
-        // สร้าง PDF ด้วย html2pdf และดึง base64 string
-        html2pdf()
-          .from(element)
-          .set(options)
-          .outputPdf("datauristring") // ดึงข้อมูลออกมาเป็น Base64 string
-          .then((pdfBase64) => {
-            console.log(pdfBase64); // แสดง base64 string ใน console
-            const base64Content = pdfBase64.split(",")[1];
-            const now = new Date();
-            const formattedDateTime = `${now
-              .getDate()
-              .toString()
-              .padStart(2, "0")}_${(now.getMonth() + 1)
-              .toString()
-              .padStart(2, "0")}_${now.getFullYear()}_${now
-              .getHours()
-              .toString()
-              .padStart(2, "0")}_${now
-              .getMinutes()
-              .toString()
-              .padStart(2, "0")}_${now.getSeconds().toString().padStart(2, "0")}`;
-            const fileName = formattedDateTime + ".pdf";
-            const fileNameNew = "Export_PDF" + formattedDateTime + ".pdf";
-            openPDFInNewTab(base64Content, "application/pdf", fileNameNew);
-            setIsGenerate(false);
-          }).catch((error) => {
-                  consol.log(error)
-              }).finally(() => {
-                  setTimeout(() => {
-                      Swal.close()
-                  }, 300);
-              });
-      }, 1200);
-    };
-    const openPDFInNewTab = (base64String, type, name) => {
-      const extension = name.split(".").pop();
-      const pdfWindow = window.open("");
-      //console.log("PDF", pdfWindow);
-      //console.log(type);
-      if (type === "application/pdf") {
-        if (pdfWindow) {
-          // Set the title of the new tab to the filename
-          //pdfWindow.document.title = name;
+    //let oldSelect = selectTab
+    //setSelectTab("final")
+    Swal.fire({
+      title: "Please Wait...",
+      html: `กำลังโหลด...`,
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    setTimeout(() => {
+      //console.log("GEN PDF")
+      // เลือก DOM element ที่ต้องการแปลงเป็น PDF
+      const element = contentRef.current; //document.getElementById('pdf-content');
+
+      // กำหนดตัวเลือกสำหรับ html2pdf
+      const options = {
+        margin: 0,
+        filename: "webscreen.pdf",
+        image: { type: "jpeg", quality: 50 },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+        html2canvas: { scale: 2 }, // เพิ่ม scale เพื่อเพิ่มความละเอียด
+        jsPDF: { unit: "cm", format: "a3", orientation: "portrait" },
+      };
+
+      // สร้าง PDF ด้วย html2pdf และดึง base64 string
+      html2pdf()
+        .from(element)
+        .set(options)
+        .outputPdf("datauristring") // ดึงข้อมูลออกมาเป็น Base64 string
+        .then((pdfBase64) => {
+          console.log(pdfBase64); // แสดง base64 string ใน console
+          const base64Content = pdfBase64.split(",")[1];
+          const now = new Date();
+          const formattedDateTime = `${now
+            .getDate()
+            .toString()
+            .padStart(2, "0")}_${(now.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}_${now.getFullYear()}_${now
+            .getHours()
+            .toString()
+            .padStart(2, "0")}_${now
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}_${now.getSeconds().toString().padStart(2, "0")}`;
+          const fileName = formattedDateTime + ".pdf";
+          const fileNameNew = "Export_PDF" + formattedDateTime + ".pdf";
+          openPDFInNewTab(base64Content, "application/pdf", fileNameNew);
+          setIsGenerate(false);
+        })
+        .catch((error) => {
+          consol.log(error);
+        })
+        .finally(() => {
           setTimeout(() => {
-            pdfWindow.document.title = name;
-          }, 100);
-  
-          // Convert Base64 to raw binary data held in a string
-          const byteCharacters = atob(base64String);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-          }
-          const byteArray = new Uint8Array(byteNumbers);
-  
-          // Create a Blob from the byte array and set the MIME type
-          const blob = new Blob([byteArray], { type: type });
-          //console.log("Blob", blob);
-  
-          // Create a URL for the Blob and set it as the iframe source
-          const blobURL = URL.createObjectURL(blob);
-          //console.log("Blob url :", blobURL);
-          let names = name;
-  
-          const iframe = pdfWindow.document.createElement("iframe");
-  
-          iframe.style.border = "none";
-          iframe.style.position = "fixed";
-          iframe.style.top = "0";
-          iframe.style.left = "0";
-          iframe.style.bottom = "0";
-          iframe.style.right = "0";
-          iframe.style.width = "100vw";
-          iframe.style.height = "100vh";
-  
-          // Use Blob URL as the iframe source
-          iframe.src = blobURL;
-  
-          // Remove any margin and scrollbars
-          pdfWindow.document.body.style.margin = "0";
-          pdfWindow.document.body.style.overflow = "hidden";
-  
-          // Append the iframe to the new window's body
-          pdfWindow.document.body.appendChild(iframe);
-  
-          // Optionally, automatically trigger file download with correct name
-        } else {
-          alert("Unable to open new tab. Please allow popups for this website.");
+            Swal.close();
+          }, 300);
+        });
+    }, 1200);
+  };
+  const openPDFInNewTab = (base64String, type, name) => {
+    const extension = name.split(".").pop();
+    const pdfWindow = window.open("");
+    //console.log("PDF", pdfWindow);
+    //console.log(type);
+    if (type === "application/pdf") {
+      if (pdfWindow) {
+        // Set the title of the new tab to the filename
+        //pdfWindow.document.title = name;
+        setTimeout(() => {
+          pdfWindow.document.title = name;
+        }, 100);
+
+        // Convert Base64 to raw binary data held in a string
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
         }
-      } else if (
-        extension === "jpeg" ||
-        extension === "jpg" ||
-        extension === "png" ||
-        extension === "svg"
-      ) {
-        if (pdfWindow) {
-          pdfWindow.document
-            .write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
+        const byteArray = new Uint8Array(byteNumbers);
+
+        // Create a Blob from the byte array and set the MIME type
+        const blob = new Blob([byteArray], { type: type });
+        //console.log("Blob", blob);
+
+        // Create a URL for the Blob and set it as the iframe source
+        const blobURL = URL.createObjectURL(blob);
+        //console.log("Blob url :", blobURL);
+        let names = name;
+
+        const iframe = pdfWindow.document.createElement("iframe");
+
+        iframe.style.border = "none";
+        iframe.style.position = "fixed";
+        iframe.style.top = "0";
+        iframe.style.left = "0";
+        iframe.style.bottom = "0";
+        iframe.style.right = "0";
+        iframe.style.width = "100vw";
+        iframe.style.height = "100vh";
+
+        // Use Blob URL as the iframe source
+        iframe.src = blobURL;
+
+        // Remove any margin and scrollbars
+        pdfWindow.document.body.style.margin = "0";
+        pdfWindow.document.body.style.overflow = "hidden";
+
+        // Append the iframe to the new window's body
+        pdfWindow.document.body.appendChild(iframe);
+
+        // Optionally, automatically trigger file download with correct name
+      } else {
+        alert("Unable to open new tab. Please allow popups for this website.");
+      }
+    } else if (
+      extension === "jpeg" ||
+      extension === "jpg" ||
+      extension === "png" ||
+      extension === "svg"
+    ) {
+      if (pdfWindow) {
+        pdfWindow.document
+          .write(`<html><body style="margin:0; display:flex; align-items:center; justify-content:center;">
                     <img src="data:image/jpeg;base64,${base64String}" style="max-width:100%; height:auto;"/>
                 </body></html>`);
-          pdfWindow.document.title = "Image Preview";
-          pdfWindow.document.close();
-        }
+        pdfWindow.document.title = "Image Preview";
+        pdfWindow.document.close();
       }
-    };
+    }
+  };
+
+  const renderValue = (value) => {
+    //console.log(value)
+    //console.log(convertUnit)
+    if (value) {
+      //console.log("Have value")
+      return convertData(value * convertUnit);
+    } else {
+      //console.log("No have Value")
+      return convertData(0);
+    }
+  };
 
   return (
-    <div ref={contentRef}
-    style={{ width: "100%", padding: "0px", background: "#f5f5f5" }}>
+    <div
+      ref={contentRef}
+      style={{ width: "100%", padding: "0px", background: "#f5f5f5" }}
+    >
       <div className="min-h-screen p-6 items-center justify-center">
         <div className="container max-w-screen-lg mx-auto">
           <div className="text-left flex flex-col gap-3">
@@ -1851,11 +1970,11 @@ const InventoryList = (props) => {
                     </div>
                     <div className="text-end">
                       <label className="text-2xl font-semibold flex justify-end">
-                        {inventoryInfoCard.totalInventory}
+                        {inventoryInfoCard.totalInventory?renderValue(inventoryInfoCard.totalInventory):renderValue(0)}
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
-                        {"kWh"}
+                        {overviewDataUnit}
                       </label>
                     </div>
                   </div>
@@ -1884,11 +2003,11 @@ const InventoryList = (props) => {
                     </div>
                     <div className="text-end">
                       <label className="text-2xl font-semibold flex justify-end">
-                        {inventoryInfoCard.inventoryUsage}
+                        {inventoryInfoCard.inventoryUsage?renderValue(inventoryInfoCard.inventoryUsage):renderValue(0)}
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
-                        kWh
+                        {overviewDataUnit}
                       </label>
                     </div>
                   </div>
@@ -1896,7 +2015,8 @@ const InventoryList = (props) => {
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
                   >
-                    {inventoryInfoCard.inventoryUsagePercentage+"% of Total Inventory"}
+                    {inventoryInfoCard.inventoryUsagePercentage +
+                      "% of Total Inventory"}
                   </div>
                 </div>
               </Card>
@@ -1922,10 +2042,10 @@ const InventoryList = (props) => {
                     </div>
                     <div className="text-end">
                       <label className="text-2xl font-semibold flex justify-end">
-                        {inventoryInfoCard.expiredInventory}
+                        {inventoryInfoCard.expiredInventory?renderValue(inventoryInfoCard.expiredInventory):renderValue(0)}
                       </label>
                       <label className="text-lg font-medium text-slate-500">
-                        kWh
+                        {overviewDataUnit}
                       </label>
                     </div>
                   </div>
@@ -1935,7 +2055,8 @@ const InventoryList = (props) => {
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
                   >
-                    {inventoryInfoCard.expiredInventoryPercentage+"% of Total Inventory"}
+                    {inventoryInfoCard.expiredInventoryPercentage +
+                      "% of Total Inventory"}
                   </div>
                 </div>
               </Card>
@@ -1961,10 +2082,10 @@ const InventoryList = (props) => {
                     </div>
                     <div className="text-end">
                       <label className="text-2xl font-semibold flex justify-end">
-                        {inventoryInfoCard.remainingInventory}
+                        {inventoryInfoCard.remainingInventory?renderValue(inventoryInfoCard.remainingInventory):renderValue(0)}
                       </label>
                       <label className="text-lg font-medium text-slate-500">
-                        kWh
+                        {overviewDataUnit}
                       </label>
                     </div>
                   </div>
@@ -1976,7 +2097,8 @@ const InventoryList = (props) => {
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
                   >
-                    {inventoryInfoCard.remainingInventoryPercentage+"% of Total Inventory"}
+                    {inventoryInfoCard.remainingInventoryPercentage +
+                      "% of Total Inventory"}
                   </div>
                 </div>
               </Card>

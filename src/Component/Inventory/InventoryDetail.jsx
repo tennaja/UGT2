@@ -32,10 +32,10 @@ import {
   getInventoryDetailFilter,
   getInventoryDetailData,
   getInventoryDetailDropdown,
-  downloadExcelInventoryDetail
+  downloadExcelInventoryDetail,
 } from "../../Redux/Inventory/InventoryAction";
 import html2pdf from "html2pdf.js";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const itemsPerPage = 5;
 const InventoryDetail = (props) => {
@@ -84,12 +84,36 @@ const InventoryDetail = (props) => {
   console.log(inventoryFilter);
 
   useEffect(() => {
-    if (!minDate && !maxDate) {
+    if (!minDate && !maxDate && userData?.userGroup?.id) {
+      let utilityId = 0;
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        utilityId = 1;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 2;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 3;
+      } else {
+        utilityId = 0;
+      }
       dispatch(
-        getInventoryDetailFilter(ugtName === "UGT-1" ? 1 : 2, portfolioId)
+        getInventoryDetailFilter(
+          ugtName === "UGT-1" ? 1 : 2,
+          portfolioId,
+          userData?.userGroup?.id,
+          utilityId
+        )
       );
     }
-  }, []);
+  }, [userData]);
 
   useEffect(() => {
     console.log(inventoryFilter);
@@ -109,7 +133,9 @@ const InventoryDetail = (props) => {
   }, [inventoryFilter]);
 
   useEffect(() => {
-    fetchDetailData(true);
+    if (inventoryFilter && Object.keys(inventoryFilter).length !== 0) {
+      fetchDetailData(true);
+    }
   }, [selected, selectedStart, selectedEnd, filterStatus]);
 
   useEffect(() => {
@@ -119,7 +145,9 @@ const InventoryDetail = (props) => {
   }, [inventoryDetailDropdown]);
 
   useEffect(() => {
-    fetchDetailData(false);
+    if (inventoryFilter && Object.keys(inventoryFilter).length !== 0) {
+      fetchDetailData(false);
+    }
   }, [filterDevice]);
 
   const fetchDetailData = (isFetchDrop) => {
@@ -132,6 +160,25 @@ const InventoryDetail = (props) => {
       for (let i = 0; i < filterStatus.length; i++) {
         statusList.push(filterStatus[i].name);
       }
+      let utilityId = 0;
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        utilityId = 1;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 2;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 3;
+      } else {
+        utilityId = 0;
+      }
       const param = {
         portfolioId: portfolioId,
         startDate: inventoryFilter.monthYearMin,
@@ -140,6 +187,8 @@ const InventoryDetail = (props) => {
         unit: convertUnit,
         deviceId: deviceList,
         status: statusList,
+        roleId: userData?.userGroup?.id,
+        utilityId: utilityId,
       };
 
       dispatch(getInventoryDetailData(param));
@@ -165,6 +214,25 @@ const InventoryDetail = (props) => {
       for (let j = 0; j < filterStatus.length; j++) {
         statusList.push(filterStatus[j].name);
       }
+      let utilityId = 0;
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        utilityId = 1;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 2;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 3;
+      } else {
+        utilityId = 0;
+      }
       const param = {
         portfolioId: portfolioId,
         startDate: startDate,
@@ -173,6 +241,8 @@ const InventoryDetail = (props) => {
         unit: convertUnit,
         deviceId: deviceList,
         status: statusList,
+        roleId: userData?.userGroup?.id,
+        utilityId: utilityId,
       };
 
       dispatch(getInventoryDetailData(param));
@@ -199,28 +269,27 @@ const InventoryDetail = (props) => {
 
   const handleExportPDF = () => {
     setIsGenerate(true);
-    setTimeout(()=>{
-generatePDFScreenFinal();
-    },1000)
-    
+    setTimeout(() => {
+      generatePDFScreenFinal();
+    }, 1000);
   };
 
   const generatePDFScreenFinal = () => {
     //let oldSelect = selectTab
     //setSelectTab("final")
     Swal.fire({
-            title: 'Please Wait...',
-            html: `กำลังโหลด...`,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading();
-            },
-        })
-    
+      title: "Please Wait...",
+      html: `กำลังโหลด...`,
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     setTimeout(() => {
-        console.log("GEN PDF")
+      console.log("GEN PDF");
       // เลือก DOM element ที่ต้องการแปลงเป็น PDF
       const element = contentRef.current; //document.getElementById('pdf-content');
 
@@ -259,13 +328,15 @@ generatePDFScreenFinal();
           const fileNameNew = "Export_PDF" + formattedDateTime + ".pdf";
           openPDFInNewTab(base64Content, "application/pdf", fileNameNew);
           setIsGenerate(false);
-        }).catch((error) => {
-                consol.log(error)
-            }).finally(() => {
-                setTimeout(() => {
-                    Swal.close()
-                }, 300);
-            });
+        })
+        .catch((error) => {
+          consol.log(error);
+        })
+        .finally(() => {
+          setTimeout(() => {
+            Swal.close();
+          }, 300);
+        });
     }, 1200);
   };
   const openPDFInNewTab = (base64String, type, name) => {
@@ -341,56 +412,97 @@ generatePDFScreenFinal();
   };
   const handleExportExcel = () => {
     if (selected == "all") {
-        let deviceList = [];
-        for (let i = 0; i < filterDevice.length; i++) {
-          deviceList.push(filterDevice[i].deviceId);
-        }
-        let statusList = [];
-        for (let i = 0; i < filterStatus.length; i++) {
-          statusList.push(filterStatus[i].name);
-        }
-        const param = {
-          portfolioId: portfolioId,
-          startDate: inventoryFilter.monthYearMin,
-          endDate: inventoryFilter.monthYearMax,
-          unitPrefix: overviewDataUnit,
-          unit: convertUnit,
-          deviceId: deviceList,
-          status: statusList,
-        };
-  
-        dispatch(downloadExcelInventoryDetail(param));
-        
-      } else if (selected == "month") {
-        console.log(filterStatus);
-        const startDate =
-          String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
-          "/" +
-          selectedStart.$y;
-        const endDate =
-          String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
-          "/" +
-          selectedEnd.$y;
-        let deviceList = [];
-        for (let i = 0; i < filterDevice.length; i++) {
-          deviceList.push(filterDevice[i].deviceId);
-        }
-        let statusList = [];
-        for (let j = 0; j < filterStatus.length; j++) {
-          statusList.push(filterStatus[j].name);
-        }
-        const param = {
-          portfolioId: portfolioId,
-          startDate: startDate,
-          endDate: endDate,
-          unitPrefix: overviewDataUnit,
-          unit: convertUnit,
-          deviceId: deviceList,
-          status: statusList,
-        };
-  
-        dispatch(downloadExcelInventoryDetail(param));
+      let deviceList = [];
+      for (let i = 0; i < filterDevice.length; i++) {
+        deviceList.push(filterDevice[i].deviceId);
       }
+      let statusList = [];
+      for (let i = 0; i < filterStatus.length; i++) {
+        statusList.push(filterStatus[i].name);
+      }
+      let utilityId = 0;
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        utilityId = 1;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 2;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 3;
+      } else {
+        utilityId = 0;
+      }
+      const param = {
+        portfolioId: portfolioId,
+        startDate: inventoryFilter.monthYearMin,
+        endDate: inventoryFilter.monthYearMax,
+        unitPrefix: overviewDataUnit,
+        unit: convertUnit,
+        deviceId: deviceList,
+        status: statusList,
+        roleId: userData?.userGroup?.id,
+        utilityId: utilityId,
+      };
+
+      dispatch(downloadExcelInventoryDetail(param));
+    } else if (selected == "month") {
+      console.log(filterStatus);
+      const startDate =
+        String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
+        "/" +
+        selectedStart.$y;
+      const endDate =
+        String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
+        "/" +
+        selectedEnd.$y;
+      let deviceList = [];
+      for (let i = 0; i < filterDevice.length; i++) {
+        deviceList.push(filterDevice[i].deviceId);
+      }
+      let statusList = [];
+      for (let j = 0; j < filterStatus.length; j++) {
+        statusList.push(filterStatus[j].name);
+      }
+      let utilityId = 0;
+      if (
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+      ) {
+        utilityId = 1;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 2;
+      } else if (
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+      ) {
+        utilityId = 3;
+      } else {
+        utilityId = 0;
+      }
+      const param = {
+        portfolioId: portfolioId,
+        startDate: startDate,
+        endDate: endDate,
+        unitPrefix: overviewDataUnit,
+        unit: convertUnit,
+        deviceId: deviceList,
+        status: statusList,
+        roleId: userData?.userGroup?.id,
+        utilityId: utilityId,
+      };
+
+      dispatch(downloadExcelInventoryDetail(param));
+    }
   };
 
   const mockStatus = [

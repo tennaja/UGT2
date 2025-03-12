@@ -77,12 +77,17 @@ const DonutChart = ({data,totalPercent,unit,convertUnit,additional}) => {
           usePointStyle: true,
           boxWidth: 10,
           generateLabels: (chart) =>{
-            return legendData.map((item,index)=>({
+            const labels = legendData.map((item, index) => ({
               text: item.label,
               fillStyle: item.color,
-              lineWidth:0,
-              //hidden: chart.data.datasets[0].data[index]
-            }))
+              lineWidth: 0,
+            }));
+  
+            // แบ่ง legend เป็น 2 คอลัมน์
+            return labels.map((label, i) => ({
+              ...label,
+              text: i % 2 === 0 ? label.text + "   " : label.text,
+            }));
           }
         },
       },

@@ -44,7 +44,7 @@ export const _getInventoryList = (data) => {
   };
 
 export const getInventoryList = (data, callback) => {
-    Swal.fire({
+    /*Swal.fire({
         title: 'Please Wait...',
         html: `กำลังโหลด...`,
         allowOutsideClick: false,
@@ -59,14 +59,14 @@ export const getInventoryList = (data, callback) => {
     document.querySelector(".swal2-container").style.zIndex = "9999";
     document.querySelector(".swal2-popup").style.zIndex = "10000";
         },
-    })
+    })*/
     const param = data;
     const URL = INVENTORY_LIST;
     return async (dispatch) => {
       await axios.post(URL, param).then(
         (response) => {
           //console.log("Response Create Statue",response?.status)
-          if (response?.status == 200 || response?.status == 201) {
+          if (response?.status == 200 ) {
            // console.log("Create Success")
             //console.log(response?.data)
             dispatch(_getInventoryList(response?.data));
@@ -83,13 +83,11 @@ export const getInventoryList = (data, callback) => {
           dispatch(failRequest(error.message));
           callback && callback(error);
         }
-      ).catch((error) => {
-        dispatch(failRequest(error.message))
-    }).finally(() => {
-        setTimeout(() => {
+      ).finally(() => {
+        /*setTimeout(() => {
             Swal.close()
-        }, 300);
-    });
+        }, 300);*/
+    });;
     };
 };
 
@@ -101,9 +99,9 @@ export const _getInventoryInfoFilter = (data) => {
     }
 }
 
-export const getInventoryInfoFilter = () => {
+export const getInventoryInfoFilter = (roleId,utilityId) => {
 
-    const URL = `${INVENTORY_INFO_FILTER}`
+    const URL = `${INVENTORY_INFO_FILTER}?RoleId=${roleId}&UtilityId=${utilityId}`
     //console.log('URL', URL)
 
     return async (dispatch) => {
@@ -128,11 +126,27 @@ export const _getInventoryInfoCard = (data) => {
 export const getInventoryInfoCard = (data, callback) => {
     const param = data;
     const URL = INVENTORY_INFO_CARD;
+    Swal.fire({
+        title: 'Please Wait...',
+        html: `กำลังโหลด...`,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        timerProgressBar: true,
+        backdrop: `
+    rgba(0,0,0,0.4) !important
+  `,
+        didOpen: () => {
+            Swal.showLoading();
+            // ✅ ปรับ z-index ให้ Swal อยู่หน้าสุด
+    document.querySelector(".swal2-container").style.zIndex = "9999";
+    document.querySelector(".swal2-popup").style.zIndex = "10000";
+        },
+    })
     return async (dispatch) => {
       await axios.post(URL, param).then(
         (response) => {
           //console.log("Response Create Statue",response?.status)
-          if (response?.status == 200 || response?.status == 201) {
+          if (response?.status == 200) {
             //console.log("Create Success")
             //console.log(response?.data)
             dispatch(_getInventoryInfoCard(response?.data));
@@ -149,7 +163,13 @@ export const getInventoryInfoCard = (data, callback) => {
           dispatch(failRequest(error.message));
           callback && callback(error);
         }
-      );
+      ).catch((error) => {
+        dispatch(failRequest(error.message))
+    }).finally(() => {
+        setTimeout(() => {
+            Swal.close()
+        }, 300);
+    });;
     };
 };
 
@@ -234,9 +254,9 @@ export const _getInventoryDetailFilter = (data) => {
     }
 }
 
-export const getInventoryDetailFilter = (ugtGroupId, portfolioId) => {
+export const getInventoryDetailFilter = (ugtGroupId, portfolioId,roleId,utilityId) => {
 
-    const URL = `${INVENTORY_DETAIL_FILTER}/${ugtGroupId}?portfolioId=${portfolioId}`
+    const URL = `${INVENTORY_DETAIL_FILTER}/${ugtGroupId}?portfolioId=${portfolioId}&RoleId=${roleId}&UtilityId=${utilityId}`
     //console.log('URL', URL)
 
     return async (dispatch) => {
