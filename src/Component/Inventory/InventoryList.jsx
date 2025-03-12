@@ -2185,9 +2185,22 @@ const InventoryList = (props) => {
                             />
                             <Tooltip content={<CustomTooltip />} />
                             
+                            
+                            <Bar
+                              dataKey="inventoryUsage"
+                              stackId="a"
+                              barSize={25}
+                              fill="#F7A042"
+                            />
+                            <Bar
+                              dataKey="expiredInventory"
+                              stackId="a"
+                              barSize={25}
+                              fill="#979797"
+                            />
                             <Bar
                               dataKey="totalInventory"
-                              stackId="1"
+                              stackId="a"
                               barSize={25}
                               fill={
                                 fileterUGT === 0
@@ -2197,18 +2210,7 @@ const InventoryList = (props) => {
                                   : "#FA6B6E"
                               }
                             />
-                            <Bar
-                              dataKey="inventoryUsage"
-                              stackId="2"
-                              barSize={25}
-                              fill="#F7A042"
-                            />
-                            <Bar
-                              dataKey="expiredInventory"
-                              stackId="3"
-                              barSize={25}
-                              fill="#979797"
-                            />
+                            
                             <Line
                               type="monotone"
                               dataKey="remainingInventory"
