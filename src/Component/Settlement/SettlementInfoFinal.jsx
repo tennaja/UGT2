@@ -2038,7 +2038,6 @@ const SettlementInfoFinal = ({
             <div>
               <div className="grid grid-cols-4 container mx-auto px-0 gap-2 mt-3 text-left">
                 <div className="bg-[#EF483526] px-4 py-3 rounded-[5px]">
-                  final
                   <div className="text-sm text-[#5B5C5C] break-words">
                     Total Contracted Load
                   </div>
