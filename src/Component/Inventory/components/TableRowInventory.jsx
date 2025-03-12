@@ -86,7 +86,7 @@ const RowInventory = (props) => {
   //console.log(headTxt,total,row,row?.deviceName)
 
   const convertData = (value) => {
-    //console.log("Value Convert",value)
+    console.log(unit,typeof value,"Value Convert",value)
     let decFixed = 3;
     if (unit == "kWh") {
       decFixed = 3;
@@ -95,7 +95,13 @@ const RowInventory = (props) => {
     } else if (unit == "GWh") {
       decFixed = 6;
     }
+// ตรวจสอบว่า value เป็นตัวเลขที่ถูกต้อง
+const isNumber = !isNaN(value);
 
+// ตรวจสอบว่า value เป็นตัวเลขในรูปแบบวิทยาศาสตร์ (เลขทศนิยมที่เล็กมาก)
+const isScientific = value.toString().includes('e');
+console.log(isNumber,isScientific)
+if(isNumber == true && isScientific == false){
     if (value) {
       //console.log("Set Value")
       if (decFixed == 3) {
@@ -106,7 +112,31 @@ const RowInventory = (props) => {
       }
     } else {
       //console.log("Set Zero")
-      return numeral(0).format("0,0.000");
+      if (decFixed == 3) {
+        return numeral(0).format("0,0.000");
+      }
+      if (decFixed == 6) {
+        return numeral(0).format("0,0.000000");
+      }
+    }}
+    else{
+      if (value) {
+        //console.log("Set Value")
+        if (decFixed == 3) {
+          return numeral(0).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(0).format("0,0.000000");
+        }
+      } else {
+        //console.log("Set Zero")
+        if (decFixed == 3) {
+          return numeral(0).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(0).format("0,0.000000");
+        }
+      }
     }
   };
 
@@ -163,7 +193,9 @@ const RowInventory = (props) => {
         year,
         month,
         unit,
-        convertUnit
+        convertUnit,
+        userData?.userGroup?.id,
+        utilityId,
       )
     );
     setShowModalComplete(true);
@@ -211,7 +243,7 @@ const RowInventory = (props) => {
       maxWidth: "70px",
       render: (row) => (
         <div
-          className=" break-words"
+          className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
           style={{
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
@@ -228,7 +260,7 @@ const RowInventory = (props) => {
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className=" break-words"
+            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
             style={{
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
@@ -248,7 +280,7 @@ const RowInventory = (props) => {
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className=" break-words"
+            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
             style={{
               wordWrap: "break-word",
             }}
@@ -273,7 +305,7 @@ const RowInventory = (props) => {
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className=" break-words"
+            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
             style={{
               wordWrap: "break-word",
             }}
@@ -293,7 +325,7 @@ const RowInventory = (props) => {
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className=" break-words"
+            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
             style={{
               wordWrap: "break-word",
             }}
@@ -312,7 +344,7 @@ const RowInventory = (props) => {
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className=" break-words"
+            className={row.status == "Expired"?"break-words line-through text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
             style={{
               width: "100px",
               wordWrap: "break-word",
@@ -398,9 +430,9 @@ const RowInventory = (props) => {
       ),
     },
   ];
-
+console.log(dataPopup)
   return (
-    <div style={{pageBreakAfter:"always"}}>
+    <div style={{pageBreakAfter:"always",marginTop:"10px"}}>
       <TableRow
         className="bg-[#F4F6F9] cursor-pointer"
         onClick={() => {
@@ -456,6 +488,8 @@ const RowInventory = (props) => {
                 columns={columnData}
                 isTotal={"Total Inventory"}
                 rowPage={20}
+                unit={unit}
+                convertUnit={convertUnit}
               />
             </div>
           </Collapse>

@@ -644,28 +644,59 @@ const CollapsDataTableInven = ({
   };
 
   const convertData = (value) => {
-    let decFixed = 3;
-    if (unit == "kWh") {
-      decFixed = 3;
-    } else if (unit == "MWh") {
-      decFixed = 6;
-    } else if (unit == "GWh") {
-      decFixed = 6;
-    }
-
-    if (value) {
-      //console.log("Show Value")
-      if (decFixed == 3) {
-        return numeral(value).format("0,0.000");
+      console.log(unit,typeof value,"Value Convert",value)
+      let decFixed = 3;
+      if (unit == "kWh") {
+        decFixed = 3;
+      } else if (unit == "MWh") {
+        decFixed = 6;
+      } else if (unit == "GWh") {
+        decFixed = 6;
       }
-      if (decFixed == 6) {
-        return numeral(value).format("0,0.000000");
+  // ตรวจสอบว่า value เป็นตัวเลขที่ถูกต้อง
+  const isNumber = !isNaN(value);
+  
+  // ตรวจสอบว่า value เป็นตัวเลขในรูปแบบวิทยาศาสตร์ (เลขทศนิยมที่เล็กมาก)
+  const isScientific = value.toString().includes('e');
+  console.log(isNumber,isScientific)
+  if(isNumber == true && isScientific == false){
+      if (value) {
+        //console.log("Set Value")
+        if (decFixed == 3) {
+          return numeral(value).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(value).format("0,0.000000");
+        }
+      } else {
+        //console.log("Set Zero")
+        if (decFixed == 3) {
+          return numeral(0).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(0).format("0,0.000000");
+        }
+      }}
+      else{
+        if (value) {
+          //console.log("Set Value")
+          if (decFixed == 3) {
+            return numeral(0).format("0,0.000");
+          }
+          if (decFixed == 6) {
+            return numeral(0).format("0,0.000000");
+          }
+        } else {
+          //console.log("Set Zero")
+          if (decFixed == 3) {
+            return numeral(0).format("0,0.000");
+          }
+          if (decFixed == 6) {
+            return numeral(0).format("0,0.000000");
+          }
+        }
       }
-    } else {
-      //console.log("Set Zero")
-      return numeral(0).format("0,0.000");
-    }
-  };
+    };
 
   const renderValue = (value) => {
     if (value) {

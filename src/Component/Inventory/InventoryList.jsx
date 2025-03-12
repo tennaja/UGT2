@@ -1613,29 +1613,59 @@ const InventoryList = (props) => {
   };
 
   const convertData = (value) => {
-    //console.log("Value Convert",value)
-    let decFixed = 3;
-    if (overviewDataUnit == "kWh") {
-      decFixed = 3;
-    } else if (overviewDataUnit == "MWh") {
-      decFixed = 6;
-    } else if (overviewDataUnit == "GWh") {
-      decFixed = 6;
-    }
-
-    if (value) {
-      //console.log("Set Value")
-      if (decFixed == 3) {
-        return numeral(value).format("0,0.000");
+      console.log(overviewDataUnit,typeof value,"Value Convert",value)
+      let decFixed = 3;
+      if (overviewDataUnit == "kWh") {
+        decFixed = 3;
+      } else if (overviewDataUnit == "MWh") {
+        decFixed = 6;
+      } else if (overviewDataUnit == "GWh") {
+        decFixed = 6;
       }
-      if (decFixed == 6) {
-        return numeral(value).format("0,0.000000");
+  // ตรวจสอบว่า value เป็นตัวเลขที่ถูกต้อง
+  const isNumber = !isNaN(value);
+  
+  // ตรวจสอบว่า value เป็นตัวเลขในรูปแบบวิทยาศาสตร์ (เลขทศนิยมที่เล็กมาก)
+  const isScientific = value.toString().includes('e');
+  console.log(isNumber,isScientific)
+  if(isNumber == true && isScientific == false){
+      if (value) {
+        //console.log("Set Value")
+        if (decFixed == 3) {
+          return numeral(value).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(value).format("0,0.000000");
+        }
+      } else {
+        //console.log("Set Zero")
+        if (decFixed == 3) {
+          return numeral(0).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(0).format("0,0.000000");
+        }
+      }}
+      else{
+        if (value) {
+          //console.log("Set Value")
+          if (decFixed == 3) {
+            return numeral(0).format("0,0.000");
+          }
+          if (decFixed == 6) {
+            return numeral(0).format("0,0.000000");
+          }
+        } else {
+          //console.log("Set Zero")
+          if (decFixed == 3) {
+            return numeral(0).format("0,0.000");
+          }
+          if (decFixed == 6) {
+            return numeral(0).format("0,0.000000");
+          }
+        }
       }
-    } else {
-      //console.log("Set Zero")
-      return numeral(0).format("0,0.000");
-    }
-  };
+    };
   const handleAssignedSearchChange = (e) => {
     setSerchQuery(e.target.value);
   };

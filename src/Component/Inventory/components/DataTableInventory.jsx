@@ -67,8 +67,8 @@ const DataTableInventory = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [totalValue, setTotalValue] = useState([]);
-  const [totalremainginven,setRemainingInven] = useState([])
-  const [totalPopup,setTotalPopup] = useState()
+  const [totalremainginven,setRemainingInven] = useState(0)
+  const [totalPopup,setTotalPopup] = useState(0)
   // useEffect(() => {
   //   return () => dispatch({ type: "RESET_STATE" });
   // }, []);
@@ -136,7 +136,7 @@ const DataTableInventory = ({
 //console.log("Is Finite:", Number.isFinite(total));
 //console.log("Is NaN:", Number.isNaN(total));
 //console.log("Formatted:", numeral(total).format("0,0.000"));
-      setRemainingInven(numeral(total).format("0,0.000"));
+      setRemainingInven(total);
     } else if (isTotal === "Total Popup"){
       const total = paginatedData.reduce(
         (acc, row) => acc + (row.inventoryMathced || 0),
@@ -392,33 +392,63 @@ const DataTableInventory = ({
   };
 
     const convertData = (value) => {
-      //console.log("Value Convert",value)
-      let decFixed = 3;
-      if (unit == "kWh") {
-        decFixed = 3;
-      } else if (unit == "MWh") {
-        decFixed = 6;
-      } else if (unit == "GWh") {
-        decFixed = 6;
-      }
-  
-      if (value) {
-        //console.log("Set Value")
-        if (decFixed == 3) {
-          return numeral(value).format("0,0.000");
+        console.log(unit,typeof value,"Value Convert",value)
+        let decFixed = 3;
+        if (unit == "kWh") {
+          decFixed = 3;
+        } else if (unit == "MWh") {
+          decFixed = 6;
+        } else if (unit == "GWh") {
+          decFixed = 6;
         }
-        if (decFixed == 6) {
-          return numeral(value).format("0,0.000000");
+    // ตรวจสอบว่า value เป็นตัวเลขที่ถูกต้อง
+    const isNumber = !isNaN(value);
+    
+    // ตรวจสอบว่า value เป็นตัวเลขในรูปแบบวิทยาศาสตร์ (เลขทศนิยมที่เล็กมาก)
+    const isScientific = value.toString().includes('e');
+    console.log(isNumber,isScientific)
+    if(isNumber == true && isScientific == false){
+        if (value) {
+          //console.log("Set Value")
+          if (decFixed == 3) {
+            return numeral(value).format("0,0.000");
+          }
+          if (decFixed == 6) {
+            return numeral(value).format("0,0.000000");
+          }
+        } else {
+          //console.log("Set Zero")
+          if (decFixed == 3) {
+            return numeral(0).format("0,0.000");
+          }
+          if (decFixed == 6) {
+            return numeral(0).format("0,0.000000");
+          }
+        }}
+        else{
+          if (value) {
+            //console.log("Set Value")
+            if (decFixed == 3) {
+              return numeral(0).format("0,0.000");
+            }
+            if (decFixed == 6) {
+              return numeral(0).format("0,0.000000");
+            }
+          } else {
+            //console.log("Set Zero")
+            if (decFixed == 3) {
+              return numeral(0).format("0,0.000");
+            }
+            if (decFixed == 6) {
+              return numeral(0).format("0,0.000000");
+            }
+          }
         }
-      } else {
-        //console.log("Set Zero")
-        return numeral(0).format("0,0.000");
-      }
-    };
+      };
   
     const renderValue = (value) => {
-      //console.log(value)
-      //console.log(convertUnit)
+      console.log(typeof value,value)
+      console.log(convertUnit)
       if (value) {
         //console.log("Have value")
         return convertData(value * convertUnit);
@@ -427,7 +457,7 @@ const DataTableInventory = ({
         return convertData(0);
       }
     };
-
+    console.log(typeof totalremainginven,totalremainginven)
   return (
     <div>
       <TableContainer
@@ -653,7 +683,7 @@ const DataTableInventory = ({
                         <strong>
                           {" "}
                           {totalremainginven
-                            ? convertData(totalremainginven)
+                            ? renderValue(Number(totalremainginven))
                             : ""}
                         </strong>
                       </TableCell>
