@@ -1542,8 +1542,8 @@ const InventoryList = (props) => {
       const new_item = {
         period: item.period,
         remainingInventory: item.remainingInventory * convertUnit,
-        totalInventory: item.totalInventory * convertUnit,
         expiredInventory: item.expiredInventory * convertUnit,
+        totalInventory: item.totalInventory * convertUnit,
         inventoryUsage: item.inventoryUsage * convertUnit,
       };
       return new_item;
@@ -1825,7 +1825,7 @@ const InventoryList = (props) => {
                     value={selectedStart}
                     setValue={setSelectedStart}
                     mindate={minDate}
-                    maxdate={maxDate}
+                    maxdate={selectedEnd}
                   />
                 </div>
                 <div className="ml-2 items-center">
@@ -2015,7 +2015,7 @@ const InventoryList = (props) => {
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
                   >
-                    {inventoryInfoCard.inventoryUsagePercentage +
+                    {numeral(inventoryInfoCard.inventoryUsagePercentage).format("0,0.00") +
                       "% of Total Inventory"}
                   </div>
                 </div>
@@ -2055,7 +2055,7 @@ const InventoryList = (props) => {
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
                   >
-                    {inventoryInfoCard.expiredInventoryPercentage +
+                    {numeral(inventoryInfoCard.expiredInventoryPercentage).format("0,0.00") +
                       "% of Total Inventory"}
                   </div>
                 </div>
@@ -2097,7 +2097,7 @@ const InventoryList = (props) => {
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
                   >
-                    {inventoryInfoCard.remainingInventoryPercentage +
+                    {numeral(inventoryInfoCard.remainingInventoryPercentage).format("0,0.00") +
                       "% of Total Inventory"}
                   </div>
                 </div>
@@ -2197,17 +2197,18 @@ const InventoryList = (props) => {
                                   : "#FA6B6E"
                               }
                             />
-                            <Bar
-                              dataKey="expiredInventory"
-                              stackId="a"
-                              barSize={25}
-                              fill="#979797"
-                            />
+                            
                             <Bar
                               dataKey="inventoryUsage"
                               stackId="a"
                               barSize={25}
                               fill="#F7A042"
+                            />
+                            <Bar
+                              dataKey="expiredInventory"
+                              stackId="a"
+                              barSize={25}
+                              fill="#979797"
                             />
                             <Line
                               type="monotone"

@@ -619,7 +619,7 @@ const InventoryDetail = (props) => {
                         setValue={setSelectedStart}
                         isDisable={selected == "month" ? false : true}
                         mindate={minDate}
-                        maxdate={maxDate}
+                        maxdate={selectedEnd}
                       />
                     </div>
                     <div className="ml-2 items-center">
