@@ -122,7 +122,7 @@ export default function RedemptionTableCer() {
           </Form.Item>
         </div>
       </div>
-      <div className="ag-theme-material pt-4" style={{ height: 500 }}>
+      <div className="ag-theme-material pt-4" style={{ height: "auto" }}>
         {<PortfolioTableCer portData={portData} search={search} />}
       </div>
     </Card>
