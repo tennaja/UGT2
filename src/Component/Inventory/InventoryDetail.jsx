@@ -459,7 +459,7 @@ const InventoryDetail = (props) => {
         endDate: inventoryFilter.monthYearMax,
         unitPrefix: overviewDataUnit,
         unit: convertUnit,
-        deviceId: deviceList,
+        deviceId: filterDevice,
         status: statusList,
         roleId: userData?.userGroup?.id,
         utilityId: utilityId,

@@ -288,7 +288,7 @@ const ItemRedemption = (props) => {
               </div>
             </div>
 
-            <ScrollArea w="100%" h={500} className="mt-10">
+            <ScrollArea w="100%" h={item?.devices.length > 0?"auto": 500} className="mt-10">
               <Table stickyHeader verticalSpacing="sm">
                 <Table.Thead>
                   <Table.Tr className="text-[#848789]">

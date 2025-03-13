@@ -601,7 +601,7 @@ console.log(filterPort)
         unitPrefix: overviewDataUnit,
         unit: convertUnit,
         ugtGroupId: fileterUGT,
-        portfolioId: port,
+        portfolioId: filterPort,
         roleId: userData?.userGroup?.id,
         utilityId: utilityId,
       };
