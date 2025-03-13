@@ -31,6 +31,9 @@ import RemainInven from "../assets/RemaingInventory.svg";
 import TotalInven from "../assets/TotalInventory.svg";
 import Multiselect from "../Control/Multiselect";
 import MultiselectInvenDetail from "./components/MultiselectInvenDetail";
+import { MdOutlineFilterAlt } from "react-icons/md";
+import DataTableInvenFilter from "./components/DataTableInvenFilter";
+import DropdownMultiSelect from "./components/DropDownMultiSelect";
 
 import {
   getInventoryList,
@@ -39,7 +42,7 @@ import {
   downloadExcelInventoryInfo,
   getInventoryInfoCard,
   getInventoryInfoGraph,
-  getInventoryInfoCardAndGraph
+  getInventoryInfoCardAndGraph,
 } from "../../Redux/Inventory/InventoryAction";
 
 // Chart import
@@ -58,6 +61,7 @@ import {
 import { Stack } from "@mui/material";
 import html2pdf from "html2pdf.js";
 import Swal from "sweetalert2";
+import MultiselectInven from "./components/MultiselectInven";
 
 const customLegendLine = [
   { name: "Remaining Inventory", color: "#4D6A00", style: "solid" },
@@ -111,9 +115,10 @@ const InventoryList = (props) => {
   const [zoomDomain, setZoomDomain] = useState([0, tempChart.length - 1]);
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
-  const [isSelectPort,setIsSelectPort] = useState(false)
+  const [isSelectPort, setIsSelectPort] = useState(false);
+  const [colorGraphTotalInven, setColorGraphTotalInven] = useState("#3CA12D33");
   const contentRef = useRef();
-
+console.log(filterPort)
   useEffect(() => {
     console.log(userData);
     if (inventoryInfoFilter && userData?.userGroup?.id) {
@@ -165,6 +170,10 @@ const InventoryList = (props) => {
       setMinDate(dayjs(minDate));
       setSelectedStart(dayjs(DefaultminDateTemp));
       setSelectedEnd(dayjs(DefaultmaxDateTemp));
+      fecthDataInventoryInfo(
+        dayjs(DefaultminDateTemp),
+        dayjs(DefaultmaxDateTemp)
+      );
     }
   }, [inventoryInfoFilter]);
 
@@ -173,8 +182,101 @@ const InventoryList = (props) => {
   }, [overviewDataUnit]);
 
   useEffect(() => {
-    console.log("Fetch not in port");
-    if (selectedStart && selectedEnd && userData?.userGroup?.id) {
+    setFilterPort([]);
+    setFilterPortList(inventoryDropdownList);
+    setIsSelectPort(false);
+  }, [inventoryDropdownList]);
+
+  useEffect(() => {
+    console.log("Fetch in port");
+    if (filterPort && isSelectPort == true) {
+      console.log("Fetch");
+      if (
+        inventoryInfoFilter &&
+        Object.keys(inventoryInfoFilter).length !== 0
+      ) {
+        if (userData?.userGroup?.id) {
+          const startDate =
+            String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
+            "/" +
+            selectedStart.$y;
+          const endDate =
+            String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
+            "/" +
+            selectedEnd.$y;
+          let port = [];
+          //console.log(filterPort);
+          for (let i = 0; i < filterPort.length; i++) {
+            port.push(filterPort[i].id);
+          }
+
+          let utilityId = 0;
+          if (
+            userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+            userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+          ) {
+            utilityId = 1;
+          } else if (
+            userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+            userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+          ) {
+            utilityId = 2;
+          } else if (
+            userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+            userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+          ) {
+            utilityId = 3;
+          } else {
+            utilityId = 0;
+          }
+          //console.log(port);
+          const param = {
+            startDate: startDate,
+            endDate: endDate,
+            ugtGroupId: fileterUGT,
+            portfolioId: filterPort,
+            roleId: userData?.userGroup?.id,
+            utilityId: utilityId,
+          };
+          const paramCard = {
+            startDate: startDate,
+            endDate: endDate,
+            ugtGroupId: fileterUGT,
+            portfolioId: filterPort,
+            unitPrefix: overviewDataUnit,
+            unit: convertUnit,
+            roleId: userData?.userGroup?.id,
+            utilityId: utilityId,
+          };
+          //dispatch(getInventoryInfoCard(paramCard));
+          //dispatch(getInventoryInfoGraph(param));
+          dispatch(getInventoryInfoCardAndGraph(param));
+          dispatch(getInventoryList(param));
+          setIsSelectPort(false);
+        }
+      }
+    }
+  }, [filterPort]);
+
+  useEffect(() => {
+    if (inventoryInfoGraph) {
+      setTempChart(convertChartData(inventoryInfoGraph, convertUnit));
+    }
+  }, [inventoryInfoGraph]);
+
+  const filterAction = () => {
+    fecthDataInventoryInfo();
+    setColorGraphTotalInven(
+      fileterUGT === 0 ? "#3CA12D33" : fileterUGT === 1 ? "#70B2FF" : "#FA6B6E"
+    );
+  };
+
+  const fecthDataInventoryInfo = (
+    dateStart = selectedStart,
+    dateEnd = selectedEnd
+  ) => {
+    console.log(selectedStart, selectedEnd);
+    if (dateStart && dateEnd && userData?.userGroup?.id) {
       console.log("Fetch in not in port");
       //console.log("Change start end UGT")
       if (
@@ -182,17 +284,15 @@ const InventoryList = (props) => {
         Object.keys(inventoryInfoFilter).length !== 0
       ) {
         const startDate =
-          String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
+          String(dateStart.$d.getMonth() + 1).padStart(2, "0") +
           "/" +
-          selectedStart.$y;
+          dateStart.$y;
         const endDate =
-          String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
-          "/" +
-          selectedEnd.$y;
+          String(dateEnd.$d.getMonth() + 1).padStart(2, "0") + "/" + dateEnd.$y;
         let port = [];
         /*for (let i = 0; i < filterPort.length; i++) {
-          port.push(filterPort[i].id);
-        }*/
+            port.push(filterPort[i].id);
+          }*/
 
         let utilityId = 0;
         if (
@@ -234,96 +334,13 @@ const InventoryList = (props) => {
         };
 
         //dispatch(getInventoryInfoCard(paramCard));
-        dispatch(getInventoryInfoCardAndGraph(param))
+        dispatch(getInventoryInfoCardAndGraph(param));
         dispatch(getInventoryDropdownList(param));
         //dispatch(getInventoryInfoGraph(param));
         dispatch(getInventoryList(param));
       }
     }
-  }, [selectedStart, selectedEnd, fileterUGT]);
-
-  useEffect(() => {
-    setFilterPort([]);
-    setFilterPortList(inventoryDropdownList);
-    setIsSelectPort(false)
-  }, [inventoryDropdownList]);
-
-  useEffect(() => {
-    console.log("Fetch in port");
-    if (filterPort && isSelectPort == true) {
-      console.log("Fetch");
-      if (
-        inventoryInfoFilter &&
-        Object.keys(inventoryInfoFilter).length !== 0
-      ) {
-        if(userData?.userGroup?.id){
-      const startDate =
-        String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
-        "/" +
-        selectedStart.$y;
-      const endDate =
-        String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
-        "/" +
-        selectedEnd.$y;
-      let port = [];
-      //console.log(filterPort);
-      for (let i = 0; i < filterPort.length; i++) {
-        port.push(filterPort[i].id);
-      }
-
-      let utilityId = 0;
-      if (
-        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
-      ) {
-        utilityId = 1;
-      } else if (
-        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
-      ) {
-        utilityId = 2;
-      } else if (
-        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
-      ) {
-        utilityId = 3;
-      } else {
-        utilityId = 0;
-      }
-      //console.log(port);
-      const param = {
-        startDate: startDate,
-        endDate: endDate,
-        ugtGroupId: fileterUGT,
-        portfolioId: port,
-        roleId: userData?.userGroup?.id,
-        utilityId: utilityId,
-      };
-      const paramCard = {
-        startDate: startDate,
-        endDate: endDate,
-        ugtGroupId: fileterUGT,
-        portfolioId: port,
-        unitPrefix: overviewDataUnit,
-        unit: convertUnit,
-        roleId: userData?.userGroup?.id,
-        utilityId: utilityId,
-      };
-      //dispatch(getInventoryInfoCard(paramCard));
-      //dispatch(getInventoryInfoGraph(param));
-      dispatch(getInventoryInfoCardAndGraph(param))
-      dispatch(getInventoryList(param));
-      setIsSelectPort(false)
-    }
-    }
-}
-  }, [filterPort]);
-
-  useEffect(() => {
-    if (inventoryInfoGraph) {
-      setTempChart(convertChartData(inventoryInfoGraph, convertUnit));
-    }
-  }, [inventoryInfoGraph]);
+  };
 
   const Highlight = ({ children, highlightIndex }) => (
     <strong className="bg-yellow-200">{children}</strong>
@@ -1616,22 +1633,22 @@ const InventoryList = (props) => {
   };
 
   const convertData = (value) => {
-      //console.log(overviewDataUnit,typeof value,"Value Convert",value)
-      let decFixed = 3;
-      if (overviewDataUnit == "kWh") {
-        decFixed = 3;
-      } else if (overviewDataUnit == "MWh") {
-        decFixed = 6;
-      } else if (overviewDataUnit == "GWh") {
-        decFixed = 6;
-      }
-  // ตรวจสอบว่า value เป็นตัวเลขที่ถูกต้อง
-  const isNumber = !isNaN(value);
-  
-  // ตรวจสอบว่า value เป็นตัวเลขในรูปแบบวิทยาศาสตร์ (เลขทศนิยมที่เล็กมาก)
-  const isScientific = value.toString().includes('e');
-  //console.log(isNumber,isScientific)
-  if(isNumber == true && isScientific == false){
+    //console.log(overviewDataUnit,typeof value,"Value Convert",value)
+    let decFixed = 3;
+    if (overviewDataUnit == "kWh") {
+      decFixed = 3;
+    } else if (overviewDataUnit == "MWh") {
+      decFixed = 6;
+    } else if (overviewDataUnit == "GWh") {
+      decFixed = 6;
+    }
+    // ตรวจสอบว่า value เป็นตัวเลขที่ถูกต้อง
+    const isNumber = !isNaN(value);
+
+    // ตรวจสอบว่า value เป็นตัวเลขในรูปแบบวิทยาศาสตร์ (เลขทศนิยมที่เล็กมาก)
+    const isScientific = value.toString().includes("e");
+    //console.log(isNumber,isScientific)
+    if (isNumber == true && isScientific == false) {
       if (value) {
         //console.log("Set Value")
         if (decFixed == 3) {
@@ -1648,33 +1665,33 @@ const InventoryList = (props) => {
         if (decFixed == 6) {
           return numeral(0).format("0,0.000000");
         }
-      }}
-      else{
-        if (value) {
-          //console.log("Set Value")
-          if (decFixed == 3) {
-            return numeral(0).format("0,0.000");
-          }
-          if (decFixed == 6) {
-            return numeral(0).format("0,0.000000");
-          }
-        } else {
-          //console.log("Set Zero")
-          if (decFixed == 3) {
-            return numeral(0).format("0,0.000");
-          }
-          if (decFixed == 6) {
-            return numeral(0).format("0,0.000000");
-          }
+      }
+    } else {
+      if (value) {
+        //console.log("Set Value")
+        if (decFixed == 3) {
+          return numeral(0).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(0).format("0,0.000000");
+        }
+      } else {
+        //console.log("Set Zero")
+        if (decFixed == 3) {
+          return numeral(0).format("0,0.000");
+        }
+        if (decFixed == 6) {
+          return numeral(0).format("0,0.000000");
         }
       }
-    };
+    }
+  };
   const handleAssignedSearchChange = (e) => {
     setSerchQuery(e.target.value);
   };
   const handleChangeAssignFilter = (value) => {
     setFilterPort(value);
-    setIsSelectPort(true)
+    setIsSelectPort(true);
   };
 
   const calTopercent = (value, total) => {
@@ -1897,13 +1914,23 @@ const InventoryList = (props) => {
                       </Form.Item>
                     </Form>
                   </div>
-                  <div className="col-span-5">
-                    <Controller
+                  <div className="col-span-2">
+                    <Button
+                      size="md"
+                      className="bg-[#ffff] border-2 border-[#4D6A00] text-[#4D6A00] text-base px-3 w-full h-[40px]"
+                      onClick={() => filterAction()}
+                    >
+                      <MdOutlineFilterAlt className="mr-1 text-base" />
+                      Filter
+                    </Button>
+                  </div>
+                  <div className="col-span-3">
+                    {/*<Controller
                       name="portFilter"
                       control={control}
                       defaultValue={null}
                       render={({ field }) => (
-                        <MultiselectInvenDetail
+                        <MultiselectInven
                           {...field}
                           id={"portFilter"}
                           placeholder={"All"}
@@ -1916,10 +1943,21 @@ const InventoryList = (props) => {
                           }}
                           wrapText={true}
                           isSearchable={true}
-                          size="large"
+                          size="300px"
                           value={filterPort}
                         />
                       )}
+                    />*/}
+                    <DropdownMultiSelect
+                      options={filterPortList}
+                      selectedValues={filterPort}
+                      setSelectedValues={setFilterPort}
+                      label="Select Portfolio"
+                      allowSelectAll={true} // ✅ เปลี่ยนเป็น false ถ้าไม่ต้องการ "All Devices"
+                      valueKey="id"
+                      labelKey="portfolioName"
+                      setSelectDropdown={setIsSelectPort}
+                      textSelectAll="All"
                     />
                   </div>
                   <div className="col-span-2">
@@ -2004,7 +2042,9 @@ const InventoryList = (props) => {
                     </div>
                     <div className="text-end">
                       <label className="text-2xl font-semibold flex justify-end">
-                        {inventoryInfoCard.totalInventory?renderValue(inventoryInfoCard.totalInventory):renderValue(0)}
+                        {inventoryInfoCard.totalInventory
+                          ? renderValue(inventoryInfoCard.totalInventory)
+                          : renderValue(0)}
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
@@ -2037,7 +2077,9 @@ const InventoryList = (props) => {
                     </div>
                     <div className="text-end">
                       <label className="text-2xl font-semibold flex justify-end">
-                        {inventoryInfoCard.inventoryUsage?renderValue(inventoryInfoCard.inventoryUsage):renderValue(0)}
+                        {inventoryInfoCard.inventoryUsage
+                          ? renderValue(inventoryInfoCard.inventoryUsage)
+                          : renderValue(0)}
                       </label>
                       <span> </span>
                       <label className="text-lg font-medium text-slate-500">
@@ -2049,8 +2091,9 @@ const InventoryList = (props) => {
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
                   >
-                    {numeral(inventoryInfoCard.inventoryUsagePercentage).format("0,0.00") +
-                      "% of Total Inventory"}
+                    {numeral(inventoryInfoCard.inventoryUsagePercentage).format(
+                      "0,0.00"
+                    ) + "% of Total Inventory"}
                   </div>
                 </div>
               </Card>
@@ -2076,7 +2119,9 @@ const InventoryList = (props) => {
                     </div>
                     <div className="text-end">
                       <label className="text-2xl font-semibold flex justify-end">
-                        {inventoryInfoCard.expiredInventory?renderValue(inventoryInfoCard.expiredInventory):renderValue(0)}
+                        {inventoryInfoCard.expiredInventory
+                          ? renderValue(inventoryInfoCard.expiredInventory)
+                          : renderValue(0)}
                       </label>
                       <label className="text-lg font-medium text-slate-500">
                         {overviewDataUnit}
@@ -2089,8 +2134,9 @@ const InventoryList = (props) => {
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
                   >
-                    {numeral(inventoryInfoCard.expiredInventoryPercentage).format("0,0.00") +
-                      "% of Total Inventory"}
+                    {numeral(
+                      inventoryInfoCard.expiredInventoryPercentage
+                    ).format("0,0.00") + "% of Total Inventory"}
                   </div>
                 </div>
               </Card>
@@ -2116,7 +2162,9 @@ const InventoryList = (props) => {
                     </div>
                     <div className="text-end">
                       <label className="text-2xl font-semibold flex justify-end">
-                        {inventoryInfoCard.remainingInventory?renderValue(inventoryInfoCard.remainingInventory):renderValue(0)}
+                        {inventoryInfoCard.remainingInventory
+                          ? renderValue(inventoryInfoCard.remainingInventory)
+                          : renderValue(0)}
                       </label>
                       <label className="text-lg font-medium text-slate-500">
                         {overviewDataUnit}
@@ -2131,8 +2179,9 @@ const InventoryList = (props) => {
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
                   >
-                    {numeral(inventoryInfoCard.remainingInventoryPercentage).format("0,0.00") +
-                      "% of Total Inventory"}
+                    {numeral(
+                      inventoryInfoCard.remainingInventoryPercentage
+                    ).format("0,0.00") + "% of Total Inventory"}
                   </div>
                 </div>
               </Card>
@@ -2168,11 +2217,7 @@ const InventoryList = (props) => {
                                     style={{
                                       backgroundColor: `${
                                         item.name === "Total Inventory"
-                                          ? fileterUGT === 0
-                                            ? "#3CA12D33"
-                                            : fileterUGT === 1
-                                            ? "#70B2FF"
-                                            : "#FA6B6E"
+                                          ? colorGraphTotalInven
                                           : item.color
                                       }`,
                                     }}
@@ -2218,8 +2263,7 @@ const InventoryList = (props) => {
                               }}
                             />
                             <Tooltip content={<CustomTooltip />} />
-                            
-                            
+
                             <Bar
                               dataKey="inventoryUsage"
                               stackId="a"
@@ -2236,15 +2280,9 @@ const InventoryList = (props) => {
                               dataKey="totalInventory"
                               stackId="a"
                               barSize={25}
-                              fill={
-                                fileterUGT === 0
-                                  ? "#3CA12D33"
-                                  : fileterUGT === 1
-                                  ? "#70B2FF"
-                                  : "#FA6B6E"
-                              }
+                              fill={colorGraphTotalInven}
                             />
-                            
+
                             <Line
                               type="monotone"
                               dataKey="remainingInventory"
@@ -2322,11 +2360,12 @@ const InventoryList = (props) => {
                   </div>
                 </div>
 
-                <DataTable
+                <DataTableInvenFilter
                   data={inventoryList}
                   columns={columnsAssigned}
                   searchData={serchQuery}
                   checkbox={false}
+                  rowpage={20}
                 />
               </div>
             </Card>

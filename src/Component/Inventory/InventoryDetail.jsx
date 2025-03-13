@@ -36,6 +36,7 @@ import {
 } from "../../Redux/Inventory/InventoryAction";
 import html2pdf from "html2pdf.js";
 import Swal from "sweetalert2";
+import DropdownMultiSelect from "./components/DropDownMultiSelect";
 
 const itemsPerPage = 5;
 const InventoryDetail = (props) => {
@@ -80,7 +81,7 @@ const InventoryDetail = (props) => {
   const [maxDate, setMaxDate] = useState();
   const [isGenerate, setIsGenerate] = useState(false);
   const contentRef = useRef();
-  const [isSelectDevice,setIsSelectDevice] = useState(false)
+  const [isSelectDevice, setIsSelectDevice] = useState(false);
   console.log(minDate, maxDate, selectedStart, selectedEnd);
   console.log(inventoryFilter);
 
@@ -132,138 +133,138 @@ const InventoryDetail = (props) => {
       //fetchDetailData(true);
     }
   }, [inventoryFilter]);
-console.log(inventoryFilter && Object.keys(inventoryFilter).length !== 0)
+  console.log(inventoryFilter && Object.keys(inventoryFilter).length !== 0);
 
   useEffect(() => {
     if (inventoryFilter && Object.keys(inventoryFilter).length !== 0) {
-        console.log("Fetch not in Device")
+      console.log("Fetch not in Device");
       fetchDetailData(true);
     }
-  }, [selected, selectedStart, selectedEnd, ]);
+  }, [selected, selectedStart, selectedEnd]);
 
   useEffect(() => {
     if (inventoryDetailDropdown) {
       setFilterPortList(inventoryDetailDropdown);
-      setIsSelectDevice(false)
+      setIsSelectDevice(false);
     }
   }, [inventoryDetailDropdown]);
 
   useEffect(() => {
     if (inventoryFilter && Object.keys(inventoryFilter).length !== 0) {
-        console.log("Fetch in Device")
-        if(isSelectDevice == true){
-            fetchDetailData(false);
-        }
+      console.log("Fetch in Device");
+      if (isSelectDevice == true) {
+        fetchDetailData(false);
+      }
     }
-  }, [filterDevice,filterStatus]);
+  }, [filterDevice, filterStatus]);
 
   const fetchDetailData = (isFetchDrop) => {
-    if(selectedStart && selectedEnd){
-        console.log("Fetch in")
-    if (selected == "all") {
-      let deviceList = [];
-      for (let i = 0; i < filterDevice.length; i++) {
-        deviceList.push(filterDevice[i].deviceId);
-      }
-      let statusList = [];
-      for (let i = 0; i < filterStatus.length; i++) {
-        statusList.push(filterStatus[i].name);
-      }
-      let utilityId = 0;
-      if (
-        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
-      ) {
-        utilityId = 1;
-      } else if (
-        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
-      ) {
-        utilityId = 2;
-      } else if (
-        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
-      ) {
-        utilityId = 3;
-      } else {
-        utilityId = 0;
-      }
-      const param = {
-        portfolioId: portfolioId,
-        startDate: inventoryFilter.monthYearMin,
-        endDate: inventoryFilter.monthYearMax,
-        unitPrefix: overviewDataUnit,
-        unit: convertUnit,
-        deviceId: deviceList,
-        status: statusList,
-        roleId: userData?.userGroup?.id,
-        utilityId: utilityId,
-      };
+    if (selectedStart && selectedEnd) {
+      console.log("Fetch in");
+      if (selected == "all") {
+        let deviceList = [];
+        for (let i = 0; i < filterDevice.length; i++) {
+          deviceList.push(filterDevice[i].deviceId);
+        }
+        let statusList = [];
+        for (let i = 0; i < filterStatus.length; i++) {
+          statusList.push(filterStatus[i].name);
+        }
+        let utilityId = 0;
+        if (
+          userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+        ) {
+          utilityId = 1;
+        } else if (
+          userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+        ) {
+          utilityId = 2;
+        } else if (
+          userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+        ) {
+          utilityId = 3;
+        } else {
+          utilityId = 0;
+        }
+        const param = {
+          portfolioId: portfolioId,
+          startDate: inventoryFilter.monthYearMin,
+          endDate: inventoryFilter.monthYearMax,
+          unitPrefix: overviewDataUnit,
+          unit: convertUnit,
+          deviceId: filterDevice,
+          status: statusList,
+          roleId: userData?.userGroup?.id,
+          utilityId: utilityId,
+        };
 
-      dispatch(getInventoryDetailData(param));
-      if (isFetchDrop) {
-        setFilterDevice([]);
-        dispatch(getInventoryDetailDropdown(param));
-      }
-      setIsSelectDevice(false)
-    } else if (selected == "month") {
-      console.log(filterStatus);
-      console.log(selectedStart,selectedEnd)
-      const startDate =
-        String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
-        "/" +
-        selectedStart.$y;
-      const endDate =
-        String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
-        "/" +
-        selectedEnd.$y;
-      let deviceList = [];
-      for (let i = 0; i < filterDevice.length; i++) {
-        deviceList.push(filterDevice[i].deviceId);
-      }
-      let statusList = [];
-      for (let j = 0; j < filterStatus.length; j++) {
-        statusList.push(filterStatus[j].name);
-      }
-      let utilityId = 0;
-      if (
-        userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
-      ) {
-        utilityId = 1;
-      } else if (
-        userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
-      ) {
-        utilityId = 2;
-      } else if (
-        userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
-        userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
-      ) {
-        utilityId = 3;
-      } else {
-        utilityId = 0;
-      }
-      const param = {
-        portfolioId: portfolioId,
-        startDate: startDate,
-        endDate: endDate,
-        unitPrefix: overviewDataUnit,
-        unit: convertUnit,
-        deviceId: deviceList,
-        status: statusList,
-        roleId: userData?.userGroup?.id,
-        utilityId: utilityId,
-      };
+        dispatch(getInventoryDetailData(param));
+        if (isFetchDrop) {
+          setFilterDevice([]);
+          dispatch(getInventoryDetailDropdown(param));
+        }
+        setIsSelectDevice(false);
+      } else if (selected == "month") {
+        console.log(filterStatus);
+        console.log(selectedStart, selectedEnd);
+        const startDate =
+          String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
+          "/" +
+          selectedStart.$y;
+        const endDate =
+          String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
+          "/" +
+          selectedEnd.$y;
+        let deviceList = [];
+        for (let i = 0; i < filterDevice.length; i++) {
+          deviceList.push(filterDevice[i].deviceId);
+        }
+        let statusList = [];
+        for (let j = 0; j < filterStatus.length; j++) {
+          statusList.push(filterStatus[j].name);
+        }
+        let utilityId = 0;
+        if (
+          userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.EGAT_SUBSCRIBER_MNG
+        ) {
+          utilityId = 1;
+        } else if (
+          userData?.userGroup?.id == USER_GROUP_ID.PEA_DEVICE_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.PEA_SUBSCRIBER_MNG
+        ) {
+          utilityId = 2;
+        } else if (
+          userData?.userGroup?.id == USER_GROUP_ID.MEA_DEVICE_MNG ||
+          userData?.userGroup?.id == USER_GROUP_ID.MEA_SUBSCRIBER_MNG
+        ) {
+          utilityId = 3;
+        } else {
+          utilityId = 0;
+        }
+        const param = {
+          portfolioId: portfolioId,
+          startDate: startDate,
+          endDate: endDate,
+          unitPrefix: overviewDataUnit,
+          unit: convertUnit,
+          deviceId: filterDevice,
+          status: statusList,
+          roleId: userData?.userGroup?.id,
+          utilityId: utilityId,
+        };
 
-      dispatch(getInventoryDetailData(param));
-      if (isFetchDrop) {
-        setFilterDevice([]);
-        dispatch(getInventoryDetailDropdown(param));
+        dispatch(getInventoryDetailData(param));
+        if (isFetchDrop) {
+          setFilterDevice([]);
+          dispatch(getInventoryDetailDropdown(param));
+        }
+        setIsSelectDevice(false);
       }
-      setIsSelectDevice(false)
     }
-}
   };
 
   //console.log(selectedStart.$d.getMonth());
@@ -539,12 +540,12 @@ console.log(inventoryFilter && Object.keys(inventoryFilter).length !== 0)
 
   const handleChangeAssignFilter = (value) => {
     setFilterDevice(value);
-    setIsSelectDevice(true)
+    setIsSelectDevice(true);
   };
 
   const handleChangeStatusFilter = (value) => {
     setFilterStatus(value);
-    setIsSelectDevice(true)
+    setIsSelectDevice(true);
   };
   const handleChangeToggle = (value) => {
     setSelected(value);
@@ -677,7 +678,7 @@ console.log(inventoryFilter && Object.keys(inventoryFilter).length !== 0)
                       </div>
 
                       <div className="w-40 ml-2">
-                        <Controller
+                        {/*<Controller
                           name="portFilter"
                           control={control}
                           defaultValue={null}
@@ -699,6 +700,17 @@ console.log(inventoryFilter && Object.keys(inventoryFilter).length !== 0)
                               value={filterDevice}
                             />
                           )}
+                        />*/}
+                        <DropdownMultiSelect
+                          options={filterPortList}
+                          selectedValues={filterDevice}
+                          setSelectedValues={setFilterDevice}
+                          label="Find Device"
+                          allowSelectAll={true} // ✅ เปลี่ยนเป็น false ถ้าไม่ต้องการ "All Devices"
+                          valueKey="deviceId"
+                          labelKey="deviceName"
+                          setSelectDropdown={setIsSelectDevice}
+                          textSelectAll="All Device"
                         />
                       </div>
                       <div className="ml-2 w-40 h-[40px]">
@@ -761,7 +773,7 @@ console.log(inventoryFilter && Object.keys(inventoryFilter).length !== 0)
                 </form>
               </div>
 
-              <div className="mt-4">
+              <div className="mt-2">
                 <CollapsDataTableInven
                   data={inventoryDatailData}
                   unit={overviewDataUnit}

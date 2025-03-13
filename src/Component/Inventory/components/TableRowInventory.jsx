@@ -243,7 +243,7 @@ if(isNumber == true && isScientific == false){
       maxWidth: "70px",
       render: (row) => (
         <div
-          className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
+          className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words ":"break-words"}
           style={{
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
@@ -260,7 +260,7 @@ if(isNumber == true && isScientific == false){
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
+            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words ":"break-words"}
             style={{
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
@@ -280,7 +280,7 @@ if(isNumber == true && isScientific == false){
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
+            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words ":"break-words"}
             style={{
               wordWrap: "break-word",
             }}
@@ -305,7 +305,7 @@ if(isNumber == true && isScientific == false){
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
+            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words ":"break-words"}
             style={{
               wordWrap: "break-word",
             }}
@@ -325,7 +325,7 @@ if(isNumber == true && isScientific == false){
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
+            className={row.status == "Expired"?"break-words  text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words ":"break-words"}
             style={{
               wordWrap: "break-word",
             }}
@@ -344,7 +344,7 @@ if(isNumber == true && isScientific == false){
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className={row.status == "Expired"?"break-words line-through text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words text-[#BFBFBF]":"break-words"}
+            className={row.status == "Expired"?"break-words line-through text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words line-through ":"break-words"}
             style={{
               width: "100px",
               wordWrap: "break-word",
@@ -513,7 +513,7 @@ console.log(dataPopup)
           </div>
           <div className="items-center justify-center">
             <DataTableInventory
-              data={dataPopup.detailData}
+              data={dataPopup.detailData?dataPopup.detailData:[]}
               columns={columnPopup}
               isTotal={"Total Popup"}
             />
