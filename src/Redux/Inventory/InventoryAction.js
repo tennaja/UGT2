@@ -449,7 +449,30 @@ export const downloadExcelInventoryDetail = (data, callback) => {
             const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "ExportReport_"+data.startDate+"_"+data.endDate+".xlsx";
+            const now = new Date();
+            const options = {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZone: 'Asia/Bangkok', // กำหนด Time Zone เป็นกรุงเทพ
+            };
+
+            const formattedDateTime = new Intl.DateTimeFormat('th-TH', options).format(now);
+            const [date, time] = formattedDateTime.split(' ');
+            const [day, month, year] = date.split('/');
+            const [hours, minutes, seconds] = time.split(':');
+
+            // แปลงปี พ.ศ. เป็น ค.ศ.
+            const buddhistYear = parseInt(year);
+            const christianYear = buddhistYear - 543;
+
+            // สร้างผลลัพธ์ในรูปแบบ ddMMyyyy ค.ศ._HHmmss
+            const result = `${day}${month}${christianYear}_${hours}_${minutes}_${seconds}`;
+            const filename = `InventoryByDevice_${data.startDate}_${data.endDate}_${day}${month}${christianYear}_${hours}${minutes}${seconds}.xlsx`;
+            link.download = filename
             link.click();
             URL.revokeObjectURL(link.href);
 
@@ -507,7 +530,30 @@ export const downloadExcelInventoryInfo = (data, callback) => {
             const blob = new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "ExportReport_"+data.startDate+"_"+data.endDate+".xlsx";
+            const now = new Date();
+            const options = {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZone: 'Asia/Bangkok', // กำหนด Time Zone เป็นกรุงเทพ
+            };
+
+            const formattedDateTime = new Intl.DateTimeFormat('th-TH', options).format(now);
+            const [date, time] = formattedDateTime.split(' ');
+            const [day, month, year] = date.split('/');
+            const [hours, minutes, seconds] = time.split(':');
+
+            // แปลงปี พ.ศ. เป็น ค.ศ.
+            const buddhistYear = parseInt(year);
+            const christianYear = buddhistYear - 543;
+
+            // สร้างผลลัพธ์ในรูปแบบ ddMMyyyy ค.ศ._HHmmss
+            const result = `${day}${month}${christianYear}_${hours}_${minutes}_${seconds}`;
+            const filename = `InventoryInfo_${data.startDate}_${data.endDate}_${data.ugtGroupId == 0?"All_":data.ugtGroupId == 1?"UGT-1_":"UGT-2_"}${day}${month}${christianYear}_${hours}${minutes}${seconds}.xlsx`;
+            link.download = filename
             link.click();
             URL.revokeObjectURL(link.href);
 

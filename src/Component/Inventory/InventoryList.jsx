@@ -170,10 +170,10 @@ const InventoryList = (props) => {
       setMinDate(dayjs(minDate));
       setSelectedStart(dayjs(DefaultminDateTemp));
       setSelectedEnd(dayjs(DefaultmaxDateTemp));
-      /*fecthDataInventoryInfo(
+      fecthDataInventoryInfo(
         dayjs(DefaultminDateTemp),
         dayjs(DefaultmaxDateTemp)
-      );*/
+      );
     }
   }, [inventoryInfoFilter]);
 
@@ -392,12 +392,12 @@ const InventoryList = (props) => {
       ),
     },
     {
-      id: "UGT",
+      id: "ugtGroup",
       label: "UGT",
       align: "center",
       render: (row) => (
         <div
-          className="break-words"
+          className="font-semibold break-words"
           style={{
             width: "100px",
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
@@ -414,7 +414,7 @@ const InventoryList = (props) => {
       ),
     },
     {
-      id: "numberOfDevice",
+      id: "numberOfDevices",
       label: "Number of Device",
       align: "center",
 
@@ -915,7 +915,7 @@ const InventoryList = (props) => {
             </div>
 
             {/*Card filter */}
-            <div className="text-sm font-bold mb-1">Month/Year :</div>
+            {/*<div className="text-sm font-bold mb-1">Month/Year :</div>*/}
 
             <div className="lg:flex lg:justify-between w-full gap-2">
               <form className="grid col-span-12 lg:grid-cols-12  gap-2 w-full">
