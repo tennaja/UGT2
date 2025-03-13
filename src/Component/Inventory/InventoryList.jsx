@@ -118,7 +118,7 @@ const InventoryList = (props) => {
   const [isSelectPort, setIsSelectPort] = useState(false);
   const [colorGraphTotalInven, setColorGraphTotalInven] = useState("#3CA12D33");
   const contentRef = useRef();
-console.log(filterPort)
+  console.log(filterPort);
   useEffect(() => {
     console.log(userData);
     if (inventoryInfoFilter && userData?.userGroup?.id) {
@@ -170,10 +170,10 @@ console.log(filterPort)
       setMinDate(dayjs(minDate));
       setSelectedStart(dayjs(DefaultminDateTemp));
       setSelectedEnd(dayjs(DefaultmaxDateTemp));
-      fecthDataInventoryInfo(
+      /*fecthDataInventoryInfo(
         dayjs(DefaultminDateTemp),
         dayjs(DefaultmaxDateTemp)
-      );
+      );*/
     }
   }, [inventoryInfoFilter]);
 
@@ -610,956 +610,6 @@ console.log(filterPort)
   };
   const styleTable = "px-6 py-4 font-semibold text-black text-center";
 
-  const mockChart = [
-    {
-      period: "1/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "2/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "3/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "4/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "5/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "6/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "7/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "8/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "9/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "10/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "11/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "12/2024",
-      RemainInven: 1000,
-      TotalInven: 500,
-      expireInven: 100,
-      inventoryUsage: 300,
-    },
-    {
-      period: "1/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "2/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "3/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "4/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "5/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "6/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "7/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "8/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "9/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "10/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "11/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "12/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    //3
-    {
-      period: "1/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "2/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "3/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "4/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "5/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "6/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "7/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "8/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "9/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "10/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "11/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "12/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    //4
-    {
-      period: "1/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "2/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "3/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "4/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "5/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "6/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "7/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "8/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "9/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "10/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "11/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "12/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    //5
-    {
-      period: "1/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "2/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "3/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "4/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "5/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "6/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "7/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "8/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "9/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "10/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "11/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "12/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    //6
-    {
-      period: "1/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "2/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "3/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "4/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "5/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "6/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "7/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "8/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "9/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "10/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "11/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "12/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    //7
-    {
-      period: "1/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "2/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "3/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "4/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "5/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "6/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "7/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "8/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "9/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "10/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "11/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "12/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    //8
-    {
-      period: "1/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "2/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "3/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "4/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "5/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "6/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "7/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "8/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "9/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "10/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "11/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "12/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    //9
-    {
-      period: "1/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "2/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "3/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "4/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "5/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "6/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "7/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "8/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "9/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "10/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "11/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "12/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    //10
-    {
-      period: "1/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "2/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "3/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "4/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "5/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "6/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "7/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "8/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "9/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "10/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "11/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-    {
-      period: "12/2025",
-      RemainInven: 0,
-      TotalInven: 0,
-      expireInven: 0,
-      inventoryUsage: 0,
-    },
-  ];
-
-  const mockDataTable = [
-    {
-      id: 107,
-      portfolioName: "Test Port 1",
-      UGT: "UGT-1",
-      numberOfDevice: 2,
-      startDate: "1/01/2024",
-      endDate: "31/01/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-    {
-      id: 102,
-      portfolioName: "Test Port 2",
-      UGT: "UGT-2",
-      numberOfDevice: 4,
-      startDate: "1/02/2024",
-      endDate: "31/02/2024",
-    },
-  ];
-
   const convertChartData = (chartData, convertUnit) => {
     //console.log(chartData);
     const new_overviewChartData = chartData.map((item) => {
@@ -1867,9 +917,156 @@ console.log(filterPort)
             {/*Card filter */}
             <div className="text-sm font-bold mb-1">Month/Year :</div>
 
-            <form className="grid col-span-12 lg:grid-cols-12 lg:grid-rows-none  sm:grid-rows-2 gap-2 ">
-              {/* <div className="col-span-3 px-2"></div> */}
-              {/* {!isPortManager && <div className="col-span-4"></div>} */}
+            <div className="lg:flex lg:justify-between w-full gap-2">
+              <form className="grid col-span-12 lg:grid-cols-12  gap-2 w-full">
+                <div className="lg:col-span-7 sm:col-span-5">
+                  <div className="flex">
+                    <div className="h-[40px] w-[200px] sm:ml-2">
+                      <MonthPicker
+                        value={selectedStart}
+                        setValue={setSelectedStart}
+                        mindate={minDate}
+                        maxdate={selectedEnd}
+                      />
+                    </div>
+                    <div className="ml-2 items-center">
+                      <label className="font-bold text-2xl mt-1">-</label>
+                    </div>
+                    <div className="ml-2 h-[40px] w-[200px]">
+                      <MonthPicker
+                        value={selectedEnd}
+                        setValue={setSelectedEnd}
+                        mindate={selectedStart}
+                        maxdate={maxDate}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-span-5">
+                  <div className="grid grid-cols-4 gap-2">
+                    <div className="col-span-2">
+                      <Form layout="horizontal" size="large">
+                        <Form.Item className="col-span-1  col-start-1">
+                          <Select
+                            size="large"
+                            value={fileterUGT}
+                            onChange={(value) => handleSelectUGT(value)}
+                          >
+                            {mockUGTDropdown.map((item, index) => (
+                              <Select.Option
+                                key={index}
+                                value={item.id}
+                                //disabled={item > latestYearHasData}
+                              >
+                                {item.name}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                      </Form>
+                    </div>
+                    <div className="col-span-2">
+                      <Button
+                        size="md"
+                        className="bg-[#ffff] border-2 border-[#4D6A00] text-[#4D6A00] text-base px-3 w-full h-[40px]"
+                        onClick={() => filterAction()}
+                      >
+                        <MdOutlineFilterAlt className="mr-1 text-base" />
+                        Filter
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <form className="grid col-span-12 lg:grid-cols-12 sm:grid-cols-6 gap-2 w-full">
+                <>
+                <div className="lg:col-span-4 sm:col-span-2 lg:col-start-3 sm:col-start-1">
+                    {/*<Controller
+                      name="portFilter"
+                      control={control}
+                      defaultValue={null}
+                      render={({ field }) => (
+                        <MultiselectInven
+                          {...field}
+                          id={"portFilter"}
+                          placeholder={"All"}
+                          typeSelect={2}
+                          options={filterPortList}
+                          valueProp={"id"}
+                          displayProp={"portfolioName"}
+                          onChangeInput={(value) => {
+                            handleChangeAssignFilter(value, "TYPE");
+                          }}
+                          wrapText={true}
+                          isSearchable={true}
+                          size="300px"
+                          value={filterPort}
+                        />
+                      )}
+                    />*/}
+                    <DropdownMultiSelect
+                      options={filterPortList}
+                      selectedValues={filterPort}
+                      setSelectedValues={setFilterPort}
+                      label="Select Portfolio"
+                      allowSelectAll={true} // ✅ เปลี่ยนเป็น false ถ้าไม่ต้องการ "All Devices"
+                      valueKey="id"
+                      labelKey="portfolioName"
+                      setSelectDropdown={setIsSelectPort}
+                      textSelectAll="All"
+                    />
+                  </div>
+                  <div className="lg:col-span-3 sm:col-span-2">
+                    <Form layout="horizontal" size="large">
+                      <Form.Item className="col-span-1 col-start-2 lg:w-[120px]">
+                        <Select
+                          size="large"
+                          value={overviewDataUnit}
+                          variant="borderless"
+                          onChange={(value) => handleChangeOverviewUnit(value)}
+                          className={
+                            /*`${!canViewSettlementDetail && "opacity-20"}`*/ ""
+                          }
+                        >
+                          {CONVERT_UNIT?.map((item, index) => (
+                            <Select.Option key={index} value={item.unit}>
+                              {item.unit}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </Form>
+                  </div>
+                  <div className="lg:col-span-3 sm:col-span-2">
+                    <SubMenuAction
+                      labelBtn={"Export"}
+                      actionList={[
+                        {
+                          icon: (
+                            <FaRegFilePdf className="text-red-700 w-[20px] h-[20px]" />
+                          ),
+                          label: "Export PDF",
+                          onClick: handleExportPDF,
+                          rightTxt: "",
+                          hide: false,
+                        },
+                        {
+                          icon: (
+                            <FaRegFileExcel className="text-green-700 w-[20px] h-[20px]" />
+                          ),
+                          label: "Export Excel",
+                          onClick: handleExportExcel,
+                          rightTxt: "",
+                          hide: false,
+                        },
+                      ]}
+                    />
+                  </div>
+                </>
+              </form>
+            </div>
+
+            {/*<form className="grid col-span-12 lg:grid-cols-12 lg:grid-rows-none  sm:grid-rows-2 gap-2 ">
               <div className="col-span-4 flex">
                 <div className="h-[40px] w-[160px] sm:ml-2">
                   <MonthPicker
@@ -1925,29 +1122,6 @@ console.log(filterPort)
                     </Button>
                   </div>
                   <div className="col-span-3">
-                    {/*<Controller
-                      name="portFilter"
-                      control={control}
-                      defaultValue={null}
-                      render={({ field }) => (
-                        <MultiselectInven
-                          {...field}
-                          id={"portFilter"}
-                          placeholder={"All"}
-                          typeSelect={2}
-                          options={filterPortList}
-                          valueProp={"id"}
-                          displayProp={"portfolioName"}
-                          onChangeInput={(value) => {
-                            handleChangeAssignFilter(value, "TYPE");
-                          }}
-                          wrapText={true}
-                          isSearchable={true}
-                          size="300px"
-                          value={filterPort}
-                        />
-                      )}
-                    />*/}
                     <DropdownMultiSelect
                       options={filterPortList}
                       selectedValues={filterPort}
@@ -1969,7 +1143,7 @@ console.log(filterPort)
                           variant="borderless"
                           onChange={(value) => handleChangeOverviewUnit(value)}
                           className={
-                            /*`${!canViewSettlementDetail && "opacity-20"}`*/ ""
+                             ""
                           }
                         >
                           {CONVERT_UNIT?.map((item, index) => (
@@ -2008,7 +1182,7 @@ console.log(filterPort)
                   </div>
                 </div>
               </div>
-            </form>
+            </form>*/}
 
             {/*<Card
               shadow="md"

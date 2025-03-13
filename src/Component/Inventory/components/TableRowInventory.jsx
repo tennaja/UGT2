@@ -248,7 +248,7 @@ if(isNumber == true && isScientific == false){
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
         >
-          {row.generation <= 0 ? "-" : renderValue(Number(row.generation))}
+          {/*row.generation <= 0 ? "-" : */renderValue(Number(row.generation))}
         </div>
       ),
     },
@@ -265,9 +265,9 @@ if(isNumber == true && isScientific == false){
               wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
             }}
           >
-            {row.totalInventory <= 0
+            {/*row.totalInventory <= 0
               ? "-"
-              : renderValue(Number(row.totalInventory))}
+              :*/ renderValue(Number(row.totalInventory))}
           </div>
         </div>
       ),
@@ -289,9 +289,9 @@ if(isNumber == true && isScientific == false){
               className="underline underline-offset-2 hover:cursor-pointer"
               onClick={() => handleModal(row.year,row.month)}
             >
-              {row.inventoryUsage <= 0
+              {/*row.inventoryUsage <= 0
                 ? "-"
-                : renderValue(Number(row.inventoryUsage))}
+                :*/ renderValue(Number(row.inventoryUsage))}
             </label>
           </div>
         </div>
@@ -310,9 +310,9 @@ if(isNumber == true && isScientific == false){
               wordWrap: "break-word",
             }}
           >
-            {row.expiredInventory <= 0
+            {/*row.expiredInventory <= 0
               ? "-"
-              : renderValue(Number(row.expiredInventory))}
+              :*/ renderValue(Number(row.expiredInventory))}
           </div>
         </div>
       ),
@@ -330,9 +330,9 @@ if(isNumber == true && isScientific == false){
               wordWrap: "break-word",
             }}
           >
-            {row.remainingInventory <= 0
+            {/*row.remainingInventory <= 0
               ? "-"
-              : renderValue(Number(row.remainingInventory))}
+              : */renderValue(Number(row.remainingInventory))}
           </div>
         </div>
       ),
