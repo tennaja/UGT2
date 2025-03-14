@@ -119,6 +119,7 @@ const InventoryList = (props) => {
   const [colorGraphTotalInven, setColorGraphTotalInven] = useState("#3CA12D33");
   const contentRef = useRef();
   console.log(filterPort);
+
   useEffect(() => {
     console.log(userData);
     if (inventoryInfoFilter && userData?.userGroup?.id) {
@@ -631,7 +632,7 @@ const InventoryList = (props) => {
     if (active && payload && payload.length) {
       //console.log(payload);
       const _period = payload?.[0]?.payload?.period;
-      const _remainInven =
+      /*const _remainInven =
         payload?.[0]?.payload?.remainingInventory > 0
           ? convertData(payload?.[0]?.payload?.remainingInventory)
           : "-";
@@ -646,7 +647,11 @@ const InventoryList = (props) => {
       const _inventoryUsage =
         payload?.[0]?.payload?.inventoryUsage > 0
           ? convertData(payload?.[0]?.payload?.inventoryUsage)
-          : "-";
+          : "-";*/
+        const _remainInven = convertData(payload?.[0]?.payload?.remainingInventory)
+        const _totalInven = convertData(payload?.[0]?.payload?.totalInventory)
+        const _expireInven = convertData(payload?.[0]?.payload?.expiredInventory)
+        const _inventoryUsage = convertData(payload?.[0]?.payload?.inventoryUsage)
 
       return (
         <div className="bg-[#F5F4E9] rounded p-3 text-left">
@@ -810,7 +815,7 @@ const InventoryList = (props) => {
           console.log(startDate,endDate)
           const fileName = formattedDateTime + ".pdf";
           const ugt = fileterUGT == 0?"All":fileterUGT == 1?"UGT-1":"UGT-2"
-          const fileNameNew = "InventoryInfo_"+monthStart+"_"+yearStart+"_"+monthEnd+"_"+yearEnd+"_"+ugt+"_" + formattedDateTime + ".pdf";
+          const fileNameNew = "InventoryInfo_"+monthStart+""+yearStart+"_"+monthEnd+""+yearEnd+"_"+ugt+"_" + formattedDateTime + ".pdf";
           openPDFInNewTab(base64Content, "application/pdf", fileNameNew);
           setIsGenerate(false);
         })

@@ -347,7 +347,7 @@ const InventoryDetail = (props) => {
           const [monthStart,yearStart] = startDate.split("/")
           const [monthEnd,yearEnd] = endDate.split("/")
           const fileName = formattedDateTime + ".pdf";
-          const fileNameNew = "InventoryByDevice_"+monthStart+"_"+yearStart+"_"+monthEnd+"_"+yearEnd+"_" + formattedDateTime + ".pdf";
+          const fileNameNew = "InventoryByDevice_"+monthStart+""+yearStart+"_"+monthEnd+""+yearEnd+"_" + formattedDateTime + ".pdf";
           openPDFInNewTab(base64Content, "application/pdf", fileNameNew);
           setIsGenerate(false);
         })

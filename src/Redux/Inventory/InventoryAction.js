@@ -468,10 +468,12 @@ export const downloadExcelInventoryDetail = (data, callback) => {
             // แปลงปี พ.ศ. เป็น ค.ศ.
             const buddhistYear = parseInt(year);
             const christianYear = buddhistYear - 543;
-
+            console.log(data.startDate,data.endDate)
+            const [monthStart,yearStart] = data.startDate.split("/")
+            const [monthEnd,yearEnd] = data.endDate.split("/")
             // สร้างผลลัพธ์ในรูปแบบ ddMMyyyy ค.ศ._HHmmss
             const result = `${day}${month}${christianYear}_${hours}_${minutes}_${seconds}`;
-            const filename = `InventoryByDevice_${data.startDate}_${data.endDate}_${day}${month}${christianYear}_${hours}${minutes}${seconds}.xlsx`;
+            const filename = `InventoryByDevice_${monthStart}${yearStart}_${monthEnd}${yearEnd}_${day}${month}${christianYear}_${hours}${minutes}${seconds}.xlsx`;
             link.download = filename
             link.click();
             URL.revokeObjectURL(link.href);
@@ -552,7 +554,9 @@ export const downloadExcelInventoryInfo = (data, callback) => {
 
             // สร้างผลลัพธ์ในรูปแบบ ddMMyyyy ค.ศ._HHmmss
             const result = `${day}${month}${christianYear}_${hours}_${minutes}_${seconds}`;
-            const filename = `InventoryInfo_${data.startDate}_${data.endDate}_${data.ugtGroupId == 0?"All_":data.ugtGroupId == 1?"UGT-1_":"UGT-2_"}${day}${month}${christianYear}_${hours}${minutes}${seconds}.xlsx`;
+            const [monthStart,yearStart] = data.startDate.split("/")
+            const [monthEnd,yearEnd] = data.endDate.split("/")
+            const filename = `InventoryInfo_${monthStart}${yearStart}_${monthEnd}${yearEnd}_${data.ugtGroupId == 0?"All_":data.ugtGroupId == 1?"UGT-1_":"UGT-2_"}${day}${month}${christianYear}_${hours}${minutes}${seconds}.xlsx`;
             link.download = filename
             link.click();
             URL.revokeObjectURL(link.href);
