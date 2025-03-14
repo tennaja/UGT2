@@ -22,6 +22,7 @@ const MonthPicker = ({mindate = dayjs("2023/1/1"),maxdate = dayjs("2025/12/31"),
             disabled = {isDisable} // ❌ ปิดการใช้งานทั้งหมด
             slotProps={{
                 textField: {
+                  inputProps: { readOnly: true }, // 🔹 ปิดการพิมพ์ในช่อง input
                   error:false,
                   sx: {
                     "& .MuiInputBase-root": {
