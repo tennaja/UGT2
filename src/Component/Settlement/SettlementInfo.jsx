@@ -702,7 +702,7 @@ const SettlementInfo = ({
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
         >
-          {row.periodOfProductionEndDate ? "-" : setNewFormatDate(row.periodOfProductionEndDate)}
+          {row.periodOfProductionEndDate == null? "-" : setNewFormatDate(row.periodOfProductionEndDate)}
         </div>
       ),
     },
@@ -802,7 +802,7 @@ const SettlementInfo = ({
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
         >
-          {row.periodOfProductionEndDate ? "-" : setNewFormatDate(row.periodOfProductionEndDate)}
+          {row.periodOfProductionEndDate == null? "-" : setNewFormatDate(row.periodOfProductionEndDate)}
         </div>
       ),
     },
@@ -868,7 +868,7 @@ const SettlementInfo = ({
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
         >
-          {row.periodOfProductionEndDate ? "-" : setNewFormatDate(row.periodOfProductionEndDate)}
+          {row.periodOfProductionEndDate == null? "-" : setNewFormatDate(row.periodOfProductionEndDate)}
         </div>
       ),
     },
