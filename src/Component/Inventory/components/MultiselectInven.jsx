@@ -181,11 +181,11 @@ const MultiselectInven = (props) => {
         }),
       }}
       classNames={{
-        control: (state) => "border-1 cursor-pointer shadow-none rounded",
+        control: (state) => "border-1 cursor-pointer shadow-none rounded h-[40px]",
         valueContainer: (state) => " cursor-pointer  flex mx-0 pl-2",
         indicatorsContainer: (state) => " cursor-pointer  flex mx-0  gap-0 p-0",
         clearIndicator: (state) => " cursor-pointer  p-0",
-        dropdownIndicator: (state) => " cursor-pointer  p-1",
+        dropdownIndicator: (state) => " cursor-pointer  p-1 ",
         // option:(state)=> `cursor-pointer bg-green-500`
       }}
     />

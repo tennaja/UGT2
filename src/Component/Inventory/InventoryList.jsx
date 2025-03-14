@@ -148,6 +148,7 @@ const InventoryList = (props) => {
 
   useEffect(() => {
     if (inventoryInfoFilter && Object.keys(inventoryInfoFilter).length !== 0) {
+        console.log("Fetch filter")
       const [monthMax, yearMax] = inventoryInfoFilter.defaultEnd.split("/");
       const [monthMin, yearMin] = inventoryInfoFilter.defaultStart.split("/");
       const startMaxday = new Date(yearMax, monthMax, 0).getDate();
@@ -789,17 +790,27 @@ const InventoryList = (props) => {
           const formattedDateTime = `${now
             .getDate()
             .toString()
-            .padStart(2, "0")}_${(now.getMonth() + 1)
+            .padStart(2, "0")}${(now.getMonth() + 1)
             .toString()
-            .padStart(2, "0")}_${now.getFullYear()}_${now
+            .padStart(2, "0")}${now.getFullYear()}_${now
             .getHours()
             .toString()
-            .padStart(2, "0")}_${now
+            .padStart(2, "0")}${now
             .getMinutes()
             .toString()
-            .padStart(2, "0")}_${now.getSeconds().toString().padStart(2, "0")}`;
+            .padStart(2, "0")}${now.getSeconds().toString().padStart(2, "0")}`;
+            const startDate =
+          String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
+          "/" +
+          selectedStart.$y;
+        const endDate =
+          String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") + "/" + selectedEnd.$y;
+          const [monthStart,yearStart] = startDate.split("/")
+          const [monthEnd,yearEnd] = endDate.split("/")
+          console.log(startDate,endDate)
           const fileName = formattedDateTime + ".pdf";
-          const fileNameNew = "Export_PDF" + formattedDateTime + ".pdf";
+          const ugt = fileterUGT == 0?"All":fileterUGT == 1?"UGT-1":"UGT-2"
+          const fileNameNew = "InventoryInfo_"+monthStart+"_"+yearStart+"_"+monthEnd+"_"+yearEnd+"_"+ugt+"_" + formattedDateTime + ".pdf";
           openPDFInNewTab(base64Content, "application/pdf", fileNameNew);
           setIsGenerate(false);
         })
@@ -1008,7 +1019,7 @@ const InventoryList = (props) => {
                       options={filterPortList}
                       selectedValues={filterPort}
                       setSelectedValues={setFilterPort}
-                      label="Select Portfolio"
+                      label="Port Name"
                       allowSelectAll={true} // ✅ เปลี่ยนเป็น false ถ้าไม่ต้องการ "All Devices"
                       valueKey="id"
                       labelKey="portfolioName"

@@ -682,9 +682,7 @@ const DataTableInventory = ({
                       >
                         <strong>
                           {" "}
-                          {totalremainginven
-                            ? renderValue(Number(totalremainginven))
-                            : ""}
+                          {renderValue(Number(totalremainginven))}
                         </strong>
                       </TableCell>
                     );

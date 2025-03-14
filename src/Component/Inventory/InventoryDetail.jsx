@@ -338,8 +338,16 @@ const InventoryDetail = (props) => {
             .getMinutes()
             .toString()
             .padStart(2, "0")}_${now.getSeconds().toString().padStart(2, "0")}`;
+            const startDate =
+          String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
+          "/" +
+          selectedStart.$y;
+        const endDate =
+          String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") + "/" + selectedEnd.$y;
+          const [monthStart,yearStart] = startDate.split("/")
+          const [monthEnd,yearEnd] = endDate.split("/")
           const fileName = formattedDateTime + ".pdf";
-          const fileNameNew = "Export_PDF" + formattedDateTime + ".pdf";
+          const fileNameNew = "InventoryByDevice_"+monthStart+"_"+yearStart+"_"+monthEnd+"_"+yearEnd+"_" + formattedDateTime + ".pdf";
           openPDFInNewTab(base64Content, "application/pdf", fileNameNew);
           setIsGenerate(false);
         })
@@ -722,7 +730,7 @@ const InventoryDetail = (props) => {
                             <MultiselectInven
                               {...field}
                               id={"statusFilter"}
-                              placeholder={"All"}
+                              placeholder={"Find Status"}
                               typeSelect={2}
                               options={mockStatus}
                               valueProp={"id"}
