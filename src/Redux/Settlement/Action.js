@@ -1924,7 +1924,7 @@ export const getRemainingEnergyPopupFinal = (portfolioId,year,month,utilityId,ug
 
     return async (dispatch) => {
         await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
-            dispatch(_getRemainingEnergyPopupInitial(response.data));
+            dispatch(_getRemainingEnergyPopupFinall(response.data));
             hideLoading()
         }, (error) => {
             dispatch(failRequest(error.message))

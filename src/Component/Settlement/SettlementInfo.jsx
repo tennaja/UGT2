@@ -662,7 +662,7 @@ const SettlementInfo = ({
     {
       id: "remainingEnergyAttribute",
       label: `Remaining Energy Attribute (${unit})`,
-      align: "right",
+      align: "center",
       render: (row) => (
         <div
           className=" break-words pr-5"
@@ -677,7 +677,7 @@ const SettlementInfo = ({
     {
       id: "periodOfProductionStartDate",
       label: `Period Start`,
-      align: "right",
+      align: "center",
       render: (row) => (
         <div
           className=" break-words pr-5"
@@ -694,7 +694,7 @@ const SettlementInfo = ({
     {
       id: "periodOfProductionEndDate",
       label: `Period End`,
-      align: "right",
+      align: "center",
       render: (row) => (
         <div
           className=" break-words pr-5"
@@ -2430,7 +2430,7 @@ const SettlementInfo = ({
             withCloseButton={false}
             centered
             closeOnClickOutside={false}
-            size={"60%"}
+            size={"70%"}
           >
             <div className="flex flex-col px-10 pt-4 pb-3">
               <div className="text-left font-bold text-xl">
@@ -2441,7 +2441,7 @@ const SettlementInfo = ({
                 <DataTableSettlement
                   data={popupRemainingEnergyInitial.data ? popupRemainingEnergyInitial.data : []}
                   columns={popupRemaingEnergy}
-                  isTotal={"Total Remaining"}
+                  isTotal={"Total Inven Remaining"}
                   unit={unit}
                   convertUnit={convertUnit}
                 />

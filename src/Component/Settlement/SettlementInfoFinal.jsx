@@ -695,7 +695,7 @@ const SettlementInfoFinal = ({
     {
       id: "remainingEnergyAttribute",
       label: `Remaining Energy Attribute (${unit})`,
-      align: "right",
+      align: "center",
       render: (row) => (
         <div
           className=" break-words pr-5"
@@ -710,7 +710,7 @@ const SettlementInfoFinal = ({
     {
       id: "periodOfProductionStartDate",
       label: `Period Start`,
-      align: "right",
+      align: "center",
       render: (row) => (
         <div
           className=" break-words pr-5"
@@ -727,7 +727,7 @@ const SettlementInfoFinal = ({
     {
       id: "periodOfProductionEndDate",
       label: `Period End`,
-      align: "right",
+      align: "center",
       render: (row) => (
         <div
           className=" break-words pr-5"
@@ -1787,7 +1787,7 @@ const SettlementInfoFinal = ({
 
   const handlePopupUnmatchedEnergy =()=>{
       console.log()
-      dispatch(getUnmatchedEnergyPopupInitial(
+      dispatch(getUnmatchedEnergyPopupFinal(
         portfolioId,
           settlementYear,
           settlementMonth,
@@ -1797,7 +1797,7 @@ const SettlementInfoFinal = ({
     }
 
   const hideData = false;
-  console.log(settlemtDetailDevice);
+  console.log(popupUnmatchedEnergy);
   //console.log(settlementDetailMonthlyDevice.settlementPeriod )
   console.log(settlementMonthlySummaryData);
   return (
@@ -2945,7 +2945,7 @@ const SettlementInfoFinal = ({
               withCloseButton={false}
               centered
               closeOnClickOutside={false}
-              size={"60%"}
+              size={"70%"}
             >
               <div className="flex flex-col px-10 pt-4 pb-3">
                 <div className="text-left font-bold text-xl">
@@ -2960,7 +2960,7 @@ const SettlementInfoFinal = ({
                         : []
                     }
                     columns={popupRemaingEnergy}
-                    isTotal={"Total Remaining"}
+                    isTotal={"Total Inven Remaining"}
                     unit={unit}
                   convertUnit={convertUnit}
                   />

@@ -186,7 +186,7 @@ const DataTableSettlement = ({
         setPerActualMatchSubscriber(perActualMatch);
       }
       
-    } else if (isTotal === "Total Remaining"){
+    } else if (isTotal === "Total Inven Remaining"){
       const total = paginatedData.reduce(
         (acc, row) => acc + (row.remainingEnergyAttribute || 0),
         0
@@ -864,7 +864,7 @@ if (checkStartDate) {
                           padding: "10px",
                         }}
                       >
-                        <strong> {isTotal === "Total Remaining" || isTotal === "Total Unmatched" || isTotal === "Total Inven Supply"?"Total":isTotal} </strong>
+                        <strong> {isTotal === "Total Inven Remaining" || isTotal === "Total Unmatched" || isTotal === "Total Inven Supply"?"Total":isTotal} </strong>
                       </TableCell>
                     );
                   } else if (isTotal === "Total Capacity" && index === 3) {
@@ -1092,7 +1092,7 @@ if (checkStartDate) {
                       );
                     }
 
-                  } else if(isTotal === "Total Remaining" && index == 1){
+                  } else if(isTotal === "Total Inven Remaining" && index === 1){
                     return (
                       <TableCell
                         key={`footer-total-capacity`}

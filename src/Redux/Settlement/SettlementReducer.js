@@ -405,11 +405,11 @@ export const SettlementReducer = (state = initialstate, action) => {
             ...state,
             popupInventorySupplyUsageInitaial2: action.payload
         }
-        case GET_POPUP_REMAINING_ENERGY_FINAL: return {
+        case GET_POPUP_UNMATCHED_ENERGY_FINAL: return {
             ...state,
             popupUnmatchedEnergyFinal: action.payload
         }
-        case GET_POPUP_REMAINING_ENERGY_INITIAL: return {
+        case GET_POPUP_UNMATCHED_ENERGY_INITIAL: return {
             ...state,
             popupUnmatchedEnergyInitial: action.payload
         }
