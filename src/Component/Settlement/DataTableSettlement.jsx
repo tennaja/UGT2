@@ -76,6 +76,10 @@ const DataTableSettlement = ({
   const [actualGenerationSubscriber,setActualGenerationSubscriber] = useState()
   const [inventoryMatchSubscriber,setInventoryMatchSubscriber] = useState()
   const [perActualMatchSubscriber,setPerActualMatchSubscriber] = useState()
+  const [totalRemaining,setTotalRemaining] = useState()
+  const [totalUnmatched,setTotalUnmatched] = useState()
+  const [totalInventorySupply1,setTotalInventorySupply1] = useState()
+  const [totalInventorySupply2,setTotalInventorySupply2] = useState()
 
   // useEffect(() => {
   //   return () => dispatch({ type: "RESET_STATE" });
@@ -182,6 +186,24 @@ const DataTableSettlement = ({
         setPerActualMatchSubscriber(perActualMatch);
       }
       
+    } else if (isTotal === "Total Remaining"){
+      const total = paginatedData.reduce(
+        (acc, row) => acc + (row.remainingEnergyAttribute || 0),
+        0
+      );
+      setTotalRemaining(renderValues(total));
+    } else if (isTotal === "Total Unmatched"){
+      const total = paginatedData.reduce(
+        (acc, row) => acc + (row.unmatchedEnergy || 0),
+        0
+      );
+      setTotalUnmatched(renderValues(total));
+    } else if (isTotal === "Total Inven Supply"){
+      const total = paginatedData.reduce(
+        (acc, row) => acc + (row.matched || 0),
+        0
+      );
+      setTotalInventorySupply1(renderValues(total));
     }
   }, [data]);
 
@@ -801,112 +823,9 @@ if (checkStartDate) {
                         key={column.id}
                         align={column.align ? column.align : "center"}
                         style={{ maxWidth: column.maxWidth }}
-                        // style={{
-                        //   minWidth: index === 0 ? "200px" : "100px",
-                        //   maxWidth: index === 0 ? "300px" : "100px",
-                        //   whiteSpace: "hidden", // Prevents text from wrapping
-                        //   padding: "15px 5px 15px 10px",
-                        // }}
                       >
                         {renderCell(row, column)}
 
-                        {/* {column.render ? (
-                          column.render(row)
-                        ) : (
-                          <>
-                            {!isStartPort &&
-                            editDatetime &&
-                            (column.id === "startDate" ||
-                              column.id === "retailESAContractStartDate") ? (
-                              <></>
-                            ) : editDatetime &&
-                              (column.id === "endDate" ||
-                                column.id === "retailESAContractEndDate") ? (
-                              <></>
-                            ) : column.id === "capacity" ? (
-                              <span>{row[column.id].toFixed(2)}</span>
-                            ) : column.id === "allocateEnergyAmount" ? (
-                              <span>{row[column.id].toFixed(2)}</span>
-                            ) : (
-                              <span>{row[column.id]}</span>
-                            )}
-                          </>
-                        )}
-
-                        {!isStartPort &&
-                          editDatetime &&
-                          (column.id === "startDate" ||
-                            column.id === "retailESAContractStartDate") && (
-                            <Controller
-                              name={"startDate" + "_" + row.id}
-                              control={control}
-                              rules={
-                                {
-                                  // required: "This field is required",
-                                }
-                              }
-                              render={({ field }) => (
-                                <DatePicker
-                                  {...field}
-                                  id={"startDate" + "_" + row.id}
-                                  formatDate={"d/M/yyyy"}
-                                  error={errors["startDate" + "_" + row.id]}
-                                  onCalDisableDate={(newValue) => {
-                                    return requestedEffectiveDateDisableDateCal(
-                                      newValue,
-                                      row.id
-                                    );
-                                  }}
-                                  onChangeInput={(newValue) => {
-                                    const newDate = format(
-                                      newValue,
-                                      "dd/MM/yyyy"
-                                    );
-                                    dateChange(newDate, row.id, "startDate");
-                                  }}
-                                  validate={" *"}
-                                  // ... other props
-                                />
-                              )}
-                            />
-                          )}
-
-                        {editDatetime &&
-                          (column.id === "endDate" ||
-                            column.id === "retailESAContractEndDate") && (
-                            <Controller
-                              name={"endDate" + "_" + row.id}
-                              control={control}
-                              rules={
-                                {
-                                  // required: "This field is required",
-                                }
-                              }
-                              render={({ field }) => (
-                                <DatePicker
-                                  {...field}
-                                  id={"endDate" + "_" + row.id}
-                                  formatDate={"d/M/yyyy"}
-                                  error={errors["endDate" + "_" + row.id]}
-                                  onCalDisableDate={(newValue) => {
-                                    return requestedEffectiveDateDisableDateCal(
-                                      newValue,
-                                      row.id
-                                    );
-                                  }}
-                                  onChangeInput={(newValue) => {
-                                    const newDate = format(
-                                      newValue,
-                                      "dd/MM/yyyy"
-                                    );
-                                    dateChange(newDate, row.id, "endDate");
-                                  }}
-                                  validate={" *"}
-                                  // ... other props
-                                />
-                              )}
-                            />
-                          )} */}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -945,7 +864,7 @@ if (checkStartDate) {
                           padding: "10px",
                         }}
                       >
-                        <strong> {isTotal} </strong>
+                        <strong> {isTotal === "Total Remaining" || isTotal === "Total Unmatched" || isTotal === "Total Inven Supply"?"Total":isTotal} </strong>
                       </TableCell>
                     );
                   } else if (isTotal === "Total Capacity" && index === 3) {
@@ -1173,7 +1092,61 @@ if (checkStartDate) {
                       );
                     }
 
-                  }else {
+                  } else if(isTotal === "Total Remaining" && index == 1){
+                    return (
+                      <TableCell
+                        key={`footer-total-capacity`}
+                        style={{
+                          textAlign: "center",
+                          backgroundColor: "#F3F6F9",
+                          padding: "1rem",
+                        }}
+                      >
+                        <strong className=" pr-5">
+                          {" "}
+                          {Number(totalRemaining) > 0 
+                            ? totalRemaining
+                            : ""}
+                        </strong>
+                      </TableCell>
+                    );
+                  } else if (isTotal === "Total Unmatched" && index == 1){
+                    return (
+                      <TableCell
+                        key={`footer-total-capacity`}
+                        style={{
+                          textAlign: "center",
+                          backgroundColor: "#F3F6F9",
+                          padding: "1rem",
+                        }}
+                      >
+                        <strong className=" pr-5">
+                          {" "}
+                          {Number(totalUnmatched) > 0 
+                            ? totalUnmatched
+                            : ""}
+                        </strong>
+                      </TableCell>
+                    );
+                  } else if (isTotal === "Total Inven Supply" && index === 1){
+                    return (
+                      <TableCell
+                        key={`footer-total-capacity`}
+                        style={{
+                          textAlign: "center",
+                          backgroundColor: "#F3F6F9",
+                          padding: "1rem",
+                        }}
+                      >
+                        <strong className=" pr-5">
+                          {" "}
+                          {Number(totalInventorySupply1) > 0 
+                            ? totalInventorySupply1
+                            : ""}
+                        </strong>
+                      </TableCell>
+                    );
+                  } else {
                     return (
                       <TableCell
                         key={`footer-empty-${index}`}

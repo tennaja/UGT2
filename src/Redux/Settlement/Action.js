@@ -47,7 +47,10 @@ import {
     LOAD_DATA_INFO_REVISION,
     LOAD_DATA_DETAIL_REVISION,
     LOAD_DATA_DETAIL_REVISION_FILE,
-    LOAD_DATA_SAVE
+    LOAD_DATA_SAVE,
+    POPUP_REMAINING_ENERGY,
+    POPUP_INVENTORY_SUPPLY_USAGE,
+    POPUP_UNMATCHED_ENERGY
 } from '../../Constants/ServiceURL'
 
 import {
@@ -107,7 +110,15 @@ import {
     GET_LOAD_DATA_REVISION,
     GET_LOAD_DATA_DETAIL_REVISION,
     GET_LOAD_DATA_DETAIL_REVISION_FILE,
-    GET_LOAD_DATA_SAVE
+    GET_LOAD_DATA_SAVE,
+    GET_POPUP_REMAINING_ENERGY_FINAL,
+    GET_POPUP_REMAINING_ENERGY_INITIAL,
+    GET_POPUP_INVENTORY_SUPPLY_USEAGE_FINAL1,
+    GET_POPUP_INVENTORY_SUPPLY_USEAGE_INITIAL1,
+    GET_POPUP_INVENTORY_SUPPLY_USEAGE_FINAL2,
+    GET_POPUP_INVENTORY_SUPPLY_USEAGE_INITIAL2,
+    GET_POPUP_UNMATCHED_ENERGY_FINAL,
+    GET_POPUP_UNMATCHED_ENERGY_INITIAL
 } from "../ActionType"
 
 import { getHeaderConfig } from "../../Utils/FuncUtils"
@@ -1791,6 +1802,216 @@ export const LoadDataSave = (data, callback) => {
       );
     };
   };
+
+//Popup Initial
+export const _getRemainingEnergyPopupInitial = (data) => {
+    
+    return {
+        type: GET_POPUP_REMAINING_ENERGY_INITIAL,
+        payload: data
+    }
+}
+
+export const getRemainingEnergyPopupInitial = (portfolioId,year,month,utilityId,ugtGroup) => {
+
+    const URL = `${POPUP_REMAINING_ENERGY}/${ugtGroup}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=true&utilityId=${utilityId}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getRemainingEnergyPopupInitial(response.data));
+            hideLoading()
+        }, (error) => {
+            dispatch(failRequest(error.message))
+            hideLoading()
+        });
+    }
+
+    // return _getInventorySupplyUsage(inventorySupplyUsageData)
+}
+
+export const _getInventorySupplyPopupInitial1 = (data) => {
+    
+    return {
+        type: GET_POPUP_INVENTORY_SUPPLY_USEAGE_INITIAL1,
+        payload: data
+    }
+}
+
+export const getInventorySupplyPopupInitial1 = (portfolioId,year,month,utilityId) => {
+
+    const URL = `${POPUP_INVENTORY_SUPPLY_USAGE}/1?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=true&utilityId=${utilityId}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getInventorySupplyPopupInitial1(response.data));
+            hideLoading()
+        }, (error) => {
+            dispatch(failRequest(error.message))
+            hideLoading()
+        });
+    }
+
+    // return _getInventorySupplyUsage(inventorySupplyUsageData)
+}
+
+export const _getInventorySupplyPopupInitial2 = (data) => {
+    
+    return {
+        type: GET_POPUP_INVENTORY_SUPPLY_USEAGE_INITIAL2,
+        payload: data
+    }
+}
+
+export const getInventorySupplyPopupInitial2 = (portfolioId,year,month,utilityId) => {
+
+    const URL = `${POPUP_INVENTORY_SUPPLY_USAGE}/2?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=true&utilityId=${utilityId}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getInventorySupplyPopupInitial2(response.data));
+            hideLoading()
+        }, (error) => {
+            dispatch(failRequest(error.message))
+            hideLoading()
+        });
+    }
+
+    // return _getInventorySupplyUsage(inventorySupplyUsageData)
+}
+
+export const _getUnmatchedEnergyPopupInitial = (data) => {
+    
+    return {
+        type: GET_POPUP_UNMATCHED_ENERGY_INITIAL,
+        payload: data
+    }
+}
+
+export const getUnmatchedEnergyPopupInitial = (portfolioId,year,month,utilityId,ugtGroup) => {
+
+    const URL = `${POPUP_UNMATCHED_ENERGY}/${ugtGroup}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=true&utilityId=${utilityId}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getUnmatchedEnergyPopupInitial(response.data));
+            hideLoading()
+        }, (error) => {
+            dispatch(failRequest(error.message))
+            hideLoading()
+        });
+    }
+
+    // return _getInventorySupplyUsage(inventorySupplyUsageData)
+}
+
+//Popup Final
+export const _getRemainingEnergyPopupFinall = (data) => {
+    
+    return {
+        type: GET_POPUP_REMAINING_ENERGY_FINAL,
+        payload: data
+    }
+}
+
+export const getRemainingEnergyPopupFinal = (portfolioId,year,month,utilityId,ugtGroup) => {
+
+    const URL = `${POPUP_REMAINING_ENERGY}/${ugtGroup}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=false&utilityId=${utilityId}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getRemainingEnergyPopupInitial(response.data));
+            hideLoading()
+        }, (error) => {
+            dispatch(failRequest(error.message))
+            hideLoading()
+        });
+    }
+
+    // return _getInventorySupplyUsage(inventorySupplyUsageData)
+}
+
+export const _getInventorySupplyPopupFinal1 = (data) => {
+    
+    return {
+        type: GET_POPUP_INVENTORY_SUPPLY_USEAGE_FINAL1,
+        payload: data
+    }
+}
+
+export const getInventorySupplyPopupFinal1 = (portfolioId,year,month,utilityId) => {
+
+    const URL = `${POPUP_INVENTORY_SUPPLY_USAGE}/1?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=false&utilityId=${utilityId}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getInventorySupplyPopupFinal1(response.data));
+            hideLoading()
+        }, (error) => {
+            dispatch(failRequest(error.message))
+            hideLoading()
+        });
+    }
+
+    // return _getInventorySupplyUsage(inventorySupplyUsageData)
+}
+
+export const _getInventorySupplyPopupFinal2 = (data) => {
+    
+    return {
+        type: GET_POPUP_INVENTORY_SUPPLY_USEAGE_FINAL2,
+        payload: data
+    }
+}
+
+export const getInventorySupplyPopupFinal2 = (portfolioId,year,month,utilityId) => {
+
+    const URL = `${POPUP_INVENTORY_SUPPLY_USAGE}/2?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=false&utilityId=${utilityId}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getInventorySupplyPopupFinal2(response.data));
+            hideLoading()
+        }, (error) => {
+            dispatch(failRequest(error.message))
+            hideLoading()
+        });
+    }
+
+    // return _getInventorySupplyUsage(inventorySupplyUsageData)
+}
+
+export const _getUnmatchedEnergyPopupFinal = (data) => {
+    
+    return {
+        type: GET_POPUP_UNMATCHED_ENERGY_FINAL,
+        payload: data
+    }
+}
+
+export const getUnmatchedEnergyPopupFinal = (portfolioId,year,month,utilityId,ugtGroup) => {
+
+    const URL = `${POPUP_UNMATCHED_ENERGY}/${ugtGroup}?portfolioId=${portfolioId}&year=${year}&month=${month}&IsInitial=false&utilityId=${utilityId}`
+    console.log('URL', URL)
+
+    return async (dispatch) => {
+        await axios.get(URL, { ...getHeaderConfig() }).then((response) => {
+            dispatch(_getUnmatchedEnergyPopupFinal(response.data));
+            hideLoading()
+        }, (error) => {
+            dispatch(failRequest(error.message))
+            hideLoading()
+        });
+    }
+
+    // return _getInventorySupplyUsage(inventorySupplyUsageData)
+}
 
 
 // ฟังก์ชันแปลง Base64 เป็น ArrayBuffer

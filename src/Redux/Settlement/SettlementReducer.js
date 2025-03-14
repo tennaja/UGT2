@@ -56,7 +56,15 @@ import {
     GET_LOAD_DATA_REVISION,
     GET_LOAD_DATA_DETAIL_REVISION,
     GET_LOAD_DATA_DETAIL_REVISION_FILE,
-    GET_LOAD_DATA_SAVE
+    GET_LOAD_DATA_SAVE,
+    GET_POPUP_REMAINING_ENERGY_FINAL,
+    GET_POPUP_REMAINING_ENERGY_INITIAL,
+    GET_POPUP_INVENTORY_SUPPLY_USEAGE_FINAL1,
+    GET_POPUP_INVENTORY_SUPPLY_USEAGE_INITIAL1,
+    GET_POPUP_INVENTORY_SUPPLY_USEAGE_FINAL2,
+    GET_POPUP_INVENTORY_SUPPLY_USEAGE_INITIAL2,
+    GET_POPUP_UNMATCHED_ENERGY_FINAL,
+    GET_POPUP_UNMATCHED_ENERGY_INITIAL
 } from "../ActionType"
 
 const initialstate = {
@@ -117,6 +125,14 @@ const initialstate = {
     loadDataDetailRevision:[],
     loadDataDetailRevisionFile:[],
     loadDataSave:{},
+    popupRemainingEnergyInitial:{},
+    popupRemainingEnergyFinal:{},
+    popupInventorySupplyUsageInitaial1:{},
+    popupInventorySupplyUsageFinal1:{},
+    popupInventorySupplyUsageInitaial2:{},
+    popupInventorySupplyUsageFinal2:{},
+    popupUnmatchedEnergyFinal:{},
+    popupUnmatchedEnergyInitial:{},
 }
 
 export const SettlementReducer = (state = initialstate, action) => {
@@ -365,7 +381,38 @@ export const SettlementReducer = (state = initialstate, action) => {
             ...state,
             settlementDashboard : action.payload
         }
-
+        case GET_POPUP_REMAINING_ENERGY_INITIAL: return {
+            ...state,
+            popupRemainingEnergyInitial: action.payload
+        }
+        case GET_POPUP_REMAINING_ENERGY_FINAL: return {
+            ...state,
+            popupRemainingEnergyFinal: action.payload
+        }
+        case GET_POPUP_INVENTORY_SUPPLY_USEAGE_FINAL1: return {
+            ...state,
+            popupInventorySupplyUsageFinal1: action.payload
+        }
+        case GET_POPUP_INVENTORY_SUPPLY_USEAGE_INITIAL1: return {
+            ...state,
+            popupInventorySupplyUsageInitaial1: action.payload
+        }
+        case GET_POPUP_INVENTORY_SUPPLY_USEAGE_FINAL2: return {
+            ...state,
+            popupInventorySupplyUsageFinal2: action.payload
+        }
+        case GET_POPUP_INVENTORY_SUPPLY_USEAGE_INITIAL2: return {
+            ...state,
+            popupInventorySupplyUsageInitaial2: action.payload
+        }
+        case GET_POPUP_REMAINING_ENERGY_FINAL: return {
+            ...state,
+            popupUnmatchedEnergyFinal: action.payload
+        }
+        case GET_POPUP_REMAINING_ENERGY_INITIAL: return {
+            ...state,
+            popupUnmatchedEnergyInitial: action.payload
+        }
         default: return state
     }
 }

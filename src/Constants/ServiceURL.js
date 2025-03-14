@@ -185,6 +185,11 @@ export const LOAD_DATA_DETAIL_REVISION = `${DOMAIN_URL}/ugt/v1/portfolio-view-se
 export const LOAD_DATA_DETAIL_REVISION_FILE = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/GetLoadDataInputFileList`;
 export const LOAD_DATA_SAVE = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/CreateOrUpdateLoadDataInputFile`;
 
+//Settlement Popup
+export const POPUP_REMAINING_ENERGY = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/monthly/remainingEnergyAttribute`;
+export const POPUP_INVENTORY_SUPPLY_USAGE = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/monthly/inventorySupplyUsage`;
+export const POPUP_UNMATCHED_ENERGY = `${DOMAIN_URL}/ugt/v1/portfolio-view-settlement/monthly/unmatchedEnergy`;
+
 //Inventory
 export const INVENTORY_LIST = `${DOMAIN_URL}/ugt/v1/inventory-management/portfolio-list`;
 export const INVENTORY_INFO_FILTER = `${DOMAIN_URL}/ugt/v1/inventory-management/inventoryInfoDateList`;

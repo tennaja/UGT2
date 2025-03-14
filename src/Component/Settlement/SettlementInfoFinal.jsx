@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { Button, Divider, Table, ScrollArea, Card } from "@mantine/core";
+import { Button, Divider, Table, ScrollArea, Card, Modal } from "@mantine/core";
 import { Form, Select } from "antd";
 import {
   getSettlementMonthlySummaryFinal,
@@ -12,6 +12,10 @@ import {
   getSettlementMonthlyDetailSubscriberFinal,
   getSettlementDeviceTableFinal,
   getSettlementSubscriberTableFinal,
+  getRemainingEnergyPopupFinal,
+  getInventorySupplyPopupFinal2,
+  getInventorySupplyPopupFinal1,
+  getUnmatchedEnergyPopupFinal
 } from "../../Redux/Settlement/Action";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -119,23 +123,25 @@ const SettlementInfoFinal = ({
         isShowGotoConfirm = false;
         isShowMainDetail = true;
       }
-    } else if(userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
-      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER ){
-        if (isShowDetail) {
-          isShowGotiVerify = false;
-          isShowSettlementProgress = false;
-          isShowAwaitConfirm = false;
-          isShowGotoConfirm = false;
-          isShowMainDetail = true;
-        } else {
-          isShowGotiVerify = false;
-          isShowSettlementProgress = true;
-          isShowAwaitConfirm = false;
-          isShowGotoConfirm = false;
-          isShowMainDetail = false;
-          hideBtn(true);
-        }
-    }else {
+    } else if (
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_SIGNATORY ||
+      userData?.userGroup?.id == USER_GROUP_ID.UGT_REGISTANT_VERIFIER
+    ) {
+      if (isShowDetail) {
+        isShowGotiVerify = false;
+        isShowSettlementProgress = false;
+        isShowAwaitConfirm = false;
+        isShowGotoConfirm = false;
+        isShowMainDetail = true;
+      } else {
+        isShowGotiVerify = false;
+        isShowSettlementProgress = true;
+        isShowAwaitConfirm = false;
+        isShowGotoConfirm = false;
+        isShowMainDetail = false;
+        hideBtn(true);
+      }
+    } else {
       isShowGotiVerify = false;
       isShowSettlementProgress = true;
       isShowAwaitConfirm = false;
@@ -157,10 +163,10 @@ const SettlementInfoFinal = ({
         isShowMainDetail = true;
       } else {
         isShowGotiVerify = false;
-      isShowSettlementProgress = false;
-      isShowAwaitConfirm = true;
-      isShowGotoConfirm = false;
-      isShowMainDetail = false;
+        isShowSettlementProgress = false;
+        isShowAwaitConfirm = true;
+        isShowGotoConfirm = false;
+        isShowMainDetail = false;
       }
     } else if (
       userData?.userGroup?.id == USER_GROUP_ID.WHOLE_SALEER_ADMIN ||
@@ -228,6 +234,17 @@ const SettlementInfoFinal = ({
     (state) => state.settlement.settlementSubscriberTableFinal
   );
 
+  const popupRemainingEnergyFinal = useSelector(
+    (state) => state.settlement.popupRemainingEnergyFinal
+  );
+  const popupInventorySupply1 = useSelector(
+    (state) => state.settlement.popupInventorySupplyUsageFinal1
+  );
+  const popupInventorySupply2 = useSelector(
+    (state) => state.settlement.popupInventorySupplyUsageFinal2
+  );
+  const popupUnmatchedEnergy = useSelector((state)=>state.settlement.popupUnmatchedEnergyFinal)
+
   console.log(settlementDeviceDataFinal, settlementSubscriberDataFinal);
 
   const ref = useRef(null);
@@ -270,6 +287,11 @@ const SettlementInfoFinal = ({
   );
   const [isApprove, setIsApprove] = useState(false);
   const [isShowDetailMonthly, setIsShowDetailMonthly] = useState(true);
+
+  const [isPopupRemainingEnergy, setPopupRemainingEnergy] = useState(false);
+  const [isInventorySupply1, setPopupInventorySupply1] = useState(false);
+  const [isInventorySupply2, setPopupInventorySupply2] = useState(false);
+    const [isUnmatchedEnergy,setPopupUnmatchedEnergy] = useState(false)
 
   console.log(settlemtDetailDevice, settlementDetailSubscriber);
 
@@ -653,409 +675,250 @@ const SettlementInfoFinal = ({
     },
   ];
 
-  const sampleDataDevice = [
+  const popupRemaingEnergy = [
     {
-      deviceName: "Power Plant A",
-      totalGeneration: 100,
-      actualGenerationMatch: 100,
-      inventoryMatch: 30,
-      netGreenDeliverables: 30,
-      perActualGenerationMatch: 100,
+      id: "deviceName",
+      label: "Device Name",
+      align: "left",
+      maxWidth: "300px",
+      render: (row) => (
+        <div
+          className=" break-words"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.deviceName}
+        </div>
+      ),
     },
     {
-      deviceName: "Power Plant B",
-      totalGeneration: 800,
-      actualGenerationMatch: 100,
-      inventoryMatch: 0,
-      netGreenDeliverables: 130,
-      perActualGenerationMatch: 100,
+      id: "remainingEnergyAttribute",
+      label: `Remaining Energy Attribute (${unit})`,
+      align: "right",
+      render: (row) => (
+        <div
+          className=" break-words pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {renderValues(row.remainingEnergyAttribute)}
+        </div>
+      ),
     },
     {
-      deviceName: "Power Plant C",
-      totalGeneration: 100,
-      actualGenerationMatch: 100,
-      inventoryMatch: 30,
-      netGreenDeliverables: 30,
-      perActualGenerationMatch: 100,
+      id: "periodOfProductionStartDate",
+      label: `Period Start`,
+      align: "right",
+      render: (row) => (
+        <div
+          className=" break-words pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.periodOfProductionStartDate == null
+            ? "-"
+            : setNewFormatDate(row.periodOfProductionStartDate)}
+        </div>
+      ),
     },
     {
-      deviceName: "Power Plant D",
-      totalGeneration: 100,
-      actualGenerationMatch: 100,
-      inventoryMatch: 30,
-      netGreenDeliverables: 30,
-      perActualGenerationMatch: 100,
-    },
-  ];
-
-  const sampleDataSubscriber = [
-    {
-      subcriberName: "EGAT1",
-      totalLoad: 100,
-      actualLoadMatch: 100,
-      inventorymatch: 30,
-      netGreenDeliverables: 30,
-      perActualLoadMatch: 100,
-      perNetGreenDeliverables: 100,
-    },
-    {
-      subcriberName: "EGAT2",
-      totalLoad: 800,
-      actualLoadMatch: 100,
-      inventorymatch: 0,
-      netGreenDeliverables: 130,
-      perActualLoadMatch: 100,
-      perNetGreenDeliverables: 100,
-    },
-    {
-      subcriberName: "MEA",
-      totalLoad: 100,
-      actualLoadMatch: 100,
-      inventorymatch: 0,
-      netGreenDeliverables: 10,
-      perActualLoadMatch: 100,
-      perNetGreenDeliverables: 100,
-    },
-    {
-      subcriberName: "PEA",
-      totalLoad: 100,
-      actualLoadMatch: 100,
-      inventorymatch: 0,
-      netGreenDeliverables: 10,
-      perActualLoadMatch: 100,
-      perNetGreenDeliverables: 100,
+      id: "periodOfProductionEndDate",
+      label: `Period End`,
+      align: "right",
+      render: (row) => (
+        <div
+          className=" break-words pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.periodOfProductionEndDate ? "-" : setNewFormatDate(row.periodOfProductionEndDate)}
+        </div>
+      ),
     },
   ];
 
-  const sampleCollapsDevice = [
+  const popupUnmatched = [
     {
-      deviceName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
+      id: "subscriberName",
+      label: "Subscriber Name",
+      align: "left",
+      maxWidth: "300px",
+      render: (row) => (
+        <div
+          className=" break-words"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.subscriberName}
+        </div>
+      ),
     },
     {
-      deviceName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
-    },
-    {
-      deviceName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
-    },
-    {
-      deviceName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
-    },
-    {
-      deviceName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
-    },
-    {
-      deviceName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
+      id: "unmatchedEnergy",
+      label: `Unmatched Energy (${unit})`,
+      align: "center",
+      render: (row) => (
+        <div
+          className=" break-words pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {renderValues(row.unmatchedEnergy)}
+        </div>
+      ),
     },
   ];
 
-  const sampleCollapsSubscriber = [
+  const inventorySupplyUsage1 = [
     {
-      subscriberName: "EGAT Subscriber",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
+      id: "deviceName",
+      label: "Device Name",
+      align: "left",
+      maxWidth: "300px",
+      render: (row) => (
+        <div
+          className=" break-words"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.deviceName}
+        </div>
+      ),
     },
     {
-      subscriberName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
+      id: "matched",
+      label: `Matched (${unit})`,
+      align: "center",
+      render: (row) => (
+        <div
+          className=" break-words w-full pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {renderValues(row.matched)}
+        </div>
+      ),
     },
     {
-      subscriberName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
+      id: "periodOfProductionStartDate",
+      label: `Period Start`,
+      align: "center",
+      render: (row) => (
+        <div
+          className=" break-words w-full pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.periodOfProductionStartDate == null
+            ? "-"
+            : setNewFormatDate(row.periodOfProductionStartDate)}
+        </div>
+      ),
     },
     {
-      subscriberName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
-    },
-    {
-      subscriberName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
-    },
-    {
-      subscriberName: "EGAT Kwae Noi Bumrung Dan Hydropower Plant",
-      totalAmount: 300000,
-      data: [
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15",
-          settlementType: "Actual",
-          matchedSupply: 100000,
-        },
-        {
-          name: "Lorem Ipsum",
-          utility: "Lorem Ipsum",
-          periodOfProduct: "2024/01/01 - 2024/01/15 ",
-          settlementType: "Inventory",
-          matchedSupply: 100000,
-        },
-      ],
+      id: "periodOfProductionEndDate",
+      label: `Period End`,
+      align: "center",
+      render: (row) => (
+        <div
+          className=" break-words pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.periodOfProductionEndDate ? "-" : setNewFormatDate(row.periodOfProductionEndDate)}
+        </div>
+      ),
     },
   ];
+
+  const inventorySupplyUsage2 = [
+    {
+      id: "deviceName",
+      label: "Device Name",
+      align: "left",
+      maxWidth: "300px",
+      render: (row) => (
+        <div
+          className=" break-words"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.deviceName}
+        </div>
+      ),
+    },
+    {
+      id: "matched",
+      label: `Matched (${unit})`,
+      align: "center",
+      render: (row) => (
+        <div
+          className=" break-words pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {renderValues(row.matched)}
+        </div>
+      ),
+    },
+    {
+      id: "periodOfProductionStartDate",
+      label: `Period Start`,
+      align: "center",
+      render: (row) => (
+        <div
+          className=" break-words pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.periodOfProductionStartDate == null
+            ? "-"
+            : setNewFormatDate(row.periodOfProductionStartDate)}
+        </div>
+      ),
+    },
+    {
+      id: "periodOfProductionEndDate",
+      label: `Period End`,
+      align: "center",
+      render: (row) => (
+        <div
+          className=" break-words pr-5"
+          style={{
+            wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
+          }}
+        >
+          {row.periodOfProductionEndDate ? "-" : setNewFormatDate(row.periodOfProductionEndDate)}
+        </div>
+      ),
+    },
+  ];
+
+  const setNewFormatDate=(value)=>{
+    console.log(value)
+    if(value == null){
+      return ""
+    }
+    else{
+      const [date,time] = value.split(" ")
+      const [year,month,day] = date.split("-")
+      return day+"/"+month+"/"+year
+    }
+
+  }
 
   useEffect(() => {
     const autoScroll = () => {
@@ -1221,7 +1084,7 @@ const SettlementInfoFinal = ({
         setIsShowDetailMonthly(true);
       }
     }
-    
+
     if (
       settlementMonthlySummaryData &&
       Object.keys(settlementMonthlySummaryData).length !== 0
@@ -1232,21 +1095,18 @@ const SettlementInfoFinal = ({
     }
   }, [settlementMonthlySummaryData]);
 
-  const sethideButton=()=>{
+  const sethideButton = () => {
     if (
       settlementMonthlySummaryData &&
       Object.keys(settlementMonthlySummaryData).length !== 0
     ) {
       hideBtn(false);
-    } else if(isShowAwaitConfirm == true || 
-      isShowAwaitConfirm == true
-    ){
+    } else if (isShowAwaitConfirm == true || isShowAwaitConfirm == true) {
+      hideBtn(true);
+    } else {
       hideBtn(true);
     }
-    else {
-      hideBtn(true);
-    }
-  }
+  };
 
   const getNewCenter = () => {
     let text = {
@@ -1889,6 +1749,53 @@ const SettlementInfoFinal = ({
     }
   };
 
+  const handlePopupRemaingEnergy = () => {
+    dispatch(
+      getRemainingEnergyPopupFinal(
+        portfolioId,
+        settlementYear,
+        settlementMonth,
+        utilityId,
+        ugtGroupId
+      )
+    );
+    setPopupRemainingEnergy(true);
+  };
+
+  const handlePopupInventorySupply1 = () => {
+    dispatch(
+      getInventorySupplyPopupFinal1(
+        portfolioId,
+        settlementYear,
+        settlementMonth,
+        utilityId
+      )
+    );
+    setPopupInventorySupply1(true);
+  };
+  const handlePopupInventorySupply2 = () => {
+    dispatch(
+      getInventorySupplyPopupFinal2(
+        portfolioId,
+        settlementYear,
+        settlementMonth,
+        utilityId
+      )
+    );
+    setPopupInventorySupply2(true);
+  };
+
+  const handlePopupUnmatchedEnergy =()=>{
+      console.log()
+      dispatch(getUnmatchedEnergyPopupInitial(
+        portfolioId,
+          settlementYear,
+          settlementMonth,
+          utilityId,
+          ugtGroupId))
+        setPopupUnmatchedEnergy(true)
+    }
+
   const hideData = false;
   console.log(settlemtDetailDevice);
   //console.log(settlementDetailMonthlyDevice.settlementPeriod )
@@ -2149,6 +2056,10 @@ const SettlementInfoFinal = ({
                             </div>
                           </div>
                           <div className="text-right">
+                            <div className="text-xs text-[#5B5C5C] hover:cursor-pointer hover:text-[#000] underline decoration-solid"
+                            onClick={()=> handlePopupInventorySupply2()}>
+                              View Detail
+                            </div>
                             <div className="text-lg font-bold break-words mt-3">
                               {settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage
                                 ? settlementMonthlySummaryData?.ugt2InventoryMatchedPercentage +
@@ -2177,6 +2088,10 @@ const SettlementInfoFinal = ({
                             </div>
                           </div>
                           <div className="text-right">
+                            <div className="text-xs text-[#5B5C5C] hover:cursor-pointer hover:text-[#000] underline decoration-solid"
+                            onClick={()=> handlePopupInventorySupply1()}>
+                              View Detail
+                            </div>
                             <div className="text-lg font-bold break-words mt-3">
                               {settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage
                                 ? settlementMonthlySummaryData?.ugt1InventoryMatchedPercentage +
@@ -2221,6 +2136,10 @@ const SettlementInfoFinal = ({
                             </div>
                           </div>
                           <div className="text-right">
+                            <div className="text-xs text-[#5B5C5C] hover:cursor-pointer hover:text-[#000] underline decoration-solid"
+                            onClick={()=>handlePopupUnmatchedEnergy()}>
+                              View Detail
+                            </div>
                             <div className="text-lg font-bold break-words mt-3">
                               {settlementMonthlySummaryData?.unmatchedEnergyPercentage
                                 ? settlementMonthlySummaryData?.unmatchedEnergyPercentage +
@@ -2299,6 +2218,12 @@ const SettlementInfoFinal = ({
                   </div>
                   <div className="text-xs text-[#5B5C5C] break-words">
                     {unit}
+                  </div>
+                  <div
+                    className="text-right text-xs text-[#5B5C5C] hover:cursor-pointer hover:text-[#000] underline decoration-solid"
+                    onClick={() => handlePopupRemaingEnergy()}
+                  >
+                    View Detail
                   </div>
                 </div>
 
@@ -3014,6 +2939,150 @@ const SettlementInfoFinal = ({
                 </div>
               </div>
             ) : undefined}
+            <Modal
+              opened={isPopupRemainingEnergy}
+              onClose={() => setPopupRemainingEnergy(!isPopupRemainingEnergy)}
+              withCloseButton={false}
+              centered
+              closeOnClickOutside={false}
+              size={"60%"}
+            >
+              <div className="flex flex-col px-10 pt-4 pb-3">
+                <div className="text-left font-bold text-xl">
+                  Remaining Energy attribute
+                </div>
+
+                <div className="items-center justify-center">
+                  <DataTableSettlement
+                    data={
+                      popupRemainingEnergyFinal.data
+                        ? popupRemainingEnergyFinal.data
+                        : []
+                    }
+                    columns={popupRemaingEnergy}
+                    isTotal={"Total Remaining"}
+                    unit={unit}
+                  convertUnit={convertUnit}
+                  />
+                </div>
+
+                <div className="flex gap-4 items-center justify-center">
+                  <Button
+                    className="text-[#69696A] bg-[#E6EAEE] mt-12 px-10"
+                    onClick={() => {
+                      setPopupRemainingEnergy(!isPopupRemainingEnergy);
+                    }}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            </Modal>
+            <Modal
+            opened={isInventorySupply1}
+            onClose={() => setPopupInventorySupply1(!isInventorySupply1)}
+            withCloseButton={false}
+            centered
+            closeOnClickOutside={false}
+            size={"60%"}
+          >
+            <div className="flex flex-col px-10 pt-4 pb-3">
+              <div className="text-left font-bold text-xl">
+              UGT1 Inventory Matched
+              </div>
+
+              <div className="items-center justify-center mt-4">
+                <DataTableSettlement
+                  data={popupInventorySupply1.data ? popupInventorySupply1.data : []}
+                  columns={inventorySupplyUsage1}
+                  isTotal={"Total Inven Supply"}
+                  unit={unit}
+                  convertUnit={convertUnit}
+                />
+              </div>
+
+              <div className="flex gap-4 items-center justify-center">
+                <Button
+                  className="text-[#69696A] bg-[#E6EAEE] mt-12 px-10"
+                  onClick={() => {
+                    setPopupInventorySupply1(!isInventorySupply1);
+                  }}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </Modal>
+          <Modal
+            opened={isInventorySupply2}
+            onClose={() => setPopupInventorySupply2(!isInventorySupply2)}
+            withCloseButton={false}
+            centered
+            closeOnClickOutside={false}
+            size={"60%"}
+          >
+            <div className="flex flex-col px-10 pt-4 pb-3">
+              <div className="text-left font-bold text-xl">
+              UGT2 Inventory Matched
+              </div>
+
+              <div className="items-center justify-center mt-4">
+                <DataTableSettlement
+                  data={popupInventorySupply2.data ? popupInventorySupply2.data : []}
+                  columns={inventorySupplyUsage2}
+                  isTotal={"Total Inven Supply"}
+                  unit={unit}
+                  convertUnit={convertUnit}
+                />
+              </div>
+
+              <div className="flex gap-4 items-center justify-center">
+                <Button
+                  className="text-[#69696A] bg-[#E6EAEE] mt-12 px-10"
+                  onClick={() => {
+                    setPopupInventorySupply2(!isInventorySupply2);
+                  }}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </Modal>
+          <Modal
+            opened={isUnmatchedEnergy}
+            onClose={() => setPopupUnmatchedEnergy(!isUnmatchedEnergy)}
+            withCloseButton={false}
+            centered
+            closeOnClickOutside={false}
+            size={"60%"}
+          >
+            <div className="flex flex-col px-10 pt-4 pb-3">
+              <div className="text-left font-bold text-xl">
+              Unmatched Energy
+              </div>
+
+              <div className="items-center justify-center mt-4">
+                <DataTableSettlement
+                  data={popupUnmatchedEnergy.data ? popupUnmatchedEnergy.data : []}
+                  columns={popupUnmatched}
+                  isTotal={"Total Unmatched"}
+                  unit={unit}
+                  convertUnit={convertUnit}
+                />
+              </div>
+
+              <div className="flex gap-4 items-center justify-center">
+                <Button
+                  className="text-[#69696A] bg-[#E6EAEE] mt-12 px-10"
+                  onClick={() => {
+                    setPopupUnmatchedEnergy(!isUnmatchedEnergy);
+                  }}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </Modal>
           </div>
         )
       ) : (

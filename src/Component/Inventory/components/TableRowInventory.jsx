@@ -500,7 +500,7 @@ console.log(dataPopup)
         withCloseButton={false}
         centered
         closeOnClickOutside={false}
-        size={"2xl"}
+        size={"60%"}
       >
         <div className="flex flex-col px-10 pt-4 pb-3">
           <div className="text-left font-bold text-xl">
