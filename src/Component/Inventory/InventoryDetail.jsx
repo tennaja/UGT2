@@ -120,7 +120,7 @@ const InventoryDetail = (props) => {
   useEffect(() => {
     console.log(inventoryFilter);
     if (inventoryFilter && Object.keys(inventoryFilter).length !== 0) {
-      const [monthMax, yearMax] = inventoryFilter.monthYearMax.split("/");
+      /*const [monthMax, yearMax] = inventoryFilter.monthYearMax.split("/");
       const [monthMin, yearMin] = inventoryFilter.monthYearMin.split("/");
       const startMaxday = new Date(yearMax, monthMax, 0).getDate();
       const minDateTemp = yearMin + "/" + monthMin + "/1";
@@ -129,7 +129,44 @@ const InventoryDetail = (props) => {
       setMaxDate(dayjs(maxDateTemp));
       setMinDate(dayjs(minDateTemp));
       setSelectedStart(dayjs(minDateTemp));
-      setSelectedEnd(dayjs(maxDateTemp));
+      setSelectedEnd(dayjs(maxDateTemp));*/
+
+      const startMaxday = new Date(
+        inventoryFilter.endDefaultYear,
+        inventoryFilter.endDefaultMonth,
+        0
+      ).getDate();
+      const DefaultminDateTemp =
+      inventoryFilter.startDefaultYear +
+        "/" +
+        inventoryFilter.startDefaultMonth +
+        "/1";
+      const DefaultmaxDateTemp =
+      inventoryFilter.endDefaultYear +
+        "/" +
+        inventoryFilter.endDefaultMonth +
+        "/" +
+        startMaxday;
+      const minDate =
+      inventoryFilter.startMinYear +
+        "/" +
+        inventoryFilter.startMinMonth +
+        "/" +
+        new Date(
+            inventoryFilter.endMaxYear,
+            inventoryFilter.endMaxMonth,
+          0
+        ).getDate();
+      const maxDate =
+      inventoryFilter.endMaxYear +
+        "/" +
+        inventoryFilter.endMaxMonth +
+        "/1";
+
+      setMaxDate(dayjs(maxDate));
+      setMinDate(dayjs(minDate));
+      setSelectedStart(dayjs(DefaultminDateTemp));
+      setSelectedEnd(dayjs(DefaultmaxDateTemp));
       //fetchDetailData(true);
     }
   }, [inventoryFilter]);
@@ -141,7 +178,7 @@ const InventoryDetail = (props) => {
       fetchDetailData(true);
     }
   }, [selected, selectedStart, selectedEnd]);
-console.log(filterStatus)
+  console.log(filterStatus);
   useEffect(() => {
     if (inventoryDetailDropdown) {
       setFilterPortList(inventoryDetailDropdown);
@@ -200,7 +237,7 @@ console.log(filterStatus)
           roleId: userData?.userGroup?.id,
           utilityId: utilityId,
         };
-        console.log("Param All",param)
+        console.log("Param All", param);
         dispatch(getInventoryDetailData(param));
         if (isFetchDrop) {
           setFilterDevice([]);
@@ -256,7 +293,7 @@ console.log(filterStatus)
           roleId: userData?.userGroup?.id,
           utilityId: utilityId,
         };
-        console.log("Param month",param)
+        console.log("Param month", param);
         dispatch(getInventoryDetailData(param));
         if (isFetchDrop) {
           setFilterDevice([]);
@@ -338,16 +375,29 @@ console.log(filterStatus)
             .getMinutes()
             .toString()
             .padStart(2, "0")}_${now.getSeconds().toString().padStart(2, "0")}`;
-            const startDate =
-          String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
-          "/" +
-          selectedStart.$y;
-        const endDate =
-          String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") + "/" + selectedEnd.$y;
-          const [monthStart,yearStart] = startDate.split("/")
-          const [monthEnd,yearEnd] = endDate.split("/")
+          const startDate =
+            String(selectedStart.$d.getMonth() + 1).padStart(2, "0") +
+            "/" +
+            selectedStart.$y;
+          const endDate =
+            String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
+            "/" +
+            selectedEnd.$y;
+          const [monthStart, yearStart] = startDate.split("/");
+          const [monthEnd, yearEnd] = endDate.split("/");
           const fileName = formattedDateTime + ".pdf";
-          const fileNameNew = "InventoryByDevice_"+monthStart+""+yearStart+"_"+monthEnd+""+yearEnd+"_" + formattedDateTime + ".pdf";
+          const fileNameNew =
+            "InventoryByDevice_" +
+            monthStart +
+            "" +
+            yearStart +
+            "_" +
+            monthEnd +
+            "" +
+            yearEnd +
+            "_" +
+            formattedDateTime +
+            ".pdf";
           openPDFInNewTab(base64Content, "application/pdf", fileNameNew);
           setIsGenerate(false);
         })

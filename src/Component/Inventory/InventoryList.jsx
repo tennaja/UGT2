@@ -150,23 +150,23 @@ const InventoryList = (props) => {
   useEffect(() => {
     if (inventoryInfoFilter && Object.keys(inventoryInfoFilter).length !== 0) {
         console.log("Fetch filter")
-      const [monthMax, yearMax] = inventoryInfoFilter.defaultEnd.split("/");
-      const [monthMin, yearMin] = inventoryInfoFilter.defaultStart.split("/");
-      const startMaxday = new Date(yearMax, monthMax, 0).getDate();
-      const DefaultminDateTemp = yearMin + "/" + monthMin + "/1";
-      const DefaultmaxDateTemp = yearMax + "/" + monthMax + "/" + startMaxday;
+      //const [monthMax, yearMax] = inventoryInfoFilter.defaultEnd.split("/");
+      //const [monthMin, yearMin] = inventoryInfoFilter.defaultStart.split("/");
+      const startMaxday = new Date(inventoryInfoFilter.endDefaultYear, inventoryInfoFilter.endDefaultMonth, 0).getDate();
+      const DefaultminDateTemp = inventoryInfoFilter.startDefaultYear + "/" + inventoryInfoFilter.startDefaultMonth + "/1";
+      const DefaultmaxDateTemp = inventoryInfoFilter.endDefaultYear + "/" + inventoryInfoFilter.endDefaultMonth + "/" + startMaxday;
       const minDate =
-        inventoryInfoFilter.minYear +
+        inventoryInfoFilter.startMinYear +
         "/" +
-        inventoryInfoFilter.minMonth +
+        inventoryInfoFilter.startMinMonth +
         "/" +
         new Date(
-          inventoryInfoFilter.minYear,
-          inventoryInfoFilter.minMonth,
+          inventoryInfoFilter.endMaxYear,
+          inventoryInfoFilter.endMaxMonth,
           0
         ).getDate();
       const maxDate =
-        inventoryInfoFilter.maxYear + "/" + inventoryInfoFilter.maxMonth + "/1";
+        inventoryInfoFilter.endMaxYear + "/" + inventoryInfoFilter.endMaxMonth + "/1";
 
       setMaxDate(dayjs(maxDate));
       setMinDate(dayjs(minDate));
