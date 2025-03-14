@@ -524,7 +524,7 @@ const SettlementInfo = ({
           highlightTag={Highlight}
           searchWords={[searchDevice]}
           autoEscape={true}
-          textToHighlight={numeral(row?.percentageActualGeneration).format("0,0.000") + "%"}
+          textToHighlight={numeral(row?.percentageActualGeneration).format("0,0.00") + "%"}
         />
       ),
     },
@@ -604,7 +604,7 @@ const SettlementInfo = ({
           highlightTag={Highlight}
           searchWords={[searchSubscriber]}
           autoEscape={true}
-          textToHighlight={numeral(row?.percentageActualLoadMatched).format("0,0.000") + "%"}
+          textToHighlight={numeral(row?.percentageActualLoadMatched).format("0,0.00") + "%"}
         />
       ),
     },
@@ -618,7 +618,7 @@ const SettlementInfo = ({
           searchWords={[searchSubscriber]}
           autoEscape={true}
           textToHighlight={
-            numeral(row?.percentageNetGreenDeliverables).format("0,0.000") + "%"
+            numeral(row?.percentageNetGreenDeliverables).format("0,0.00") + "%"
           }
         />
       ),

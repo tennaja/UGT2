@@ -549,7 +549,7 @@ const SettlementInfoFinal = ({
           searchWords={[searchDevice]}
           autoEscape={true}
           textToHighlight={
-            numeral(row?.percentageActualGeneration).format("0,0.000") + "%"
+            numeral(row?.percentageActualGeneration).format("0,0.00") + "%"
           }
         />
       ),
@@ -631,7 +631,7 @@ const SettlementInfoFinal = ({
           searchWords={[searchSubscriber]}
           autoEscape={true}
           textToHighlight={
-            numeral(row?.percentageActualLoadMatched).format("0,0.000") + "%"
+            numeral(row?.percentageActualLoadMatched).format("0,0.00") + "%"
           }
         />
       ),
@@ -646,7 +646,7 @@ const SettlementInfoFinal = ({
           searchWords={[searchSubscriber]}
           autoEscape={true}
           textToHighlight={
-            numeral(row?.percentageNetGreenDeliverables).format("0,0.000") + "%"
+            numeral(row?.percentageNetGreenDeliverables).format("0,0.00") + "%"
           }
         />
       ),
