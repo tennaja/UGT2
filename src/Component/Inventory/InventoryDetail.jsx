@@ -141,7 +141,7 @@ const InventoryDetail = (props) => {
       fetchDetailData(true);
     }
   }, [selected, selectedStart, selectedEnd]);
-
+console.log(filterStatus)
   useEffect(() => {
     if (inventoryDetailDropdown) {
       setFilterPortList(inventoryDetailDropdown);
@@ -162,14 +162,14 @@ const InventoryDetail = (props) => {
     if (selectedStart && selectedEnd) {
       console.log("Fetch in");
       if (selected == "all") {
-        let deviceList = [];
+        /*let deviceList = [];
         for (let i = 0; i < filterDevice.length; i++) {
           deviceList.push(filterDevice[i].deviceId);
         }
         let statusList = [];
         for (let i = 0; i < filterStatus.length; i++) {
           statusList.push(filterStatus[i].name);
-        }
+        }*/
         let utilityId = 0;
         if (
           userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
@@ -196,11 +196,11 @@ const InventoryDetail = (props) => {
           unitPrefix: overviewDataUnit,
           unit: convertUnit,
           deviceId: filterDevice,
-          status: statusList,
+          status: filterStatus,
           roleId: userData?.userGroup?.id,
           utilityId: utilityId,
         };
-
+        console.log("Param All",param)
         dispatch(getInventoryDetailData(param));
         if (isFetchDrop) {
           setFilterDevice([]);
@@ -218,14 +218,14 @@ const InventoryDetail = (props) => {
           String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
           "/" +
           selectedEnd.$y;
-        let deviceList = [];
+        /*let deviceList = [];
         for (let i = 0; i < filterDevice.length; i++) {
           deviceList.push(filterDevice[i].deviceId);
         }
         let statusList = [];
         for (let j = 0; j < filterStatus.length; j++) {
           statusList.push(filterStatus[j].name);
-        }
+        }*/
         let utilityId = 0;
         if (
           userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
@@ -252,11 +252,11 @@ const InventoryDetail = (props) => {
           unitPrefix: overviewDataUnit,
           unit: convertUnit,
           deviceId: filterDevice,
-          status: statusList,
+          status: filterStatus,
           roleId: userData?.userGroup?.id,
           utilityId: utilityId,
         };
-
+        console.log("Param month",param)
         dispatch(getInventoryDetailData(param));
         if (isFetchDrop) {
           setFilterDevice([]);
@@ -722,7 +722,7 @@ const InventoryDetail = (props) => {
                         />
                       </div>
                       <div className="ml-2 w-40 h-[40px]">
-                        <Controller
+                        {/*<Controller
                           name="statusFilter"
                           control={control}
                           defaultValue={null}
@@ -743,6 +743,16 @@ const InventoryDetail = (props) => {
                               size="200px"
                             />
                           )}
+                        />*/}
+                        <DropdownMultiSelect
+                          options={mockStatus}
+                          selectedValues={filterStatus}
+                          setSelectedValues={setFilterStatus}
+                          label="Find Status"
+                          allowSelectAll={false} // ✅ เปลี่ยนเป็น false ถ้าไม่ต้องการ "All Devices"
+                          valueKey="name"
+                          labelKey="name"
+                          setSelectDropdown={setIsSelectDevice}
                         />
                       </div>
                       <div className="ml-2">

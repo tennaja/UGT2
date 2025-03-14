@@ -12,6 +12,7 @@ const DropdownMultiSelect = ({
   allowSelectAll = false, // ✅ อนุญาตให้เลือก "All Devices" หรือไม่
   setSelectDropdown,
   textSelectAll = "Select All",
+  isNotsetSelectDrop = true,
 }) => {
   const [searchText, setSearchText] = useState("");
   const [open, setOpen] = useState(false);
@@ -21,7 +22,10 @@ const DropdownMultiSelect = ({
 
     if (allowSelectAll && itemValue === "all") {
       // ถ้าเลือก "All Devices" → เลือกทั้งหมด ยกเว้น "all"
-      setSelectDropdown(true);
+      if(isNotsetSelectDrop == true){
+        setSelectDropdown(true);
+      }
+      
       setSelectedValues(
         selectedValues.length === options.length
           ? [] // ถ้าติ๊กอยู่ → เอาออกทั้งหมด
@@ -35,10 +39,16 @@ const DropdownMultiSelect = ({
 
       // ถ้าติ๊กครบทุกตัว → ติ๊ก "All Devices" ด้วย (แต่ไม่เก็บค่า "all")
       if (newSelected.length === options.length) {
-        setSelectDropdown(true);
+        if(isNotsetSelectDrop == true){
+            setSelectDropdown(true);
+        }
+        
         setSelectedValues(options.map((item) => item[valueKey]));
       } else {
-        setSelectDropdown(true);
+        if(isNotsetSelectDrop == true){
+            setSelectDropdown(true);
+        }
+        
         setSelectedValues(newSelected);
       }
     }
