@@ -590,7 +590,7 @@ const DataTableInventory = ({
                           fontSize: "99%",
                         }}
                       >
-                        <strong> {isTotal === "Total Inventory" || isTotal == "Total Popup"?"Total":isTotal} </strong>
+                        <strong className={isTotal == "Total Popup"?"text-xs":""}> {isTotal === "Total Inventory" || isTotal == "Total Popup"?"Total":isTotal} </strong>
                       </TableCell>
                     );
                   } else if (isTotal === "Total Capacity" && index === 3) {
@@ -691,15 +691,16 @@ const DataTableInventory = ({
                       <TableCell
                         key={`footer-total-capacity`}
                         style={{
-                          textAlign: "left",
+                          textAlign: "right",
                           backgroundColor: "#F3F6F9",
                           padding: "1rem",
                           fontSize: "12px"
+
                         }}
                       >
-                        <strong>
+                        <strong className="pr-5">
                           {" "}
-                          {totalPopup}
+                          {paginatedData.length > 0?totalPopup:""}
                         </strong>
                       </TableCell>
                     );

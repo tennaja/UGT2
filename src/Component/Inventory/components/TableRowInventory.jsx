@@ -380,7 +380,7 @@ if(isNumber == true && isScientific == false){
   const columnPopup = [
     {
       id: "usedInSettlementPeriod",
-      label: "Settlement PeriodUsed in Settlement Period",
+      label: "Used in Settlement Period",
       align: "left",
       maxWidth: "50px",
       render: (row) => (
@@ -398,13 +398,12 @@ if(isNumber == true && isScientific == false){
     {
       id: "inventoryMathced",
       label: "Inventory Matched (kWh)",
-      align: "left",
+      align: "center",
       maxWidth: "80px",
       render: (row) => (
         <div
-          className=" break-words"
+          className=" break-words text-right w-full pr-5"
           style={{
-            width: "100px",
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
         >
@@ -419,9 +418,8 @@ if(isNumber == true && isScientific == false){
       maxWidth: "80px",
       render: (row) => (
         <div
-          className=" break-words"
+          className=" break-words w-full"
           style={{
-            width: "100px",
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
         >
