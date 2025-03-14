@@ -41,7 +41,8 @@ const DataTableSettlement = ({
   error,
   isSubTotal,
   unit,
-  convertUnit
+  convertUnit,
+  total = 0
 }) => {
   const {
     handleSubmit,
@@ -1104,9 +1105,7 @@ if (checkStartDate) {
                       >
                         <strong className=" pr-5">
                           {" "}
-                          {Number(totalRemaining) > 0 
-                            ? totalRemaining
-                            : ""}
+                          {renderValues(total)}
                         </strong>
                       </TableCell>
                     );
@@ -1122,9 +1121,7 @@ if (checkStartDate) {
                       >
                         <strong className=" pr-5">
                           {" "}
-                          {Number(totalUnmatched) > 0 
-                            ? totalUnmatched
-                            : ""}
+                          {renderValues(total)}
                         </strong>
                       </TableCell>
                     );
@@ -1140,9 +1137,7 @@ if (checkStartDate) {
                       >
                         <strong className=" pr-5">
                           {" "}
-                          {Number(totalInventorySupply1) > 0 
-                            ? totalInventorySupply1
-                            : ""}
+                          {renderValues(total)}
                         </strong>
                       </TableCell>
                     );

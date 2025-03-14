@@ -2444,6 +2444,7 @@ const SettlementInfo = ({
                   isTotal={"Total Inven Remaining"}
                   unit={unit}
                   convertUnit={convertUnit}
+                  total={popupRemainingEnergyInitial.totalRemaining}
                 />
               </div>
 
@@ -2479,6 +2480,7 @@ const SettlementInfo = ({
                   isTotal={"Total Inven Supply"}
                   unit={unit}
                   convertUnit={convertUnit}
+                  total={popupInventorySupply1.totalMatched}
                 />
               </div>
 
@@ -2514,6 +2516,7 @@ const SettlementInfo = ({
                   isTotal={"Total Inven Supply"}
                   unit={unit}
                   convertUnit={convertUnit}
+                  total={popupInventorySupply2.totalMatched}
                 />
               </div>
 
@@ -2549,6 +2552,7 @@ const SettlementInfo = ({
                   isTotal={"Total Unmatched"}
                   unit={unit}
                   convertUnit={convertUnit}
+                  total={popupUnmatchedEnergy.totalUnmatchedEnergy}
                 />
               </div>
 
