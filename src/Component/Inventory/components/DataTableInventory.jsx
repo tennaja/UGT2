@@ -128,7 +128,7 @@ const DataTableInventory = ({
       );
       setTotalValue(numeral(total).format("0,0.00"));
     } else if (isTotal === "Total Inventory"){
-      const total = paginatedData.reduce(
+      const total = data.reduce(
         (acc, row) => acc + (row.remainingInventory == "-"?0:Number(row.remainingInventory) || 0),
         0
       );
@@ -138,11 +138,11 @@ const DataTableInventory = ({
 //console.log("Formatted:", numeral(total).format("0,0.000"));
       setRemainingInven(total);
     } else if (isTotal === "Total Popup"){
-      const total = paginatedData.reduce(
+      const total = data.reduce(
         (acc, row) => acc + (row.inventoryMathced || 0),
         0
       );
-      setTotalPopup(total)
+      setTotalPopup(renderValue(total))
     }
 
   }, [data]);

@@ -484,14 +484,14 @@ const InventoryDetail = (props) => {
   };
   const handleExportExcel = () => {
     if (selected == "all") {
-      let deviceList = [];
+      /*let deviceList = [];
       for (let i = 0; i < filterDevice.length; i++) {
         deviceList.push(filterDevice[i].deviceId);
       }
       let statusList = [];
       for (let i = 0; i < filterStatus.length; i++) {
         statusList.push(filterStatus[i].name);
-      }
+      }*/
       let utilityId = 0;
       if (
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
@@ -518,7 +518,7 @@ const InventoryDetail = (props) => {
         unitPrefix: overviewDataUnit,
         unit: convertUnit,
         deviceId: filterDevice,
-        status: statusList,
+        status: filterStatus,
         roleId: userData?.userGroup?.id,
         utilityId: utilityId,
       };
@@ -534,14 +534,14 @@ const InventoryDetail = (props) => {
         String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
         "/" +
         selectedEnd.$y;
-      let deviceList = [];
+     /* let deviceList = [];
       for (let i = 0; i < filterDevice.length; i++) {
         deviceList.push(filterDevice[i].deviceId);
       }
       let statusList = [];
       for (let j = 0; j < filterStatus.length; j++) {
         statusList.push(filterStatus[j].name);
-      }
+      }*/
       let utilityId = 0;
       if (
         userData?.userGroup?.id == USER_GROUP_ID.EGAT_DEVICE_MNG ||
@@ -567,8 +567,8 @@ const InventoryDetail = (props) => {
         endDate: endDate,
         unitPrefix: overviewDataUnit,
         unit: convertUnit,
-        deviceId: deviceList,
-        status: statusList,
+        deviceId: filterDevice,
+        status: filterStatus,
         roleId: userData?.userGroup?.id,
         utilityId: utilityId,
       };

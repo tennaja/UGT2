@@ -397,7 +397,7 @@ if(isNumber == true && isScientific == false){
     },
     {
       id: "inventoryMathced",
-      label: "Inventory Matched (kWh)",
+      label: "Inventory Matched ("+unit+")",
       align: "center",
       maxWidth: "80px",
       render: (row) => (
@@ -407,7 +407,7 @@ if(isNumber == true && isScientific == false){
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
         >
-          {row.inventoryMathced}
+          {renderValue(row.inventoryMathced)}
         </div>
       ),
     },
@@ -514,6 +514,8 @@ console.log(dataPopup)
               data={dataPopup.detailData?dataPopup.detailData:[]}
               columns={columnPopup}
               isTotal={"Total Popup"}
+              unit={unit}
+              convertUnit={convertUnit}
             />
           </div>
 
