@@ -647,7 +647,9 @@ const InventoryDetail = (props) => {
     }
     setSelected(value);
   };
-
+  const handleToggleCollaps=()=>{
+    setIsGenerate(!isGenerate)
+  }
   return (
     <div
       ref={contentRef}
@@ -878,6 +880,10 @@ const InventoryDetail = (props) => {
                     </div>
                   </div>
                 </form>
+              </div>
+              <div className="text-right pr-2">
+                <label className="hover:cursor-pointer underline decoration-solid text-sm"
+                onClick={()=>handleToggleCollaps()}>{isGenerate == true?"Collapse All":"Expand All"}</label>
               </div>
 
               <div className="mt-2">
