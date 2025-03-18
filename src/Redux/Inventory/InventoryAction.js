@@ -316,16 +316,22 @@ export const _getInventoryDetailData = (data) => {
   };
 
 export const getInventoryDetailData = (data, callback) => {
-    Swal.fire({
-            title: 'Please Wait...',
-            html: `กำลังโหลด...`,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading();
-            },
-        })
+  Swal.fire({
+    title: 'Please Wait...',
+    html: `กำลังโหลด...`,
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    backdrop: `
+rgba(0,0,0,0.4) !important
+`,
+    didOpen: () => {
+        Swal.showLoading();
+        // ✅ ปรับ z-index ให้ Swal อยู่หน้าสุด
+document.querySelector(".swal2-container").style.zIndex = "9999";
+document.querySelector(".swal2-popup").style.zIndex = "10000";
+    },
+})
     
     const param = data;
     const URL = INVENTORY_DETAIL_DATA;

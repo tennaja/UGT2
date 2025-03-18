@@ -226,9 +226,9 @@ const InventoryDetail = (props) => {
         const param = {
           portfolioId: portfolioId,
           startDate:
-            String(inventoryFilter.startDefaultMonth).padStart(2, "0") +
+            String(inventoryFilter.startMinMonth).padStart(2, "0") +
             "/" +
-            inventoryFilter.startDefaultYear,
+            inventoryFilter.startMinYear,
           endDate:
             String(inventoryFilter.endDefaultMonth).padStart(2, "0") +
             "/" +
@@ -620,6 +620,31 @@ const InventoryDetail = (props) => {
     setIsSelectDevice(true);
   };
   const handleChangeToggle = (value) => {
+    if(value == "all"){
+      const startMaxday = new Date(
+        inventoryFilter.endDefaultYear,
+        inventoryFilter.endDefaultMonth,
+        0
+      ).getDate();
+      const DefaultmaxDateTemp =
+        inventoryFilter.endDefaultYear +
+        "/" +
+        inventoryFilter.endDefaultMonth +
+        "/" +
+        startMaxday;
+      const minDate =
+        inventoryFilter.startMinYear +
+        "/" +
+        inventoryFilter.startMinMonth +
+        "/" +
+        new Date(
+          inventoryFilter.startMinYear,
+          inventoryFilter.startMinMonth,
+          0
+        ).getDate();
+      setSelectedStart(dayjs(minDate));
+      setSelectedEnd(dayjs(DefaultmaxDateTemp));
+    }
     setSelected(value);
   };
 
