@@ -159,7 +159,7 @@ const InventoryDetail = (props) => {
         ).getDate();
       const maxDate =
         inventoryFilter.endMaxYear + "/" + inventoryFilter.endMaxMonth + "/1";
-        console.log(minDate)
+      console.log(minDate);
       setMaxDate(dayjs(maxDate));
       setMinDate(dayjs(minDate));
       setSelectedStart(dayjs(minDate));
@@ -244,10 +244,9 @@ const InventoryDetail = (props) => {
         dispatch(getInventoryDetailData(param));
         if (isFetchDrop) {
           //setFilterDevice([]);
-          if(filterDeviceList.length === 0){
+          if (filterDeviceList.length === 0) {
             dispatch(getInventoryDetailDropdown(param));
           }
-          
         }
         setIsSelectDevice(false);
       } else if (selected == "month") {
@@ -303,7 +302,7 @@ const InventoryDetail = (props) => {
         dispatch(getInventoryDetailData(param));
         if (isFetchDrop) {
           //setFilterDevice([]);
-          if(filterDeviceList.length === 0){
+          if (filterDeviceList.length === 0) {
             dispatch(getInventoryDetailDropdown(param));
           }
         }
@@ -620,7 +619,7 @@ const InventoryDetail = (props) => {
     setIsSelectDevice(true);
   };
   const handleChangeToggle = (value) => {
-    if(value == "all"){
+    if (value == "all") {
       const startMaxday = new Date(
         inventoryFilter.endDefaultYear,
         inventoryFilter.endDefaultMonth,
@@ -647,9 +646,9 @@ const InventoryDetail = (props) => {
     }
     setSelected(value);
   };
-  const handleToggleCollaps=()=>{
-    setIsGenerate(!isGenerate)
-  }
+  const handleToggleCollaps = () => {
+    setIsGenerate(!isGenerate);
+  };
   return (
     <div
       ref={contentRef}
@@ -872,21 +871,18 @@ const InventoryDetail = (props) => {
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-12 gap-2">
-                      <div className="col-span-2"></div>
-                      <div className="col-span-4"></div>
-                      <div className="col-span-3"></div>
-                      <div className="col-span-2"></div>
-                    </div>
                   </div>
                 </form>
               </div>
-              <div className="text-right pr-2">
-                <label className="hover:cursor-pointer underline decoration-solid text-sm"
-                onClick={()=>handleToggleCollaps()}>{isGenerate == true?"Collapse All":"Expand All"}</label>
+              <div className="text-right pr-2 mt-0">
+                <label
+                  className="hover:cursor-pointer underline decoration-solid text-xs"
+                  onClick={() => handleToggleCollaps()}
+                >
+                  {isGenerate == true ? "Collapse All" : "Expand All"}
+                </label>
               </div>
-
-              <div className="mt-2">
+              <div className="mt-1">
                 <CollapsDataTableInven
                   data={inventoryDatailData}
                   unit={overviewDataUnit}
