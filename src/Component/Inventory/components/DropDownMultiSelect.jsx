@@ -77,14 +77,18 @@ const DropdownMultiSelect = ({
       >
         {allowSelectAll && (
           <div
-            className="hover:bg-[#87BE33] hover:text-[#fff] w-full p-2 cursor-pointer rounded-[4px]"
-            onClick={() =>
-              handleSelect({ [valueKey]: "all", [labelKey]: "All Devices" })
-            }
+            className="hover:bg-[#87BE33] group hover:text-[#fff] w-full p-2 cursor-pointer rounded-[4px]"
+            onClick={(e) => {e.preventDefault(); // ป้องกัน focus ที่ checkbox
+            handleSelect({ [valueKey]: "all", [labelKey]: "All Devices" })}}
           >
             <Checkbox
               key="all"
               checked={selectedValues.length === options.length}
+              
+              style={{
+                color: "inherit", // รับสีจาก div
+              }}
+              className="group-hover:text-white"
               onChange={() =>
                 handleSelect({ [valueKey]: "all", [labelKey]: "All Devices" })
               }
@@ -104,12 +108,21 @@ const DropdownMultiSelect = ({
                 borderRadius: "4px",
                 transition: "background 0.2s ease-in-out",
               }}
-              className="hover:bg-[#87BE33] hover:text-white cursor-pointer p-2"
+              className="hover:bg-[#87BE33] group hover:text-white cursor-pointer p-2"
+              onClick={(e) => {
+                e.preventDefault(); // ป้องกัน focus ที่ checkbox
+                handleSelect(item);
+              }}
             >
               <Checkbox
                 checked={selectedValues.includes(item?.[valueKey])}
-                onChange={() => handleSelect(item)}
-                className="hover:text-[#fff]"
+                onChange={(e) => {
+                  handleSelect(item);
+                }}
+                style={{
+                  color: "inherit", // รับสีจาก div
+                }}
+                className="group-hover:text-white"
               >
                 {item?.[labelKey] || "Unknown Item"}
               </Checkbox>
