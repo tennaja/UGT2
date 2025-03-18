@@ -1034,7 +1034,7 @@ const InventoryList = (props) => {
                   </div>
                   <div className="lg:col-span-3 sm:col-span-2">
                     <Form layout="horizontal" size="large">
-                      <Form.Item className="col-span-1 col-start-2 lg:w-[120px]">
+                      <Form.Item className="col-span-1 col-start-2 ">
                         <Select
                           size="large"
                           value={overviewDataUnit}
