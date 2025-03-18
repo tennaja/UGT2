@@ -137,31 +137,28 @@ const InventoryDetail = (props) => {
         0
       ).getDate();
       const DefaultminDateTemp =
-      inventoryFilter.startDefaultYear +
+        inventoryFilter.startDefaultYear +
         "/" +
         inventoryFilter.startDefaultMonth +
         "/1";
       const DefaultmaxDateTemp =
-      inventoryFilter.endDefaultYear +
+        inventoryFilter.endDefaultYear +
         "/" +
         inventoryFilter.endDefaultMonth +
         "/" +
         startMaxday;
       const minDate =
-      inventoryFilter.startMinYear +
+        inventoryFilter.startMinYear +
         "/" +
         inventoryFilter.startMinMonth +
         "/" +
         new Date(
-            inventoryFilter.endMaxYear,
-            inventoryFilter.endMaxMonth,
+          inventoryFilter.endMaxYear,
+          inventoryFilter.endMaxMonth,
           0
         ).getDate();
       const maxDate =
-      inventoryFilter.endMaxYear +
-        "/" +
-        inventoryFilter.endMaxMonth +
-        "/1";
+        inventoryFilter.endMaxYear + "/" + inventoryFilter.endMaxMonth + "/1";
 
       setMaxDate(dayjs(maxDate));
       setMinDate(dayjs(minDate));
@@ -228,8 +225,14 @@ const InventoryDetail = (props) => {
         }
         const param = {
           portfolioId: portfolioId,
-          startDate: inventoryFilter.monthYearMin,
-          endDate: inventoryFilter.monthYearMax,
+          startDate:
+            String(inventoryFilter.startDefaultMonth).padStart(2, "0") +
+            "/" +
+            inventoryFilter.startDefaultYear,
+          endDate:
+            String(inventoryFilter.endDefaultMonth).padStart(2, "0") +
+            "/" +
+            inventoryFilter.endDefaultYear,
           unitPrefix: overviewDataUnit,
           unit: convertUnit,
           deviceId: filterDevice,
@@ -513,8 +516,14 @@ const InventoryDetail = (props) => {
       }
       const param = {
         portfolioId: portfolioId,
-        startDate: inventoryFilter.monthYearMin,
-        endDate: inventoryFilter.monthYearMax,
+        startDate:
+          String(inventoryFilter.startDefaultMonth).padStart(2, "0") +
+          "/" +
+          inventoryFilter.startDefaultYear,
+        endDate:
+          String(inventoryFilter.endDefaultMonth).padStart(2, "0") +
+          "/" +
+          inventoryFilter.endDefaultYear,
         unitPrefix: overviewDataUnit,
         unit: convertUnit,
         deviceId: filterDevice,
@@ -534,7 +543,7 @@ const InventoryDetail = (props) => {
         String(selectedEnd.$d.getMonth() + 1).padStart(2, "0") +
         "/" +
         selectedEnd.$y;
-     /* let deviceList = [];
+      /* let deviceList = [];
       for (let i = 0; i < filterDevice.length; i++) {
         deviceList.push(filterDevice[i].deviceId);
       }
