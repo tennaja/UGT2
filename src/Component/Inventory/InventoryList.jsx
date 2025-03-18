@@ -1346,8 +1346,8 @@ const InventoryList = (props) => {
                       <img
                         alt={"RemainInven"}
                         src={RemainInven}
-                        width={50}
-                        height={50}
+                        width={75}
+                        height={75}
                       ></img>
                     </div>
                     <div className="text-end">
@@ -1426,14 +1426,14 @@ const InventoryList = (props) => {
                               top: 5,
                               right: 0,
                               left: 0,
-                              bottom: 5,
+                              bottom: 40,
                             }}
                           >
                             <CartesianGrid stroke="#f5f5f5" />
                             <XAxis
                               dataKey="period"
                               scale="auto"
-                              tick={{ fontSize: 12 }}
+                              tick={{ fontSize: 12,angle: -90, dx: 5, dy: 20 }}
                               tickFormatter={(tick) => {
                                 const [month, year] = tick.split("/");
                                 const lastTwoDigits = String(year).slice(-2);
@@ -1484,6 +1484,7 @@ const InventoryList = (props) => {
                               dataKey="period"
                               height={30}
                               stroke="#8884d8"
+                              y={260} // ปรับตำแหน่ง y ให้ Brush ลงมาต่ำกว่าเดิม
                               onChange={(range) => {
                                 if (
                                   range &&
