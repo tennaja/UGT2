@@ -75,7 +75,7 @@ const InventoryDetail = (props) => {
   );
   const [convertUnit, setConvertUnit] = useState(CONVERT_UNIT[0].convertValue);
 
-  const [filterPortList, setFilterPortList] = useState([]);
+  const [filterDeviceList, setFilterDeviceList] = useState([]);
   const [selected, setSelected] = useState("month");
   const [minDate, setMinDate] = useState();
   const [maxDate, setMaxDate] = useState();
@@ -162,7 +162,7 @@ const InventoryDetail = (props) => {
         console.log(minDate)
       setMaxDate(dayjs(maxDate));
       setMinDate(dayjs(minDate));
-      setSelectedStart(dayjs(DefaultminDateTemp));
+      setSelectedStart(dayjs(minDate));
       setSelectedEnd(dayjs(DefaultmaxDateTemp));
       //fetchDetailData(true);
     }
@@ -178,7 +178,7 @@ const InventoryDetail = (props) => {
   console.log(filterStatus);
   useEffect(() => {
     if (inventoryDetailDropdown) {
-      setFilterPortList(inventoryDetailDropdown);
+      setFilterDeviceList(inventoryDetailDropdown);
       setIsSelectDevice(false);
     }
   }, [inventoryDetailDropdown]);
@@ -243,8 +243,11 @@ const InventoryDetail = (props) => {
         console.log("Param All", param);
         dispatch(getInventoryDetailData(param));
         if (isFetchDrop) {
-          setFilterDevice([]);
-          dispatch(getInventoryDetailDropdown(param));
+          //setFilterDevice([]);
+          if(filterDeviceList.length === 0){
+            dispatch(getInventoryDetailDropdown(param));
+          }
+          
         }
         setIsSelectDevice(false);
       } else if (selected == "month") {
@@ -299,8 +302,10 @@ const InventoryDetail = (props) => {
         console.log("Param month", param);
         dispatch(getInventoryDetailData(param));
         if (isFetchDrop) {
-          setFilterDevice([]);
-          dispatch(getInventoryDetailDropdown(param));
+          //setFilterDevice([]);
+          if(filterDeviceList.length === 0){
+            dispatch(getInventoryDetailDropdown(param));
+          }
         }
         setIsSelectDevice(false);
       }
@@ -769,7 +774,7 @@ const InventoryDetail = (props) => {
                           )}
                         />*/}
                         <DropdownMultiSelect
-                          options={filterPortList}
+                          options={filterDeviceList}
                           selectedValues={filterDevice}
                           setSelectedValues={setFilterDevice}
                           label="Find Device"
