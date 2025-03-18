@@ -153,13 +153,13 @@ const InventoryDetail = (props) => {
         inventoryFilter.startMinMonth +
         "/" +
         new Date(
-          inventoryFilter.endMaxYear,
-          inventoryFilter.endMaxMonth,
+          inventoryFilter.startMinYear,
+          inventoryFilter.startMinMonth,
           0
         ).getDate();
       const maxDate =
         inventoryFilter.endMaxYear + "/" + inventoryFilter.endMaxMonth + "/1";
-
+        console.log(minDate)
       setMaxDate(dayjs(maxDate));
       setMinDate(dayjs(minDate));
       setSelectedStart(dayjs(DefaultminDateTemp));

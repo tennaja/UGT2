@@ -21,10 +21,11 @@ import { FaCaretDown, FaBars } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import NavBarIcon from "../assets/UGTNavBarIcon.png"
 import NavIcon from "../assets/NavIcon.png"
+import {MENU_ID} from "../../Constants/Constants"
 const imageProfile =
   "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
 
-const Navbar = () => {
+const Navbar = ({menuId}) => {
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -153,7 +154,7 @@ useEffect(() => {
 
             {/* ## SELECT ## */}
             <div className="flex justify-end  rounded max-sm:w-1/2 lg:w-60">
-              <form className="w-40 lg:w-3/4">
+              {Number(menuId) !== MENU_ID.INVENTORY &&<form className="w-40 lg:w-3/4">
                 <Controller
                   name="ugtGroup"
                   control={control}
@@ -171,7 +172,7 @@ useEffect(() => {
                     />
                   )}
                 />
-              </form>
+              </form>}
             </div>
 
             <div className="sm:hidden lg:flex absolute inset-y-0 right-0 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">

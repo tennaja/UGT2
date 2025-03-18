@@ -996,7 +996,7 @@ const InventoryList = (props) => {
               </form>
               <form className="grid col-span-12 lg:grid-cols-12 sm:grid-cols-6 gap-2 w-full">
                 <>
-                <div className="lg:col-span-4 sm:col-span-2 lg:col-start-3 sm:col-start-1">
+                <div className="lg:col-span-5 sm:col-span-2 lg:col-start-3 sm:col-start-1">
                     {/*<Controller
                       name="portFilter"
                       control={control}
@@ -1053,7 +1053,7 @@ const InventoryList = (props) => {
                       </Form.Item>
                     </Form>
                   </div>
-                  <div className="lg:col-span-3 sm:col-span-2">
+                  <div className="lg:col-span-2 sm:col-span-2">
                     <SubMenuAction
                       labelBtn={"Export"}
                       actionList={[
@@ -1436,7 +1436,8 @@ const InventoryList = (props) => {
                               tick={{ fontSize: 12 }}
                               tickFormatter={(tick) => {
                                 const [month, year] = tick.split("/");
-                                return MONTH_LIST[month - 1].abbr;
+                                const lastTwoDigits = String(year).slice(-2);
+                                return MONTH_LIST[month - 1].abbr+"/"+lastTwoDigits;
                               }}
                             />
                             <YAxis

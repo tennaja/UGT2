@@ -344,13 +344,13 @@ if(isNumber == true && isScientific == false){
       render: (row) => (
         <div className="flex flex-col justify-center">
           <div
-            className={row.status == "Expired"?"break-words line-through text-[#BFBFBF]" :row.status == "Out Of Stock"?"break-words line-through ":"break-words"}
+            className={row.status == "Expired"?"break-words line-through text-[#BFBFBF]":"break-words"}
             style={{
               width: "100px",
               wordWrap: "break-word",
             }}
           >
-            {row.remainingPeriod}
+            {row.status == "Out Of Stock"?"-":row.remainingPeriod}
           </div>
         </div>
       ),

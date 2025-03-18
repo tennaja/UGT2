@@ -14,7 +14,7 @@ const SubMenuAction = ({ actionList,labelBtn }) => {
       <Menu.Target>
         <Button
           rightSection={<LuChevronDown />}
-          className="bg-PRIMARY_BUTTON hover:bg-BREAD_CRUMB text-white w-30 h-10 p-2"
+          className="bg-PRIMARY_BUTTON hover:bg-BREAD_CRUMB text-white w-auto h-10 p-2"
         >
           {labelBtn}
         </Button>
