@@ -161,8 +161,8 @@ const InventoryList = (props) => {
         inventoryInfoFilter.startMinMonth +
         "/" +
         new Date(
-          inventoryInfoFilter.endMaxYear,
-          inventoryInfoFilter.endMaxMonth,
+          inventoryInfoFilter.startMinYear,
+          inventoryInfoFilter.startMinMonth,
           0
         ).getDate();
       const maxDate =
