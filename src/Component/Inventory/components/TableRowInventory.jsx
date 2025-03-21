@@ -382,12 +382,11 @@ if(isNumber == true && isScientific == false){
       id: "usedInSettlementPeriod",
       label: "Used in Settlement Period",
       align: "left",
-      maxWidth: "50px",
+      maxWidth: "30px",
       render: (row) => (
         <div
           className=" break-words"
           style={{
-            width: "100px",
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
         >
@@ -398,11 +397,11 @@ if(isNumber == true && isScientific == false){
     {
       id: "inventoryMathced",
       label: "Inventory Matched ("+unit+")",
-      align: "center",
+      align: "right",
       maxWidth: "80px",
       render: (row) => (
         <div
-          className=" break-words text-right w-full pr-5"
+          className=" break-words text-right w-full"
           style={{
             wordWrap: "break-word", // ให้ข้อความขึ้นบรรทัดใหม่ถ้ายาวเกิน
           }}
@@ -414,7 +413,7 @@ if(isNumber == true && isScientific == false){
     {
       id: "periodofProduction",
       label: "Period of Production",
-      align: "left",
+      align: "right",
       maxWidth: "80px",
       render: (row) => (
         <div
@@ -500,7 +499,7 @@ console.log(dataPopup)
         withCloseButton={false}
         centered
         closeOnClickOutside={false}
-        size={"60%"}
+        size={"55%"}
       >
         <div className="flex flex-col px-10 pt-4 pb-3">
           <div className="text-left font-bold text-xl">

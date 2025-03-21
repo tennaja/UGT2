@@ -698,7 +698,7 @@ const DataTableInventory = ({
 
                         }}
                       >
-                        <strong className="pr-5">
+                        <strong>
                           {" "}
                           {paginatedData.length > 0?totalPopup:""}
                         </strong>
