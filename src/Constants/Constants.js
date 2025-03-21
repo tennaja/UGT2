@@ -125,8 +125,8 @@ export const SETTLEMENT_TYPE_COLOR = {
 export const INVENTORY_STAUS_COLOR = {
   ACTIVE:{bg:"#3CA12D33",text:"#3CA12D"},
   OUT_OF_STOCK:{bg:"#84878933",text:"#848789"},
-  NO_INVENTORY:{bg:"#FA6B6E33",text:"#F7A042"},
-  EXPIRED:{bg:"#F7A04233",text:"#F1523C"}
+  NO_INVENTORY:{bg:"#ffe5a0",text:"#633838"},
+  EXPIRED:{bg:"#ffcfc9",text:"#b10202"}
 }
 
 export const STATUS_COLOR = {
