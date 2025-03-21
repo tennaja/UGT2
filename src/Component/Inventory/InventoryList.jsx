@@ -417,7 +417,7 @@ const InventoryList = (props) => {
     },
     {
       id: "numberOfDevices",
-      label: "Number of Device",
+      label: "Number of Devices",
       align: "center",
 
       render: (row) => (
@@ -1319,7 +1319,7 @@ const InventoryList = (props) => {
                     </div>
                   </div>
                   <div className="w-60">
-                    <div className="font-bold mt-2">Expire Inventory</div>
+                    <div className="font-bold mt-2">Expired Inventory</div>
                   </div>
                   <div
                     className={`text-gray-500 text-right text-[0.8rem] font-medium mt-2`}
