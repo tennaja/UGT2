@@ -83,7 +83,7 @@ import IconSubMenu_Inventory_Select from "../assets/IconSubMenu_Inventory_Select
 import dayjs from "dayjs";
 import { useMediaQuery } from "@mantine/hooks";
 import { set } from "lodash";
-import UGTFAVIcon from "../../../public/UGTFAVIcon.png"
+import UGTFAVIcon from "../assets/UGTFAVIcon.png"
 // const initMainMenu = 5;
 // const initSubMenu = 1; // Info
 
